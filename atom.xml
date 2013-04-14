@@ -4,7 +4,7 @@
   <title><![CDATA[Dolice Lab]]></title>
   <link href="http://lab.dolice.net/atom.xml" rel="self"/>
   <link href="http://lab.dolice.net/"/>
-  <updated>2013-04-14T21:48:30+09:00</updated>
+  <updated>2013-04-14T22:08:59+09:00</updated>
   <id>http://lab.dolice.net/</id>
   <author>
     <name><![CDATA[Masaki Hirokawa]]></name>
@@ -331,6 +331,93 @@
 
 <blockquote><p>BaseDate: 2013-04-14 08:10:44 +0000<br />
 Before 30days: 2013-03-15 08:10:44 +0000</p></blockquote>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[2つの日時を比較し新しい方の日時を取得する]]></title>
+    <link href="http://lab.dolice.net/blog/2013/04/14/objc-date-later-date/"/>
+    <updated>2013-04-14T11:15:00+09:00</updated>
+    <id>http://lab.dolice.net/blog/2013/04/14/objc-date-later-date</id>
+    <content type="html"><![CDATA[<p>2つの日時を比較し、新しい方の日時を取得するサンプルを以下に作成しました。</p>
+
+<p>新しい方の日時を取得するには、「laterDate」メソッドを使用します。逆に古い方の日時を取得するには、「earlierDate」メソッドを使用します。</p>
+
+<h2>サンプルダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-date-later-date">https://github.com/masakihirokawa/objc-date-later-date</a></li>
+</ul>
+
+
+<h2>ソースコード</h2>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">main</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="n">NSDate</span> <span class="o">*</span><span class="n">dates</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="nb">nil</span><span class="p">,</span> <span class="nb">nil</span><span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">//日時を作成する</span>
+</span><span class='line'>  <span class="n">NSCalendar</span> <span class="o">*</span><span class="n">calendar</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSCalendar</span> <span class="n">currentCalendar</span><span class="p">];</span>
+</span><span class='line'>  <span class="n">NSDateComponents</span> <span class="o">*</span><span class="n">components</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">//UTCタイムゾーンを設定する</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">calendar</span> <span class="nl">setTimeZone:</span><span class="p">[</span><span class="n">NSTimeZone</span> <span class="nl">timeZoneForSecondsFromGMT:</span><span class="mi">0</span><span class="p">]];</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">//2013/04/11のオブジェクトを作成する</span>
+</span><span class='line'>  <span class="n">components</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSDateComponents</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">components</span> <span class="nl">setYear:</span><span class="mi">2013</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">components</span> <span class="nl">setMonth:</span><span class="mi">4</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">components</span> <span class="nl">setDay:</span><span class="mi">11</span><span class="p">];</span>
+</span><span class='line'>  <span class="n">dates</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">calendar</span> <span class="nl">dateFromComponents:</span><span class="n">components</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">//2013/04/14のオブジェクトを作成する</span>
+</span><span class='line'>  <span class="n">components</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSDateComponents</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">components</span> <span class="nl">setYear:</span><span class="mi">2013</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">components</span> <span class="nl">setMonth:</span><span class="mi">4</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">components</span> <span class="nl">setDay:</span><span class="mi">14</span><span class="p">];</span>
+</span><span class='line'>  <span class="n">dates</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">calendar</span> <span class="nl">dateFromComponents:</span><span class="n">components</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">//2つの日時で新しい方の日時を取得する</span>
+</span><span class='line'>  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;laterDate: %@&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">dates</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="nl">laterDate:</span><span class="n">dates</span><span class="p">[</span><span class="n">i</span><span class="p">]]);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>出力結果</h2>
+
+<blockquote><p>laterDate: 2013-04-14 00:00:00 +0000</p></blockquote>
 ]]></content>
   </entry>
   
@@ -2376,80 +2463,6 @@ orderedSet: {()}</p></blockquote>
 
 <blockquote><p>myArray: Apple<br />
 orderedSet: Apple</p></blockquote>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[ユーザーデフォルトを使用して入力されたテキストを保存する]]></title>
-    <link href="http://lab.dolice.net/blog/2013/04/04/objc-ns-user-defaults/"/>
-    <updated>2013-04-04T21:21:00+09:00</updated>
-    <id>http://lab.dolice.net/blog/2013/04/04/objc-ns-user-defaults</id>
-    <content type="html"><![CDATA[<p>ユーザーデフォルトを使用して入力されたテキストを保存するサンプルを作成しました。入力された値を保存し、次回起動時に値を引き継ぎます。下記よりサンプルのダウンロードが行えます。</p>
-
-<h2>サンプルダウンロード</h2>
-
-<ul>
-<li><a href="https://github.com/masakihirokawa/objc-ns-user-defaults">https://github.com/masakihirokawa/objc-ns-user-defaults</a></li>
-</ul>
-
-
-<h2>必要な手順</h2>
-
-<ol>
-<li>UITextFieldを MainStoryboardに配置し、プロパティとメソッドを定義します</li>
-<li>UITextFieldを controlキーを押しながらクリックし、Sent Eventsを Did End On Exitに設定します（これにより、returnキーが押された時に入力が確定されます）</li>
-</ol>
-
-
-<h2>ソースコード</h2>
-
-<h3>ViewController.h</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">weak</span><span class="p">,</span> <span class="n">nonatomic</span><span class="p">)</span> <span class="kt">IBOutlet</span> <span class="n">UITextField</span> <span class="o">*</span><span class="n">myTextField</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">inputText:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span><span class="p">;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>ViewController.m</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
-</span><span class='line'>  <span class="c1">//キーから値を取得する</span>
-</span><span class='line'>  <span class="n">NSUserDefaults</span> <span class="o">*</span><span class="n">defaults</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSUserDefaults</span> <span class="n">standardUserDefaults</span><span class="p">];</span>
-</span><span class='line'>  <span class="n">NSString</span> <span class="o">*</span><span class="n">defaultStr</span> <span class="o">=</span> <span class="p">[</span><span class="n">defaults</span> <span class="nl">stringForKey:</span><span class="s">@&quot;MY_KEY&quot;</span><span class="p">];</span>
-</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">myTextField</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">defaultStr</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">inputText:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span> <span class="p">{</span>
-</span><span class='line'>  <span class="c1">//指定したキーに入力された値を保存する</span>
-</span><span class='line'>  <span class="n">NSUserDefaults</span><span class="o">*</span> <span class="n">defaults</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSUserDefaults</span> <span class="n">standardUserDefaults</span><span class="p">];</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">defaults</span> <span class="nl">setObject:</span> <span class="n">self</span><span class="p">.</span><span class="n">myTextField</span><span class="p">.</span><span class="n">text</span> <span class="nl">forKey:</span><span class="s">@&quot;MY_KEY&quot;</span><span class="p">];</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">defaults</span> <span class="n">synchronize</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
 ]]></content>
   </entry>
   
