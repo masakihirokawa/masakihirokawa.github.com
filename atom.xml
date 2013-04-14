@@ -1,16 +1,2456 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[My Octopress Blog]]></title>
-  <link href="http://masakihirokawa.github.io/atom.xml" rel="self"/>
-  <link href="http://masakihirokawa.github.io/"/>
-  <updated>2013-04-14T20:21:22+09:00</updated>
-  <id>http://masakihirokawa.github.io/</id>
+  <title><![CDATA[Dolice Lab]]></title>
+  <link href="http://lab.dolice.net/atom.xml" rel="self"/>
+  <link href="http://lab.dolice.net/"/>
+  <updated>2013-04-14T20:49:05+09:00</updated>
+  <id>http://lab.dolice.net/</id>
   <author>
-    <name><![CDATA[Your Name]]></name>
-    
+    <name><![CDATA[Masaki Hirokawa]]></name>
+    <email><![CDATA[masakihirokawa@gmai.com]]></email>
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[CollectionViewを使わずにサムネイルをタイル状に並べる方法]]></title>
+    <link href="http://lab.dolice.net/blog/2013/04/15/download-objc-column-thumbnail-list/"/>
+    <updated>2013-04-15T10:00:00+09:00</updated>
+    <id>http://lab.dolice.net/blog/2013/04/15/download-objc-column-thumbnail-list</id>
+    <content type="html"><![CDATA[<p>iOS6.0から追加された CollectionViewを使わずにサムネイルをタイル状に並べるサンプルを作成しました。下記よりサンプルのダウンロードが行えます。</p>
+
+<h2>サンプルダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-column-thumbnail-list">https://github.com/masakihirokawa/objc-column-thumbnail-list</a></li>
+</ul>
+
+
+<h2>ソースコード</h2>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+<span class='line-number'>102</span>
+<span class='line-number'>103</span>
+<span class='line-number'>104</span>
+<span class='line-number'>105</span>
+<span class='line-number'>106</span>
+<span class='line-number'>107</span>
+<span class='line-number'>108</span>
+<span class='line-number'>109</span>
+<span class='line-number'>110</span>
+<span class='line-number'>111</span>
+<span class='line-number'>112</span>
+<span class='line-number'>113</span>
+<span class='line-number'>114</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;ViewController.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> <span class="p">()</span>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">ViewController</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//サムネイルの総数</span>
+</span><span class='line'><span class="n">NSInteger</span> <span class="n">_thumbnailNum</span> <span class="o">=</span> <span class="mi">300</span><span class="p">;</span>
+</span><span class='line'><span class="c1">//サムネイルのファイル名を入れる配列</span>
+</span><span class='line'><span class="n">NSMutableArray</span> <span class="o">*</span><span class="n">_thumbnails</span><span class="p">;</span>
+</span><span class='line'><span class="c1">//サムネイルのファイル名接頭詞</span>
+</span><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="n">_thumbnailFilePreffix</span> <span class="o">=</span> <span class="s">@&quot;images&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="c1">//サムネイルのファイル名接尾詞</span>
+</span><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="n">_thumbnailFileSuffix</span> <span class="o">=</span> <span class="s">@&quot;_thumb&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="c1">//サムネイル間のマージン</span>
+</span><span class='line'><span class="n">NSInteger</span> <span class="n">_thumbnailMargin</span> <span class="o">=</span> <span class="mi">9</span><span class="p">;</span>
+</span><span class='line'><span class="c1">//サムネイルの外枠の寸法</span>
+</span><span class='line'><span class="n">NSInteger</span> <span class="n">_thumbnailOutlineSize</span> <span class="o">=</span> <span class="mi">76</span><span class="p">;</span>
+</span><span class='line'><span class="c1">//サムネイルのボーダーを含まない寸法</span>
+</span><span class='line'><span class="n">NSInteger</span> <span class="n">_thumbnailSize</span> <span class="o">=</span> <span class="mi">74</span><span class="p">;</span>
+</span><span class='line'><span class="c1">//サムネイルの列の数</span>
+</span><span class='line'><span class="n">NSInteger</span> <span class="n">_thumbnailColumnNum</span> <span class="o">=</span> <span class="mi">4</span><span class="p">;</span>
+</span><span class='line'><span class="c1">//サムネイルの列数のカウント</span>
+</span><span class='line'><span class="n">NSInteger</span> <span class="n">_thumbnailColumnCount</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'><span class="c1">//サムネイルの行数のカウント</span>
+</span><span class='line'><span class="n">NSInteger</span> <span class="n">_thumbnailRowCount</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'><span class="c1">//サムネイルのボタンの寸法</span>
+</span><span class='line'><span class="n">NSInteger</span> <span class="n">_buttonSize</span> <span class="o">=</span> <span class="mi">80</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//サムネイルのファイル名を配列に代入</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">self</span> <span class="n">setThumbnailImageResources</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//サムネイルリストを生成</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">self</span> <span class="n">setThumbnailList</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">didReceiveMemoryWarning</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">super</span> <span class="n">didReceiveMemoryWarning</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//サムネイルのファイル名を配列に代入</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setThumbnailImageResources</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="c1">//変更可能な配列を初期化</span>
+</span><span class='line'>  <span class="n">_thumbnails</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSMutableArray</span> <span class="n">array</span><span class="p">];</span>
+</span><span class='line'>  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="n">_thumbnailNum</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">//拡張子より前のファイル名を保持</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">_thumbnails</span> <span class="nl">addObject:</span><span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">@&quot;%@%@&quot;</span><span class="p">,</span> <span class="n">_thumbnailFilePreffix</span><span class="p">,</span> <span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">@&quot;%d&quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">]]];</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//サムネイルリストを生成</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setThumbnailList</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="c1">//サムネイル群を入れるスクロールビューを初期化</span>
+</span><span class='line'>  <span class="n">UIScrollView</span> <span class="o">*</span><span class="n">scrollView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIScrollView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">320</span><span class="p">,</span> <span class="mi">568</span><span class="p">)];</span>
+</span><span class='line'>  <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">for</span> <span class="p">(</span><span class="kt">id</span> <span class="n">thumbnailName</span> <span class="k">in</span> <span class="n">_thumbnails</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">//サムネイルは4列で折り返す</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">_thumbnailColumnCount</span> <span class="o">==</span> <span class="n">_thumbnailColumnNum</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="n">_thumbnailColumnCount</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>      <span class="n">_thumbnailRowCount</span><span class="o">++</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="c1">//サムネイル表示</span>
+</span><span class='line'>    <span class="n">NSString</span> <span class="o">*</span><span class="n">imageFile</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">@&quot;%@%@&quot;</span><span class="p">,</span> <span class="n">thumbnailName</span><span class="p">,</span> <span class="n">_thumbnailFileSuffix</span><span class="p">];</span>
+</span><span class='line'>    <span class="c1">//画像リソースの取得</span>
+</span><span class='line'>    <span class="n">UIImage</span> <span class="o">*</span><span class="n">image</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="nl">getUIImageFromResources:</span><span class="n">imageFile</span> <span class="nl">ext:</span><span class="s">@&quot;png&quot;</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">UIImageView</span> <span class="o">*</span><span class="n">thumbnailView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIImageView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithImage:</span><span class="n">image</span><span class="p">];</span>
+</span><span class='line'>    <span class="c1">//サムネイルの寸法指定</span>
+</span><span class='line'>    <span class="n">CGRect</span> <span class="n">rect</span> <span class="o">=</span> <span class="n">CGRectMake</span><span class="p">(</span><span class="n">_thumbnailMargin</span> <span class="o">+</span> <span class="p">(</span><span class="n">_thumbnailColumnCount</span> <span class="o">*</span> <span class="n">_thumbnailOutlineSize</span><span class="p">),</span>
+</span><span class='line'>                             <span class="n">_thumbnailMargin</span> <span class="o">+</span> <span class="p">(</span><span class="n">_thumbnailRowCount</span> <span class="o">*</span> <span class="n">_thumbnailOutlineSize</span><span class="p">),</span> <span class="n">_thumbnailSize</span><span class="p">,</span> <span class="n">_thumbnailSize</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">thumbnailView</span> <span class="nl">setFrame:</span><span class="n">rect</span><span class="p">];</span>
+</span><span class='line'>    <span class="c1">//サムネイルをタップ可能にする</span>
+</span><span class='line'>    <span class="n">thumbnailView</span><span class="p">.</span><span class="n">userInteractionEnabled</span> <span class="o">=</span> <span class="n">YES</span><span class="p">;</span>
+</span><span class='line'>    <span class="c1">//ボタン追加</span>
+</span><span class='line'>    <span class="n">UIButton</span> <span class="o">*</span><span class="n">selectButton</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIButton</span> <span class="nl">buttonWithType:</span><span class="n">UIButtonTypeCustom</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">selectButton</span><span class="p">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">_buttonSize</span><span class="p">,</span> <span class="n">_buttonSize</span><span class="p">);</span>
+</span><span class='line'>    <span class="c1">//ボタンのタグを代入</span>
+</span><span class='line'>    <span class="n">selectButton</span><span class="p">.</span><span class="n">tag</span> <span class="o">=</span> <span class="n">i</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">selectButton</span> <span class="nl">addTarget:</span><span class="n">self</span> <span class="nl">action:</span><span class="k">@selector</span><span class="p">(</span><span class="nl">selectImage:</span><span class="p">)</span>
+</span><span class='line'>           <span class="nl">forControlEvents:</span><span class="n">UIControlEventTouchUpInside</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">thumbnailView</span> <span class="nl">addSubview:</span><span class="n">selectButton</span><span class="p">];</span>
+</span><span class='line'>    <span class="c1">//スクロールビューにサムネイルを追加</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">scrollView</span> <span class="nl">insertSubview:</span><span class="n">thumbnailView</span> <span class="nl">atIndex:</span><span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">subviews</span> <span class="n">count</span><span class="p">]];</span>
+</span><span class='line'>    <span class="c1">//サムネイルの列を一つ進める</span>
+</span><span class='line'>    <span class="n">_thumbnailColumnCount</span><span class="o">++</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">i</span><span class="o">++</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="c1">//スクロール範囲の設定</span>
+</span><span class='line'>  <span class="n">scrollView</span><span class="p">.</span><span class="n">contentSize</span> <span class="o">=</span> <span class="n">CGSizeMake</span><span class="p">(</span><span class="mi">320</span><span class="p">,</span> <span class="p">((</span><span class="n">_buttonSize</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">_thumbnailRowCount</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">_thumbnailMargin</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)));</span>
+</span><span class='line'>  <span class="c1">//スクロールビューをステージに追加</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">scrollView</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//サムネイルがタップされた時のイベント</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">selectImage:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="c1">//予め代入しておいた tagを取得するためにセレクタを代入</span>
+</span><span class='line'>  <span class="n">UIButton</span> <span class="o">*</span><span class="n">button</span> <span class="o">=</span> <span class="p">(</span><span class="n">UIButton</span> <span class="o">*</span><span class="p">)</span><span class="n">sender</span><span class="p">;</span>
+</span><span class='line'>  <span class="c1">//予め代入しておいた tagの数値を出力</span>
+</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;button.tag: %d&quot;</span><span class="p">,</span> <span class="n">button</span><span class="p">.</span><span class="n">tag</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//画像ファイルを取得</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nf">getUIImageFromResources:</span><span class="p">(</span><span class="n">NSString</span><span class="o">*</span><span class="p">)</span><span class="nv">fileName</span> <span class="nf">ext:</span><span class="p">(</span><span class="n">NSString</span><span class="o">*</span><span class="p">)</span><span class="nv">ext</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="n">NSString</span> <span class="o">*</span><span class="n">path</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSBundle</span> <span class="n">mainBundle</span><span class="p">]</span> <span class="nl">pathForResource:</span><span class="n">fileName</span> <span class="nl">ofType:</span><span class="n">ext</span><span class="p">];</span>
+</span><span class='line'>  <span class="n">UIImage</span> <span class="o">*</span><span class="n">img</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIImage</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithContentsOfFile:</span><span class="n">path</span><span class="p">];</span>
+</span><span class='line'>  <span class="k">return</span> <span class="n">img</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[指定した日時から計算した日時を取得する]]></title>
+    <link href="http://lab.dolice.net/blog/2013/04/14/objc-calendar-date-by-adding-components/"/>
+    <updated>2013-04-14T17:03:00+09:00</updated>
+    <id>http://lab.dolice.net/blog/2013/04/14/objc-calendar-date-by-adding-components</id>
+    <content type="html"><![CDATA[<p>指定した日時を基準にして特定の日時を取得するには、「dateByAddingComponents」メソッドを使用します。以下にサンプルを作成しました。</p>
+
+<h2>サンプルダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-calendar-date-by-adding-components">https://github.com/masakihirokawa/objc-calendar-date-by-adding-components</a></li>
+</ul>
+
+
+<h2>ソースコード</h2>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">main</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="c1">//現在の日時を取得する</span>
+</span><span class='line'>  <span class="n">NSDate</span> <span class="o">*</span><span class="n">currentDate</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSDate</span> <span class="n">date</span><span class="p">];</span>
+</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;BaseDate: %@&quot;</span><span class="p">,</span> <span class="n">currentDate</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">//30日前のオブジェクトを取得する</span>
+</span><span class='line'>  <span class="n">NSDateComponents</span> <span class="o">*</span><span class="n">components</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSDateComponents</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">components</span> <span class="nl">setDay:</span> <span class="o">-</span><span class="mi">30</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">//グレゴリオ暦のカレンダーを取得する</span>
+</span><span class='line'>  <span class="n">NSCalendar</span> <span class="o">*</span><span class="n">calendar</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">calendar</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSCalendar</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithCalendarIdentifier:</span><span class="n">NSGregorianCalendar</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">//オブジェクトを取得する</span>
+</span><span class='line'>  <span class="n">NSDate</span> <span class="o">*</span><span class="n">date</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">date</span> <span class="o">=</span> <span class="p">[</span><span class="n">calendar</span> <span class="nl">dateByAddingComponents:</span><span class="n">components</span>
+</span><span class='line'>                                   <span class="nl">toDate:</span><span class="n">currentDate</span>
+</span><span class='line'>                                  <span class="nl">options:</span><span class="mi">0</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;Before 30days: %@&quot;</span><span class="p">,</span> <span class="n">date</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>出力結果</h2>
+
+<blockquote><p>BaseDate: 2013-04-14 08:10:44 +0000<br />
+Before 30days: 2013-03-15 08:10:44 +0000</p></blockquote>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[特定の日時のオブジェクトを取得する]]></title>
+    <link href="http://lab.dolice.net/blog/2013/04/14/objc-ns-calendar/"/>
+    <updated>2013-04-14T09:02:00+09:00</updated>
+    <id>http://lab.dolice.net/blog/2013/04/14/objc-ns-calendar</id>
+    <content type="html"><![CDATA[<p>特定の日時のオブジェクトを取得するには、NSCalendarクラスを使用します。以下にサンプルを作成しました。</p>
+
+<h2>サンプルダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-ns-calendar">https://github.com/masakihirokawa/objc-ns-calendar</a></li>
+</ul>
+
+
+<h2>ソースコード</h2>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">main</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="c1">//現在のカレンダーを取得する</span>
+</span><span class='line'>  <span class="n">NSCalendar</span> <span class="o">*</span><span class="n">calendar</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSCalendar</span> <span class="n">currentCalendar</span><span class="p">];</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">[[</span><span class="n">calendar</span> <span class="n">calendarIdentifier</span><span class="p">]</span> <span class="nl">isEqualToString:</span><span class="n">NSGregorianCalendar</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">//グレゴリオ暦以外のカレンダーが使用されている</span>
+</span><span class='line'>    <span class="n">calendar</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSCalendar</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithCalendarIdentifier:</span><span class="n">NSGregorianCalendar</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">//取得する日時の情報を格納したインスタンスを生成する</span>
+</span><span class='line'>  <span class="n">NSDateComponents</span> <span class="o">*</span><span class="n">components</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSDateComponents</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="p">[</span><span class="n">components</span> <span class="nl">setYear:</span><span class="mi">2013</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">components</span> <span class="nl">setMonth:</span><span class="mi">4</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">components</span> <span class="nl">setDay:</span><span class="mi">14</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">components</span> <span class="nl">setHour:</span><span class="mi">9</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">components</span> <span class="nl">setMinute:</span><span class="mi">0</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">components</span> <span class="nl">setSecond:</span><span class="mi">55</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">//日時のオブジェクトを取得する</span>
+</span><span class='line'>  <span class="n">NSDate</span> <span class="o">*</span><span class="n">date</span> <span class="o">=</span> <span class="p">[</span><span class="n">calendar</span> <span class="nl">dateFromComponents:</span><span class="n">components</span><span class="p">];</span>
+</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;%@&quot;</span><span class="p">,</span> <span class="n">date</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>出力結果</h2>
+
+<blockquote><p>2013-04-14 00:00:55 +0000</p></blockquote>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[UINavigationBarに背景画像を指定する方法]]></title>
+    <link href="http://lab.dolice.net/blog/2013/04/13/download-objc-ui-navigation-bar-custom-image/"/>
+    <updated>2013-04-13T18:18:00+09:00</updated>
+    <id>http://lab.dolice.net/blog/2013/04/13/download-objc-ui-navigation-bar-custom-image</id>
+    <content type="html"><![CDATA[<p>Objective-Cでナビゲーションバーに背景画像を指定するサンプルを以下に作成しました。iOSのバージョンを判別し、iOS5.0以上とそれ以外でリソースの取得方法を分けています。</p>
+
+<p>ナビゲーションバーの背景画像の寸法は、縦幅320×横幅44ピクセルで作成しています。サンプルには PSDファイルも入っていますので、お好みのデザインに編集してご使用ください。</p>
+
+<h2>サンプルダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-ui-navigationbar-custom-image">https://github.com/masakihirokawa/objc-ui-navigationbar-custom-image</a></li>
+</ul>
+
+
+<h2>ソースコード</h2>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">initNavigationBar</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="c1">//ナビゲーションバーを初期化</span>
+</span><span class='line'>  <span class="n">UINavigationBar</span> <span class="o">*</span><span class="n">navigationBar</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UINavigationBar</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">320</span><span class="p">,</span> <span class="mi">44</span><span class="p">)];</span>
+</span><span class='line'>  <span class="c1">//iOSのバージョン取得</span>
+</span><span class='line'>  <span class="kt">float</span> <span class="n">systemVersion</span> <span class="o">=</span> <span class="p">[[[</span><span class="n">UIDevice</span> <span class="n">currentDevice</span><span class="p">]</span> <span class="n">systemVersion</span><span class="p">]</span> <span class="n">floatValue</span><span class="p">];</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="n">systemVersion</span> <span class="o">&gt;=</span> <span class="mf">5.0</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">//iOSのバージョンが5.0以上の処理</span>
+</span><span class='line'>    <span class="n">UIImage</span> <span class="o">*</span><span class="n">backgroundImage</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIImage</span> <span class="nl">imageNamed:</span><span class="s">@&quot;navigationbar-background.png&quot;</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">navigationBar</span> <span class="nl">setBackgroundImage:</span><span class="n">backgroundImage</span> <span class="nl">forBarMetrics:</span><span class="n">UIBarMetricsDefault</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">//iOSのバージョンが5.0未満の処理</span>
+</span><span class='line'>    <span class="n">NSString</span> <span class="o">*</span><span class="n">backgroundResource</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSBundle</span> <span class="n">mainBundle</span><span class="p">]</span> <span class="nl">pathForResource:</span><span class="s">@&quot;navigationbar-background&quot;</span> <span class="nl">ofType:</span><span class="s">@&quot;png&quot;</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">navigationBar</span><span class="p">.</span><span class="n">layer</span> <span class="nl">setContents:</span><span class="p">(</span><span class="kt">id</span><span class="p">)[</span><span class="n">UIImage</span> <span class="nl">imageWithContentsOfFile:</span> <span class="n">backgroundResource</span><span class="p">].</span><span class="n">CGImage</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="c1">//ナビゲーションバーをステージに追加</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">navigationBar</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>補足</h3>
+
+<blockquote><p>“Receiver type &#8216;CALayer&#8217; for instance message is a forward declaration”</p></blockquote>
+
+<p>もし上記のエラーが発生した場合は、QuartzCoreフレームワークを読み込むと解決します。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;QuartzCore/QuartzCore.h&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[辞書に格納されている全てのオブジェクトを削除する]]></title>
+    <link href="http://lab.dolice.net/blog/2013/04/12/objc-dictionary-remove-all-objects/"/>
+    <updated>2013-04-12T13:05:00+09:00</updated>
+    <id>http://lab.dolice.net/blog/2013/04/12/objc-dictionary-remove-all-objects</id>
+    <content type="html"><![CDATA[<p>辞書に格納されている全てのオブジェクトを削除するには、「removeAllObjects」メソッドを使用します。以下にサンプルを作成しました。</p>
+
+<h2>サンプルダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-dictionary-remove-all-objects">https://github.com/masakihirokawa/objc-dictionary-remove-all-objects</a></li>
+</ul>
+
+
+<h2>ソースコード</h2>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">main</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="c1">//辞書を生成する</span>
+</span><span class='line'>  <span class="n">NSMutableDictionary</span> <span class="o">*</span><span class="n">dic</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">dic</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSMutableDictionary</span> <span class="nl">dictionaryWithObjectsAndKeys:</span>
+</span><span class='line'>         <span class="s">@&quot;Apple&quot;</span><span class="p">,</span> <span class="s">@&quot;Key1&quot;</span><span class="p">,</span>
+</span><span class='line'>         <span class="s">@&quot;Banana&quot;</span><span class="p">,</span> <span class="s">@&quot;Key2&quot;</span><span class="p">,</span>
+</span><span class='line'>         <span class="s">@&quot;Orange&quot;</span><span class="p">,</span> <span class="s">@&quot;Key3&quot;</span><span class="p">,</span>
+</span><span class='line'>         <span class="s">@&quot;Lemon&quot;</span><span class="p">,</span> <span class="s">@&quot;Key4&quot;</span><span class="p">,</span>
+</span><span class='line'>         <span class="s">@&quot;Greaps&quot;</span><span class="p">,</span> <span class="s">@&quot;Key5&quot;</span><span class="p">,</span>
+</span><span class='line'>         <span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;%@&quot;</span><span class="p">,</span> <span class="n">dic</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">//オブジェクトを全て削除する</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">dic</span> <span class="n">removeAllObjects</span><span class="p">];</span>
+</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;%@&quot;</span><span class="p">,</span> <span class="n">dic</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>出力結果</h2>
+
+<blockquote><p>dic: {<br />
+&#8220;@Key1&#8221; = Apple;<br />
+&#8220;@Key2&#8221; = Banana;<br />
+&#8220;@Key3&#8221; = Orange;<br />
+&#8220;@Key4&#8221; = Lemon;<br />
+&#8220;@Key5&#8221; = Greaps;<br />
+}<br />
+<br />
+dic : {<br />
+}</p></blockquote>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[NSTimerを使用したアニメーション]]></title>
+    <link href="http://lab.dolice.net/blog/2013/04/11/objc-ns-timer-animation/"/>
+    <updated>2013-04-11T23:50:00+09:00</updated>
+    <id>http://lab.dolice.net/blog/2013/04/11/objc-ns-timer-animation</id>
+    <content type="html"><![CDATA[<p>Objective-Cのタイマーを使用してラベルをアニメーションさせるサンプルを以下に作成しました。</p>
+
+<p>サンプルでは、一定間隔でラベルの座標を更新する事でアニメーションを実装しています。</p>
+
+<h2>サンプルダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-ns-timer-animation">https://github.com/masakihirokawa/objc-ns-timer-animation</a></li>
+</ul>
+
+
+<h2>ソースコード</h2>
+
+<h3>ViewController.h</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;UIKit/UIKit.h&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> : <span class="nc">UIViewController</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">)</span> <span class="kt">int</span> <span class="n">labelWidth</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">)</span> <span class="kt">int</span> <span class="n">labelHeight</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">)</span> <span class="kt">int</span> <span class="n">animationSpeedX</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">)</span> <span class="kt">int</span> <span class="n">animationSpeedY</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">strong</span><span class="p">,</span> <span class="n">nonatomic</span><span class="p">)</span> <span class="n">UILabel</span><span class="o">*</span> <span class="n">myLabel</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>ViewController.m</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;ViewController.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> <span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">ViewController</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//アニメーションさせるラベル初期化</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">self</span> <span class="n">initLabel</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//アニメーション設定</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">self</span> <span class="n">setAnimationSettings</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//タイマー定義</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">self</span> <span class="n">setTimer</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">didReceiveMemoryWarning</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">super</span> <span class="n">didReceiveMemoryWarning</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//ラベル初期化</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">initLabel</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="c1">//ラベルを生成</span>
+</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">labelWidth</span> <span class="o">=</span> <span class="mi">128</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">labelHeight</span> <span class="o">=</span> <span class="mi">32</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">myLabel</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UILabel</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">self</span><span class="p">.</span><span class="n">labelWidth</span><span class="p">,</span> <span class="n">self</span><span class="p">.</span><span class="n">labelHeight</span><span class="p">)];</span>
+</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">myLabel</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="s">@&quot;Animation&quot;</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">self</span><span class="p">.</span><span class="n">myLabel</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//アニメーション設定</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setAnimationSettings</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="c1">//ラベルのアニメーションスピード</span>
+</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">animationSpeedX</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">animationSpeedY</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//タイマー定義</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setTimer</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="c1">//0.01秒毎に moveLabelセレクタを呼ぶ</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">NSTimer</span>
+</span><span class='line'>   <span class="nl">scheduledTimerWithTimeInterval:</span><span class="mf">0.01</span>
+</span><span class='line'>   <span class="nl">target:</span><span class="n">self</span>
+</span><span class='line'>   <span class="nl">selector:</span><span class="k">@selector</span><span class="p">(</span><span class="nl">moveLabel:</span><span class="p">)</span>
+</span><span class='line'>   <span class="nl">userInfo:</span><span class="nb">nil</span>
+</span><span class='line'>   <span class="nl">repeats:</span><span class="n">YES</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//ラベルをアニメーションさせるセレクタ</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">moveLabel:</span><span class="p">(</span><span class="n">NSTimer</span> <span class="o">*</span><span class="p">)</span><span class="nv">timer</span> <span class="p">{</span>
+</span><span class='line'>  <span class="kt">float</span> <span class="n">posX</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">myLabel</span><span class="p">.</span><span class="n">center</span><span class="p">.</span><span class="n">x</span><span class="p">;</span>
+</span><span class='line'>  <span class="kt">float</span> <span class="n">posY</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">myLabel</span><span class="p">.</span><span class="n">center</span><span class="p">.</span><span class="n">y</span><span class="p">;</span>
+</span><span class='line'>  <span class="c1">//ラベルを移動させる</span>
+</span><span class='line'>  <span class="n">posX</span> <span class="o">+=</span> <span class="n">self</span><span class="p">.</span><span class="n">animationSpeedX</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">posY</span> <span class="o">+=</span> <span class="n">self</span><span class="p">.</span><span class="n">animationSpeedY</span><span class="p">;</span>
+</span><span class='line'>  <span class="c1">//端までアニメーションしたか判定</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">([</span><span class="n">self</span> <span class="nl">isLimitLabelX:</span><span class="n">posX</span><span class="p">])</span> <span class="n">posX</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">([</span><span class="n">self</span> <span class="nl">isLimitLabelY:</span><span class="n">posY</span><span class="p">])</span> <span class="n">posY</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>  <span class="c1">//座標反映</span>
+</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">myLabel</span><span class="p">.</span><span class="n">center</span> <span class="o">=</span> <span class="n">CGPointMake</span><span class="p">(</span><span class="n">posX</span><span class="p">,</span> <span class="n">posY</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//横方向の端まで行ったか判定</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">isLimitLabelX:</span><span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="nv">posX</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="k">return</span> <span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">frame</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span> <span class="o">+</span> <span class="n">self</span><span class="p">.</span><span class="n">labelWidth</span> <span class="o">&lt;</span> <span class="n">posX</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//縦方向の端まで行ったか判定</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">isLimitLabelY:</span><span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="nv">posY</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="k">return</span> <span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">frame</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">height</span> <span class="o">+</span> <span class="n">self</span><span class="p">.</span><span class="n">labelHeight</span> <span class="o">&lt;</span> <span class="n">posY</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[辞書から複数のオブジェクトを削除する]]></title>
+    <link href="http://lab.dolice.net/blog/2013/04/11/objc-remove-objects-for-key/"/>
+    <updated>2013-04-11T11:55:00+09:00</updated>
+    <id>http://lab.dolice.net/blog/2013/04/11/objc-remove-objects-for-key</id>
+    <content type="html"><![CDATA[<p>辞書から複数のオブジェクトを削除するには、「removeObjectsForKeys」メソッドを使用します。以下にサンプルを作成しました。</p>
+
+<h2>サンプルダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-remove-objects-for-key">https://github.com/masakihirokawa/objc-remove-objects-for-key</a></li>
+</ul>
+
+
+<h2>ソースコード</h2>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">main</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="c1">//辞書を生成する</span>
+</span><span class='line'>  <span class="n">NSMutableDictionary</span> <span class="o">*</span><span class="n">dic</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">dic</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSMutableDictionary</span> <span class="nl">dictionaryWithObjectsAndKeys:</span>
+</span><span class='line'>         <span class="s">@&quot;Apple&quot;</span><span class="p">,</span> <span class="s">@&quot;@Key1&quot;</span><span class="p">,</span>
+</span><span class='line'>         <span class="s">@&quot;Banana&quot;</span><span class="p">,</span> <span class="s">@&quot;@Key2&quot;</span><span class="p">,</span>
+</span><span class='line'>         <span class="s">@&quot;Orange&quot;</span><span class="p">,</span> <span class="s">@&quot;@Key3&quot;</span><span class="p">,</span>
+</span><span class='line'>         <span class="s">@&quot;Lemon&quot;</span><span class="p">,</span> <span class="s">@&quot;@Key4&quot;</span><span class="p">,</span>
+</span><span class='line'>         <span class="s">@&quot;Greaps&quot;</span><span class="p">,</span> <span class="s">@&quot;@Key5&quot;</span><span class="p">,</span>
+</span><span class='line'>         <span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">//削除するための配列を生成する</span>
+</span><span class='line'>  <span class="n">NSArray</span> <span class="o">*</span><span class="n">keysArray</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">keysArray</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSArray</span> <span class="nl">arrayWithObjects:</span>
+</span><span class='line'>               <span class="s">@&quot;Key3&quot;</span><span class="p">,</span> <span class="s">@&quot;Key4&quot;</span><span class="p">,</span> <span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">dic</span> <span class="nl">removeObjectsForKeys:</span><span class="n">keysArray</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;dic: %@&quot;</span><span class="p">,</span> <span class="n">dic</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>出力結果</h2>
+
+<blockquote><p>dic: {<br />
+&#8220;@Key1&#8221; = Apple;<br />
+&#8220;@Key2&#8221; = Banana;<br />
+&#8220;@Key3&#8221; = Orange;<br />
+&#8220;@Key4&#8221; = Lemon;<br />
+&#8220;@Key5&#8221; = Greaps;<br />
+}</p></blockquote>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[RSSリーダーのテンプレートを作成しました]]></title>
+    <link href="http://lab.dolice.net/blog/2013/04/10/download-xcode-objc-news-reader/"/>
+    <updated>2013-04-10T10:35:00+09:00</updated>
+    <id>http://lab.dolice.net/blog/2013/04/10/download-xcode-objc-news-reader</id>
+    <content type="html"><![CDATA[<p>RSSリーダーのテンプレートを作成しました。ここでは Appleのニュースフィードを指定しています。画面を下方向にフリックして更新すると記事リストが表示されます。</p>
+
+<h2>サンプルダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/xcode-news-reader">https://github.com/masakihirokawa/xcode-news-reader</a></li>
+</ul>
+
+
+<h2>ソースコード</h2>
+
+<h3>Item.h</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;Foundation/Foundation.h&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">Item</span> : <span class="nc">NSObject</span>
+</span><span class='line'><span class="k">@property</span> <span class="n">NSString</span> <span class="o">*</span><span class="n">title</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="n">NSString</span> <span class="o">*</span><span class="n">description</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Item.m</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;Item.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">Item</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>MasterViewController.h</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;UIKit/UIKit.h&gt;</span>
+</span><span class='line'><span class="cp">#import &quot;item.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">MasterViewController</span> : <span class="nc">UITableViewController</span> <span class="o">&lt;</span><span class="n">NSXMLParserDelegate</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>MasterViewController.m</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+<span class='line-number'>102</span>
+<span class='line-number'>103</span>
+<span class='line-number'>104</span>
+<span class='line-number'>105</span>
+<span class='line-number'>106</span>
+<span class='line-number'>107</span>
+<span class='line-number'>108</span>
+<span class='line-number'>109</span>
+<span class='line-number'>110</span>
+<span class='line-number'>111</span>
+<span class='line-number'>112</span>
+<span class='line-number'>113</span>
+<span class='line-number'>114</span>
+<span class='line-number'>115</span>
+<span class='line-number'>116</span>
+<span class='line-number'>117</span>
+<span class='line-number'>118</span>
+<span class='line-number'>119</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;MasterViewController.h&quot;</span>
+</span><span class='line'><span class="cp">#import &quot;DetailViewController.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">MasterViewController</span> <span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="n">NSMutableArray</span> <span class="o">*</span><span class="n">_items</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">Item</span> <span class="o">*</span><span class="n">_item</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">NSXMLParser</span> <span class="o">*</span><span class="n">_parser</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">NSString</span> <span class="o">*</span><span class="n">_elementName</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">MasterViewController</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">// Do any additional setup after loading the view, typically from a nib.</span>
+</span><span class='line'>  <span class="n">UIRefreshControl</span> <span class="o">*</span><span class="n">refreshControl</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIRefreshControl</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">refreshControl</span> <span class="nl">addTarget:</span><span class="n">self</span>
+</span><span class='line'>                     <span class="nl">action:</span><span class="k">@selector</span><span class="p">(</span><span class="n">startDownload</span><span class="p">)</span>
+</span><span class='line'>           <span class="nl">forControlEvents:</span><span class="n">UIControlEventValueChanged</span><span class="p">];</span>
+</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">refreshControl</span> <span class="o">=</span> <span class="n">refreshControl</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">didReceiveMemoryWarning</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">super</span> <span class="n">didReceiveMemoryWarning</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">// Dispose of any resources that can be recreated.</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nf">numberOfSectionsInTableView:</span><span class="p">(</span><span class="n">UITableView</span> <span class="o">*</span><span class="p">)</span><span class="nv">tableView</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nf">tableView:</span><span class="p">(</span><span class="n">UITableView</span> <span class="o">*</span><span class="p">)</span><span class="nv">tableView</span> <span class="nf">numberOfRowsInSection:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">section</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="k">return</span> <span class="n">_items</span><span class="p">.</span><span class="n">count</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">UITableViewCell</span> <span class="o">*</span><span class="p">)</span><span class="nf">tableView:</span><span class="p">(</span><span class="n">UITableView</span> <span class="o">*</span><span class="p">)</span><span class="nv">tableView</span> <span class="nf">cellForRowAtIndexPath:</span><span class="p">(</span><span class="n">NSIndexPath</span> <span class="o">*</span><span class="p">)</span><span class="nv">indexPath</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="n">UITableViewCell</span> <span class="o">*</span><span class="n">cell</span> <span class="o">=</span> <span class="p">[</span><span class="n">tableView</span> <span class="nl">dequeueReusableCellWithIdentifier:</span><span class="s">@&quot;Cell&quot;</span> <span class="nl">forIndexPath:</span><span class="n">indexPath</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">Item</span> <span class="o">*</span><span class="n">item</span> <span class="o">=</span> <span class="n">_items</span><span class="p">[</span><span class="n">indexPath</span><span class="p">.</span><span class="n">row</span><span class="p">];</span>
+</span><span class='line'>  <span class="n">cell</span><span class="p">.</span><span class="n">textLabel</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="p">[</span><span class="n">item</span> <span class="n">title</span><span class="p">];</span>
+</span><span class='line'>  <span class="k">return</span> <span class="n">cell</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">prepareForSegue:</span><span class="p">(</span><span class="n">UIStoryboardSegue</span> <span class="o">*</span><span class="p">)</span><span class="nv">segue</span> <span class="nf">sender:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">([[</span><span class="n">segue</span> <span class="n">identifier</span><span class="p">]</span> <span class="nl">isEqualToString:</span><span class="s">@&quot;showDetail&quot;</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">NSIndexPath</span> <span class="o">*</span><span class="n">indexPath</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">tableView</span> <span class="n">indexPathForSelectedRow</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">Item</span> <span class="o">*</span><span class="n">item</span> <span class="o">=</span> <span class="n">_items</span><span class="p">[</span><span class="n">indexPath</span><span class="p">.</span><span class="n">row</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[[</span><span class="n">segue</span> <span class="n">destinationViewController</span><span class="p">]</span> <span class="nl">setDetailItem:</span><span class="n">item</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">startDownload</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="n">_items</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSMutableArray</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//Appleのニュースフィードを指定</span>
+</span><span class='line'>  <span class="n">NSString</span> <span class="o">*</span><span class="n">feed</span> <span class="o">=</span> <span class="s">@&quot;http://www.apple.com/jp/main/rss/hotnews/hotnews.rss&quot;</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">NSURL</span> <span class="o">*</span><span class="n">url</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSURL</span> <span class="nl">URLWithString:</span><span class="n">feed</span><span class="p">];</span>
+</span><span class='line'>  <span class="n">NSURLRequest</span> <span class="o">*</span><span class="n">request</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSURLRequest</span> <span class="nl">requestWithURL:</span><span class="n">url</span><span class="p">];</span>
+</span><span class='line'>  <span class="n">NSOperationQueue</span> <span class="o">*</span><span class="n">queue</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSOperationQueue</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">NSURLConnection</span> <span class="nl">sendAsynchronousRequest:</span><span class="n">request</span>
+</span><span class='line'>                                     <span class="nl">queue:</span><span class="n">queue</span>
+</span><span class='line'>                         <span class="nl">completionHandler:</span>
+</span><span class='line'>   <span class="o">^</span><span class="p">(</span><span class="n">NSURLResponse</span> <span class="o">*</span><span class="n">response</span><span class="p">,</span> <span class="n">NSData</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span> <span class="n">NSError</span> <span class="o">*</span><span class="n">error</span><span class="p">){</span>
+</span><span class='line'>     <span class="n">_parser</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSXMLParser</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithData:</span><span class="n">data</span><span class="p">];</span>
+</span><span class='line'>     <span class="n">_parser</span><span class="p">.</span><span class="n">delegate</span> <span class="o">=</span> <span class="n">self</span><span class="p">;</span>
+</span><span class='line'>     <span class="p">[</span><span class="n">_parser</span> <span class="n">parse</span><span class="p">];</span>
+</span><span class='line'>   <span class="p">}];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">parser:</span><span class="p">(</span><span class="n">NSXMLParser</span> <span class="o">*</span><span class="p">)</span><span class="nv">parser</span>
+</span><span class='line'><span class="nf">didStartElement:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">elementName</span>
+</span><span class='line'>  <span class="nf">namespaceURI:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">namespaceURI</span>
+</span><span class='line'> <span class="nf">qualifiedName:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">qName</span>
+</span><span class='line'>    <span class="nf">attributes:</span><span class="p">(</span><span class="n">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nv">attributeDict</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="n">_elementName</span> <span class="o">=</span> <span class="n">elementName</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">([</span><span class="n">_elementName</span> <span class="nl">isEqualToString:</span><span class="s">@&quot;item&quot;</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">_item</span> <span class="o">=</span> <span class="p">[[</span><span class="n">Item</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">_item</span><span class="p">.</span><span class="n">title</span> <span class="o">=</span> <span class="s">@&quot;&quot;</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">_item</span><span class="p">.</span><span class="n">description</span> <span class="o">=</span> <span class="s">@&quot;&quot;</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">parser:</span><span class="p">(</span><span class="n">NSXMLParser</span> <span class="o">*</span><span class="p">)</span><span class="nv">parser</span>
+</span><span class='line'><span class="nf">foundCharacters:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">string</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">([</span><span class="n">_elementName</span> <span class="nl">isEqualToString:</span><span class="s">@&quot;title&quot;</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">_item</span><span class="p">.</span><span class="n">title</span> <span class="o">=</span> <span class="p">[</span><span class="n">_item</span><span class="p">.</span><span class="n">title</span> <span class="nl">stringByAppendingString:</span><span class="n">string</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">([</span><span class="n">_elementName</span> <span class="nl">isEqualToString:</span><span class="s">@&quot;description&quot;</span><span class="p">]){</span>
+</span><span class='line'>    <span class="n">_item</span><span class="p">.</span><span class="n">description</span> <span class="o">=</span> <span class="p">[</span><span class="n">_item</span><span class="p">.</span><span class="n">description</span> <span class="nl">stringByAppendingString:</span><span class="n">string</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">parser:</span><span class="p">(</span><span class="n">NSXMLParser</span> <span class="o">*</span><span class="p">)</span><span class="nv">parser</span>
+</span><span class='line'> <span class="nf">didEndElement:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">elementName</span>
+</span><span class='line'>  <span class="nf">namespaceURI:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">namespaceURI</span>
+</span><span class='line'> <span class="nf">qualifiedName:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">qName</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">([</span><span class="n">elementName</span> <span class="nl">isEqualToString:</span><span class="s">@&quot;item&quot;</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">_items</span> <span class="nl">addObject:</span><span class="n">_item</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">parserDidEndDocument:</span><span class="p">(</span><span class="n">NSXMLParser</span> <span class="o">*</span><span class="p">)</span><span class="nv">parser</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="n">dispatch_async</span><span class="p">(</span><span class="n">dispatch_get_main_queue</span><span class="p">(),</span> <span class="o">^</span><span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">refreshControl</span> <span class="n">endRefreshing</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">tableView</span> <span class="n">reloadData</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">});</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>DetailViewController.h</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;UIKit/UIKit.h&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">DetailViewController</span> : <span class="nc">UIViewController</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">strong</span><span class="p">,</span> <span class="n">nonatomic</span><span class="p">)</span> <span class="kt">id</span> <span class="n">detailItem</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">weak</span><span class="p">,</span> <span class="n">nonatomic</span><span class="p">)</span> <span class="kt">IBOutlet</span> <span class="n">UITextView</span> <span class="o">*</span><span class="n">textView</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>DetailViewController.m</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;DetailViewController.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">DetailViewController</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">configureView</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">detailItem</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">title</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">detailItem</span> <span class="n">title</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">textView</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">detailItem</span> <span class="n">description</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">self</span> <span class="n">configureView</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">didReceiveMemoryWarning</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">super</span> <span class="n">didReceiveMemoryWarning</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[辞書からオブジェクトを削除する]]></title>
+    <link href="http://lab.dolice.net/blog/2013/04/10/objc-remove-object-for-key/"/>
+    <updated>2013-04-10T08:24:00+09:00</updated>
+    <id>http://lab.dolice.net/blog/2013/04/10/objc-remove-object-for-key</id>
+    <content type="html"><![CDATA[<p>辞書からオブジェクトを削除するには、「removeObjectForKey」メソッドを使用します。以下にサンプルを作成しました。</p>
+
+<h2>サンプルダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-remove-object-for-key">https://github.com/masakihirokawa/objc-remove-object-for-key</a></li>
+</ul>
+
+
+<h2>ソースコード</h2>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">main</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="c1">//辞書を生成する</span>
+</span><span class='line'>  <span class="n">NSMutableDictionary</span> <span class="o">*</span><span class="n">dic</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">dic</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSMutableDictionary</span> <span class="nl">dictionaryWithObjectsAndKeys:</span>
+</span><span class='line'>         <span class="s">@&quot;Apple&quot;</span><span class="p">,</span> <span class="s">@&quot;Key1&quot;</span><span class="p">,</span>
+</span><span class='line'>         <span class="s">@&quot;Banana&quot;</span><span class="p">,</span> <span class="s">@&quot;Key2&quot;</span><span class="p">,</span>
+</span><span class='line'>         <span class="s">@&quot;Orange&quot;</span><span class="p">,</span> <span class="s">@&quot;Key3&quot;</span><span class="p">,</span>
+</span><span class='line'>         <span class="s">@&quot;Lemon&quot;</span><span class="p">,</span> <span class="s">@&quot;Key4&quot;</span><span class="p">,</span>
+</span><span class='line'>         <span class="s">@&quot;Greaps&quot;</span><span class="p">,</span> <span class="s">@&quot;Key5&quot;</span><span class="p">,</span>
+</span><span class='line'>         <span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">//キーを指定してオブジェクトを削除する</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">dic</span> <span class="nl">removeObjectForKey:</span><span class="s">@&quot;Key2&quot;</span><span class="p">];</span>
+</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;dic: %@&quot;</span><span class="p">,</span> <span class="n">dic</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>出力結果</h2>
+
+<blockquote><p>Key1 = Apple;<br />
+Key3 = Orange;<br />
+Key4 = Lemon;<br />
+Key5 = Greaps;</p></blockquote>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[他の辞書からオブジェクトを一括して追加する]]></title>
+    <link href="http://lab.dolice.net/blog/2013/04/09/objc-add-entries-from-dictionary/"/>
+    <updated>2013-04-09T22:35:00+09:00</updated>
+    <id>http://lab.dolice.net/blog/2013/04/09/objc-add-entries-from-dictionary</id>
+    <content type="html"><![CDATA[<p>他の辞書に登録されているオブジェクトを一括して変更可能な辞書に追加するには、「addEntriesFromDictionary」メソッドを使用します。</p>
+
+<h2>サンプルダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-add-entries-from-dictionary">https://github.com/masakihirokawa/objc-add-entries-from-dictionary</a></li>
+</ul>
+
+
+<h2>ソースコード</h2>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">main</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="c1">//空の辞書を生成する</span>
+</span><span class='line'>  <span class="n">NSMutableDictionary</span> <span class="o">*</span><span class="n">dic</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSMutableDictionary</span> <span class="n">dictionary</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">//別の辞書に登録されているオブジェクトを一括して追加する</span>
+</span><span class='line'>  <span class="n">NSDictionary</span> <span class="o">*</span><span class="n">otherDic</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">otherDic</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSDictionary</span> <span class="nl">dictionaryWithObjectsAndKeys:</span>
+</span><span class='line'>              <span class="s">@&quot;Apple&quot;</span><span class="p">,</span> <span class="s">@&quot;Key1&quot;</span><span class="p">,</span>
+</span><span class='line'>              <span class="s">@&quot;Banana&quot;</span><span class="p">,</span> <span class="s">@&quot;Key2&quot;</span><span class="p">,</span>
+</span><span class='line'>              <span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">dic</span> <span class="nl">addEntriesFromDictionary:</span><span class="n">otherDic</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;%@&quot;</span><span class="p">,</span> <span class="n">dic</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>出力結果</h2>
+
+<blockquote><p>Key1 = Apple;<br />
+Key2 = Banana;</p></blockquote>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[画像のスライドショーテンプレート]]></title>
+    <link href="http://lab.dolice.net/blog/2013/04/08/download-xcode-objc-slide-show/"/>
+    <updated>2013-04-08T20:43:00+09:00</updated>
+    <id>http://lab.dolice.net/blog/2013/04/08/download-xcode-objc-slide-show</id>
+    <content type="html"><![CDATA[<p>Objective-Cで画像をスライドショー表示するテンプレートを作成しました。タイマーで一定秒数が経過する毎に新しい画像をフェードインしています。</p>
+
+<p>下記よりサンプルのダウンロードが行えます。</p>
+
+<h2>サンプルダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-slide-show">https://github.com/masakihirokawa/objc-slide-show</a></li>
+</ul>
+
+
+<h2>ソースコード</h2>
+
+<h3>ViewController.h</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;UIKit/UIKit.h&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> : <span class="nc">UIViewController</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">strong</span><span class="p">,</span> <span class="n">nonatomic</span><span class="p">)</span> <span class="n">UIImageView</span> <span class="o">*</span><span class="n">imageView</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">)</span> <span class="n">NSMutableArray</span> <span class="o">*</span><span class="n">slideShowImages</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">)</span> <span class="kt">int</span> <span class="n">slideShowImageNum</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">)</span> <span class="n">NSTimer</span> <span class="o">*</span><span class="n">slideShowTimer</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">)</span> <span class="kt">float</span> <span class="n">slideShowTimerInterval</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">)</span> <span class="kt">float</span> <span class="n">slideShowFadeInDuration</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">)</span> <span class="kt">int</span> <span class="n">currentImageIndex</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">)</span> <span class="kt">int</span> <span class="n">imageWidth</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">)</span> <span class="kt">int</span> <span class="n">imageHeight</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">)</span> <span class="kt">BOOL</span> <span class="n">isRunningSlideShow</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>ViewController.m</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+<span class='line-number'>102</span>
+<span class='line-number'>103</span>
+<span class='line-number'>104</span>
+<span class='line-number'>105</span>
+<span class='line-number'>106</span>
+<span class='line-number'>107</span>
+<span class='line-number'>108</span>
+<span class='line-number'>109</span>
+<span class='line-number'>110</span>
+<span class='line-number'>111</span>
+<span class='line-number'>112</span>
+<span class='line-number'>113</span>
+<span class='line-number'>114</span>
+<span class='line-number'>115</span>
+<span class='line-number'>116</span>
+<span class='line-number'>117</span>
+<span class='line-number'>118</span>
+<span class='line-number'>119</span>
+<span class='line-number'>120</span>
+<span class='line-number'>121</span>
+<span class='line-number'>122</span>
+<span class='line-number'>123</span>
+<span class='line-number'>124</span>
+<span class='line-number'>125</span>
+<span class='line-number'>126</span>
+<span class='line-number'>127</span>
+<span class='line-number'>128</span>
+<span class='line-number'>129</span>
+<span class='line-number'>130</span>
+<span class='line-number'>131</span>
+<span class='line-number'>132</span>
+<span class='line-number'>133</span>
+<span class='line-number'>134</span>
+<span class='line-number'>135</span>
+<span class='line-number'>136</span>
+<span class='line-number'>137</span>
+<span class='line-number'>138</span>
+<span class='line-number'>139</span>
+<span class='line-number'>140</span>
+<span class='line-number'>141</span>
+<span class='line-number'>142</span>
+<span class='line-number'>143</span>
+<span class='line-number'>144</span>
+<span class='line-number'>145</span>
+<span class='line-number'>146</span>
+<span class='line-number'>147</span>
+<span class='line-number'>148</span>
+<span class='line-number'>149</span>
+<span class='line-number'>150</span>
+<span class='line-number'>151</span>
+<span class='line-number'>152</span>
+<span class='line-number'>153</span>
+<span class='line-number'>154</span>
+<span class='line-number'>155</span>
+<span class='line-number'>156</span>
+<span class='line-number'>157</span>
+<span class='line-number'>158</span>
+<span class='line-number'>159</span>
+<span class='line-number'>160</span>
+<span class='line-number'>161</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;ViewController.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> <span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">ViewController</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//スライドショーの設定</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">self</span> <span class="n">initSlideShowImages</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//スライドショーで表示する画像を初期化</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">self</span> <span class="n">initSlideShowImageView</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//スライドショー開始</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">self</span> <span class="n">startSlideShow</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">didReceiveMemoryWarning</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">super</span> <span class="n">didReceiveMemoryWarning</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//スライドショーで表示するイメージを初期化</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">initSlideShowImages</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="c1">//スライドショーで使用する画像タイトル定義</span>
+</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">slideShowImages</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSArray</span> <span class="nl">arrayWithObjects:</span>
+</span><span class='line'>                          <span class="s">@&quot;Pandora&quot;</span><span class="p">,</span>
+</span><span class='line'>                          <span class="s">@&quot;Rain&quot;</span><span class="p">,</span>
+</span><span class='line'>                          <span class="s">@&quot;Echidna&quot;</span><span class="p">,</span>
+</span><span class='line'>                          <span class="s">@&quot;Heimatlos&quot;</span><span class="p">,</span>
+</span><span class='line'>                          <span class="s">@&quot;Hesychasm&quot;</span><span class="p">,</span>
+</span><span class='line'>                          <span class="s">@&quot;Asymmetry&quot;</span><span class="p">,</span>
+</span><span class='line'>                          <span class="s">@&quot;Loki&quot;</span><span class="p">,</span>
+</span><span class='line'>                          <span class="s">@&quot;El&quot;</span><span class="p">,</span>
+</span><span class='line'>                          <span class="s">@&quot;Frigg&quot;</span><span class="p">,</span>
+</span><span class='line'>                          <span class="s">@&quot;Beelzebub&quot;</span><span class="p">,</span>
+</span><span class='line'>                          <span class="s">@&quot;Hirume&quot;</span><span class="p">,</span>
+</span><span class='line'>                          <span class="s">@&quot;Hera&quot;</span><span class="p">,</span>
+</span><span class='line'>                          <span class="s">@&quot;Nyx&quot;</span><span class="p">,</span>
+</span><span class='line'>                          <span class="s">@&quot;Maldoror&quot;</span><span class="p">,</span>
+</span><span class='line'>                          <span class="s">@&quot;7thVision&quot;</span><span class="p">,</span>
+</span><span class='line'>                          <span class="s">@&quot;MariaMagdalena&quot;</span><span class="p">,</span>
+</span><span class='line'>                          <span class="s">@&quot;Sarah&quot;</span><span class="p">,</span>
+</span><span class='line'>                          <span class="s">@&quot;AngelsBone&quot;</span><span class="p">,</span>
+</span><span class='line'>                          <span class="s">@&quot;Isthar&quot;</span><span class="p">,</span>
+</span><span class='line'>                          <span class="s">@&quot;Lilit&quot;</span><span class="p">,</span>
+</span><span class='line'>                          <span class="s">@&quot;Icon&quot;</span><span class="p">,</span>
+</span><span class='line'>                          <span class="s">@&quot;cintaamaNicakra&quot;</span><span class="p">,</span>
+</span><span class='line'>                          <span class="s">@&quot;samanta-bhadra&quot;</span><span class="p">,</span>
+</span><span class='line'>                          <span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//総画像ファイル数を取得</span>
+</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">slideShowImageNum</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">slideShowImages</span> <span class="n">count</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span>
+</span><span class='line'>  <span class="c1">//最初に表示する画像IDを設定</span>
+</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">currentImageIndex</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>  <span class="c1">//スライドが切り替わる秒数を設定</span>
+</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">slideShowTimerInterval</span> <span class="o">=</span> <span class="mf">5.0f</span><span class="p">;</span>
+</span><span class='line'>  <span class="c1">//フェードイン秒数</span>
+</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">slideShowFadeInDuration</span> <span class="o">=</span> <span class="mf">0.3</span><span class="p">;</span>
+</span><span class='line'>  <span class="c1">//画像の横幅</span>
+</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">imageWidth</span> <span class="o">=</span> <span class="mi">320</span><span class="p">;</span>
+</span><span class='line'>  <span class="c1">//画像の縦幅</span>
+</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">imageHeight</span> <span class="o">=</span> <span class="mi">568</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//スライドショーで表示するイメージを配置</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">initSlideShowImageView</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="c1">//UIImageViewを初期化</span>
+</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">imageView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIImageView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">self</span><span class="p">.</span><span class="n">imageWidth</span><span class="p">,</span> <span class="n">self</span><span class="p">.</span><span class="n">imageHeight</span><span class="p">)];</span>
+</span><span class='line'>  <span class="c1">//UIImageViewに画像を表示</span>
+</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">imageView</span><span class="p">.</span><span class="n">image</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="nl">getUIImageFromResources:</span><span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">slideShowImages</span> <span class="nl">objectAtIndex:</span><span class="n">self</span><span class="p">.</span><span class="n">currentImageIndex</span><span class="p">]</span> <span class="nl">ext:</span><span class="s">@&quot;jpg&quot;</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//UIImageViewを UIViewに乗せる</span>
+</span><span class='line'>  <span class="n">UIView</span> <span class="o">*</span><span class="n">slideShowView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIView</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>  <span class="n">slideShowView</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">imageView</span><span class="p">;</span>
+</span><span class='line'>  <span class="c1">//ステージに配置</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">slideShowView</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//スライドショーを開始する</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">startSlideShow</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="c1">//既にスライドショーが再生中であれば実行しない</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">isRunningSlideShow</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="c1">//最後の画像になったらIDをリセットする</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">([</span><span class="n">self</span> <span class="n">isLastImage</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">currentImageIndex</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="c1">//スライドショーのタイマー定義</span>
+</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">slideShowTimer</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSTimer</span> <span class="nl">scheduledTimerWithTimeInterval:</span><span class="n">self</span><span class="p">.</span><span class="n">slideShowTimerInterval</span>
+</span><span class='line'>                                                         <span class="nl">target:</span><span class="n">self</span>
+</span><span class='line'>                                                       <span class="nl">selector:</span><span class="k">@selector</span><span class="p">(</span><span class="nl">nextSlideShow:</span><span class="p">)</span>
+</span><span class='line'>                                                       <span class="nl">userInfo:</span><span class="nb">nil</span>
+</span><span class='line'>                                                        <span class="nl">repeats:</span><span class="n">YES</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//スライドショー再生中フラグ</span>
+</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">isRunningSlideShow</span> <span class="o">=</span> <span class="n">YES</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//スライドショーで次の写真を表示する</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">nextSlideShow:</span><span class="p">(</span><span class="n">NSTimer</span><span class="o">*</span><span class="p">)</span><span class="nv">timer</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="c1">//最後の画像になったらIDをリセットする</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">([</span><span class="n">self</span> <span class="n">isLastImage</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">currentImageIndex</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="c1">//次の画像を表示</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">self</span> <span class="n">changeToNextImage</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//次の画像へ切り替える</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">changeToNextImage</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="c1">//画像IDを送る</span>
+</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">currentImageIndex</span><span class="o">++</span><span class="p">;</span>
+</span><span class='line'>  <span class="c1">//画像ファイル名をセット</span>
+</span><span class='line'>  <span class="n">NSString</span> <span class="o">*</span><span class="n">imageTitle</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">@&quot;%@&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">slideShowImages</span> <span class="nl">objectAtIndex:</span><span class="n">self</span><span class="p">.</span><span class="n">currentImageIndex</span><span class="p">]];</span>
+</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">imageView</span><span class="p">.</span><span class="n">image</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="nl">getUIImageFromResources:</span><span class="n">imageTitle</span> <span class="nl">ext:</span><span class="s">@&quot;jpg&quot;</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//フェードイン開始</span>
+</span><span class='line'>  <span class="n">_imageView</span><span class="p">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">UIView</span> <span class="nl">beginAnimations:</span><span class="s">@&quot;fadeIn&quot;</span> <span class="nl">context:</span><span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">UIView</span> <span class="nl">setAnimationCurve:</span><span class="n">UIViewAnimationCurveEaseInOut</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">UIView</span> <span class="nl">setAnimationDuration:</span><span class="n">self</span><span class="p">.</span><span class="n">slideShowFadeInDuration</span><span class="p">];</span>
+</span><span class='line'>  <span class="n">_imageView</span><span class="p">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">UIView</span> <span class="n">commitAnimations</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//スライドショーを停止する</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">stopSlideShow</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">slideShowTimer</span> <span class="n">invalidate</span><span class="p">];</span>
+</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">isRunningSlideShow</span> <span class="o">=</span> <span class="n">NO</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//スライドショーイベントの呼び出し</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">callSlideShow</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">isRunningSlideShow</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="n">stopSlideShow</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="n">startSlideShow</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">isRunningSlideShow</span> <span class="o">=</span> <span class="o">!</span><span class="n">self</span><span class="p">.</span><span class="n">isRunningSlideShow</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//最後のイメージであるか</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">isLastImage</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="k">return</span> <span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">slideShowImageNum</span> <span class="o">&lt;=</span> <span class="n">self</span><span class="p">.</span><span class="n">currentImageIndex</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//画像ファイルを取得</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nf">getUIImageFromResources:</span><span class="p">(</span><span class="n">NSString</span><span class="o">*</span><span class="p">)</span><span class="nv">fileName</span> <span class="nf">ext:</span><span class="p">(</span><span class="n">NSString</span><span class="o">*</span><span class="p">)</span><span class="nv">ext</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="n">NSString</span> <span class="o">*</span><span class="n">path</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSBundle</span> <span class="n">mainBundle</span><span class="p">]</span> <span class="nl">pathForResource:</span><span class="n">fileName</span> <span class="nl">ofType:</span><span class="n">ext</span><span class="p">];</span>
+</span><span class='line'>  <span class="n">UIImage</span> <span class="o">*</span><span class="n">img</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIImage</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithContentsOfFile:</span><span class="n">path</span><span class="p">];</span>
+</span><span class='line'>  <span class="k">return</span> <span class="n">img</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>スライドショーイベントの呼び出し</h2>
+
+<p>再生ボタンで制御する場合は、以下のメソッドをイベントとして呼ぶ事で動作します。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">callSlideShow</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">isRunningSlideShow</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="n">stopSlideShow</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="n">startSlideShow</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">isRunningSlideShow</span> <span class="o">=</span> <span class="o">!</span><span class="n">self</span><span class="p">.</span><span class="n">isRunningSlideShow</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[キーを指定して辞書にオブジェクトを追加する]]></title>
+    <link href="http://lab.dolice.net/blog/2013/04/08/objc-set-object/"/>
+    <updated>2013-04-08T11:52:00+09:00</updated>
+    <id>http://lab.dolice.net/blog/2013/04/08/objc-set-object</id>
+    <content type="html"><![CDATA[<p>キーを指定して辞書にオブジェクトを追加するサンプルを以下に作成しました。</p>
+
+<h2>サンプルダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-set-object">https://github.com/masakihirokawa/objc-set-object</a></li>
+</ul>
+
+
+<h2>ソースコード</h2>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">main</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="c1">//空の辞書を生成する</span>
+</span><span class='line'>  <span class="n">NSMutableDictionary</span> <span class="o">*</span><span class="n">dic</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSMutableDictionary</span> <span class="n">dictionary</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">//オブジェクトを追加する</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">dic</span> <span class="nl">setObject:</span><span class="s">@&quot;Apple&quot;</span>
+</span><span class='line'>          <span class="nl">forKey:</span><span class="s">@&quot;Key&quot;</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;%@&quot;</span><span class="p">,</span> <span class="n">dic</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">//同じキーを指定して上書きする</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">dic</span> <span class="nl">setObject:</span><span class="p">[</span><span class="n">NSNumber</span> <span class="nl">numberWithInteger:</span><span class="mi">16</span><span class="p">]</span>
+</span><span class='line'>           <span class="nl">forKey:</span><span class="s">@&quot;Key&quot;</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;%@&quot;</span><span class="p">,</span> <span class="n">dic</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>出力結果</h2>
+
+<blockquote><p>Key = Apple<br />
+Key = 16</p></blockquote>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[配列内のオブジェクト順序を入れ替える]]></title>
+    <link href="http://lab.dolice.net/blog/2013/04/08/objc-exchange-object-at-index/"/>
+    <updated>2013-04-08T10:31:00+09:00</updated>
+    <id>http://lab.dolice.net/blog/2013/04/08/objc-exchange-object-at-index</id>
+    <content type="html"><![CDATA[<p>配列に含まれるオブジェクトの順序を入れ替えるには、「exchangeObjectAtIndex」メソッドを使用します。以下にサンプルを作成しました。</p>
+
+<h2>サンプルダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-exchange-object-at-index">https://github.com/masakihirokawa/objc-exchange-object-at-index</a></li>
+</ul>
+
+
+<h2>ソースコード</h2>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">main</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="c1">//配列を生成する</span>
+</span><span class='line'>  <span class="n">NSMutableArray</span> <span class="o">*</span><span class="n">myArray</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">myArray</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSMutableArray</span> <span class="nl">arrayWithObjects:</span>
+</span><span class='line'>             <span class="s">@&quot;Apple&quot;</span><span class="p">,</span> <span class="s">@&quot;Banana&quot;</span><span class="p">,</span> <span class="s">@&quot;Orange&quot;</span><span class="p">,</span> <span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">//オブジェクトを入れ替える</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">myArray</span> <span class="nl">exchangeObjectAtIndex:</span><span class="mi">0</span>
+</span><span class='line'>               <span class="nl">withObjectAtIndex:</span><span class="mi">2</span><span class="p">];</span>
+</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;myArray: %@&quot;</span><span class="p">,</span> <span class="n">myArray</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>出力結果</h2>
+
+<blockquote><p>Orange, Banana, Apple</p></blockquote>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[画像とテキストを Facebook/Twitter/メールで共有する]]></title>
+    <link href="http://lab.dolice.net/blog/2013/04/07/objc-ui-activity-view-controller/"/>
+    <updated>2013-04-07T19:15:00+09:00</updated>
+    <id>http://lab.dolice.net/blog/2013/04/07/objc-ui-activity-view-controller</id>
+    <content type="html"><![CDATA[<p>画像とテキストを Facebook、Twitter、メールで共有するサンプルを以下に作成しました。</p>
+
+<h2>サンプルダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-ui-activity-view-controller">https://github.com/masakihirokawa/objc-ui-activity-view-controller</a></li>
+</ul>
+
+
+<h2>ソースコード</h2>
+
+<h3>ViewController.h</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">weak</span><span class="p">,</span> <span class="n">nonatomic</span><span class="p">)</span> <span class="kt">IBOutlet</span> <span class="n">UIButton</span> <span class="o">*</span><span class="n">shareButton</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">share:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>ViewController.m</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//共有ボタンイベント</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">share:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">if</span><span class="p">(</span> <span class="p">[</span><span class="n">UIActivityViewController</span> <span class="n">class</span><span class="p">]</span> <span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">//共有テキスト設定</span>
+</span><span class='line'>    <span class="n">NSString</span> <span class="o">*</span><span class="n">textToShare</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">@&quot;%@&quot;</span><span class="p">,</span> <span class="s">@&quot;共有するテキストがここに入ります&quot;</span><span class="p">];</span>
+</span><span class='line'>    <span class="c1">//共有イメージ設定</span>
+</span><span class='line'>    <span class="n">UIImage</span> <span class="o">*</span><span class="n">imageToShare</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="n">image</span><span class="p">];</span>
+</span><span class='line'>    <span class="c1">//共有アイテム生成</span>
+</span><span class='line'>    <span class="n">NSArray</span> <span class="o">*</span><span class="n">itemsToShare</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSArray</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithObjects:</span><span class="n">textToShare</span><span class="p">,</span> <span class="n">imageToShare</span><span class="p">,</span> <span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">UIActivityViewController</span> <span class="o">*</span><span class="n">activityVC</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIActivityViewController</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithActivityItems:</span><span class="n">itemsToShare</span> <span class="nl">applicationActivities:</span><span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">activityVC</span><span class="p">.</span><span class="n">excludedActivityTypes</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSArray</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithObjects:</span> <span class="n">UIActivityTypePrint</span><span class="p">,</span> <span class="n">UIActivityTypeCopyToPasteboard</span><span class="p">,</span> <span class="n">UIActivityTypeAssignToContact</span><span class="p">,</span> <span class="n">UIActivityTypeSaveToCameraRoll</span><span class="p">,</span> <span class="n">UIActivityTypeMessage</span><span class="p">,</span> <span class="n">UIActivityTypePostToWeibo</span><span class="p">,</span> <span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="nl">presentViewController:</span><span class="n">activityVC</span> <span class="nl">animated:</span><span class="n">YES</span> <span class="nl">completion:</span><span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//画像ファイルを取得</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nf">image</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="n">UIImageView</span> <span class="o">*</span><span class="n">imageView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIImageView</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>  <span class="n">imageView</span><span class="p">.</span><span class="n">image</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIImage</span> <span class="nl">imageNamed:</span><span class="s">@&quot;Pandora_640_1136.jpg&quot;</span><span class="p">];</span>
+</span><span class='line'>  <span class="k">return</span> <span class="p">(</span><span class="n">imageView</span><span class="p">.</span><span class="n">image</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[iOSのバージョンを判別するサンプルを作成しました]]></title>
+    <link href="http://lab.dolice.net/blog/2013/04/07/objc-determine-version-of-ios/"/>
+    <updated>2013-04-07T18:57:00+09:00</updated>
+    <id>http://lab.dolice.net/blog/2013/04/07/objc-determine-version-of-ios</id>
+    <content type="html"><![CDATA[<p>iOSのバージョンを判別するサンプルを作成しました。サンプルでは、iOSのバージョン6以上と6未満で処理を振り分けています。</p>
+
+<h2>サンプルダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-determine-version-of-ios">https://github.com/masakihirokawa/objc-determine-version-of-ios</a></li>
+</ul>
+
+
+<h2>ソースコード</h2>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">determineVersionOfIOS</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="c1">//バージョンを格納</span>
+</span><span class='line'>  <span class="n">NSString</span> <span class="o">*</span><span class="n">iosVersion</span><span class="o">=</span> <span class="p">[[[</span><span class="n">UIDevice</span> <span class="n">currentDevice</span><span class="p">]</span> <span class="n">systemVersion</span><span class="p">]</span> <span class="nl">stringByTrimmingCharactersInSet:</span>
+</span><span class='line'>                         <span class="p">[</span><span class="n">NSCharacterSet</span> <span class="n">whitespaceCharacterSet</span><span class="p">]];</span>
+</span><span class='line'>  <span class="k">if</span><span class="p">([</span><span class="n">iosVersion</span> <span class="n">floatValue</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mf">6.0</span><span class="p">){</span>
+</span><span class='line'>    <span class="c1">//iOSバージョン6以上</span>
+</span><span class='line'>    <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;iOS version 6 or higher&quot;</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">//iOSバージョン6未満</span>
+</span><span class='line'>    <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;iOS version is less than 6&quot;</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[配列内のオブジェクトを置換する]]></title>
+    <link href="http://lab.dolice.net/blog/2013/04/07/objc-replace-object-at-index/"/>
+    <updated>2013-04-07T05:20:00+09:00</updated>
+    <id>http://lab.dolice.net/blog/2013/04/07/objc-replace-object-at-index</id>
+    <content type="html"><![CDATA[<p>配列内のオブジェクトを置換するには、「replaceObjectAtIndex」メソッドを使用します。以下にサンプルを作成しました。</p>
+
+<h2>サンプルダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-replace-object-at-index">https://github.com/masakihirokawa/objc-replace-object-at-index</a></li>
+</ul>
+
+
+<h2>ソースコード</h2>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">main</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="c1">//配列を生成する</span>
+</span><span class='line'>  <span class="n">NSMutableArray</span> <span class="o">*</span><span class="n">myArray</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">myArray</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSMutableArray</span> <span class="nl">arrayWithObjects:</span>
+</span><span class='line'>             <span class="s">@&quot;Apple&quot;</span><span class="p">,</span> <span class="s">@&quot;Banana&quot;</span><span class="p">,</span> <span class="s">@&quot;Orange&quot;</span><span class="p">,</span> <span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">//順序付けされたセットを生成する</span>
+</span><span class='line'>  <span class="n">NSMutableOrderedSet</span> <span class="o">*</span><span class="n">orderedSet</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">orderedSet</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSMutableOrderedSet</span> <span class="nl">orderedSetWithArray:</span><span class="n">myArray</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">//オブジェクトを置き換える</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">myArray</span> <span class="nl">replaceObjectAtIndex:</span><span class="mi">0</span>
+</span><span class='line'>                     <span class="nl">withObject:</span><span class="s">@&quot;Lemon&quot;</span><span class="p">];</span>
+</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;myArray: %@&quot;</span><span class="p">,</span> <span class="n">myArray</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="p">[</span><span class="n">orderedSet</span> <span class="nl">replaceObjectAtIndex:</span><span class="mi">0</span>
+</span><span class='line'>                        <span class="nl">withObject:</span><span class="s">@&quot;Greaps&quot;</span><span class="p">];</span>
+</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;orderedSet: %@&quot;</span><span class="p">,</span> <span class="n">orderedSet</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>出力結果</h2>
+
+<blockquote><p>myArray: (<br />
+Lemon,<br />
+Banana,<br />
+Orange<br />
+)<br />
+<br />
+orderedSet: {(<br />
+Greaps,<br />
+Banana,<br />
+Orange<br />
+)}</p></blockquote>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Objective-Cでコマ送りアニメーションを実行するクラス]]></title>
+    <link href="http://lab.dolice.net/blog/2013/04/06/download-xcode-objc-frame-by-frame-animation/"/>
+    <updated>2013-04-06T00:35:00+09:00</updated>
+    <id>http://lab.dolice.net/blog/2013/04/06/download-xcode-objc-frame-by-frame-animation</id>
+    <content type="html"><![CDATA[<p><img src="http://lab.dolice.net/images/article/frame-by-frame-animation.jpg" alt="" /></p>
+
+<p>Objective-Cでコマ送りアニメーションを実行するためのクラスを作成しました。</p>
+
+<p>「アニメーションの総フレーム数」、「画像ファイル名の接頭詞」、「アニメーション秒数」、「アニメーションリピート回数」の順にパラメータを渡して使用します。</p>
+
+<p>下記よりサンプルのダウンロードが行えます。</p>
+
+<h2>サンプルダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-frame-by-frame-animation">https://github.com/masakihirokawa/objc-frame-by-frame-animation</a></li>
+</ul>
+
+
+<h2>ソースコード</h2>
+
+<h3>ViewController.m</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//アニメーション開始</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">self</span> <span class="n">startAnimationImage</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">didReceiveMemoryWarning</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">super</span> <span class="n">didReceiveMemoryWarning</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">startAnimationImage</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="c1">//画像のサイズと座標を定義</span>
+</span><span class='line'>  <span class="n">NSInteger</span> <span class="n">imageWidth</span> <span class="o">=</span> <span class="mi">85</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">NSInteger</span> <span class="n">imageHeight</span> <span class="o">=</span> <span class="mi">120</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">NSInteger</span> <span class="n">imageX</span> <span class="o">=</span> <span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">frame</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">imageWidth</span> <span class="o">/</span> <span class="mi">2</span><span class="p">);</span>
+</span><span class='line'>  <span class="n">NSInteger</span> <span class="n">imageY</span> <span class="o">=</span> <span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">frame</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">height</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">imageHeight</span> <span class="o">/</span> <span class="mi">2</span><span class="p">);</span>
+</span><span class='line'>  <span class="n">CGRect</span> <span class="n">rect</span> <span class="o">=</span> <span class="n">CGRectMake</span><span class="p">(</span><span class="n">imageX</span><span class="p">,</span> <span class="n">imageY</span><span class="p">,</span> <span class="n">imageWidth</span><span class="p">,</span> <span class="n">imageHeight</span><span class="p">);</span>
+</span><span class='line'>  <span class="c1">//FrameByFrameAnimatonクラス初期化</span>
+</span><span class='line'>  <span class="n">FrameByFrameAnimation</span> <span class="o">*</span><span class="n">fbfAnimation</span> <span class="o">=</span> <span class="p">[[</span><span class="n">FrameByFrameAnimation</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//imageViewを初期化</span>
+</span><span class='line'>  <span class="n">UIImageView</span> <span class="o">*</span><span class="n">animationImageView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIImageView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame:</span><span class="n">rect</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//FrameByFrameAnimationクラスの setAnimatingクラス呼び出し</span>
+</span><span class='line'>  <span class="c1">//UIImageView, 総フレーム数, 画像ファイル名の接頭詞, アニメーション秒数, アニメーションリピート回数の順にパラメータを渡す</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">fbfAnimation</span> <span class="nl">setAnimating:animationImageView:</span><span class="mi">14</span><span class="o">:</span><span class="s">@&quot;frame&quot;</span><span class="o">:</span><span class="mf">1.0</span><span class="o">:</span><span class="mi">0</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//アニメーション開始</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">animationImageView</span> <span class="n">startAnimating</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//animationImageViewをステージに追加</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">animationImageView</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>FrameByFrameAnimation.h</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSArray</span> <span class="o">*</span><span class="p">)</span><span class="nf">animationImages:</span><span class="p">(</span><span class="n">NSMutableArray</span> <span class="o">*</span><span class="p">)</span><span class="nv">animationImageNameList</span><span class="p">;</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setAnimating:</span><span class="p">(</span><span class="n">UIImageView</span> <span class="o">*</span><span class="p">)</span><span class="nv">animationImageView</span> <span class="o">:</span><span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">animationImageNum</span> <span class="o">:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="n">animationImageSuffix</span> <span class="o">:</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="n">animationDuration</span> <span class="o">:</span><span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">animationRepeatCount</span><span class="p">;</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nf">getUIImageFromResources:</span><span class="p">(</span><span class="n">NSString</span><span class="o">*</span><span class="p">)</span><span class="nv">fileName</span> <span class="nf">ext:</span><span class="p">(</span><span class="n">NSString</span><span class="o">*</span><span class="p">)</span><span class="nv">ext</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>FrameByFrameAnimation.m</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//画像ファイル名を配列で取得する</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSArray</span> <span class="o">*</span><span class="p">)</span><span class="nf">animationImages:</span><span class="p">(</span><span class="n">NSMutableArray</span> <span class="o">*</span><span class="p">)</span><span class="nv">animationImageNameList</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="n">NSMutableArray</span> <span class="o">*</span><span class="n">imageArray</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSMutableArray</span> <span class="n">array</span><span class="p">];</span>
+</span><span class='line'>  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">animationImageNameList</span><span class="p">.</span><span class="n">count</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">NSString</span> <span class="o">*</span><span class="n">imageTitle</span> <span class="o">=</span> <span class="p">[</span><span class="n">animationImageNameList</span> <span class="nl">objectAtIndex:</span><span class="n">i</span><span class="p">];</span>
+</span><span class='line'>    <span class="c1">//画像の配列に画像ファイルを追加</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">imageArray</span> <span class="nl">addObject:</span><span class="p">[</span><span class="n">FrameByFrameAnimation</span> <span class="nl">getUIImageFromResources:</span><span class="n">imageTitle</span> <span class="nl">ext:</span><span class="s">@&quot;png&quot;</span><span class="p">]];</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="k">return</span> <span class="p">(</span><span class="n">imageArray</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//アニメーション設定</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setAnimating:</span><span class="p">(</span><span class="n">UIImageView</span> <span class="o">*</span><span class="p">)</span><span class="nv">animationImageView</span> <span class="o">:</span><span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">animationImageNum</span> <span class="o">:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="n">animationImageSuffix</span> <span class="o">:</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="n">animationDuration</span> <span class="o">:</span><span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">animationRepeatCount</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="c1">//アニメーションフレームを配列に入れる</span>
+</span><span class='line'>  <span class="n">NSMutableArray</span> <span class="o">*</span><span class="n">animationImageArray</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSMutableArray</span> <span class="n">array</span><span class="p">];</span>
+</span><span class='line'>  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="n">animationImageNum</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">animationImageArray</span> <span class="nl">addObject:</span><span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">@&quot;%@%@&quot;</span><span class="p">,</span> <span class="n">animationImageSuffix</span><span class="p">,</span> <span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">@&quot;%d&quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">]]];</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="n">animationImageView</span><span class="p">.</span><span class="n">animationImages</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="nl">animationImages:</span><span class="n">animationImageArray</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//アニメーションの秒数とリピート数を設定</span>
+</span><span class='line'>  <span class="n">animationImageView</span><span class="p">.</span><span class="n">animationDuration</span> <span class="o">=</span> <span class="n">animationDuration</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">animationImageView</span><span class="p">.</span><span class="n">animationRepeatCount</span> <span class="o">=</span> <span class="n">animationRepeatCount</span><span class="p">;</span>
+</span><span class='line'>  <span class="c1">//アニメーション終了時のメソッド定義</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">self</span> <span class="nl">performSelector:</span><span class="k">@selector</span><span class="p">(</span><span class="nl">animationDidFinish:</span><span class="p">)</span> <span class="nl">withObject:</span><span class="nb">nil</span>
+</span><span class='line'>             <span class="nl">afterDelay:</span><span class="n">animationImageView</span><span class="p">.</span><span class="n">animationDuration</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//アニメーション終了時のメソッド</span>
+</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">animationDidFinish:</span><span class="p">(</span><span class="kt">SEL</span><span class="p">)</span><span class="n">selector</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;Animation is complete&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//画像ファイルを取得</span>
+</span><span class='line'><span class="o">+</span> <span class="p">(</span><span class="n">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nl">getUIImageFromResources:</span><span class="p">(</span><span class="n">NSString</span><span class="o">*</span><span class="p">)</span><span class="n">fileName</span> <span class="nl">ext:</span><span class="p">(</span><span class="n">NSString</span><span class="o">*</span><span class="p">)</span><span class="n">ext</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="n">NSString</span> <span class="o">*</span><span class="n">path</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSBundle</span> <span class="n">mainBundle</span><span class="p">]</span> <span class="nl">pathForResource:</span><span class="n">fileName</span> <span class="nl">ofType:</span><span class="n">ext</span><span class="p">];</span>
+</span><span class='line'>  <span class="n">UIImage</span> <span class="o">*</span><span class="n">img</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIImage</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithContentsOfFile:</span><span class="n">path</span><span class="p">];</span>
+</span><span class='line'>  <span class="k">return</span> <span class="n">img</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[配列からオブジェクトを全て削除する]]></title>
+    <link href="http://lab.dolice.net/blog/2013/04/06/objc-remove-all-objects/"/>
+    <updated>2013-04-06T00:02:00+09:00</updated>
+    <id>http://lab.dolice.net/blog/2013/04/06/objc-remove-all-objects</id>
+    <content type="html"><![CDATA[<p>配列からオブジェクトを全て削除するには、「removeAllObjects」メソッドを使用します。以下にサンプルを作成しました。</p>
+
+<h2>サンプルダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-remove-all-objects">https://github.com/masakihirokawa/objc-remove-all-objects</a></li>
+</ul>
+
+
+<h2>ソースコード</h2>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">main</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="c1">//配列を生成する</span>
+</span><span class='line'>  <span class="n">NSMutableArray</span> <span class="o">*</span><span class="n">myArray</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">myArray</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSMutableArray</span> <span class="nl">arrayWithObjects:</span>
+</span><span class='line'>             <span class="s">@&quot;Apple&quot;</span><span class="p">,</span> <span class="s">@&quot;Banana&quot;</span><span class="p">,</span> <span class="s">@&quot;Orange&quot;</span><span class="p">,</span> <span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">//順序付けされたセットを生成する</span>
+</span><span class='line'>  <span class="n">NSMutableOrderedSet</span> <span class="o">*</span><span class="n">orderedSet</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">orderedSet</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSMutableOrderedSet</span> <span class="nl">orderedSetWithArray:</span><span class="n">myArray</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="p">[</span><span class="n">myArray</span> <span class="n">removeAllObjects</span><span class="p">];</span>
+</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;myARray: %@&quot;</span><span class="p">,</span> <span class="n">myArray</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="p">[</span><span class="n">orderedSet</span> <span class="n">removeAllObjects</span><span class="p">];</span>
+</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;orderedSet: %@&quot;</span><span class="p">,</span> <span class="n">orderedSet</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>出力結果</h2>
+
+<blockquote><p>myARray: ()<br />
+orderedSet: {()}</p></blockquote>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[配列の指定した範囲にあるオブジェクトを削除する]]></title>
+    <link href="http://lab.dolice.net/blog/2013/04/05/objc-remove-objects-in-range/"/>
+    <updated>2013-04-05T09:59:00+09:00</updated>
+    <id>http://lab.dolice.net/blog/2013/04/05/objc-remove-objects-in-range</id>
+    <content type="html"><![CDATA[<p>配列からオブジェクトがある範囲を指定して削除するには、「removeObjectsInRange」メソッドを使用します。</p>
+
+<h2>サンプルダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-remove-objects-in-range">https://github.com/masakihirokawa/objc-remove-objects-in-range</a></li>
+</ul>
+
+
+<h2>ソースコード</h2>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">main</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="c1">//配列を生成する</span>
+</span><span class='line'>  <span class="n">NSMutableArray</span> <span class="o">*</span><span class="n">myArray</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">myArray</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSMutableArray</span> <span class="nl">arrayWithObjects:</span>
+</span><span class='line'>             <span class="s">@&quot;Apple&quot;</span><span class="p">,</span> <span class="s">@&quot;Banana&quot;</span><span class="p">,</span> <span class="s">@&quot;Orange&quot;</span><span class="p">,</span> <span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">//順序付けされたセットを生成する</span>
+</span><span class='line'>  <span class="n">NSMutableOrderedSet</span> <span class="o">*</span><span class="n">orderedSet</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">orderedSet</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSMutableOrderedSet</span> <span class="nl">orderedSetWithArray:</span><span class="n">myArray</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">//範囲を指定して削除する</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">myArray</span> <span class="nl">removeObjectsInRange:</span><span class="n">NSMakeRange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)];</span>
+</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;myArray: %@&quot;</span><span class="p">,</span> <span class="n">myArray</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="p">[</span><span class="n">orderedSet</span> <span class="nl">removeObjectsInRange:</span><span class="n">NSMakeRange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)];</span>
+</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;orderedSet: %@&quot;</span><span class="p">,</span> <span class="n">orderedSet</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>出力結果</h2>
+
+<blockquote><p>myArray: Apple<br />
+orderedSet: Apple</p></blockquote>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[ユーザーデフォルトを使用して入力されたテキストを保存する]]></title>
+    <link href="http://lab.dolice.net/blog/2013/04/04/objc-ns-user-defaults/"/>
+    <updated>2013-04-04T21:21:00+09:00</updated>
+    <id>http://lab.dolice.net/blog/2013/04/04/objc-ns-user-defaults</id>
+    <content type="html"><![CDATA[<p>ユーザーデフォルトを使用して入力されたテキストを保存するサンプルを作成しました。入力された値を保存し、次回起動時に値を引き継ぎます。下記よりサンプルのダウンロードが行えます。</p>
+
+<h2>サンプルダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-ns-user-defaults">https://github.com/masakihirokawa/objc-ns-user-defaults</a></li>
+</ul>
+
+
+<h2>必要な手順</h2>
+
+<ol>
+<li>UITextFieldを MainStoryboardに配置し、プロパティとメソッドを定義します</li>
+<li>UITextFieldを controlキーを押しながらクリックし、Sent Eventsを Did End On Exitに設定します（これにより、returnキーが押された時に入力が確定されます）</li>
+</ol>
+
+
+<h2>ソースコード</h2>
+
+<h3>ViewController.h</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">weak</span><span class="p">,</span> <span class="n">nonatomic</span><span class="p">)</span> <span class="kt">IBOutlet</span> <span class="n">UITextField</span> <span class="o">*</span><span class="n">myTextField</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">inputText:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>ViewController.m</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//キーから値を取得する</span>
+</span><span class='line'>  <span class="n">NSUserDefaults</span> <span class="o">*</span><span class="n">defaults</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSUserDefaults</span> <span class="n">standardUserDefaults</span><span class="p">];</span>
+</span><span class='line'>  <span class="n">NSString</span> <span class="o">*</span><span class="n">defaultStr</span> <span class="o">=</span> <span class="p">[</span><span class="n">defaults</span> <span class="nl">stringForKey:</span><span class="s">@&quot;MY_KEY&quot;</span><span class="p">];</span>
+</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">myTextField</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">defaultStr</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">inputText:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span> <span class="p">{</span>
+</span><span class='line'>  <span class="c1">//指定したキーに入力された値を保存する</span>
+</span><span class='line'>  <span class="n">NSUserDefaults</span><span class="o">*</span> <span class="n">defaults</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSUserDefaults</span> <span class="n">standardUserDefaults</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">defaults</span> <span class="nl">setObject:</span> <span class="n">self</span><span class="p">.</span><span class="n">myTextField</span><span class="p">.</span><span class="n">text</span> <span class="nl">forKey:</span><span class="s">@&quot;MY_KEY&quot;</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">defaults</span> <span class="n">synchronize</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+]]></content>
+  </entry>
   
 </feed>
