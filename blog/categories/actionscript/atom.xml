@@ -4,7 +4,7 @@
   <title><![CDATA[Category: actionscript | Dolice Lab]]></title>
   <link href="http://lab.dolice.net/blog/categories/actionscript/atom.xml" rel="self"/>
   <link href="http://lab.dolice.net/"/>
-  <updated>2013-04-14T21:01:17+09:00</updated>
+  <updated>2013-04-14T21:04:39+09:00</updated>
   <id>http://lab.dolice.net/</id>
   <author>
     <name><![CDATA[Masaki Hirokawa]]></name>
@@ -46,73 +46,137 @@
 
 <h2>ソースコード</h2>
 
-<p>{% codeblock lang:actionscript %}
-var sw:Number = Stage.width;//ステージサイズ
-var linemax:Number = 192;//ライン最大複製個数
-var xmin:Number = getXposition();//x座標最小値
-var xmax:Number = sw;//x座標最大値
-var rotationmin:Number = -15;//回転角度最小値
-var rotationmax:Number = 30;//回転角度最大値
-var alphamin:Number = 5;//アルファ最小値
-var alphamax:Number = 30;//アルファ最大値
-var c:Number;//ライン複製回数
-var d:Number;//繰り返し回数
-var r:Boolean;//true:偶数回 / false:奇数回 | 繰り返す毎に切り替え
-function iterate():Void {</p>
-
-<pre><code>if (c&lt;linemax) {
-    eval("squall_mc.line_mc").duplicateMovieClip("line"+c,c);
-    var newline_mc:MovieClip = eval("squall_mc.line"+c);
-    var pastline_mc:MovieClip = eval("squall_mc.line"+(c-1));
-    newline_mc._x = pastline_mc._x+randRange(xmin, xmax);
-    newline_mc._rotation = pastline_mc._rotation+randRange(rotationmin, rotationmax);
-    newline_mc._alpha = randRange(alphamin, alphamax);
-    if (newline_mc._x&lt;xmin) {
-        newline_mc._x = xmin;
-    }
-    if (newline_mc._x&gt;xmax) {
-        newline_mc._x = xmax;
-    }
-    c++;
-} else {
-    xmax = randRange(0, sw);
-    xmin = getXposition();
-    //r ? r=false : r=true;
-    d++;
-    c = 0;
-}
-</code></pre>
-
-<p>}
-squall_mc.onEnterFrame = iterate;</p>
-
-<p>function getXposition():Number {</p>
-
-<pre><code>return -1*(sw/5);
-</code></pre>
-
-<p>}</p>
-
-<p>resizeListener = new Object();
-resizeListener.onResize = function() {</p>
-
-<pre><code>sw = Stage.width;
-xmin = getXposition();
-xmax = sw;
-</code></pre>
-
-<p>};
-Stage.addListener(resizeListener);
-resizeListener.onResize();</p>
-
-<p>function randRange(min, max) {</p>
-
-<pre><code>var i = Math.floor(Math.random()*(max-min+1))+min;
-return (i);
-</code></pre>
-
-<p>}
-{% endcodeblock %}</p>
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+</pre></td><td class='code'><pre><code class='actionscript'><span class='line'><span class="k">var</span> <span class="nx">sw</span><span class="o">:</span><span class="nb">Number</span> <span class="o">=</span> <span class="nb">Stage</span><span class="p">.</span><span class="nx">width</span><span class="o">;//</span><span class="err">ステージサイズ</span>
+</span><span class='line'><span class="k">var</span> <span class="nx">linemax</span><span class="o">:</span><span class="nb">Number</span> <span class="o">=</span> <span class="mi">192</span><span class="o">;//</span><span class="err">ライン最大複製個数</span>
+</span><span class='line'><span class="k">var</span> <span class="nx">xmin</span><span class="o">:</span><span class="nb">Number</span> <span class="o">=</span> <span class="nx">getXposition</span><span class="p">();</span><span class="c1">//x座標最小値</span>
+</span><span class='line'><span class="k">var</span> <span class="nx">xmax</span><span class="o">:</span><span class="nb">Number</span> <span class="o">=</span> <span class="nx">sw</span><span class="o">;//</span><span class="nx">x</span><span class="err">座標最大値</span>
+</span><span class='line'><span class="k">var</span> <span class="nx">rotationmin</span><span class="o">:</span><span class="nb">Number</span> <span class="o">=</span> <span class="o">-</span><span class="mi">15</span><span class="o">;//</span><span class="err">回転角度最小値</span>
+</span><span class='line'><span class="k">var</span> <span class="nx">rotationmax</span><span class="o">:</span><span class="nb">Number</span> <span class="o">=</span> <span class="mi">30</span><span class="o">;//</span><span class="err">回転角度最大値</span>
+</span><span class='line'><span class="k">var</span> <span class="nx">alphamin</span><span class="o">:</span><span class="nb">Number</span> <span class="o">=</span> <span class="mi">5</span><span class="o">;//</span><span class="err">アルファ最小値</span>
+</span><span class='line'><span class="k">var</span> <span class="nx">alphamax</span><span class="o">:</span><span class="nb">Number</span> <span class="o">=</span> <span class="mi">30</span><span class="o">;//</span><span class="err">アルファ最大値</span>
+</span><span class='line'><span class="k">var</span> <span class="nx">c</span><span class="o">:</span><span class="nb">Number</span><span class="o">;//</span><span class="err">ライン複製回数</span>
+</span><span class='line'><span class="k">var</span> <span class="nx">d</span><span class="o">:</span><span class="nb">Number</span><span class="o">;//</span><span class="err">繰り返し回数</span>
+</span><span class='line'><span class="k">var</span> <span class="nx">r</span><span class="o">:</span><span class="nb">Boolean</span><span class="o">;//</span><span class="kc">true</span><span class="o">:</span><span class="err">偶数回</span> <span class="o">/</span> <span class="kc">false</span><span class="o">:</span><span class="err">奇数回</span> <span class="o">|</span> <span class="err">繰り返す毎に切り替え</span>
+</span><span class='line'><span class="kd">function</span> <span class="nx">iterate</span><span class="p">()</span><span class="o">:</span><span class="kc">Void</span> <span class="p">{</span><span class="o">&lt;/</span><span class="nx">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="k">if</span> <span class="p">(</span><span class="nx">c</span><span class="o">&amp;</span><span class="nx">lt</span><span class="o">;</span><span class="nx">linemax</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nf">eval</span><span class="p">(</span><span class="s2">&quot;squall_mc.line_mc&quot;</span><span class="p">).</span><span class="nx">duplicateMovieClip</span><span class="p">(</span><span class="s2">&quot;line&quot;</span><span class="o">+</span><span class="nx">c</span><span class="o">,</span><span class="nx">c</span><span class="p">);</span>
+</span><span class='line'>    <span class="k">var</span> <span class="nx">newline_mc</span><span class="o">:</span><span class="nb">MovieClip</span> <span class="o">=</span> <span class="nf">eval</span><span class="p">(</span><span class="s2">&quot;squall_mc.line&quot;</span><span class="o">+</span><span class="nx">c</span><span class="p">);</span>
+</span><span class='line'>    <span class="k">var</span> <span class="nx">pastline_mc</span><span class="o">:</span><span class="nb">MovieClip</span> <span class="o">=</span> <span class="nf">eval</span><span class="p">(</span><span class="s2">&quot;squall_mc.line&quot;</span><span class="o">+</span><span class="p">(</span><span class="nx">c</span><span class="o">-</span><span class="mi">1</span><span class="p">));</span>
+</span><span class='line'>    <span class="nx">newline_mc</span><span class="p">.</span><span class="nx">_x</span> <span class="o">=</span> <span class="nx">pastline_mc</span><span class="p">.</span><span class="nx">_x</span><span class="o">+</span><span class="nx">randRange</span><span class="p">(</span><span class="nx">xmin</span><span class="o">,</span> <span class="nx">xmax</span><span class="p">);</span>
+</span><span class='line'>    <span class="nx">newline_mc</span><span class="p">.</span><span class="nx">_rotation</span> <span class="o">=</span> <span class="nx">pastline_mc</span><span class="p">.</span><span class="nx">_rotation</span><span class="o">+</span><span class="nx">randRange</span><span class="p">(</span><span class="nx">rotationmin</span><span class="o">,</span> <span class="nx">rotationmax</span><span class="p">);</span>
+</span><span class='line'>    <span class="nx">newline_mc</span><span class="p">.</span><span class="nx">_alpha</span> <span class="o">=</span> <span class="nx">randRange</span><span class="p">(</span><span class="nx">alphamin</span><span class="o">,</span> <span class="nx">alphamax</span><span class="p">);</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nx">newline_mc</span><span class="p">.</span><span class="nx">_x</span><span class="o">&amp;</span><span class="nx">lt</span><span class="o">;</span><span class="nx">xmin</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">newline_mc</span><span class="p">.</span><span class="nx">_x</span> <span class="o">=</span> <span class="nx">xmin</span><span class="o">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nx">newline_mc</span><span class="p">.</span><span class="nx">_x</span><span class="o">&amp;</span><span class="nx">gt</span><span class="o">;</span><span class="nx">xmax</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">newline_mc</span><span class="p">.</span><span class="nx">_x</span> <span class="o">=</span> <span class="nx">xmax</span><span class="o">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="nx">c</span><span class="o">++;</span>
+</span><span class='line'><span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">xmax</span> <span class="o">=</span> <span class="nx">randRange</span><span class="p">(</span><span class="mi">0</span><span class="o">,</span> <span class="nx">sw</span><span class="p">);</span>
+</span><span class='line'>    <span class="nx">xmin</span> <span class="o">=</span> <span class="nx">getXposition</span><span class="p">();</span>
+</span><span class='line'>    <span class="c1">//r ? r=false : r=true;</span>
+</span><span class='line'>    <span class="nx">d</span><span class="o">++;</span>
+</span><span class='line'>    <span class="nx">c</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="nx">code</span><span class="o">&gt;&lt;/</span><span class="nx">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="p">}</span>
+</span><span class='line'><span class="nx">squall_mc</span><span class="p">.</span><span class="nx">onEnterFrame</span> <span class="o">=</span> <span class="nx">iterate</span><span class="o">;&lt;/</span><span class="nx">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="kd">function</span> <span class="nx">getXposition</span><span class="p">()</span><span class="o">:</span><span class="nb">Number</span> <span class="p">{</span><span class="o">&lt;/</span><span class="nx">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="o">*</span><span class="p">(</span><span class="nx">sw</span><span class="o">/</span><span class="mi">5</span><span class="p">);</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="nx">code</span><span class="o">&gt;&lt;/</span><span class="nx">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="nx">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="nx">resizeListener</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Object</span><span class="p">();</span>
+</span><span class='line'><span class="nx">resizeListener</span><span class="p">.</span><span class="nx">onResize</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span><span class="o">&lt;/</span><span class="nx">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">sw</span> <span class="o">=</span> <span class="nb">Stage</span><span class="p">.</span><span class="nx">width</span><span class="o">;</span>
+</span><span class='line'><span class="nx">xmin</span> <span class="o">=</span> <span class="nx">getXposition</span><span class="p">();</span>
+</span><span class='line'><span class="nx">xmax</span> <span class="o">=</span> <span class="nx">sw</span><span class="o">;</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="nx">code</span><span class="o">&gt;&lt;/</span><span class="nx">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="p">};</span>
+</span><span class='line'><span class="nb">Stage</span><span class="p">.</span><span class="nx">addListener</span><span class="p">(</span><span class="nx">resizeListener</span><span class="p">);</span>
+</span><span class='line'><span class="nx">resizeListener</span><span class="p">.</span><span class="nx">onResize</span><span class="p">();</span><span class="o">&lt;/</span><span class="nx">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="kd">function</span> <span class="nx">randRange</span><span class="p">(</span><span class="nx">min</span><span class="o">,</span> <span class="nx">max</span><span class="p">)</span> <span class="p">{</span><span class="o">&lt;/</span><span class="nx">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="k">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span><span class="o">*</span><span class="p">(</span><span class="nx">max</span><span class="o">-</span><span class="nx">min</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span><span class="o">+</span><span class="nx">min</span><span class="o">;</span>
+</span><span class='line'><span class="k">return</span> <span class="p">(</span><span class="nx">i</span><span class="p">);</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="nx">code</span><span class="o">&gt;&lt;/</span><span class="nx">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 ]]></content>
   </entry>
   
@@ -149,75 +213,141 @@ return (i);
 
 <h2>ソースコード</h2>
 
-<p>{% codeblock lang:actionscript %}
-var sw:Number = Stage.width;//ステージサイズ
-var linemax:Number = 192;//ライン最大複製個数
-var xmin:Number = getXposition();//x座標最小値
-var xmax:Number = sw;//x座標最大値
-var rotationmin:Number = -30;//回転角度最小値
-var rotationmax:Number = 30;//回転角度最大値
-var alphamin:Number = 5;//アルファ最小値
-var alphamax:Number = 45;//アルファ最大値
-var c:Number;//ライン複製回数
-var d:Number;//繰り返し回数
-var r:Boolean;//true:偶数回 / false:奇数回 | 繰り返す毎に切り替え
-function iterate():Void {</p>
-
-<pre><code>if (c&lt;linemax) {
-    eval("squall_mc.line"+randRange(1, 4)+"_mc").duplicateMovieClip("line"+c,c);
-    //eval("squall_mc.line"+0+"_mc").duplicateMovieClip("line"+c,c);//モノクロームラインへ変更
-    var newline_mc:MovieClip = eval("squall_mc.line"+c);
-    var pastline_mc:MovieClip = eval("squall_mc.line"+(c-1));
-    newline_mc._x = pastline_mc._x+randRange(xmin, xmax);
-    newline_mc._rotation = pastline_mc._rotation+randRange(rotationmin, rotationmax);
-    newline_mc._alpha = randRange(alphamin, alphamax);
-    if (newline_mc._x&lt;xmin) {
-        newline_mc._x = xmin;
-    }
-    if (newline_mc._x&gt;xmax) {
-        newline_mc._x = xmax;
-    }
-    c++;
-} else {
-    //r ? r=false : r=true; //奇数回／偶数回の判定
-    xmax = randRange(0, sw);
-    //r ? xmin=xmax : xmin=getXposition(); //偶数回に x座標最小値変更
-    xmin = getXposition();
-    d++;
-    c = 0;
-}
-</code></pre>
-
-<p>}
-squall_mc.onEnterFrame = iterate;</p>
-
-<p>function getXposition():Number {</p>
-
-<pre><code>return sw;
-</code></pre>
-
-<p>}</p>
-
-<p>resizeListener = new Object();
-resizeListener.onResize = function() {</p>
-
-<pre><code>sw = Stage.width;
-xmin = getXposition();
-xmax = sw;
-</code></pre>
-
-<p>};
-Stage.addListener(resizeListener);
-resizeListener.onResize();</p>
-
-<p>function randRange(min, max) {</p>
-
-<pre><code>var i = Math.floor(Math.random()*(max-min+1))+min;
-return (i);
-</code></pre>
-
-<p>}
-{% endcodeblock %}</p>
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+</pre></td><td class='code'><pre><code class='actionscript'><span class='line'><span class="k">var</span> <span class="nx">sw</span><span class="o">:</span><span class="nb">Number</span> <span class="o">=</span> <span class="nb">Stage</span><span class="p">.</span><span class="nx">width</span><span class="o">;//</span><span class="err">ステージサイズ</span>
+</span><span class='line'><span class="k">var</span> <span class="nx">linemax</span><span class="o">:</span><span class="nb">Number</span> <span class="o">=</span> <span class="mi">192</span><span class="o">;//</span><span class="err">ライン最大複製個数</span>
+</span><span class='line'><span class="k">var</span> <span class="nx">xmin</span><span class="o">:</span><span class="nb">Number</span> <span class="o">=</span> <span class="nx">getXposition</span><span class="p">();</span><span class="c1">//x座標最小値</span>
+</span><span class='line'><span class="k">var</span> <span class="nx">xmax</span><span class="o">:</span><span class="nb">Number</span> <span class="o">=</span> <span class="nx">sw</span><span class="o">;//</span><span class="nx">x</span><span class="err">座標最大値</span>
+</span><span class='line'><span class="k">var</span> <span class="nx">rotationmin</span><span class="o">:</span><span class="nb">Number</span> <span class="o">=</span> <span class="o">-</span><span class="mi">30</span><span class="o">;//</span><span class="err">回転角度最小値</span>
+</span><span class='line'><span class="k">var</span> <span class="nx">rotationmax</span><span class="o">:</span><span class="nb">Number</span> <span class="o">=</span> <span class="mi">30</span><span class="o">;//</span><span class="err">回転角度最大値</span>
+</span><span class='line'><span class="k">var</span> <span class="nx">alphamin</span><span class="o">:</span><span class="nb">Number</span> <span class="o">=</span> <span class="mi">5</span><span class="o">;//</span><span class="err">アルファ最小値</span>
+</span><span class='line'><span class="k">var</span> <span class="nx">alphamax</span><span class="o">:</span><span class="nb">Number</span> <span class="o">=</span> <span class="mi">45</span><span class="o">;//</span><span class="err">アルファ最大値</span>
+</span><span class='line'><span class="k">var</span> <span class="nx">c</span><span class="o">:</span><span class="nb">Number</span><span class="o">;//</span><span class="err">ライン複製回数</span>
+</span><span class='line'><span class="k">var</span> <span class="nx">d</span><span class="o">:</span><span class="nb">Number</span><span class="o">;//</span><span class="err">繰り返し回数</span>
+</span><span class='line'><span class="k">var</span> <span class="nx">r</span><span class="o">:</span><span class="nb">Boolean</span><span class="o">;//</span><span class="kc">true</span><span class="o">:</span><span class="err">偶数回</span> <span class="o">/</span> <span class="kc">false</span><span class="o">:</span><span class="err">奇数回</span> <span class="o">|</span> <span class="err">繰り返す毎に切り替え</span>
+</span><span class='line'><span class="kd">function</span> <span class="nx">iterate</span><span class="p">()</span><span class="o">:</span><span class="kc">Void</span> <span class="p">{</span><span class="o">&lt;/</span><span class="nx">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="k">if</span> <span class="p">(</span><span class="nx">c</span><span class="o">&amp;</span><span class="nx">lt</span><span class="o">;</span><span class="nx">linemax</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nf">eval</span><span class="p">(</span><span class="s2">&quot;squall_mc.line&quot;</span><span class="o">+</span><span class="nx">randRange</span><span class="p">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">4</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;_mc&quot;</span><span class="p">).</span><span class="nx">duplicateMovieClip</span><span class="p">(</span><span class="s2">&quot;line&quot;</span><span class="o">+</span><span class="nx">c</span><span class="o">,</span><span class="nx">c</span><span class="p">);</span>
+</span><span class='line'>    <span class="c1">//eval(&quot;squall_mc.line&quot;+0+&quot;_mc&quot;).duplicateMovieClip(&quot;line&quot;+c,c);//モノクロームラインへ変更</span>
+</span><span class='line'>    <span class="k">var</span> <span class="nx">newline_mc</span><span class="o">:</span><span class="nb">MovieClip</span> <span class="o">=</span> <span class="nf">eval</span><span class="p">(</span><span class="s2">&quot;squall_mc.line&quot;</span><span class="o">+</span><span class="nx">c</span><span class="p">);</span>
+</span><span class='line'>    <span class="k">var</span> <span class="nx">pastline_mc</span><span class="o">:</span><span class="nb">MovieClip</span> <span class="o">=</span> <span class="nf">eval</span><span class="p">(</span><span class="s2">&quot;squall_mc.line&quot;</span><span class="o">+</span><span class="p">(</span><span class="nx">c</span><span class="o">-</span><span class="mi">1</span><span class="p">));</span>
+</span><span class='line'>    <span class="nx">newline_mc</span><span class="p">.</span><span class="nx">_x</span> <span class="o">=</span> <span class="nx">pastline_mc</span><span class="p">.</span><span class="nx">_x</span><span class="o">+</span><span class="nx">randRange</span><span class="p">(</span><span class="nx">xmin</span><span class="o">,</span> <span class="nx">xmax</span><span class="p">);</span>
+</span><span class='line'>    <span class="nx">newline_mc</span><span class="p">.</span><span class="nx">_rotation</span> <span class="o">=</span> <span class="nx">pastline_mc</span><span class="p">.</span><span class="nx">_rotation</span><span class="o">+</span><span class="nx">randRange</span><span class="p">(</span><span class="nx">rotationmin</span><span class="o">,</span> <span class="nx">rotationmax</span><span class="p">);</span>
+</span><span class='line'>    <span class="nx">newline_mc</span><span class="p">.</span><span class="nx">_alpha</span> <span class="o">=</span> <span class="nx">randRange</span><span class="p">(</span><span class="nx">alphamin</span><span class="o">,</span> <span class="nx">alphamax</span><span class="p">);</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nx">newline_mc</span><span class="p">.</span><span class="nx">_x</span><span class="o">&amp;</span><span class="nx">lt</span><span class="o">;</span><span class="nx">xmin</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">newline_mc</span><span class="p">.</span><span class="nx">_x</span> <span class="o">=</span> <span class="nx">xmin</span><span class="o">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nx">newline_mc</span><span class="p">.</span><span class="nx">_x</span><span class="o">&amp;</span><span class="nx">gt</span><span class="o">;</span><span class="nx">xmax</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">newline_mc</span><span class="p">.</span><span class="nx">_x</span> <span class="o">=</span> <span class="nx">xmax</span><span class="o">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="nx">c</span><span class="o">++;</span>
+</span><span class='line'><span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">//r ? r=false : r=true; //奇数回／偶数回の判定</span>
+</span><span class='line'>    <span class="nx">xmax</span> <span class="o">=</span> <span class="nx">randRange</span><span class="p">(</span><span class="mi">0</span><span class="o">,</span> <span class="nx">sw</span><span class="p">);</span>
+</span><span class='line'>    <span class="c1">//r ? xmin=xmax : xmin=getXposition(); //偶数回に x座標最小値変更</span>
+</span><span class='line'>    <span class="nx">xmin</span> <span class="o">=</span> <span class="nx">getXposition</span><span class="p">();</span>
+</span><span class='line'>    <span class="nx">d</span><span class="o">++;</span>
+</span><span class='line'>    <span class="nx">c</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="nx">code</span><span class="o">&gt;&lt;/</span><span class="nx">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="p">}</span>
+</span><span class='line'><span class="nx">squall_mc</span><span class="p">.</span><span class="nx">onEnterFrame</span> <span class="o">=</span> <span class="nx">iterate</span><span class="o">;&lt;/</span><span class="nx">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="kd">function</span> <span class="nx">getXposition</span><span class="p">()</span><span class="o">:</span><span class="nb">Number</span> <span class="p">{</span><span class="o">&lt;/</span><span class="nx">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="k">return</span> <span class="nx">sw</span><span class="o">;</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="nx">code</span><span class="o">&gt;&lt;/</span><span class="nx">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="nx">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="nx">resizeListener</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Object</span><span class="p">();</span>
+</span><span class='line'><span class="nx">resizeListener</span><span class="p">.</span><span class="nx">onResize</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span><span class="o">&lt;/</span><span class="nx">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">sw</span> <span class="o">=</span> <span class="nb">Stage</span><span class="p">.</span><span class="nx">width</span><span class="o">;</span>
+</span><span class='line'><span class="nx">xmin</span> <span class="o">=</span> <span class="nx">getXposition</span><span class="p">();</span>
+</span><span class='line'><span class="nx">xmax</span> <span class="o">=</span> <span class="nx">sw</span><span class="o">;</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="nx">code</span><span class="o">&gt;&lt;/</span><span class="nx">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="p">};</span>
+</span><span class='line'><span class="nb">Stage</span><span class="p">.</span><span class="nx">addListener</span><span class="p">(</span><span class="nx">resizeListener</span><span class="p">);</span>
+</span><span class='line'><span class="nx">resizeListener</span><span class="p">.</span><span class="nx">onResize</span><span class="p">();</span><span class="o">&lt;/</span><span class="nx">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="kd">function</span> <span class="nx">randRange</span><span class="p">(</span><span class="nx">min</span><span class="o">,</span> <span class="nx">max</span><span class="p">)</span> <span class="p">{</span><span class="o">&lt;/</span><span class="nx">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="k">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span><span class="o">*</span><span class="p">(</span><span class="nx">max</span><span class="o">-</span><span class="nx">min</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span><span class="o">+</span><span class="nx">min</span><span class="o">;</span>
+</span><span class='line'><span class="k">return</span> <span class="p">(</span><span class="nx">i</span><span class="p">);</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="nx">code</span><span class="o">&gt;&lt;/</span><span class="nx">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 ]]></content>
   </entry>
   
@@ -254,49 +384,89 @@ return (i);
 
 <h2>ソースコード</h2>
 
-<p>{% codeblock lang:actionscript %}
-var sw:Number = Stage.width;
-var sh:Number = Stage.height;
-var c:Number = 0;
-mID = setInterval(init, 3000);
-function init() {</p>
-
-<pre><code>if(c&gt;0) {
-    rscale = Math.random()*5+94;
-    rrot = 137.5;
-    attachMovie("nug","mothernug",0);
-    mothernug._x = sw/2;
-    mothernug._y = sh/2;
-    mothernug._xscale = 150;
-    mothernug._yscale = 150;
-    mothernug._rotation = Math.random()*360;
-    mothernug.depth = 0;
-    mothernug.onEnterFrame = iterate;
-}
-c++;
-</code></pre>
-
-<p>}</p>
-
-<p>function iterate() {</p>
-
-<pre><code>if (this.depth&lt;50) {
-    var newnug:MovieClip = this.attachMovie("nug", "newnug", 1);
-    var rot:Number = this._rotation+rrot;
-    var scale:Number = rscale;
-    newnug._x = (100-scale)*Math.cos(Math.PI/180*rot);
-    newnug._y = (100-scale)*Math.sin(Math.PI/180*rot);
-    newnug._xscale = scale;
-    newnug._yscale = scale;
-    newnug._rotation = rot;
-    newnug.depth = this.depth+1;
-    newnug.onEnterFrame = iterate;
-}
-delete this.onEnterFrame;
-</code></pre>
-
-<p>}
-{% endcodeblock %}</p>
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+</pre></td><td class='code'><pre><code class='actionscript'><span class='line'><span class="k">var</span> <span class="nx">sw</span><span class="o">:</span><span class="nb">Number</span> <span class="o">=</span> <span class="nb">Stage</span><span class="p">.</span><span class="nx">width</span><span class="o">;</span>
+</span><span class='line'><span class="k">var</span> <span class="nx">sh</span><span class="o">:</span><span class="nb">Number</span> <span class="o">=</span> <span class="nb">Stage</span><span class="p">.</span><span class="nx">height</span><span class="o">;</span>
+</span><span class='line'><span class="k">var</span> <span class="nx">c</span><span class="o">:</span><span class="nb">Number</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+</span><span class='line'><span class="nx">mID</span> <span class="o">=</span> <span class="nf">setInterval</span><span class="p">(</span><span class="nx">init</span><span class="o">,</span> <span class="mi">3000</span><span class="p">);</span>
+</span><span class='line'><span class="kd">function</span> <span class="nx">init</span><span class="p">()</span> <span class="p">{</span><span class="o">&lt;/</span><span class="nx">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="k">if</span><span class="p">(</span><span class="nx">c</span><span class="o">&amp;</span><span class="nx">gt</span><span class="o">;</span><span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">rscale</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span><span class="o">*</span><span class="mi">5</span><span class="o">+</span><span class="mi">94</span><span class="o">;</span>
+</span><span class='line'>    <span class="nx">rrot</span> <span class="o">=</span> <span class="mf">137.5</span><span class="o">;</span>
+</span><span class='line'>    <span class="nx">attachMovie</span><span class="p">(</span><span class="s2">&quot;nug&quot;</span><span class="o">,</span><span class="s2">&quot;mothernug&quot;</span><span class="o">,</span><span class="mi">0</span><span class="p">);</span>
+</span><span class='line'>    <span class="nx">mothernug</span><span class="p">.</span><span class="nx">_x</span> <span class="o">=</span> <span class="nx">sw</span><span class="o">/</span><span class="mi">2</span><span class="o">;</span>
+</span><span class='line'>    <span class="nx">mothernug</span><span class="p">.</span><span class="nx">_y</span> <span class="o">=</span> <span class="nx">sh</span><span class="o">/</span><span class="mi">2</span><span class="o">;</span>
+</span><span class='line'>    <span class="nx">mothernug</span><span class="p">.</span><span class="nx">_xscale</span> <span class="o">=</span> <span class="mi">150</span><span class="o">;</span>
+</span><span class='line'>    <span class="nx">mothernug</span><span class="p">.</span><span class="nx">_yscale</span> <span class="o">=</span> <span class="mi">150</span><span class="o">;</span>
+</span><span class='line'>    <span class="nx">mothernug</span><span class="p">.</span><span class="nx">_rotation</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span><span class="o">*</span><span class="mi">360</span><span class="o">;</span>
+</span><span class='line'>    <span class="nx">mothernug</span><span class="p">.</span><span class="nx">depth</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+</span><span class='line'>    <span class="nx">mothernug</span><span class="p">.</span><span class="nx">onEnterFrame</span> <span class="o">=</span> <span class="nx">iterate</span><span class="o">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="nx">c</span><span class="o">++;</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="nx">code</span><span class="o">&gt;&lt;/</span><span class="nx">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="nx">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="kd">function</span> <span class="nx">iterate</span><span class="p">()</span> <span class="p">{</span><span class="o">&lt;/</span><span class="nx">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">depth</span><span class="o">&amp;</span><span class="nx">lt</span><span class="o">;</span><span class="mi">50</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">var</span> <span class="nx">newnug</span><span class="o">:</span><span class="nb">MovieClip</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">attachMovie</span><span class="p">(</span><span class="s2">&quot;nug&quot;</span><span class="o">,</span> <span class="s2">&quot;newnug&quot;</span><span class="o">,</span> <span class="mi">1</span><span class="p">);</span>
+</span><span class='line'>    <span class="k">var</span> <span class="nx">rot</span><span class="o">:</span><span class="nb">Number</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">_rotation</span><span class="o">+</span><span class="nx">rrot</span><span class="o">;</span>
+</span><span class='line'>    <span class="k">var</span> <span class="nx">scale</span><span class="o">:</span><span class="nb">Number</span> <span class="o">=</span> <span class="nx">rscale</span><span class="o">;</span>
+</span><span class='line'>    <span class="nx">newnug</span><span class="p">.</span><span class="nx">_x</span> <span class="o">=</span> <span class="p">(</span><span class="mi">100</span><span class="o">-</span><span class="nx">scale</span><span class="p">)</span><span class="o">*</span><span class="nb">Math</span><span class="p">.</span><span class="nx">cos</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">PI</span><span class="o">/</span><span class="mi">180</span><span class="o">*</span><span class="nx">rot</span><span class="p">);</span>
+</span><span class='line'>    <span class="nx">newnug</span><span class="p">.</span><span class="nx">_y</span> <span class="o">=</span> <span class="p">(</span><span class="mi">100</span><span class="o">-</span><span class="nx">scale</span><span class="p">)</span><span class="o">*</span><span class="nb">Math</span><span class="p">.</span><span class="nx">sin</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">PI</span><span class="o">/</span><span class="mi">180</span><span class="o">*</span><span class="nx">rot</span><span class="p">);</span>
+</span><span class='line'>    <span class="nx">newnug</span><span class="p">.</span><span class="nx">_xscale</span> <span class="o">=</span> <span class="nx">scale</span><span class="o">;</span>
+</span><span class='line'>    <span class="nx">newnug</span><span class="p">.</span><span class="nx">_yscale</span> <span class="o">=</span> <span class="nx">scale</span><span class="o">;</span>
+</span><span class='line'>    <span class="nx">newnug</span><span class="p">.</span><span class="nx">_rotation</span> <span class="o">=</span> <span class="nx">rot</span><span class="o">;</span>
+</span><span class='line'>    <span class="nx">newnug</span><span class="p">.</span><span class="nx">depth</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">depth</span><span class="o">+</span><span class="mi">1</span><span class="o">;</span>
+</span><span class='line'>    <span class="nx">newnug</span><span class="p">.</span><span class="nx">onEnterFrame</span> <span class="o">=</span> <span class="nx">iterate</span><span class="o">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="nx">delete</span> <span class="k">this</span><span class="p">.</span><span class="nx">onEnterFrame</span><span class="o">;</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="nx">code</span><span class="o">&gt;&lt;/</span><span class="nx">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 ]]></content>
   </entry>
   
@@ -335,52 +505,89 @@ delete this.onEnterFrame;
 
 <h3>1フレーム目</h3>
 
-<p>{% codeblock lang:actionscript %}
-count = 0;
-start = getTimer();
-speed = 2000;
-x0 = 240;
-y0 = 50;
-x3 = 0;
-y3 = 150;
-x1 = 500;
-y1 = 150;
-x2 = 200;
-y2 = 1;
-cx = 3<em>(x1-x0);
-cy = 3</em>(y1-y0);
-bx = (3<em>(x2-x1))+(cx);
-by = (3</em>(y2-y1))-cy;
-ax = x3-x0-cx-bx;
-ay = y3-y0-cy-by;
-{% endcodeblock %}</p>
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='actionscript'><span class='line'><span class="nx">count</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+</span><span class='line'><span class="nx">start</span> <span class="o">=</span> <span class="nf">getTimer</span><span class="p">();</span>
+</span><span class='line'><span class="nx">speed</span> <span class="o">=</span> <span class="mi">2000</span><span class="o">;</span>
+</span><span class='line'><span class="nx">x0</span> <span class="o">=</span> <span class="mi">240</span><span class="o">;</span>
+</span><span class='line'><span class="nx">y0</span> <span class="o">=</span> <span class="mi">50</span><span class="o">;</span>
+</span><span class='line'><span class="nx">x3</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+</span><span class='line'><span class="nx">y3</span> <span class="o">=</span> <span class="mi">150</span><span class="o">;</span>
+</span><span class='line'><span class="nx">x1</span> <span class="o">=</span> <span class="mi">500</span><span class="o">;</span>
+</span><span class='line'><span class="nx">y1</span> <span class="o">=</span> <span class="mi">150</span><span class="o">;</span>
+</span><span class='line'><span class="nx">x2</span> <span class="o">=</span> <span class="mi">200</span><span class="o">;</span>
+</span><span class='line'><span class="nx">y2</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span>
+</span><span class='line'><span class="nx">cx</span> <span class="o">=</span> <span class="mi">3</span><span class="o">&lt;</span><span class="nx">em</span><span class="o">&gt;</span><span class="p">(</span><span class="nx">x1</span><span class="o">-</span><span class="nx">x0</span><span class="p">);</span>
+</span><span class='line'><span class="nx">cy</span> <span class="o">=</span> <span class="mi">3</span><span class="o">&lt;/</span><span class="nx">em</span><span class="o">&gt;</span><span class="p">(</span><span class="nx">y1</span><span class="o">-</span><span class="nx">y0</span><span class="p">);</span>
+</span><span class='line'><span class="nx">bx</span> <span class="o">=</span> <span class="p">(</span><span class="mi">3</span><span class="o">&lt;</span><span class="nx">em</span><span class="o">&gt;</span><span class="p">(</span><span class="nx">x2</span><span class="o">-</span><span class="nx">x1</span><span class="p">))</span><span class="o">+</span><span class="p">(</span><span class="nx">cx</span><span class="p">);</span>
+</span><span class='line'><span class="nx">by</span> <span class="o">=</span> <span class="p">(</span><span class="mi">3</span><span class="o">&lt;/</span><span class="nx">em</span><span class="o">&gt;</span><span class="p">(</span><span class="nx">y2</span><span class="o">-</span><span class="nx">y1</span><span class="p">))</span><span class="o">-</span><span class="nx">cy</span><span class="o">;</span>
+</span><span class='line'><span class="nx">ax</span> <span class="o">=</span> <span class="nx">x3</span><span class="o">-</span><span class="nx">x0</span><span class="o">-</span><span class="nx">cx</span><span class="o">-</span><span class="nx">bx</span><span class="o">;</span>
+</span><span class='line'><span class="nx">ay</span> <span class="o">=</span> <span class="nx">y3</span><span class="o">-</span><span class="nx">y0</span><span class="o">-</span><span class="nx">cy</span><span class="o">-</span><span class="nx">by</span><span class="o">;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
 <h3>2フレーム目</h3>
 
-<p>{% codeblock lang:actionscript %}
-elapsed = getTimer()-eval("start");
-if (elapsed>speed) {</p>
-
-<pre><code>_root.stop();
-</code></pre>
-
-<p>} else {</p>
-
-<pre><code>count = count+1;
-cube = elapsed/speed;
-square = square*square;
-cube = cube*cube*cube;
-duplicateMovieClip("line", "line"+count, count);
-_root["line"+count]._x = ((ax*cube)+(bx*square)+(cx*elapsed/speed)+(x0));
-_root["line"+count]._y = ((ay*cube)+(by*square)+(cy*elapsed/speed)+(y0));
-_root["line"+count]._rotation = count*3;
-_root["line"+count]._alpha = 80-count;
-_root["line"+count]._yscale = (cx*elapsed/speed);
-count++;
-</code></pre>
-
-<p>}
-{% endcodeblock %}</p>
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class='actionscript'><span class='line'><span class="nx">elapsed</span> <span class="o">=</span> <span class="nf">getTimer</span><span class="p">()</span><span class="o">-</span><span class="nf">eval</span><span class="p">(</span><span class="s2">&quot;start&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="nx">elapsed</span><span class="o">&gt;</span><span class="nx">speed</span><span class="p">)</span> <span class="p">{</span><span class="o">&lt;/</span><span class="nx">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">_root</span><span class="p">.</span><span class="nx">stop</span><span class="p">();</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="nx">code</span><span class="o">&gt;&lt;/</span><span class="nx">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="p">}</span> <span class="k">else</span> <span class="p">{</span><span class="o">&lt;/</span><span class="nx">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">count</span> <span class="o">=</span> <span class="nx">count</span><span class="o">+</span><span class="mi">1</span><span class="o">;</span>
+</span><span class='line'><span class="nx">cube</span> <span class="o">=</span> <span class="nx">elapsed</span><span class="o">/</span><span class="nx">speed</span><span class="o">;</span>
+</span><span class='line'><span class="nx">square</span> <span class="o">=</span> <span class="nx">square</span><span class="o">*</span><span class="nx">square</span><span class="o">;</span>
+</span><span class='line'><span class="nx">cube</span> <span class="o">=</span> <span class="nx">cube</span><span class="o">*</span><span class="nx">cube</span><span class="o">*</span><span class="nx">cube</span><span class="o">;</span>
+</span><span class='line'><span class="nx">duplicateMovieClip</span><span class="p">(</span><span class="s2">&quot;line&quot;</span><span class="o">,</span> <span class="s2">&quot;line&quot;</span><span class="o">+</span><span class="nx">count</span><span class="o">,</span> <span class="nx">count</span><span class="p">);</span>
+</span><span class='line'><span class="nx">_root</span><span class="p">[</span><span class="s2">&quot;line&quot;</span><span class="o">+</span><span class="nx">count</span><span class="p">].</span><span class="nx">_x</span> <span class="o">=</span> <span class="p">((</span><span class="nx">ax</span><span class="o">*</span><span class="nx">cube</span><span class="p">)</span><span class="o">+</span><span class="p">(</span><span class="nx">bx</span><span class="o">*</span><span class="nx">square</span><span class="p">)</span><span class="o">+</span><span class="p">(</span><span class="nx">cx</span><span class="o">*</span><span class="nx">elapsed</span><span class="o">/</span><span class="nx">speed</span><span class="p">)</span><span class="o">+</span><span class="p">(</span><span class="nx">x0</span><span class="p">));</span>
+</span><span class='line'><span class="nx">_root</span><span class="p">[</span><span class="s2">&quot;line&quot;</span><span class="o">+</span><span class="nx">count</span><span class="p">].</span><span class="nx">_y</span> <span class="o">=</span> <span class="p">((</span><span class="nx">ay</span><span class="o">*</span><span class="nx">cube</span><span class="p">)</span><span class="o">+</span><span class="p">(</span><span class="nx">by</span><span class="o">*</span><span class="nx">square</span><span class="p">)</span><span class="o">+</span><span class="p">(</span><span class="nx">cy</span><span class="o">*</span><span class="nx">elapsed</span><span class="o">/</span><span class="nx">speed</span><span class="p">)</span><span class="o">+</span><span class="p">(</span><span class="nx">y0</span><span class="p">));</span>
+</span><span class='line'><span class="nx">_root</span><span class="p">[</span><span class="s2">&quot;line&quot;</span><span class="o">+</span><span class="nx">count</span><span class="p">].</span><span class="nx">_rotation</span> <span class="o">=</span> <span class="nx">count</span><span class="o">*</span><span class="mi">3</span><span class="o">;</span>
+</span><span class='line'><span class="nx">_root</span><span class="p">[</span><span class="s2">&quot;line&quot;</span><span class="o">+</span><span class="nx">count</span><span class="p">].</span><span class="nx">_alpha</span> <span class="o">=</span> <span class="mi">80</span><span class="o">-</span><span class="nx">count</span><span class="o">;</span>
+</span><span class='line'><span class="nx">_root</span><span class="p">[</span><span class="s2">&quot;line&quot;</span><span class="o">+</span><span class="nx">count</span><span class="p">].</span><span class="nx">_yscale</span> <span class="o">=</span> <span class="p">(</span><span class="nx">cx</span><span class="o">*</span><span class="nx">elapsed</span><span class="o">/</span><span class="nx">speed</span><span class="p">);</span>
+</span><span class='line'><span class="nx">count</span><span class="o">++;</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="nx">code</span><span class="o">&gt;&lt;/</span><span class="nx">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 ]]></content>
   </entry>
   
@@ -417,121 +624,233 @@ count++;
 
 <h2>ソースコード</h2>
 
-<p>{% codeblock lang:actionscript %}
-fscommand("showmenu", "false");
-Stage.scaleMode = "noScale";
-_quality = "HIGH";
-var sw:Number = Stage.width;
-var sh:Number = Stage.height;
-var interval:Number = 1000;
-var scl:Number = 20;
-var as:Number = 10;
-var generate:Number = 120;
-var randmax:Number = 6;
-var loopmax:Number = 50;
-var dead:Number = 15;
-var depth:Number = 0;
-var n:Number = 0;
-var v:Number = 0;
-var theta:Number = 0;
-var v:Number = 0;
-var rot:Number;
-var intervalID = setInterval(makenew, interval);
-onEnterFrame = function () {</p>
-
-<pre><code>init();
-setVariables();
-</code></pre>
-
-<p>};</p>
-
-<p>function init() {</p>
-
-<pre><code>if (Math.random()&lt;.4 &amp;&amp; n&lt;5) {
-    makenew();
-}
-</code></pre>
-
-<p>}</p>
-
-<p>function setVariables() {</p>
-
-<pre><code>rot = -30*Math.sin(Math.PI/180*theta);
-theta += v;
-v += Math.random()*3-1.5;
-v = Math.max(v, -5);
-v = Math.min(v, 5);
-</code></pre>
-
-<p>}</p>
-
-<p>function makenew() {</p>
-
-<pre><code>var newmc:MovieClip = attachMovie("nug", "newmc"+n, n++);
-newmc._x = randRange(0, randmax)*sw/6;
-newmc._y = randRange(0, randmax)*sh/6;
-newmc._xscale = scl;
-newmc._yscale = scl;
-newmc._rotation = 180;
-newmc.depth = depth;
-newmc.frame = 0;
-if (Math.random()&gt;.1) {
-    newmc.icon.petal._visible = false;
-}
-newmc.onEnterFrame = iterate;
-n&lt;loopmax ? deleter("newmc", n) : n=0;
-</code></pre>
-
-<p>}</p>
-
-<p>function iterate() {</p>
-
-<pre><code>if (this.depth&lt;generate) {
-    var newnug:MovieClip = this.attachMovie("nug", "newnug", 2);
-    newnug._y = -100;
-    newnug._xscale = 98.7;
-    newnug._yscale = 98.7;
-    newnug._rotation = rot+Math.random()*10-5;
-    newnug.depth = this.depth+1;
-    newnug.frame = 0;
-    if (Math.random()&gt;.1) {
-        newnug.icon.petal._visible = false;
-    }
-    newnug.onEnterFrame = iterate;
-    delete this.onEnterFrame;
-}
-</code></pre>
-
-<p>}</p>
-
-<p>function deleter(obj:String, id:Number) {</p>
-
-<pre><code>eval(obj+(id-dead)).onEnterFrame = function() {
-    this._alpha&gt;0 ? this._alpha -= as : this.removeMovieClip();
-};
-</code></pre>
-
-<p>}</p>
-
-<p>function randRange(min:Number, max:Number):Number {</p>
-
-<pre><code>var randomNum:Number = Math.floor(Math.random()*(max-min+1))+min;
-return randomNum;
-</code></pre>
-
-<p>}</p>
-
-<p>resizeListener = new Object();
-resizeListener.onResize = function() {</p>
-
-<pre><code>sw = Stage.width;
-sh = Stage.height;
-</code></pre>
-
-<p>};
-Stage.addListener(resizeListener);
-resizeListener.onResize();
-{% endcodeblock %}</p>
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+<span class='line-number'>102</span>
+<span class='line-number'>103</span>
+<span class='line-number'>104</span>
+<span class='line-number'>105</span>
+<span class='line-number'>106</span>
+<span class='line-number'>107</span>
+<span class='line-number'>108</span>
+<span class='line-number'>109</span>
+<span class='line-number'>110</span>
+<span class='line-number'>111</span>
+<span class='line-number'>112</span>
+<span class='line-number'>113</span>
+</pre></td><td class='code'><pre><code class='actionscript'><span class='line'><span class="nf">fscommand</span><span class="p">(</span><span class="s2">&quot;showmenu&quot;</span><span class="o">,</span> <span class="s2">&quot;false&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="nb">Stage</span><span class="p">.</span><span class="nx">scaleMode</span> <span class="o">=</span> <span class="s2">&quot;noScale&quot;</span><span class="o">;</span>
+</span><span class='line'><span class="nx">_quality</span> <span class="o">=</span> <span class="s2">&quot;HIGH&quot;</span><span class="o">;</span>
+</span><span class='line'><span class="k">var</span> <span class="nx">sw</span><span class="o">:</span><span class="nb">Number</span> <span class="o">=</span> <span class="nb">Stage</span><span class="p">.</span><span class="nx">width</span><span class="o">;</span>
+</span><span class='line'><span class="k">var</span> <span class="nx">sh</span><span class="o">:</span><span class="nb">Number</span> <span class="o">=</span> <span class="nb">Stage</span><span class="p">.</span><span class="nx">height</span><span class="o">;</span>
+</span><span class='line'><span class="k">var</span> <span class="nx">interval</span><span class="o">:</span><span class="nb">Number</span> <span class="o">=</span> <span class="mi">1000</span><span class="o">;</span>
+</span><span class='line'><span class="k">var</span> <span class="nx">scl</span><span class="o">:</span><span class="nb">Number</span> <span class="o">=</span> <span class="mi">20</span><span class="o">;</span>
+</span><span class='line'><span class="k">var</span> <span class="nx">as</span><span class="o">:</span><span class="nb">Number</span> <span class="o">=</span> <span class="mi">10</span><span class="o">;</span>
+</span><span class='line'><span class="k">var</span> <span class="nx">generate</span><span class="o">:</span><span class="nb">Number</span> <span class="o">=</span> <span class="mi">120</span><span class="o">;</span>
+</span><span class='line'><span class="k">var</span> <span class="nx">randmax</span><span class="o">:</span><span class="nb">Number</span> <span class="o">=</span> <span class="mi">6</span><span class="o">;</span>
+</span><span class='line'><span class="k">var</span> <span class="nx">loopmax</span><span class="o">:</span><span class="nb">Number</span> <span class="o">=</span> <span class="mi">50</span><span class="o">;</span>
+</span><span class='line'><span class="k">var</span> <span class="nx">dead</span><span class="o">:</span><span class="nb">Number</span> <span class="o">=</span> <span class="mi">15</span><span class="o">;</span>
+</span><span class='line'><span class="k">var</span> <span class="nx">depth</span><span class="o">:</span><span class="nb">Number</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+</span><span class='line'><span class="k">var</span> <span class="nx">n</span><span class="o">:</span><span class="nb">Number</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+</span><span class='line'><span class="k">var</span> <span class="nx">v</span><span class="o">:</span><span class="nb">Number</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+</span><span class='line'><span class="k">var</span> <span class="nx">theta</span><span class="o">:</span><span class="nb">Number</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+</span><span class='line'><span class="k">var</span> <span class="nx">v</span><span class="o">:</span><span class="nb">Number</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+</span><span class='line'><span class="k">var</span> <span class="nx">rot</span><span class="o">:</span><span class="nb">Number</span><span class="o">;</span>
+</span><span class='line'><span class="k">var</span> <span class="nx">intervalID</span> <span class="o">=</span> <span class="nf">setInterval</span><span class="p">(</span><span class="nx">makenew</span><span class="o">,</span> <span class="nx">interval</span><span class="p">);</span>
+</span><span class='line'><span class="nx">onEnterFrame</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span><span class="o">&lt;/</span><span class="nx">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">init</span><span class="p">();</span>
+</span><span class='line'><span class="nx">setVariables</span><span class="p">();</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="nx">code</span><span class="o">&gt;&lt;/</span><span class="nx">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="p">};</span><span class="o">&lt;/</span><span class="nx">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="kd">function</span> <span class="nx">init</span><span class="p">()</span> <span class="p">{</span><span class="o">&lt;/</span><span class="nx">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="k">if</span> <span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span><span class="o">&amp;</span><span class="nx">lt</span><span class="o">;</span><span class="p">.</span><span class="mi">4</span> <span class="o">&amp;</span><span class="nx">amp</span><span class="o">;&amp;</span><span class="nx">amp</span><span class="o">;</span> <span class="nx">n</span><span class="o">&amp;</span><span class="nx">lt</span><span class="o">;</span><span class="mi">5</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">makenew</span><span class="p">();</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="nx">code</span><span class="o">&gt;&lt;/</span><span class="nx">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="nx">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="kd">function</span> <span class="nx">setVariables</span><span class="p">()</span> <span class="p">{</span><span class="o">&lt;/</span><span class="nx">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">rot</span> <span class="o">=</span> <span class="o">-</span><span class="mi">30</span><span class="o">*</span><span class="nb">Math</span><span class="p">.</span><span class="nx">sin</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">PI</span><span class="o">/</span><span class="mi">180</span><span class="o">*</span><span class="nx">theta</span><span class="p">);</span>
+</span><span class='line'><span class="nx">theta</span> <span class="o">+=</span> <span class="nx">v</span><span class="o">;</span>
+</span><span class='line'><span class="nx">v</span> <span class="o">+=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span><span class="o">*</span><span class="mi">3</span><span class="o">-</span><span class="mf">1.5</span><span class="o">;</span>
+</span><span class='line'><span class="nx">v</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">max</span><span class="p">(</span><span class="nx">v</span><span class="o">,</span> <span class="o">-</span><span class="mi">5</span><span class="p">);</span>
+</span><span class='line'><span class="nx">v</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">min</span><span class="p">(</span><span class="nx">v</span><span class="o">,</span> <span class="mi">5</span><span class="p">);</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="nx">code</span><span class="o">&gt;&lt;/</span><span class="nx">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="nx">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="kd">function</span> <span class="nx">makenew</span><span class="p">()</span> <span class="p">{</span><span class="o">&lt;/</span><span class="nx">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="k">var</span> <span class="nx">newmc</span><span class="o">:</span><span class="nb">MovieClip</span> <span class="o">=</span> <span class="nx">attachMovie</span><span class="p">(</span><span class="s2">&quot;nug&quot;</span><span class="o">,</span> <span class="s2">&quot;newmc&quot;</span><span class="o">+</span><span class="nx">n</span><span class="o">,</span> <span class="nx">n</span><span class="o">++</span><span class="p">);</span>
+</span><span class='line'><span class="nx">newmc</span><span class="p">.</span><span class="nx">_x</span> <span class="o">=</span> <span class="nx">randRange</span><span class="p">(</span><span class="mi">0</span><span class="o">,</span> <span class="nx">randmax</span><span class="p">)</span><span class="o">*</span><span class="nx">sw</span><span class="o">/</span><span class="mi">6</span><span class="o">;</span>
+</span><span class='line'><span class="nx">newmc</span><span class="p">.</span><span class="nx">_y</span> <span class="o">=</span> <span class="nx">randRange</span><span class="p">(</span><span class="mi">0</span><span class="o">,</span> <span class="nx">randmax</span><span class="p">)</span><span class="o">*</span><span class="nx">sh</span><span class="o">/</span><span class="mi">6</span><span class="o">;</span>
+</span><span class='line'><span class="nx">newmc</span><span class="p">.</span><span class="nx">_xscale</span> <span class="o">=</span> <span class="nx">scl</span><span class="o">;</span>
+</span><span class='line'><span class="nx">newmc</span><span class="p">.</span><span class="nx">_yscale</span> <span class="o">=</span> <span class="nx">scl</span><span class="o">;</span>
+</span><span class='line'><span class="nx">newmc</span><span class="p">.</span><span class="nx">_rotation</span> <span class="o">=</span> <span class="mi">180</span><span class="o">;</span>
+</span><span class='line'><span class="nx">newmc</span><span class="p">.</span><span class="nx">depth</span> <span class="o">=</span> <span class="nx">depth</span><span class="o">;</span>
+</span><span class='line'><span class="nx">newmc</span><span class="p">.</span><span class="nx">frame</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span><span class="o">&amp;</span><span class="nx">gt</span><span class="o">;</span><span class="p">.</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">newmc</span><span class="p">.</span><span class="nx">icon</span><span class="p">.</span><span class="nx">petal</span><span class="p">.</span><span class="nx">_visible</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="nx">newmc</span><span class="p">.</span><span class="nx">onEnterFrame</span> <span class="o">=</span> <span class="nx">iterate</span><span class="o">;</span>
+</span><span class='line'><span class="nx">n</span><span class="o">&amp;</span><span class="nx">lt</span><span class="o">;</span><span class="nx">loopmax</span> <span class="o">?</span> <span class="nx">deleter</span><span class="p">(</span><span class="s2">&quot;newmc&quot;</span><span class="o">,</span> <span class="nx">n</span><span class="p">)</span> <span class="o">:</span> <span class="nx">n</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="nx">code</span><span class="o">&gt;&lt;/</span><span class="nx">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="nx">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="kd">function</span> <span class="nx">iterate</span><span class="p">()</span> <span class="p">{</span><span class="o">&lt;/</span><span class="nx">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">depth</span><span class="o">&amp;</span><span class="nx">lt</span><span class="o">;</span><span class="nx">generate</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">var</span> <span class="nx">newnug</span><span class="o">:</span><span class="nb">MovieClip</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">attachMovie</span><span class="p">(</span><span class="s2">&quot;nug&quot;</span><span class="o">,</span> <span class="s2">&quot;newnug&quot;</span><span class="o">,</span> <span class="mi">2</span><span class="p">);</span>
+</span><span class='line'>    <span class="nx">newnug</span><span class="p">.</span><span class="nx">_y</span> <span class="o">=</span> <span class="o">-</span><span class="mi">100</span><span class="o">;</span>
+</span><span class='line'>    <span class="nx">newnug</span><span class="p">.</span><span class="nx">_xscale</span> <span class="o">=</span> <span class="mf">98.7</span><span class="o">;</span>
+</span><span class='line'>    <span class="nx">newnug</span><span class="p">.</span><span class="nx">_yscale</span> <span class="o">=</span> <span class="mf">98.7</span><span class="o">;</span>
+</span><span class='line'>    <span class="nx">newnug</span><span class="p">.</span><span class="nx">_rotation</span> <span class="o">=</span> <span class="nx">rot</span><span class="o">+</span><span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span><span class="o">*</span><span class="mi">10</span><span class="o">-</span><span class="mi">5</span><span class="o">;</span>
+</span><span class='line'>    <span class="nx">newnug</span><span class="p">.</span><span class="nx">depth</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">depth</span><span class="o">+</span><span class="mi">1</span><span class="o">;</span>
+</span><span class='line'>    <span class="nx">newnug</span><span class="p">.</span><span class="nx">frame</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span><span class="o">&amp;</span><span class="nx">gt</span><span class="o">;</span><span class="p">.</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">newnug</span><span class="p">.</span><span class="nx">icon</span><span class="p">.</span><span class="nx">petal</span><span class="p">.</span><span class="nx">_visible</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="nx">newnug</span><span class="p">.</span><span class="nx">onEnterFrame</span> <span class="o">=</span> <span class="nx">iterate</span><span class="o">;</span>
+</span><span class='line'>    <span class="nx">delete</span> <span class="k">this</span><span class="p">.</span><span class="nx">onEnterFrame</span><span class="o">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="nx">code</span><span class="o">&gt;&lt;/</span><span class="nx">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="nx">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="kd">function</span> <span class="nx">deleter</span><span class="p">(</span><span class="nx">obj</span><span class="o">:</span><span class="nb">String</span><span class="o">,</span> <span class="nx">id</span><span class="o">:</span><span class="nb">Number</span><span class="p">)</span> <span class="p">{</span><span class="o">&lt;/</span><span class="nx">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nf">eval</span><span class="p">(</span><span class="nx">obj</span><span class="o">+</span><span class="p">(</span><span class="nx">id</span><span class="o">-</span><span class="nx">dead</span><span class="p">)).</span><span class="nx">onEnterFrame</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">_alpha</span><span class="o">&amp;</span><span class="nx">gt</span><span class="o">;</span><span class="mi">0</span> <span class="o">?</span> <span class="k">this</span><span class="p">.</span><span class="nx">_alpha</span> <span class="o">-=</span> <span class="nx">as</span> <span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">removeMovieClip</span><span class="p">();</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="nx">code</span><span class="o">&gt;&lt;/</span><span class="nx">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="nx">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="kd">function</span> <span class="nx">randRange</span><span class="p">(</span><span class="nx">min</span><span class="o">:</span><span class="nb">Number</span><span class="o">,</span> <span class="nx">max</span><span class="o">:</span><span class="nb">Number</span><span class="p">)</span><span class="o">:</span><span class="nb">Number</span> <span class="p">{</span><span class="o">&lt;/</span><span class="nx">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="k">var</span> <span class="nx">randomNum</span><span class="o">:</span><span class="nb">Number</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span><span class="o">*</span><span class="p">(</span><span class="nx">max</span><span class="o">-</span><span class="nx">min</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span><span class="o">+</span><span class="nx">min</span><span class="o">;</span>
+</span><span class='line'><span class="k">return</span> <span class="nx">randomNum</span><span class="o">;</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="nx">code</span><span class="o">&gt;&lt;/</span><span class="nx">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="nx">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="nx">resizeListener</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Object</span><span class="p">();</span>
+</span><span class='line'><span class="nx">resizeListener</span><span class="p">.</span><span class="nx">onResize</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span><span class="o">&lt;/</span><span class="nx">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">sw</span> <span class="o">=</span> <span class="nb">Stage</span><span class="p">.</span><span class="nx">width</span><span class="o">;</span>
+</span><span class='line'><span class="nx">sh</span> <span class="o">=</span> <span class="nb">Stage</span><span class="p">.</span><span class="nx">height</span><span class="o">;</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="nx">code</span><span class="o">&gt;&lt;/</span><span class="nx">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="p">};</span>
+</span><span class='line'><span class="nb">Stage</span><span class="p">.</span><span class="nx">addListener</span><span class="p">(</span><span class="nx">resizeListener</span><span class="p">);</span>
+</span><span class='line'><span class="nx">resizeListener</span><span class="p">.</span><span class="nx">onResize</span><span class="p">();</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 ]]></content>
   </entry>
   
