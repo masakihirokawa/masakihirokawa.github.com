@@ -3,20 +3,20 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>UIActionSheetでアクションシートを表示する - Dolice Lab</title>
+	<title>アフィン変換を使用したアニメーション - Dolice Lab</title>
 	
 	
-	<meta name="description" content="UIActionSheetでアクションシートを表示する">
+	<meta name="description" content="アフィン変換を使用したアニメーション">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-	<meta property="og:title" content="UIActionSheetでアクションシートを表示する - Dolice Lab" />
-<meta property="og:description" content="UIActionSheetでアクションシートを表示する" />
-<meta property="og:url" content="http://lab.dolice.net/blog/2013/04/01/objc-ui-action-sheet/" />
+	<meta property="og:title" content="アフィン変換を使用したアニメーション - Dolice Lab" />
+<meta property="og:description" content="アフィン変換を使用したアニメーション" />
+<meta property="og:url" content="http://lab.dolice.net/blog/2013/04/17/objc-cg-affine-transform-make-rotation/" />
 <meta property="og:image" content="http://lab.dolice.net/images/facebook-icon.jpg" />
 <meta property="og:author" content="Masaki Hirokawa" />
 <meta property="og:site_name" content="Dolice Lab" />
 	<link href="/atom.xml" rel="alternate" title="Dolice Lab" type="application/atom+xml">
-	<link rel="canonical" href="http://lab.dolice.net/blog/2013/04/01/objc-ui-action-sheet/">
+	<link rel="canonical" href="http://lab.dolice.net/blog/2013/04/17/objc-cg-affine-transform-make-rotation/">
 	<link href="/favicon.ico" rel="shortcut icon">
 	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
 	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
@@ -84,16 +84,18 @@
 		
 	
 	<div id="content" class="inner"><article class="post">
-	<h2 class="title">UIActionSheetでアクションシートを表示する</h2>
+	<h2 class="title">アフィン変換を使用したアニメーション</h2>
 	<div class="entry-content">
-	  <p>UIActionSheetを使用してアクションシートを表示するサンプルを以下に作成しました。</p>
+	  <p>アフィン変換を使用してラベルをアニメーションさせるサンプルを作成しました。</p>
 
-<p>ボタンをタップでアクションシートが呼ばれ、アクションシート内のボタンをタップするとインデックス番号がラベルに表示されます。</p>
+<p>今回は「CGAffineTransformMakeRotation」を使用し、ラベルの角度を変えながらアニメーションさせています。</p>
+
+<p>下記よりサンプルをダウンロードできます。</p>
 
 <h2>サンプルダウンロード</h2>
 
 <ul>
-<li><a href="https://github.com/masakihirokawa/objc-ui-action-sheet">https://github.com/masakihirokawa/objc-ui-action-sheet</a></li>
+<li><a href="https://github.com/masakihirokawa/objc-cg-affine-transform-make-rotation">https://github.com/masakihirokawa/objc-cg-affine-transform-make-rotation</a></li>
 </ul>
 
 
@@ -109,14 +111,12 @@
 <span class='line-number'>6</span>
 <span class='line-number'>7</span>
 <span class='line-number'>8</span>
-<span class='line-number'>9</span>
 </pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;UIKit/UIKit.h&gt;</span>
 </span><span class='line'>
-</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> : <span class="nc">UIViewController</span> <span class="o">&lt;</span><span class="n">UIActionSheetDelegate</span><span class="o">&gt;</span>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> : <span class="nc">UIViewController</span>
 </span><span class='line'>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">weak</span><span class="p">,</span> <span class="n">nonatomic</span><span class="p">)</span> <span class="kt">IBOutlet</span> <span class="n">UILabel</span> <span class="o">*</span><span class="n">myLabel</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">tapButton:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">strong</span><span class="p">,</span> <span class="n">nonatomic</span><span class="p">)</span> <span class="n">UILabel</span> <span class="o">*</span><span class="n">label</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">strong</span><span class="p">,</span> <span class="n">nonatomic</span><span class="p">)</span> <span class="n">UIButton</span> <span class="o">*</span><span class="n">button</span><span class="p">;</span>
 </span><span class='line'>
 </span><span class='line'><span class="k">@end</span>
 </span></code></pre></td></tr></table></div></figure>
@@ -159,6 +159,71 @@
 <span class='line-number'>33</span>
 <span class='line-number'>34</span>
 <span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
 </pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;ViewController.h&quot;</span>
 </span><span class='line'>
 </span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> <span class="p">()</span>
@@ -167,30 +232,95 @@
 </span><span class='line'>
 </span><span class='line'><span class="k">@implementation</span> <span class="nc">ViewController</span>
 </span><span class='line'>
+</span><span class='line'><span class="c1">//ボタンの横幅</span>
+</span><span class='line'><span class="kt">int</span> <span class="n">_buttonWidth</span> <span class="o">=</span> <span class="mi">58</span><span class="p">;</span>
+</span><span class='line'><span class="c1">//ボタンの縦幅</span>
+</span><span class='line'><span class="kt">int</span> <span class="n">_buttonHeight</span> <span class="o">=</span> <span class="mi">42</span><span class="p">;</span>
+</span><span class='line'><span class="c1">//ボタンと画面端とのマージン</span>
+</span><span class='line'><span class="kt">int</span> <span class="n">_buttonMargin</span> <span class="o">=</span> <span class="mi">18</span><span class="p">;</span>
+</span><span class='line'><span class="c1">//ラベルの横幅</span>
+</span><span class='line'><span class="kt">int</span> <span class="n">_labelWidth</span> <span class="o">=</span> <span class="mi">100</span><span class="p">;</span>
+</span><span class='line'><span class="c1">//ラベルの縦幅</span>
+</span><span class='line'><span class="kt">int</span> <span class="n">_labelHeight</span> <span class="o">=</span> <span class="mi">40</span><span class="p">;</span>
+</span><span class='line'><span class="c1">//ラベルの基点 (X座標)</span>
+</span><span class='line'><span class="kt">int</span> <span class="n">_labelBaseX</span> <span class="o">=</span> <span class="o">-</span><span class="mi">40</span><span class="p">;</span>
+</span><span class='line'><span class="c1">//ラベルの基点 (Y座標)</span>
+</span><span class='line'><span class="kt">int</span> <span class="n">_labelBaseY</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'><span class="c1">//ラベルの目標値 (X座標)</span>
+</span><span class='line'><span class="kt">int</span> <span class="n">_labelAimX</span> <span class="o">=</span> <span class="mi">240</span><span class="p">;</span>
+</span><span class='line'><span class="c1">//ラベルの目標値 (Y座標)</span>
+</span><span class='line'><span class="kt">int</span> <span class="n">_labelAimY</span> <span class="o">=</span> <span class="mi">320</span><span class="p">;</span>
+</span><span class='line'><span class="c1">//アニメーション秒数</span>
+</span><span class='line'><span class="kt">float</span> <span class="n">animationDuration</span> <span class="o">=</span> <span class="mf">2.0f</span><span class="p">;</span>
+</span><span class='line'>
 </span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
 </span><span class='line'><span class="p">{</span>
 </span><span class='line'>  <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
-</span><span class='line'>  <span class="c1">//ラベルのテキストを非表示にする</span>
-</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">myLabel</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+</span><span class='line'>  <span class="c1">//ボタン初期化</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">self</span> <span class="n">initButton</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//ラベル初期化</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">self</span> <span class="n">initLabel</span><span class="p">];</span>
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">tapButton:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span> <span class="p">{</span>
-</span><span class='line'>  <span class="c1">//ボタンをタップでアクションシート呼び出し</span>
-</span><span class='line'>  <span class="n">UIActionSheet</span> <span class="o">*</span><span class="n">actionSheet</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIActionSheet</span> <span class="n">alloc</span><span class="p">]</span>
-</span><span class='line'>                                <span class="nl">initWithTitle:</span><span class="s">@&quot;Title&quot;</span>
-</span><span class='line'>                                <span class="nl">delegate:</span><span class="n">self</span>
-</span><span class='line'>                                <span class="nl">cancelButtonTitle:</span><span class="s">@&quot;Cancel&quot;</span>
-</span><span class='line'>                                <span class="nl">destructiveButtonTitle:</span><span class="s">@&quot;Caution&quot;</span>
-</span><span class='line'>                                <span class="nl">otherButtonTitles:</span><span class="s">@&quot;One&quot;</span><span class="p">,</span><span class="s">@&quot;Two&quot;</span><span class="p">,</span> <span class="nb">nil</span><span class="p">];</span>
-</span><span class='line'>  <span class="c1">//アクションシートを Viewに追加</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">actionSheet</span> <span class="nl">showInView:</span><span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">actionSheet:</span><span class="p">(</span><span class="n">UIActionSheet</span> <span class="o">*</span><span class="p">)</span><span class="nv">actionSheet</span>
-</span><span class='line'><span class="nf">clickedButtonAtIndex:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">buttonIndex</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">didReceiveMemoryWarning</span>
 </span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="c1">//アクションシートのボタンが押された時に、ボタンのインデックス番号を返す</span>
-</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">myLabel</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">@&quot;ボタン=%d&quot;</span><span class="p">,</span> <span class="n">buttonIndex</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">super</span> <span class="n">didReceiveMemoryWarning</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//ボタン初期化</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">initButton</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="c1">//ボタンを角丸にする</span>
+</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">button</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIButton</span> <span class="nl">buttonWithType:</span><span class="n">UIButtonTypeRoundedRect</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//ボタンの座標と寸法を定義</span>
+</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">button</span><span class="p">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">CGRectMake</span><span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">frame</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span> <span class="o">-</span> <span class="n">_buttonWidth</span> <span class="o">-</span> <span class="n">_buttonMargin</span><span class="p">,</span>
+</span><span class='line'>                                 <span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">frame</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">height</span> <span class="o">-</span> <span class="n">_buttonHeight</span> <span class="o">-</span> <span class="n">_buttonMargin</span><span class="p">,</span>
+</span><span class='line'>                                 <span class="n">_buttonWidth</span><span class="p">,</span>
+</span><span class='line'>                                 <span class="n">_buttonHeight</span><span class="p">);</span>
+</span><span class='line'>  <span class="c1">//ボタンのタイトル定義</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">button</span> <span class="nl">setTitle:</span><span class="s">@&quot;Start&quot;</span>
+</span><span class='line'>               <span class="nl">forState:</span><span class="n">UIControlStateNormal</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">button</span> <span class="n">sizeToFit</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//ボタンをタップで startAnimationメソッドを呼び出し</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">button</span> <span class="nl">addTarget:</span><span class="n">self</span>
+</span><span class='line'>                  <span class="nl">action:</span><span class="k">@selector</span><span class="p">(</span><span class="nl">startAnimation:</span><span class="p">)</span>
+</span><span class='line'>        <span class="nl">forControlEvents:</span><span class="n">UIControlEventTouchUpInside</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//ステージに追加</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">self</span><span class="p">.</span><span class="n">button</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//ラベル初期化</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">initLabel</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="c1">//ラベルの座標と寸法を定義</span>
+</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">label</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UILabel</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">_labelWidth</span><span class="p">,</span> <span class="n">_labelHeight</span><span class="p">)];</span>
+</span><span class='line'>  <span class="c1">//ラベルの初期座標を定義</span>
+</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">label</span><span class="p">.</span><span class="n">center</span> <span class="o">=</span> <span class="n">CGPointMake</span><span class="p">(</span><span class="n">_labelBaseX</span><span class="p">,</span> <span class="n">_labelBaseY</span><span class="p">);</span>
+</span><span class='line'>  <span class="c1">//ラベルテキストを代入</span>
+</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">label</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="s">@&quot;Animation&quot;</span><span class="p">;</span>
+</span><span class='line'>  <span class="c1">//ラベルのテキストカラーを黒にする</span>
+</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">label</span><span class="p">.</span><span class="n">textColor</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIColor</span> <span class="n">blackColor</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//ラベルをセンタリングする</span>
+</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">label</span><span class="p">.</span><span class="n">textAlignment</span> <span class="o">=</span> <span class="n">NSTextAlignmentCenter</span><span class="p">;</span>
+</span><span class='line'>  <span class="c1">//ラベルを viewに配置</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">self</span><span class="p">.</span><span class="n">label</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//アニメーション開始メソッド</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">startAnimation:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="c1">//アニメーション開始</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">UIView</span> <span class="nl">beginAnimations:</span><span class="nb">nil</span> <span class="nl">context:</span><span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//指定した秒数でアニメーションする</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">UIView</span> <span class="nl">setAnimationDuration:</span><span class="n">animationDuration</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//アニメーションの開始座標</span>
+</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">label</span><span class="p">.</span><span class="n">center</span> <span class="o">=</span> <span class="n">CGPointMake</span><span class="p">(</span><span class="n">_labelBaseX</span><span class="p">,</span> <span class="n">_labelBaseY</span><span class="p">);</span>
+</span><span class='line'>  <span class="c1">//アニメーションの目標座標</span>
+</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">label</span><span class="p">.</span><span class="n">center</span> <span class="o">=</span> <span class="n">CGPointMake</span><span class="p">(</span><span class="n">_labelAimX</span><span class="p">,</span> <span class="n">_labelAimY</span><span class="p">);</span>
+</span><span class='line'>  <span class="c1">//アフィン変換を使用してアニメーションさせる</span>
+</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">label</span><span class="p">.</span><span class="n">transform</span> <span class="o">=</span> <span class="n">CGAffineTransformMakeRotation</span><span class="p">(</span><span class="mi">270</span> <span class="o">*</span> <span class="n">M_PI</span><span class="o">/</span><span class="mi">180</span><span class="p">);</span>
+</span><span class='line'>  <span class="c1">//アニメーション実行</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">UIView</span> <span class="n">commitAnimations</span><span class="p">];</span>
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'>
 </span><span class='line'><span class="k">@end</span>
@@ -230,7 +360,7 @@
   
 
 
-<time datetime="2013-04-01T17:52:00+09:00" pubdate data-updated="true">Apr 1<span>st</span>, 2013</time></div>
+<time datetime="2013-04-17T10:30:00+09:00" pubdate data-updated="true">Apr 17<span>th</span>, 2013</time></div>
 	<div class="tags">
 
 

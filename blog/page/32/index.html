@@ -6,23 +6,35 @@
 	<title>Dolice Lab</title>
 	
 	
-	<meta name="description" content="カメラで写真を撮るために必要なコードは以下の通りです。 サンプルダウンロード https://github.com/masakihirokawa/objc-ui-image-picker ソースコード ViewController.h 1
+	<meta name="description" content="Facebookや Twitter等の SNSへ投稿するために必要なコードは以下の通りです。 ViewController.h 1
 2
 3
 4
 5
 6
-//デリゲートに &hellip;">
+7
+8
+9
+10
+#import &lt;UIKit/UIKit.h&gt;
+//予め Socialフレームワークを読み込んでおく
+# &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	<meta property="og:title" content="Dolice Lab" />
-<meta property="og:description" content="カメラで写真を撮るために必要なコードは以下の通りです。 サンプルダウンロード https://github.com/masakihirokawa/objc-ui-image-picker ソースコード ViewController.h 1
+<meta property="og:description" content="Facebookや Twitter等の SNSへ投稿するために必要なコードは以下の通りです。 ViewController.h 1
 2
 3
 4
 5
 6
-//デリゲートに &hellip;" />
+7
+8
+9
+10
+#import &lt;UIKit/UIKit.h&gt;
+//予め Socialフレームワークを読み込んでおく
+# &hellip;" />
 <meta property="og:url" content="http://lab.dolice.net/blog/page/32/" />
 <meta property="og:image" content="http://lab.dolice.net/images/facebook-icon.jpg" />
 <meta property="og:author" content="Masaki Hirokawa" />
@@ -96,6 +108,131 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/03/20/objc-sns-post/">
+		
+			iOSアプリから Facebook/Twitterに投稿する</a>
+	</h2>
+	<div class="entry-content">
+		<p>Facebookや Twitter等の SNSへ投稿するために必要なコードは以下の通りです。</p>
+
+<h2>ViewController.h</h2>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;UIKit/UIKit.h&gt;</span>
+</span><span class='line'><span class="c1">//予め Socialフレームワークを読み込んでおく</span>
+</span><span class='line'><span class="cp">#import &lt;Social/Social.h&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> : <span class="nc">UIViewController</span>
+</span><span class='line'><span class="c1">//投稿ボタンとメソッドを接続する</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">postToFacebook:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span><span class="p">;</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">tweet:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>ViewController.m</h2>
+
+<h3>Facebookへの投稿</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//Facebook</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">postToFacebook:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span> <span class="p">{</span>
+</span><span class='line'>  <span class="n">SLComposeViewController</span><span class="o">*</span> <span class="n">controller</span> <span class="o">=</span> <span class="p">[</span><span class="n">SLComposeViewController</span>
+</span><span class='line'>    <span class="nl">composeViewControllerForServiceType:</span><span class="n">SLServiceTypeFacebook</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">self</span> <span class="nl">presentViewController:</span><span class="n">controller</span>
+</span><span class='line'>                     <span class="nl">animated:</span><span class="n">YES</span>
+</span><span class='line'>                   <span class="nl">completion:</span><span class="nb">NULL</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Twitterへの投稿</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//Tweet</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">tweet:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span> <span class="p">{</span>
+</span><span class='line'>  <span class="n">SLComposeViewController</span><span class="o">*</span> <span class="n">controller</span> <span class="o">=</span> <span class="p">[</span><span class="n">SLComposeViewController</span>
+</span><span class='line'>    <span class="nl">composeViewControllerForServiceType:</span><span class="n">SLServiceTypeTwitter</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">self</span> <span class="nl">presentViewController:</span><span class="n">controller</span>
+</span><span class='line'>                     <span class="nl">animated:</span><span class="n">YES</span>
+</span><span class='line'>                   <span class="nl">completion:</span><span class="nb">NULL</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+		
+		
+		<div id="google-adsense-728_15">
+  <div class="google-adsense-728_15-container">
+    <script type="text/javascript"><!--
+    google_ad_client = "ca-pub-0667784050147760";
+    /* Dolice Lab:728_15 (Text only) */
+    google_ad_slot = "9219927027";
+    google_ad_width = 728;
+    google_ad_height = 15;
+    //-->
+    </script>
+    <script type="text/javascript"
+    src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+    </script>
+  </div>
+</div>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-20T17:51:00+09:00" pubdate data-updated="true">Mar 20<span>th</span>, 2013</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>
+
+
+</div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -305,133 +442,6 @@
 </div>
 </article>
 
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/03/16/javascript-angle/">
-		
-			JavaScriptの角度取得クラス</a>
-	</h2>
-	<div class="entry-content">
-		<p>JavaScriptで指定した基点からの角度を Radian型と Degree型で取得するクラス（<a href="https://github.com/masakihirokawa/js/blob/master/display/angle.js">Angle.js</a>）を作成しました。</p>
-
-<h2>ダウンロード</h2>
-
-<ul>
-<li><a href="https://github.com/masakihirokawa/js/blob/master/display/angle.js">https://github.com/masakihirokawa/js/blob/master/display/angle.js</a></li>
-</ul>
-
-
-<h2>機能リスト</h2>
-
-<ol>
-<li><em>getRadian</em>: 指定した基点から目的座標までの角度をラジアン型で取得</li>
-<li><em>getDegree</em>: 指定した基点から目的座標までの角度をディグリー型で取得</li>
-</ol>
-
-
-<h2>使用例</h2>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c1">//基準座標と目標座標から角度を初期化</span>
-</span><span class='line'><span class="kd">var</span> <span class="nx">angle</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Angle</span><span class="p">(</span><span class="nx">criteriaX</span><span class="p">,</span> <span class="nx">criteriaY</span><span class="p">,</span> <span class="nx">aimX</span><span class="p">,</span> <span class="nx">aimY</span><span class="p">);</span>
-</span><span class='line'><span class="c1">//角度をラジアン型で取得</span>
-</span><span class='line'><span class="kd">var</span> <span class="nx">radian</span> <span class="o">=</span> <span class="nx">angle</span><span class="p">.</span><span class="nx">getRadian</span><span class="p">();</span>
-</span><span class='line'><span class="c1">//角度をディグリー型で取得</span>
-</span><span class='line'><span class="kd">var</span> <span class="nx">degree</span> <span class="o">=</span> <span class="nx">angle</span><span class="p">.</span><span class="nx">getDegree</span><span class="p">();</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>ソースコード</h2>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">Angle</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">criteriaX</span><span class="p">,</span> <span class="nx">criteriaY</span><span class="p">,</span> <span class="nx">aimX</span><span class="p">,</span> <span class="nx">aimY</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">nMouseX</span> <span class="o">=</span> <span class="nx">aimX</span> <span class="o">-</span> <span class="nx">criteriaX</span><span class="p">;</span>
-</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">nMouseY</span> <span class="o">=</span> <span class="nx">aimY</span> <span class="o">-</span> <span class="nx">criteriaY</span><span class="p">;</span>
-</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">nRadian</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">atan2</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">nMouseY</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">nMouseX</span><span class="p">);</span>
-</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">nDegree</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">nRadian</span> <span class="o">/</span> <span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">PI</span> <span class="o">/</span> <span class="mi">180</span><span class="p">);</span>
-</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">nAngle</span> <span class="o">=</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">nRadian</span> <span class="o">*</span> <span class="p">(</span><span class="mi">180</span> <span class="o">/</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">PI</span><span class="p">)</span> <span class="o">+</span> <span class="mi">360</span><span class="p">)</span> <span class="o">%</span> <span class="mi">360</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="nx">Angle</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">getRadian</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>  <span class="k">return</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">nRadian</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="nx">Angle</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">getDegree</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>  <span class="k">return</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">nDegree</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="nx">Angle</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">getAngle</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>  <span class="k">return</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">nAngle</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-		
-		
-		<div id="google-adsense-728_15">
-  <div class="google-adsense-728_15-container">
-    <script type="text/javascript"><!--
-    google_ad_client = "ca-pub-0667784050147760";
-    /* Dolice Lab:728_15 (Text only) */
-    google_ad_slot = "9219927027";
-    google_ad_width = 728;
-    google_ad_height = 15;
-    //-->
-    </script>
-    <script type="text/javascript"
-    src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
-    </script>
-  </div>
-</div>
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-03-16T13:46:00+09:00" pubdate data-updated="true">Mar 16<span>th</span>, 2013</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/download/'>download</a>, <a class='category' href='/blog/categories/javascript/'>javascript</a>
-
-
-</div>
-	
-</div>
-</article>
-
 <nav id="pagenavi">
     
         <a href="/blog/page/31/" class="prev">Prev</a>
@@ -469,7 +479,7 @@
   <div id="category" class="information-box">
 <section>
   <h1>Categories</h1>
-  <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (27)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (100)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (24)</a></li></ul>
+  <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (27)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (101)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (24)</a></li></ul>
 </section>
 <div id="google-adsense-200_200">
   <div class="google-adsense-200_200-container">
@@ -492,6 +502,10 @@
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/04/17/objc-cg-affine-transform-make-rotation/">アフィン変換を使用したアニメーション</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2013/04/16/objc-get-class-instance/">インスタンスのクラスを取得する</a>
@@ -527,10 +541,6 @@
     
       <li class="post">
         <a href="/blog/2013/04/11/objc-ns-timer-animation/">NSTimerを使用したアニメーション</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/04/11/objc-remove-objects-for-key/">辞書から複数のオブジェクトを削除する</a>
       </li>
     
   </ul>
