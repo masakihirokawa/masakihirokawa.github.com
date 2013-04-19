@@ -3,14 +3,14 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>Objective-Cで画像をカメラロールに保存 - Dolice Lab</title>
+	<title>Objective-Cで画像をカメラロールに保存する方法 - Dolice Lab</title>
 	
 	
-	<meta name="description" content="Objective-Cで画像をカメラロールに保存">
+	<meta name="description" content="Objective-Cで画像をカメラロールに保存する方法">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-	<meta property="og:title" content="Objective-Cで画像をカメラロールに保存 - Dolice Lab" />
-<meta property="og:description" content="Objective-Cで画像をカメラロールに保存" />
+	<meta property="og:title" content="Objective-Cで画像をカメラロールに保存する方法 - Dolice Lab" />
+<meta property="og:description" content="Objective-Cで画像をカメラロールに保存する方法" />
 <meta property="og:url" content="http://lab.dolice.net/blog/2013/03/14/save-images-in-objective-c/" />
 <meta property="og:image" content="http://lab.dolice.net/images/facebook-icon.jpg" />
 <meta property="og:author" content="Masaki Hirokawa" />
@@ -84,9 +84,18 @@
 		
 	
 	<div id="content" class="inner"><article class="post">
-	<h2 class="title">Objective-Cで画像をカメラロールに保存</h2>
+	<h2 class="title">Objective-Cで画像をカメラロールに保存する方法</h2>
 	<div class="entry-content">
-	  <p>画像をカメラロールに保存するには、以下のコードを使用できます。</p>
+	  <p>画像をカメラロールに保存するサンプルを以下に作成しました。</p>
+
+<h2>サンプルダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-ui-image-write-to-saved-photos-album">https://github.com/masakihirokawa/objc-ui-image-write-to-saved-photos-album</a></li>
+</ul>
+
+
+<h2>ソースコード</h2>
 
 <figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -104,15 +113,37 @@
 <span class='line-number'>14</span>
 <span class='line-number'>15</span>
 <span class='line-number'>16</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">saveButtonEvent</span> <span class="p">{</span>
-</span><span class='line'>  <span class="n">UIImage</span> <span class="o">*</span><span class="n">image</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIImage</span> <span class="nl">imageNamed:</span><span class="p">[</span><span class="n">self</span> <span class="nl">getImageFile:</span><span class="n">self</span><span class="p">.</span><span class="n">dataObject</span><span class="p">]];</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//保存する画像ファイル</span>
+</span><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="n">_imageName</span> <span class="o">=</span> <span class="s">@&quot;Pandora_640_1136.jpg&quot;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//画像を保存する</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">saveButtonEvent</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="c1">//保存する画像を指定</span>
+</span><span class='line'>  <span class="n">UIImage</span> <span class="o">*</span><span class="n">image</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIImage</span> <span class="nl">imageNamed:</span><span class="n">_imageName</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//画像保存完了時のセレクタ指定</span>
 </span><span class='line'>  <span class="kt">SEL</span> <span class="n">selector</span> <span class="o">=</span> <span class="k">@selector</span><span class="p">(</span><span class="nl">onCompleteCapture:didFinishSavingWithError:contextInfo:</span><span class="p">);</span>
+</span><span class='line'>  <span class="c1">//画像を保存する</span>
 </span><span class='line'>  <span class="n">UIImageWriteToSavedPhotosAlbum</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">self</span><span class="p">,</span> <span class="n">selector</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">onCompleteCapture:</span><span class="p">(</span><span class="n">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nv">screenImage</span> <span class="nf">didFinishSavingWithError:</span><span class="p">(</span><span class="n">NSError</span> <span class="o">*</span><span class="p">)</span><span class="nv">error</span> <span class="nf">contextInfo:</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="nv">contextInfo</span><span class="p">{</span>
-</span><span class='line'>  <span class="n">NSString</span> <span class="o">*</span><span class="n">message</span> <span class="o">=</span> <span class="n">NSLocalizedString</span><span class="p">(</span><span class="s">@&quot;saveSuccess&quot;</span><span class="p">,</span> <span class="nb">nil</span><span class="p">);</span>
-</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="n">error</span><span class="p">)</span> <span class="n">message</span> <span class="o">=</span> <span class="n">NSLocalizedString</span><span class="p">(</span><span class="s">@&quot;saveError&quot;</span><span class="p">,</span> <span class="nb">nil</span><span class="p">);</span>
+</span><span class='line'><span class="c1">//画像保存完了時のセレクタ</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">onCompleteCapture:</span><span class="p">(</span><span class="n">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nv">screenImage</span>
+</span><span class='line'> <span class="nf">didFinishSavingWithError:</span><span class="p">(</span><span class="n">NSError</span> <span class="o">*</span><span class="p">)</span><span class="nv">error</span> <span class="nf">contextInfo:</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="nv">contextInfo</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="n">NSString</span> <span class="o">*</span><span class="n">message</span> <span class="o">=</span> <span class="s">@&quot;画像を保存しました&quot;</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="n">error</span><span class="p">)</span> <span class="n">message</span> <span class="o">=</span> <span class="s">@&quot;画像の保存に失敗しました&quot;</span><span class="p">;</span>
 </span><span class='line'>  <span class="n">UIAlertView</span> <span class="o">*</span><span class="n">alert</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIAlertView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithTitle:</span> <span class="s">@&quot;&quot;</span>
 </span><span class='line'>                                                  <span class="nl">message:</span> <span class="n">message</span>
 </span><span class='line'>                                                 <span class="nl">delegate:</span> <span class="nb">nil</span>
@@ -215,7 +246,7 @@
   <div id="category" class="information-box">
 <section>
   <h1>Categories</h1>
-  <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (29)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (105)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (25)</a></li></ul>
+  <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (29)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (107)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (25)</a></li></ul>
 </section>
 <div id="google-adsense-200_200">
   <div class="google-adsense-200_200-container">
@@ -238,6 +269,14 @@
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/04/19/objc-start-animating-not-eraze-last-frame/">コマ送りアニメーションの最後の画像を消さないようにする方法</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/04/19/objc-property/">Objective-Cでメンバ変数をシンプルに宣言する方法</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2013/04/19/objc-ns-class-from-string/">クラス名からクラスを取得する</a>
@@ -269,14 +308,6 @@
     
       <li class="post">
         <a href="/blog/2013/04/15/objc-ns-time-zone-known-time-zone-names/">タイムゾーンの一覧を取得する</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/04/14/objc-calendar-date-by-adding-components/">指定した日時から計算した日時を取得する</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/04/14/objc-date-later-date/">2つの日時を比較し新しい方の日時を取得する</a>
       </li>
     
   </ul>
