@@ -6,11 +6,11 @@
 	<title>Dolice Lab</title>
 	
 	
-	<meta name="description" content="配列やセットから複数のオブジェクトを削除するには、「removeObjectsInArray」メソッドを使用します。サンプルを以下に作成しました。 サンプルダウンロード https://github.com/masakihirokawa/objc-remove-objects-in-array &hellip;">
+	<meta name="description" content="DatePickerで指定した日付をラベルに表示するサンプルを作成しました。DatePickerで選んだ日付が指定したフォーマットで表示されます。 サンプルダウンロード https://github.com/masakihirokawa/objc-date-picker 必要な手順 &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	<meta property="og:title" content="Dolice Lab" />
-<meta property="og:description" content="配列やセットから複数のオブジェクトを削除するには、「removeObjectsInArray」メソッドを使用します。サンプルを以下に作成しました。 サンプルダウンロード https://github.com/masakihirokawa/objc-remove-objects-in-array &hellip;" />
+<meta property="og:description" content="DatePickerで指定した日付をラベルに表示するサンプルを作成しました。DatePickerで選んだ日付が指定したフォーマットで表示されます。 サンプルダウンロード https://github.com/masakihirokawa/objc-date-picker 必要な手順 &hellip;" />
 <meta property="og:url" content="http://lab.dolice.net/blog/page/13/" />
 <meta property="og:image" content="http://lab.dolice.net/images/facebook-icon.jpg" />
 <meta property="og:author" content="Masaki Hirokawa" />
@@ -84,6 +84,127 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/04/02/objc-date-picker/">
+		
+			DatePickerで入力した日付をラベルに表示する</a>
+	</h2>
+	<div class="entry-content">
+		<p>DatePickerで指定した日付をラベルに表示するサンプルを作成しました。DatePickerで選んだ日付が指定したフォーマットで表示されます。</p>
+
+<h2>サンプルダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-date-picker">https://github.com/masakihirokawa/objc-date-picker</a></li>
+</ul>
+
+
+<h2>必要な手順</h2>
+
+<ol>
+<li>DatePickerを MainStoryboardに配置しヘッダファイルと接続します</li>
+<li>日付を表示するための UILabelを配置し、ヘッダファイルにプロパティ定義します</li>
+</ol>
+
+
+<h2>ソースコード</h2>
+
+<h3>ViewController.h</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//ラベルを定義</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">weak</span><span class="p">,</span> <span class="n">nonatomic</span><span class="p">)</span> <span class="kt">IBOutlet</span> <span class="n">UILabel</span> <span class="o">*</span><span class="n">dateLabel</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//DatePickerを定義</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">weak</span><span class="p">,</span> <span class="n">nonatomic</span><span class="p">)</span> <span class="kt">IBOutlet</span> <span class="n">UIDatePicker</span> <span class="o">*</span><span class="n">myDatePicker</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//DatePickerを操作した時のイベントを定義</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">changeDate:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>ViewController.m</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">changeDate:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span> <span class="p">{</span>
+</span><span class='line'>  <span class="c1">//初期化</span>
+</span><span class='line'>  <span class="n">NSDateFormatter</span> <span class="o">*</span><span class="n">df</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSDateFormatter</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">//日付のフォーマット指定</span>
+</span><span class='line'>  <span class="n">df</span><span class="p">.</span><span class="n">dateFormat</span> <span class="o">=</span> <span class="s">@&quot;yyyy/MM/dd HH:mm&quot;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">//ラベルに日付を表示</span>
+</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">dateLabel</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="p">[</span><span class="n">df</span> <span class="nl">stringFromDate:</span><span class="n">self</span><span class="p">.</span><span class="n">myDatePicker</span><span class="p">.</span><span class="n">date</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+		
+		
+		<div id="google-adsense-728_15">
+  <div class="google-adsense-728_15-container">
+    <script type="text/javascript"><!--
+    google_ad_client = "ca-pub-0667784050147760";
+    /* Dolice Lab:728_15 (Text only) */
+    google_ad_slot = "9219927027";
+    google_ad_width = 728;
+    google_ad_height = 15;
+    //-->
+    </script>
+    <script type="text/javascript"
+    src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+    </script>
+  </div>
+</div>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-04-02T18:54:00+09:00" pubdate data-updated="true">Apr 2<span>nd</span>, 2013</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>, <a class='category' href='/blog/categories/xcode/'>xcode</a>
+
+
+</div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -359,173 +480,6 @@ orderedSet: Orange</p></blockquote>
 </div>
 </article>
 
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/04/01/objc-ui-action-sheet/">
-		
-			UIActionSheetでアクションシートを表示する</a>
-	</h2>
-	<div class="entry-content">
-		<p>UIActionSheetを使用してアクションシートを表示するサンプルを以下に作成しました。</p>
-
-<p>ボタンをタップでアクションシートが呼ばれ、アクションシート内のボタンをタップするとインデックス番号がラベルに表示されます。</p>
-
-<h2>サンプルダウンロード</h2>
-
-<ul>
-<li><a href="https://github.com/masakihirokawa/objc-ui-action-sheet">https://github.com/masakihirokawa/objc-ui-action-sheet</a></li>
-</ul>
-
-
-<h2>ソースコード</h2>
-
-<h3>ViewController.h</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;UIKit/UIKit.h&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> : <span class="nc">UIViewController</span> <span class="o">&lt;</span><span class="n">UIActionSheetDelegate</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">weak</span><span class="p">,</span> <span class="n">nonatomic</span><span class="p">)</span> <span class="kt">IBOutlet</span> <span class="n">UILabel</span> <span class="o">*</span><span class="n">myLabel</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">tapButton:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>ViewController.m</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;ViewController.h&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> <span class="p">()</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@implementation</span> <span class="nc">ViewController</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
-</span><span class='line'>  <span class="c1">//ラベルのテキストを非表示にする</span>
-</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">myLabel</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">tapButton:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span> <span class="p">{</span>
-</span><span class='line'>  <span class="c1">//ボタンをタップでアクションシート呼び出し</span>
-</span><span class='line'>  <span class="n">UIActionSheet</span> <span class="o">*</span><span class="n">actionSheet</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIActionSheet</span> <span class="n">alloc</span><span class="p">]</span>
-</span><span class='line'>                                <span class="nl">initWithTitle:</span><span class="s">@&quot;Title&quot;</span>
-</span><span class='line'>                                <span class="nl">delegate:</span><span class="n">self</span>
-</span><span class='line'>                                <span class="nl">cancelButtonTitle:</span><span class="s">@&quot;Cancel&quot;</span>
-</span><span class='line'>                                <span class="nl">destructiveButtonTitle:</span><span class="s">@&quot;Caution&quot;</span>
-</span><span class='line'>                                <span class="nl">otherButtonTitles:</span><span class="s">@&quot;One&quot;</span><span class="p">,</span><span class="s">@&quot;Two&quot;</span><span class="p">,</span> <span class="nb">nil</span><span class="p">];</span>
-</span><span class='line'>  <span class="c1">//アクションシートを Viewに追加</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">actionSheet</span> <span class="nl">showInView:</span><span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">actionSheet:</span><span class="p">(</span><span class="n">UIActionSheet</span> <span class="o">*</span><span class="p">)</span><span class="nv">actionSheet</span>
-</span><span class='line'><span class="nf">clickedButtonAtIndex:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">buttonIndex</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="c1">//アクションシートのボタンが押された時に、ボタンのインデックス番号を返す</span>
-</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">myLabel</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">@&quot;ボタン=%d&quot;</span><span class="p">,</span> <span class="n">buttonIndex</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-		
-		
-		<div id="google-adsense-728_15">
-  <div class="google-adsense-728_15-container">
-    <script type="text/javascript"><!--
-    google_ad_client = "ca-pub-0667784050147760";
-    /* Dolice Lab:728_15 (Text only) */
-    google_ad_slot = "9219927027";
-    google_ad_width = 728;
-    google_ad_height = 15;
-    //-->
-    </script>
-    <script type="text/javascript"
-    src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
-    </script>
-  </div>
-</div>
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-04-01T17:52:00+09:00" pubdate data-updated="true">Apr 1<span>st</span>, 2013</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>
-
-
-</div>
-	
-</div>
-</article>
-
 <nav id="pagenavi">
     
         <a href="/blog/page/12/" class="prev">Prev</a>
@@ -563,7 +517,7 @@ orderedSet: Orange</p></blockquote>
   <div id="category" class="information-box">
 <section>
   <h1>Categories</h1>
-  <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (29)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (107)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (25)</a></li></ul>
+  <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (29)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (108)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (25)</a></li></ul>
 </section>
 <div id="google-adsense-200_200">
   <div class="google-adsense-200_200-container">
@@ -616,15 +570,15 @@ orderedSet: Orange</p></blockquote>
       </li>
     
       <li class="post">
+        <a href="/blog/2013/04/17/objc-is-kind-of-class/">特定のクラスのインスタンスか調べる</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2013/04/16/objc-get-class-instance/">インスタンスのクラスを取得する</a>
       </li>
     
       <li class="post">
         <a href="/blog/2013/04/15/download-objc-column-thumbnail-list/">CollectionViewを使わずにサムネイルをタイル状に並べる方法</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/04/15/objc-ns-time-zone-known-time-zone-names/">タイムゾーンの一覧を取得する</a>
       </li>
     
   </ul>
