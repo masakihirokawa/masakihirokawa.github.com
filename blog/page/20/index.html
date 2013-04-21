@@ -6,41 +6,11 @@
 	<title>Dolice Lab</title>
 	
 	
-	<meta name="description" content="配列や順序付けされたセットにオブジェクトを挿入する方法を以下に記載します。 サンプルダウンロード https://github.com/masakihirokawa/objc-inser-object ソースコード 1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16 &hellip;">
+	<meta name="description" content="配列やセットに複数のオブジェクトを挿入するには、「insertObjects:atIndexes:」メソッドを使用します。このメソッドは、引数で指定された配列内に格納されているオブジェクトを「atIndexes」で指定された位置に挿入します。 サンプルダウンロード https://github. &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	<meta property="og:title" content="Dolice Lab" />
-<meta property="og:description" content="配列や順序付けされたセットにオブジェクトを挿入する方法を以下に記載します。 サンプルダウンロード https://github.com/masakihirokawa/objc-inser-object ソースコード 1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16 &hellip;" />
+<meta property="og:description" content="配列やセットに複数のオブジェクトを挿入するには、「insertObjects:atIndexes:」メソッドを使用します。このメソッドは、引数で指定された配列内に格納されているオブジェクトを「atIndexes」で指定された位置に挿入します。 サンプルダウンロード https://github. &hellip;" />
 <meta property="og:url" content="http://lab.dolice.net/blog/page/20/" />
 <meta property="og:image" content="http://lab.dolice.net/images/facebook-icon.jpg" />
 <meta property="og:author" content="Masaki Hirokawa" />
@@ -114,6 +84,119 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/03/28/objc-insert-objects/">
+		
+			配列やセットに複数のオブジェクトを挿入する</a>
+	</h2>
+	<div class="entry-content">
+		<p>配列やセットに複数のオブジェクトを挿入するには、「insertObjects:atIndexes:」メソッドを使用します。このメソッドは、引数で指定された配列内に格納されているオブジェクトを「atIndexes」で指定された位置に挿入します。</p>
+
+<h2>サンプルダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-insert-objects">https://github.com/masakihirokawa/objc-insert-objects</a></li>
+</ul>
+
+
+<h2>ソースコード</h2>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">main</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="c1">//変更可能な配列を生成する</span>
+</span><span class='line'>  <span class="n">NSMutableArray</span> <span class="o">*</span><span class="n">myArray</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">myArray</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSMutableArray</span> <span class="nl">arrayWithObject:</span><span class="s">@&quot;Apple&quot;</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">//2つのオブジェクトを挿入する</span>
+</span><span class='line'>  <span class="n">NSIndexSet</span> <span class="o">*</span><span class="n">indexes</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">indexes</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSIndexSet</span> <span class="nl">indexSetWithIndexesInRange:</span>
+</span><span class='line'>             <span class="n">NSMakeRange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">)];</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">NSArray</span> <span class="o">*</span><span class="n">insertedObjects</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">insertedObjects</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSArray</span> <span class="nl">arrayWithObjects:</span>
+</span><span class='line'>                     <span class="s">@&quot;Banana&quot;</span><span class="p">,</span> <span class="s">@&quot;Orange&quot;</span><span class="p">,</span> <span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">myArray</span> <span class="nl">insertObjects:</span><span class="n">insertedObjects</span>
+</span><span class='line'>              <span class="nl">atIndexes:</span><span class="n">indexes</span><span class="p">];</span>
+</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;%@&quot;</span><span class="p">,</span> <span class="n">myArray</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">//変更可能なセットを生成する</span>
+</span><span class='line'>  <span class="n">NSMutableArray</span> <span class="o">*</span><span class="n">orderedSet</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">orderedSet</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSMutableOrderedSet</span> <span class="nl">orderedSetWithObject:</span><span class="s">@&quot;Apple&quot;</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">//2つのオブジェクトを挿入する</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">orderedSet</span> <span class="nl">insertObjects:</span><span class="n">insertedObjects</span>
+</span><span class='line'>                  <span class="nl">atIndexes:</span><span class="n">indexes</span><span class="p">];</span>
+</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;%@&quot;</span><span class="p">,</span> <span class="n">orderedSet</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>実行結果</h2>
+
+<blockquote><p>Banana<br />
+Orange<br />
+Apple</p></blockquote>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-28T09:35:00+09:00" pubdate data-updated="true">Mar 28<span>th</span>, 2013</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>
+
+
+</div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -443,102 +526,6 @@ Apple</p></blockquote>
 </div>
 </article>
 
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/03/27/objc-array-search-range/">
-		
-			配列から範囲を指定してオブジェクトを検索する</a>
-	</h2>
-	<div class="entry-content">
-		<p>配列から範囲を指定して検索するには「indexOfObject:inRange」メソッドを使用します。このメソッドは、最初の引数で指定したオブジェクトを引数（inRange）の範囲内で検索します。オブジェクトが見つかったらインデックス番号を返し、見つからない時は「NSNotFound」を返します。</p>
-
-<h2>サンプルダウンロード</h2>
-
-<ul>
-<li><a href="https://github.com/masakihirokawa/objc-index-of-object-make-range">https://github.com/masakihirokawa/objc-index-of-object-make-range</a></li>
-</ul>
-
-
-<h2>ソースコード</h2>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//配列を生成する</span>
-</span><span class='line'><span class="n">NSArray</span> <span class="o">*</span><span class="n">myArray</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSArray</span> <span class="nl">arrayWithObjects:</span>
-</span><span class='line'>  <span class="s">@&quot;Apple&quot;</span><span class="p">,</span> <span class="s">@&quot;Banana&quot;</span><span class="p">,</span> <span class="s">@&quot;Orange&quot;</span><span class="p">,</span> <span class="nb">nil</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//検索範囲を指定して検索する</span>
-</span><span class='line'><span class="n">NSInteger</span> <span class="n">u</span> <span class="o">=</span> <span class="p">[</span><span class="n">myArray</span> <span class="nl">indexOfObject:</span><span class="s">@&quot;Orange&quot;</span>
-</span><span class='line'>  <span class="nl">inRange:</span><span class="n">NSMakeRange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)];</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="n">u</span> <span class="o">==</span> <span class="n">NSNotFound</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;Not Found&quot;</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;%lu&quot;</span><span class="p">,</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">long</span><span class="p">)</span><span class="n">u</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>実行結果</h2>
-
-<blockquote><p>2</p></blockquote>
-
-<h2>メソッドの定義</h2>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nf">indexOfObject:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">obj</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nf">indexOfObject:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">obj</span> <span class="nf">inRange:</span><span class="p">(</span><span class="n">NSRange</span><span class="p">)</span><span class="nv">range</span><span class="p">;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-03-27T09:10:00+09:00" pubdate data-updated="true">Mar 27<span>th</span>, 2013</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>
-
-
-</div>
-	
-</div>
-</article>
-
 <nav id="pagenavi">
     
         <a href="/blog/page/19/" class="prev">Prev</a>
@@ -576,7 +563,7 @@ Apple</p></blockquote>
   <div id="category" class="information-box">
 <section>
   <h1>Categories</h1>
-  <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (29)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (108)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (25)</a></li></ul>
+  <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (29)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (109)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (25)</a></li></ul>
 </section>
 
 
@@ -585,6 +572,10 @@ Apple</p></blockquote>
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/04/21/objc-ns-selector-from-string/">セレクタの文字列からセレクタを取得する</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2013/04/20/objc-is-kind-of-class/">特定のクラスのインスタンスか調べる</a>
@@ -620,10 +611,6 @@ Apple</p></blockquote>
     
       <li class="post">
         <a href="/blog/2013/04/16/objc-get-class-instance/">インスタンスのクラスを取得する</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/04/15/download-objc-column-thumbnail-list/">CollectionViewを使わずにサムネイルをタイル状に並べる方法</a>
       </li>
     
   </ul>

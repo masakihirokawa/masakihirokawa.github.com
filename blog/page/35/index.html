@@ -6,15 +6,23 @@
 	<title>Dolice Lab</title>
 	
 	
-	<meta name="description" content="UIViewに新しくレイヤーを追加する場合は以下のように記述します。 1
-[self.view addSubview:_sampleView]; 最前面にレイヤーを追加する場合は以下のように記述します。 1
-[self.view insertSubview:_sampleView atIndex &hellip;">
+	<meta name="description" content="カメラで写真を撮るために必要なコードは以下の通りです。 サンプルダウンロード https://github.com/masakihirokawa/objc-ui-image-picker ソースコード ViewController.h 1
+2
+3
+4
+5
+6
+//デリゲートに &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	<meta property="og:title" content="Dolice Lab" />
-<meta property="og:description" content="UIViewに新しくレイヤーを追加する場合は以下のように記述します。 1
-[self.view addSubview:_sampleView]; 最前面にレイヤーを追加する場合は以下のように記述します。 1
-[self.view insertSubview:_sampleView atIndex &hellip;" />
+<meta property="og:description" content="カメラで写真を撮るために必要なコードは以下の通りです。 サンプルダウンロード https://github.com/masakihirokawa/objc-ui-image-picker ソースコード ViewController.h 1
+2
+3
+4
+5
+6
+//デリゲートに &hellip;" />
 <meta property="og:url" content="http://lab.dolice.net/blog/page/35/" />
 <meta property="og:image" content="http://lab.dolice.net/images/facebook-icon.jpg" />
 <meta property="og:author" content="Masaki Hirokawa" />
@@ -88,6 +96,122 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/03/20/objc-camera/">
+		
+			iPhoneのカメラで写真を撮るまでに必要なコード</a>
+	</h2>
+	<div class="entry-content">
+		<p>カメラで写真を撮るために必要なコードは以下の通りです。</p>
+
+<h2>サンプルダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-ui-image-picker">https://github.com/masakihirokawa/objc-ui-image-picker</a></li>
+</ul>
+
+
+<h2>ソースコード</h2>
+
+<h3>ViewController.h</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//デリゲートに UIImagePickerControllerDelegateと UINavigationControllerDelegateを指定</span>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> : <span class="nc">UIViewController</span> <span class="o">&lt;</span><span class="n">UIImagePickerControllerDelegate</span><span class="p">,</span> <span class="n">UINavigationControllerDelegate</span><span class="o">&gt;</span>
+</span><span class='line'><span class="c1">//カメラで撮った写真を表示する UIImageView</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">weak</span><span class="p">,</span> <span class="n">nonatomic</span><span class="p">)</span> <span class="kt">IBOutlet</span> <span class="n">UIImageView</span> <span class="o">*</span><span class="n">imageView</span><span class="p">;</span>
+</span><span class='line'><span class="c1">//撮影ボタン</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">showImagePicker:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>ViewController.m</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//撮影ボタンが押された時の動作</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">showImagePicker:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span> <span class="p">{</span>
+</span><span class='line'>  <span class="n">UIImagePickerControllerSourceType</span> <span class="n">sourceType</span>
+</span><span class='line'>    <span class="o">=</span> <span class="n">UIImagePickerControllerSourceTypeCamera</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">([</span><span class="n">UIImagePickerController</span> <span class="nl">isSourceTypeAvailable:</span><span class="n">sourceType</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">UIImagePickerController</span> <span class="o">*</span><span class="n">picker</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIImagePickerController</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">picker</span><span class="p">.</span><span class="n">sourceType</span> <span class="o">=</span> <span class="n">sourceType</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">picker</span><span class="p">.</span><span class="n">delegate</span> <span class="o">=</span> <span class="n">self</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="nl">presentViewController:</span><span class="n">picker</span> <span class="nl">animated:</span><span class="n">YES</span> <span class="nl">completion:</span><span class="nb">NULL</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//撮影後にイメージを表示</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">imagePickerController:</span><span class="p">(</span><span class="n">UIImagePickerController</span> <span class="o">*</span><span class="p">)</span><span class="nv">picker</span> <span class="nf">disFinishPickingMediaWithInfo:</span><span class="p">(</span><span class="n">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nv">info</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="n">UIImage</span> <span class="o">*</span><span class="n">image</span> <span class="o">=</span> <span class="p">[</span><span class="n">info</span> <span class="nl">objectForKey:</span><span class="n">UIImagePickerControllerOriginalImage</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">self</span> <span class="nl">dismissViewControllerAnimated:</span><span class="n">YES</span> <span class="nl">completion:</span><span class="o">^</span><span class="p">{</span>
+</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">imageView</span><span class="p">.</span><span class="n">image</span> <span class="o">=</span><span class="n">image</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">UIImageWriteToSavedPhotosAlbum</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="nb">nil</span><span class="p">,</span> <span class="nb">nil</span><span class="p">,</span> <span class="nb">nil</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-20T17:34:00+09:00" pubdate data-updated="true">Mar 20<span>th</span>, 2013</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>
+
+
+</div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -263,169 +387,6 @@
 </div>
 </article>
 
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/03/16/javascript-randomize/">
-		
-			JavaScriptの乱数生成クラス</a>
-	</h2>
-	<div class="entry-content">
-		<p>JavaScriptで乱数を生成するクラス（<a href="https://github.com/masakihirokawa/js/blob/master/util/randomize.js">Randomize.js</a>）を作成しました。</p>
-
-<p>各インスタンスの機能は以下の通りです。</p>
-
-<h2>ダウンロード</h2>
-
-<ul>
-<li><a href="https://github.com/masakihirokawa/js/blob/master/util/randomize.js">https://github.com/masakihirokawa/js/blob/master/util/randomize.js</a></li>
-</ul>
-
-
-<h2>機能リスト</h2>
-
-<ol>
-<li><em>shuffleArray</em>: 配列をシャッフルし取得</li>
-<li><em>shuffle</em>: 指定した範囲内の数列をシャッフルし取得</li>
-<li><em>exact</em>: 指定したナンバー以外の乱数を取得</li>
-<li><em>range</em>: 指定した範囲内の数列から乱数を取得</li>
-</ol>
-
-
-<h2>使用方法</h2>
-
-<h3>myArrayの要素をシャッフルし、shuffledArrayへ代入する</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">myArray</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">9</span><span class="p">]</span>
-</span><span class='line'><span class="kd">var</span> <span class="nx">shuffledArray</span> <span class="o">=</span> <span class="nx">Randomize</span><span class="p">.</span><span class="nx">shuffleArray</span><span class="p">(</span><span class="nx">myArray</span><span class="p">);</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>1～12までの数値をシャッフルし、12個の要素を持つ配列として shuffledArrayへ代入する</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">shuffledArray</span> <span class="o">=</span> <span class="nx">Randomize</span><span class="p">.</span><span class="nx">shuffle</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">12</span><span class="p">);</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>1～12までの乱数を取得し、myUintへ代入する(ただし 第1引数に渡した 3は返らない)</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">myUint</span> <span class="o">=</span> <span class="nx">Randomize</span><span class="p">.</span><span class="nx">exact</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">12</span><span class="p">);</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>1～12までの乱数を取得し、myUintへ代入する</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">myUint</span> <span class="o">=</span> <span class="nx">Randomize</span><span class="p">.</span><span class="nx">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">12</span><span class="p">);</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>ソースコード</h2>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">Randomize</span> <span class="o">=</span> <span class="p">{</span>
-</span><span class='line'>  <span class="nx">shuffleList</span> <span class="o">:</span> <span class="p">[],</span>
-</span><span class='line'>  <span class="nx">shuffleNum</span> <span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
-</span><span class='line'>  <span class="nx">tmpList</span> <span class="o">:</span> <span class="p">[],</span>
-</span><span class='line'>  <span class="nx">tmpId</span> <span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
-</span><span class='line'>  <span class="nx">shuffleArray</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">arr</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="nx">Randomize</span><span class="p">.</span><span class="nx">shuffleList</span> <span class="o">=</span> <span class="nx">arr</span><span class="p">;</span>
-</span><span class='line'>    <span class="nx">Randomize</span><span class="p">.</span><span class="nx">shuffleNum</span> <span class="o">=</span> <span class="nx">Randomize</span><span class="p">.</span><span class="nx">shuffleList</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span>
-</span><span class='line'>    <span class="k">while</span><span class="p">(</span><span class="nx">Randomize</span><span class="p">.</span><span class="nx">shuffleNum</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">_m</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span> <span class="o">*</span> <span class="nx">Randomize</span><span class="p">.</span><span class="nx">shuffleNum</span><span class="p">);</span>
-</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">_n</span> <span class="o">=</span> <span class="nx">Randomize</span><span class="p">.</span><span class="nx">shuffleList</span><span class="p">[</span><span class="o">--</span><span class="nx">Randomize</span><span class="p">.</span><span class="nx">shuffleNum</span><span class="p">];</span>
-</span><span class='line'>      <span class="nx">Randomize</span><span class="p">.</span><span class="nx">shuffleList</span><span class="p">[</span><span class="nx">Randomize</span><span class="p">.</span><span class="nx">shuffleNum</span><span class="p">]</span> <span class="o">=</span> <span class="nx">Randomize</span><span class="p">.</span><span class="nx">shuffleList</span><span class="p">[</span><span class="k">this</span><span class="p">.</span><span class="nx">_m</span><span class="p">];</span>
-</span><span class='line'>      <span class="nx">Randomize</span><span class="p">.</span><span class="nx">shuffleList</span><span class="p">[</span><span class="k">this</span><span class="p">.</span><span class="nx">_m</span><span class="p">]</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">_n</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>    <span class="k">return</span> <span class="p">(</span><span class="nx">Randomize</span><span class="p">.</span><span class="nx">shuffleList</span><span class="p">);</span>
-</span><span class='line'>  <span class="p">},</span>
-</span><span class='line'>  <span class="nx">shuffle</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">min</span><span class="p">,</span> <span class="nx">max</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">max</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>      <span class="nx">Randomize</span><span class="p">.</span><span class="nx">tmpList</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">=</span> <span class="nx">i</span> <span class="o">+</span> <span class="nx">min</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>    <span class="nx">Randomize</span><span class="p">.</span><span class="nx">shuffleList</span> <span class="o">=</span> <span class="nx">Randomize</span><span class="p">.</span><span class="nx">shuffleArray</span><span class="p">(</span><span class="nx">Randomize</span><span class="p">.</span><span class="nx">tmpList</span><span class="p">);</span>
-</span><span class='line'>    <span class="k">return</span> <span class="p">(</span><span class="nx">Randomize</span><span class="p">.</span><span class="nx">shuffleList</span><span class="p">);</span>
-</span><span class='line'>  <span class="p">},</span>
-</span><span class='line'>  <span class="nx">exact</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">exceptId</span><span class="p">,</span> <span class="nx">min</span><span class="p">,</span> <span class="nx">max</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="k">do</span> <span class="p">{</span>
-</span><span class='line'>      <span class="nx">Randomize</span><span class="p">.</span><span class="nx">tmpId</span> <span class="o">=</span> <span class="nx">Randomize</span><span class="p">.</span><span class="nx">range</span><span class="p">(</span><span class="nx">min</span><span class="p">,</span> <span class="nx">max</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">}</span> <span class="k">while</span> <span class="p">(</span><span class="nx">Randomize</span><span class="p">.</span><span class="nx">tmpId</span> <span class="o">==</span> <span class="nx">exceptId</span><span class="p">);</span>
-</span><span class='line'>    <span class="k">return</span> <span class="p">(</span><span class="nx">Randomize</span><span class="p">.</span><span class="nx">tmpId</span><span class="p">);</span>
-</span><span class='line'>  <span class="p">},</span>
-</span><span class='line'>  <span class="nx">range</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">min</span><span class="p">,</span> <span class="nx">max</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span> <span class="o">*</span> <span class="p">(</span><span class="nx">max</span> <span class="o">-</span> <span class="nx">min</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span> <span class="o">+</span> <span class="nx">min</span><span class="p">);</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-03-16T13:21:00+09:00" pubdate data-updated="true">Mar 16<span>th</span>, 2013</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/download/'>download</a>, <a class='category' href='/blog/categories/javascript/'>javascript</a>
-
-
-</div>
-	
-</div>
-</article>
-
 <nav id="pagenavi">
     
         <a href="/blog/page/34/" class="prev">Prev</a>
@@ -463,7 +424,7 @@
   <div id="category" class="information-box">
 <section>
   <h1>Categories</h1>
-  <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (29)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (108)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (25)</a></li></ul>
+  <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (29)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (109)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (25)</a></li></ul>
 </section>
 
 
@@ -472,6 +433,10 @@
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/04/21/objc-ns-selector-from-string/">セレクタの文字列からセレクタを取得する</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2013/04/20/objc-is-kind-of-class/">特定のクラスのインスタンスか調べる</a>
@@ -507,10 +472,6 @@
     
       <li class="post">
         <a href="/blog/2013/04/16/objc-get-class-instance/">インスタンスのクラスを取得する</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/04/15/download-objc-column-thumbnail-list/">CollectionViewを使わずにサムネイルをタイル状に並べる方法</a>
       </li>
     
   </ul>
