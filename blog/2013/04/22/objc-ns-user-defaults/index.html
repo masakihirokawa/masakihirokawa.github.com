@@ -3,20 +3,20 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>UISliderを使用してラベルの値を変化させる - Dolice Lab</title>
+	<title>ユーザーデフォルトに設定値を保存する - Dolice Lab</title>
 	
 	
-	<meta name="description" content="UISliderを使用してラベルの値を変化させる">
+	<meta name="description" content="ユーザーデフォルトに設定値を保存する">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-	<meta property="og:title" content="UISliderを使用してラベルの値を変化させる - Dolice Lab" />
-<meta property="og:description" content="UISliderを使用してラベルの値を変化させる" />
-<meta property="og:url" content="http://lab.dolice.net/blog/2013/04/03/xcode-objc-ui-slider/" />
+	<meta property="og:title" content="ユーザーデフォルトに設定値を保存する - Dolice Lab" />
+<meta property="og:description" content="ユーザーデフォルトに設定値を保存する" />
+<meta property="og:url" content="http://lab.dolice.net/blog/2013/04/22/objc-ns-user-defaults/" />
 <meta property="og:image" content="http://lab.dolice.net/images/facebook-icon.jpg" />
 <meta property="og:author" content="Masaki Hirokawa" />
 <meta property="og:site_name" content="Dolice Lab" />
 	<link href="/atom.xml" rel="alternate" title="Dolice Lab" type="application/atom+xml">
-	<link rel="canonical" href="http://lab.dolice.net/blog/2013/04/03/xcode-objc-ui-slider/">
+	<link rel="canonical" href="http://lab.dolice.net/blog/2013/04/22/objc-ns-user-defaults/">
 	<link href="/favicon.ico" rel="shortcut icon">
 	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
 	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
@@ -84,32 +84,20 @@
 		
 	
 	<div id="content" class="inner"><article class="post">
-	<h2 class="title">UISliderを使用してラベルの値を変化させる</h2>
+	<h2 class="title">ユーザーデフォルトに設定値を保存する</h2>
 	<div class="entry-content">
-	  <p>UISliderをスライドさせた値をラベルに表示するサンプルを作成しました。</p>
+	  <p>ユーザーデフォルトに設定値を保存するサンプルを以下に作成しました。</p>
 
-<p>スライダーの最大値を1と指定し、スライダーを離した時だけラベルの値を更新するよう設定しています（Continuousのチェックボックスをオフ）。</p>
+<p>このコードを実行すると、「~/Library/Preferences/SaveUserDefaults.plist」というファイルが作成され、設定値が保存されます。</p>
 
 <h2>サンプルダウンロード</h2>
 
 <ul>
-<li><a href="https://github.com/masakihirokawa/objc-ui-slider">https://github.com/masakihirokawa/objc-ui-slider</a></li>
+<li><a href="https://github.com/masakihirokawa/objc-ns-user-defaults2">https://github.com/masakihirokawa/objc-ns-user-defaults2</a></li>
 </ul>
 
 
-<h2>必要な手順</h2>
-
-<ol>
-<li>UISliderを MainStoryboardに配置し、ヘッダファイルにプロパティ定義します</li>
-<li>UISliderが動作した時のメソッドをヘッダファイルに定義します</li>
-<li>MainStoryboardにあるスライダーを選択し、Update Eventsの Continuousのチェックボックスをオフにします（これによりスライダーを離した時のみ値が更新されるようになります）</li>
-<li>スライダーからの値を表示するための UILabelを配置し、ヘッダファイルにプロパティ定義します</li>
-</ol>
-
-
 <h2>ソースコード</h2>
-
-<h3>ViewController.h</h3>
 
 <figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -119,26 +107,23 @@
 <span class='line-number'>6</span>
 <span class='line-number'>7</span>
 <span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//ラベルのプロパティ定義</span>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">weak</span><span class="p">,</span> <span class="n">nonatomic</span><span class="p">)</span> <span class="kt">IBOutlet</span> <span class="n">UILabel</span> <span class="o">*</span><span class="n">myLabel</span><span class="p">;</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">main</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="c1">//ユーザーデフォルトを取得する</span>
+</span><span class='line'>  <span class="n">NSUserDefaults</span> <span class="o">*</span><span class="n">userDefaults</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">userDefaults</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSUserDefaults</span> <span class="n">standardUserDefaults</span><span class="p">];</span>
 </span><span class='line'>
-</span><span class='line'><span class="c1">//テキストフィールドのプロパティ定義</span>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">weak</span><span class="p">,</span> <span class="n">nonatomic</span><span class="p">)</span> <span class="kt">IBOutlet</span> <span class="n">UITextField</span> <span class="o">*</span><span class="n">myTextField</span><span class="p">;</span>
+</span><span class='line'>  <span class="c1">//設定値を保存する</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">userDefaults</span> <span class="nl">setInteger:</span><span class="mi">6</span>
+</span><span class='line'>                    <span class="nl">forKey:</span><span class="s">@&quot;settingValue&quot;</span><span class="p">];</span>
 </span><span class='line'>
-</span><span class='line'><span class="c1">//テキスト入力のメソッド定義</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">inputText:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span><span class="p">;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>ViewController.m</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">inputText:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span> <span class="p">{</span>
-</span><span class='line'>  <span class="c1">//入力されたテキストをラベルに表示</span>
-</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">myLabel</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">myTextField</span><span class="p">.</span><span class="n">text</span><span class="p">;</span>
+</span><span class='line'>  <span class="c1">//ファイルに反映する</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">userDefaults</span> <span class="n">synchronize</span><span class="p">];</span>
 </span><span class='line'><span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
@@ -161,11 +146,11 @@
   
 
 
-<time datetime="2013-04-03T10:31:00+09:00" pubdate data-updated="true">Apr 3<span>rd</span>, 2013</time></div>
+<time datetime="2013-04-22T10:39:00+09:00" pubdate data-updated="true">Apr 22<span>nd</span>, 2013</time></div>
 	<div class="tags">
 
 
-	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>, <a class='category' href='/blog/categories/xcode/'>xcode</a>
+	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>
 
 
 </div>
