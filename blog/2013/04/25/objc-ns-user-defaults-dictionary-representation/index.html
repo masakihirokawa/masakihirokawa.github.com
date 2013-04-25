@@ -3,20 +3,20 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>辞書を複製する - Dolice Lab</title>
+	<title>ユーザーデフォルトから全ての設定値を取得する - Dolice Lab</title>
 	
 	
-	<meta name="description" content="辞書を複製する">
+	<meta name="description" content="ユーザーデフォルトから全ての設定値を取得する">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-	<meta property="og:title" content="辞書を複製する - Dolice Lab" />
-<meta property="og:description" content="辞書を複製する" />
-<meta property="og:url" content="http://lab.dolice.net/blog/2013/03/24/objc-duplicate-dictionary/" />
+	<meta property="og:title" content="ユーザーデフォルトから全ての設定値を取得する - Dolice Lab" />
+<meta property="og:description" content="ユーザーデフォルトから全ての設定値を取得する" />
+<meta property="og:url" content="http://lab.dolice.net/blog/2013/04/25/objc-ns-user-defaults-dictionary-representation/" />
 <meta property="og:image" content="http://lab.dolice.net/images/facebook-icon.jpg" />
 <meta property="og:author" content="Masaki Hirokawa" />
 <meta property="og:site_name" content="Dolice Lab" />
 	<link href="/atom.xml" rel="alternate" title="Dolice Lab" type="application/atom+xml">
-	<link rel="canonical" href="http://lab.dolice.net/blog/2013/03/24/objc-duplicate-dictionary/">
+	<link rel="canonical" href="http://lab.dolice.net/blog/2013/04/25/objc-ns-user-defaults-dictionary-representation/">
 	<link href="/favicon.ico" rel="shortcut icon">
 	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
 	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
@@ -84,14 +84,14 @@
 		
 	
 	<div id="content" class="inner"><article class="post">
-	<h2 class="title">辞書を複製する</h2>
+	<h2 class="title">ユーザーデフォルトから全ての設定値を取得する</h2>
 	<div class="entry-content">
-	  <p>Objective-Cで辞書を複製する方法を以下に記載します。</p>
+	  <p>ユーザーデフォルトに保存した全ての設定値を取得するには、「dictionaryRepresentation」メソッドを使用します。下記にサンプルを作成しました。</p>
 
 <h2>サンプルダウンロード</h2>
 
 <ul>
-<li><a href="https://github.com/masakihirokawa/objc-dictionary-with-dictionary">https://github.com/masakihirokawa/objc-dictionary-with-dictionary</a></li>
+<li><a href="https://github.com/masakihirokawa/objc-user-defaults-dictionary-representation">https://github.com/masakihirokawa/objc-user-defaults-dictionary-representation</a></li>
 </ul>
 
 
@@ -111,19 +111,31 @@
 <span class='line-number'>12</span>
 <span class='line-number'>13</span>
 <span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
 </pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">main</span>
 </span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="c1">//複製元の辞書を生成する</span>
-</span><span class='line'>  <span class="n">NSDictionary</span> <span class="o">*</span><span class="n">originalDictionary</span><span class="p">;</span>
-</span><span class='line'>  <span class="n">originalDictionary</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSDictionary</span> <span class="nl">dictionaryWithObjectsAndKeys:</span>
-</span><span class='line'>                        <span class="s">@&quot;Apple&quot;</span><span class="p">,</span> <span class="s">@&quot;Key1&quot;</span><span class="p">,</span>
-</span><span class='line'>                        <span class="s">@&quot;Banana&quot;</span><span class="p">,</span> <span class="s">@&quot;Key2&quot;</span><span class="p">,</span>
-</span><span class='line'>                        <span class="s">@&quot;Orange&quot;</span><span class="p">,</span> <span class="s">@&quot;Key3&quot;</span><span class="p">,</span>
-</span><span class='line'>                        <span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//ユーザーデフォルトを取得する</span>
+</span><span class='line'>  <span class="n">NSUserDefaults</span> <span class="o">*</span><span class="n">userDefaults</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">userDefaults</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSUserDefaults</span> <span class="n">standardUserDefaults</span><span class="p">];</span>
 </span><span class='line'>
-</span><span class='line'>  <span class="c1">//辞書を複製する</span>
-</span><span class='line'>  <span class="n">NSDictionary</span> <span class="o">*</span><span class="n">dictionary</span><span class="p">;</span>
-</span><span class='line'>  <span class="n">dictionary</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSDictionary</span> <span class="nl">dictionaryWithDictionary:</span><span class="n">originalDictionary</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//設定値を保存する</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">userDefaults</span> <span class="nl">setInteger:</span><span class="mi">6</span>
+</span><span class='line'>                    <span class="nl">forKey:</span><span class="s">@&quot;myValue&quot;</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">//全設定値を取得する</span>
+</span><span class='line'>  <span class="n">NSDictionary</span> <span class="o">*</span><span class="n">dictionary</span> <span class="o">=</span> <span class="p">[</span><span class="n">userDefaults</span> <span class="n">dictionaryRepresentation</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">//ファイルに書き込む</span>
+</span><span class='line'>  <span class="n">NSString</span> <span class="o">*</span><span class="n">path</span> <span class="o">=</span> <span class="s">@&quot;~/Documents/setting.plist&quot;</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">path</span> <span class="o">=</span> <span class="p">[</span><span class="n">path</span> <span class="n">stringByExpandingTildeInPath</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="p">[</span><span class="n">dictionary</span> <span class="nl">writeToFile:</span><span class="n">path</span>
+</span><span class='line'>               <span class="nl">atomically:</span><span class="n">YES</span><span class="p">];</span>
 </span><span class='line'><span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
@@ -146,7 +158,7 @@
   
 
 
-<time datetime="2013-03-24T12:46:00+09:00" pubdate data-updated="true">Mar 24<span>th</span>, 2013</time></div>
+<time datetime="2013-04-25T07:45:00+09:00" pubdate data-updated="true">Apr 25<span>th</span>, 2013</time></div>
 	<div class="tags">
 
 
