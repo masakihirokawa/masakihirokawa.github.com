@@ -6,7 +6,7 @@
 	<title>Dolice Lab</title>
 	
 	
-	<meta name="description" content="Objective-Cで各単語の頭文字を大文字に変換する方法を以下に記載します。 サンプルダウンロード https://github.com/masakihirokawa/objc-capitalized-string ソースコード 1
+	<meta name="description" content="GPSから緯度と経度を取得し、矢印が必ず北を向くコンパスを作成します。 ViewController.h 1
 2
 3
 4
@@ -16,11 +16,22 @@
 8
 9
 10
-- (void) &hellip;">
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+#import &lt;UIKit/UIKit.h&gt;
+// &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	<meta property="og:title" content="Dolice Lab" />
-<meta property="og:description" content="Objective-Cで各単語の頭文字を大文字に変換する方法を以下に記載します。 サンプルダウンロード https://github.com/masakihirokawa/objc-capitalized-string ソースコード 1
+<meta property="og:description" content="GPSから緯度と経度を取得し、矢印が必ず北を向くコンパスを作成します。 ViewController.h 1
 2
 3
 4
@@ -30,7 +41,18 @@
 8
 9
 10
-- (void) &hellip;" />
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+#import &lt;UIKit/UIKit.h&gt;
+// &hellip;" />
 <meta property="og:url" content="http://lab.dolice.net/blog/page/34/" />
 <meta property="og:image" content="http://lab.dolice.net/images/facebook-icon.jpg" />
 <meta property="og:author" content="Masaki Hirokawa" />
@@ -104,6 +126,175 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/03/20/objc-compass/">
+		
+			GPSから緯度と経度を取得しコンパスを作成する</a>
+	</h2>
+	<div class="entry-content">
+		<p>GPSから緯度と経度を取得し、矢印が必ず北を向くコンパスを作成します。</p>
+
+<h2>ViewController.h</h2>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;UIKit/UIKit.h&gt;</span>
+</span><span class='line'><span class="c1">//CoreLocationフレームワークを読み込む</span>
+</span><span class='line'><span class="cp">#import &lt;CoreLocation/CoreLocation.h&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//UIViewControllerを CLLocatinManagerのデリゲートに指定</span>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> : <span class="nc">UIViewController</span> <span class="o">&lt;</span><span class="n">CLLocationManagerDelegate</span><span class="o">&gt;</span> <span class="p">{</span>
+</span><span class='line'>  <span class="c1">//CLLocationManagerを定義</span>
+</span><span class='line'>  <span class="n">CLLocationManager</span> <span class="o">*</span><span class="n">lm</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//緯度を表示するラベル</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">weak</span><span class="p">,</span> <span class="n">nonatomic</span><span class="p">)</span> <span class="kt">IBOutlet</span> <span class="n">UILabel</span> <span class="o">*</span><span class="n">latLabel</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//経度を表示するラベル</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">weak</span><span class="p">,</span> <span class="n">nonatomic</span><span class="p">)</span> <span class="kt">IBOutlet</span> <span class="n">UILabel</span> <span class="o">*</span><span class="n">lngLabel</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//コンパス用の上向き矢印画像 (Storyboardに配置)</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">weak</span><span class="p">,</span> <span class="n">nonatomic</span><span class="p">)</span> <span class="kt">IBOutlet</span> <span class="n">UIImageView</span> <span class="o">*</span><span class="n">compass</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>ViewController.m</h2>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;ViewController.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> <span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">ViewController</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//初期化</span>
+</span><span class='line'>  <span class="n">lm</span> <span class="o">=</span> <span class="p">[[</span><span class="n">CLLocationManager</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//デリゲートに selfを指定</span>
+</span><span class='line'>  <span class="n">lm</span><span class="p">.</span><span class="n">delegate</span> <span class="o">=</span> <span class="n">self</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">lm</span><span class="p">.</span><span class="n">desiredAccuracy</span> <span class="o">=</span> <span class="n">kCLLocationAccuracyHundredMeters</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">lm</span><span class="p">.</span><span class="n">distanceFilter</span> <span class="o">=</span> <span class="n">kCLDistanceFilterNone</span><span class="p">;</span>
+</span><span class='line'>  <span class="c1">//緯度と経度のアップデート開始</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">lm</span> <span class="n">startUpdatingLocation</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//コンパスのアニメーション開始</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">lm</span> <span class="n">startUpdatingHeading</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//緯度と経度をアップデートし、ラベルテキストに代入する</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">locationManager:</span><span class="p">(</span><span class="n">CLLocationManager</span> <span class="o">*</span><span class="p">)</span><span class="nv">manager</span>
+</span><span class='line'><span class="nf">didUpdateToLocation:</span><span class="p">(</span><span class="n">CLLocation</span> <span class="o">*</span><span class="p">)</span><span class="nv">newLocation</span> <span class="nf">fromLocation:</span><span class="p">(</span><span class="n">CLLocation</span> <span class="o">*</span><span class="p">)</span><span class="nv">oldLocation</span> <span class="p">{</span>
+</span><span class='line'>  <span class="c1">//緯度のラベルテキストを更新</span>
+</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">latLabel</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">@&quot;緯度=%g&quot;</span><span class="p">,</span> <span class="n">newLocation</span><span class="p">.</span><span class="n">coordinate</span><span class="p">.</span><span class="n">latitude</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//経度のラベルテキストを更新</span>
+</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">lngLabel</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">@&quot;軽度=%g&quot;</span><span class="p">,</span> <span class="n">newLocation</span><span class="p">.</span><span class="n">coordinate</span><span class="p">.</span><span class="n">longitude</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//北を向くコンパスの矢印を回転させる</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">locationManager:</span><span class="p">(</span><span class="n">CLLocationManager</span> <span class="o">*</span><span class="p">)</span><span class="nv">manager</span>
+</span><span class='line'><span class="nf">didUpdateHeading:</span><span class="p">(</span><span class="n">CLHeading</span> <span class="o">*</span><span class="p">)</span><span class="nv">heading</span> <span class="p">{</span>
+</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">compass</span><span class="p">.</span><span class="n">transform</span> <span class="o">=</span> <span class="n">CGAffineTransformMakeRotation</span><span class="p">(</span><span class="o">-</span><span class="n">heading</span><span class="p">.</span><span class="n">magneticHeading</span> <span class="o">*</span> <span class="n">M_PI</span><span class="o">/</span><span class="mi">180</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-20T22:05:00+09:00" pubdate data-updated="true">Mar 20<span>th</span>, 2013</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>, <a class='category' href='/blog/categories/xcode/'>xcode</a>
+
+
+</div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -266,90 +457,6 @@ this is objective-c language.</p></blockquote>
 </div>
 </article>
 
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/03/20/objc-has-prefix/">
-		
-			指定したプレフィックスの有無を調べる</a>
-	</h2>
-	<div class="entry-content">
-		<p>Objective-Cで文字列が指定した接頭詞を持っているか調べる方法を以下に記載します。</p>
-
-<h2>サンプルダウンロード</h2>
-
-<ul>
-<li><a href="https://github.com/masakihirokawa/objc-has-prefix">https://github.com/masakihirokawa/objc-has-prefix</a></li>
-</ul>
-
-
-<h2>ソースコード</h2>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">main</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="c1">//チェックする文字列を作成</span>
-</span><span class='line'>  <span class="n">NSString</span> <span class="o">*</span><span class="n">str</span> <span class="o">=</span> <span class="s">@&quot;iPhone5&quot;</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="c1">//「iPhone」というプレフィックスか調べる</span>
-</span><span class='line'>  <span class="kt">BOOL</span> <span class="n">isIphone</span> <span class="o">=</span> <span class="p">[</span><span class="n">str</span> <span class="nl">hasPrefix:</span><span class="s">@&quot;iPhone&quot;</span><span class="p">];</span>
-</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;hasPrefix:&#39;iPhone&#39; = %d&quot;</span><span class="p">,</span> <span class="n">isIphone</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="c1">//「iphone」というプレフィックスか調べる</span>
-</span><span class='line'>  <span class="kt">BOOL</span> <span class="n">isIphoneLowerCase</span> <span class="o">=</span> <span class="p">[</span><span class="n">str</span> <span class="nl">hasPrefix:</span><span class="s">@&quot;iphone&quot;</span><span class="p">];</span>
-</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;hasPrefix:&#39;iphone&#39; = %d&quot;</span><span class="p">,</span> <span class="n">isIphoneLowerCase</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>出力結果</h2>
-
-<blockquote><p>hasPrefix:&#8217;iPhone&#8217; = 1<br />
-hasPrefix:&#8217;iphone&#8217; = 0</p></blockquote>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-03-20T21:24:00+09:00" pubdate data-updated="true">Mar 20<span>th</span>, 2013</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>
-
-
-</div>
-	
-</div>
-</article>
-
 <nav id="pagenavi">
     
         <a href="/blog/page/33/" class="prev">Prev</a>
@@ -387,7 +494,7 @@ hasPrefix:&#8217;iphone&#8217; = 0</p></blockquote>
   <div id="category" class="information-box">
 <section>
   <h1>Categories</h1>
-  <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (29)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (115)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (25)</a></li></ul>
+  <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (29)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (116)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (25)</a></li></ul>
 </section>
 
 
@@ -396,6 +503,10 @@ hasPrefix:&#8217;iphone&#8217; = 0</p></blockquote>
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/04/25/objc-delegate/">デリゲート経由でメソッドを呼び出す方法</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2013/04/25/objc-ns-user-defaults-dictionary-representation/">ユーザーデフォルトから全ての設定値を取得する</a>
@@ -431,10 +542,6 @@ hasPrefix:&#8217;iphone&#8217; = 0</p></blockquote>
     
       <li class="post">
         <a href="/blog/2013/04/19/objc-start-animating-not-eraze-last-frame/">コマ送りアニメーションの最後の画像を消さないようにする方法</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/04/19/objc-property/">Objective-Cでメンバ変数をシンプルに宣言する方法</a>
       </li>
     
   </ul>
