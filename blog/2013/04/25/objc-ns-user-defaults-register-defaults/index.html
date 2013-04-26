@@ -3,20 +3,20 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>配列からオブジェクトを全て削除する - Dolice Lab</title>
+	<title>ユーザーデフォルトの初期値を設定する - Dolice Lab</title>
 	
 	
-	<meta name="description" content="配列からオブジェクトを全て削除する">
+	<meta name="description" content="ユーザーデフォルトの初期値を設定する">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-	<meta property="og:title" content="配列からオブジェクトを全て削除する - Dolice Lab" />
-<meta property="og:description" content="配列からオブジェクトを全て削除する" />
-<meta property="og:url" content="http://lab.dolice.net/blog/2013/04/06/objc-remove-all-objects/" />
+	<meta property="og:title" content="ユーザーデフォルトの初期値を設定する - Dolice Lab" />
+<meta property="og:description" content="ユーザーデフォルトの初期値を設定する" />
+<meta property="og:url" content="http://lab.dolice.net/blog/2013/04/25/objc-ns-user-defaults-register-defaults/" />
 <meta property="og:image" content="http://lab.dolice.net/images/facebook-icon.jpg" />
 <meta property="og:author" content="Masaki Hirokawa" />
 <meta property="og:site_name" content="Dolice Lab" />
 	<link href="/atom.xml" rel="alternate" title="Dolice Lab" type="application/atom+xml">
-	<link rel="canonical" href="http://lab.dolice.net/blog/2013/04/06/objc-remove-all-objects/">
+	<link rel="canonical" href="http://lab.dolice.net/blog/2013/04/25/objc-ns-user-defaults-register-defaults/">
 	<link href="/favicon.ico" rel="shortcut icon">
 	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
 	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
@@ -84,14 +84,14 @@
 		
 	
 	<div id="content" class="inner"><article class="post">
-	<h2 class="title">配列からオブジェクトを全て削除する</h2>
+	<h2 class="title">ユーザーデフォルトの初期値を設定する</h2>
 	<div class="entry-content">
-	  <p>配列からオブジェクトを全て削除するには、「removeAllObjects」メソッドを使用します。以下にサンプルを作成しました。</p>
+	  <p>ユーザーデフォルトの初期値を設定するには、「registerDefaults」メソッドを使用します。下記にサンプルを作成しました。</p>
 
 <h2>サンプルダウンロード</h2>
 
 <ul>
-<li><a href="https://github.com/masakihirokawa/objc-remove-all-objects">https://github.com/masakihirokawa/objc-remove-all-objects</a></li>
+<li><a href="https://github.com/masakihirokawa/objc-ns-user-default-register-defaults">https://github.com/masakihirokawa/objc-ns-user-default-register-defaults</a></li>
 </ul>
 
 
@@ -114,30 +114,40 @@
 <span class='line-number'>15</span>
 <span class='line-number'>16</span>
 <span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
 </pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">main</span>
 </span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="c1">//配列を生成する</span>
-</span><span class='line'>  <span class="n">NSMutableArray</span> <span class="o">*</span><span class="n">myArray</span><span class="p">;</span>
-</span><span class='line'>  <span class="n">myArray</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSMutableArray</span> <span class="nl">arrayWithObjects:</span>
-</span><span class='line'>             <span class="s">@&quot;Apple&quot;</span><span class="p">,</span> <span class="s">@&quot;Banana&quot;</span><span class="p">,</span> <span class="s">@&quot;Orange&quot;</span><span class="p">,</span> <span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//ユーザーデフォルトを取得する</span>
+</span><span class='line'>  <span class="n">NSUserDefaults</span> <span class="o">*</span><span class="n">userDefaults</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">userDefaults</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSUserDefaults</span> <span class="n">standardUserDefaults</span><span class="p">];</span>
 </span><span class='line'>
-</span><span class='line'>  <span class="c1">//順序付けされたセットを生成する</span>
-</span><span class='line'>  <span class="n">NSMutableOrderedSet</span> <span class="o">*</span><span class="n">orderedSet</span><span class="p">;</span>
-</span><span class='line'>  <span class="n">orderedSet</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSMutableOrderedSet</span> <span class="nl">orderedSetWithArray:</span><span class="n">myArray</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//デフォルト値を設定するために辞書を作成する</span>
+</span><span class='line'>  <span class="n">NSDictionary</span> <span class="o">*</span><span class="n">dictionary</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">dictionary</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSDictionary</span> <span class="nl">dictionaryWithObjectsAndKeys:</span>
+</span><span class='line'>                <span class="p">[</span><span class="n">NSNumber</span> <span class="nl">numberWithInteger:</span><span class="mi">6</span><span class="p">],</span> <span class="s">@&quot;myValue&quot;</span><span class="p">,</span> <span class="nb">nil</span><span class="p">];</span>
 </span><span class='line'>
-</span><span class='line'>  <span class="p">[</span><span class="n">myArray</span> <span class="n">removeAllObjects</span><span class="p">];</span>
-</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;myARray: %@&quot;</span><span class="p">,</span> <span class="n">myArray</span><span class="p">);</span>
+</span><span class='line'>  <span class="c1">//ユーザーデフォルトに初期値として設定する</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">userDefaults</span> <span class="nl">registerDefaults:</span><span class="n">dictionary</span><span class="p">];</span>
 </span><span class='line'>
-</span><span class='line'>  <span class="p">[</span><span class="n">orderedSet</span> <span class="n">removeAllObjects</span><span class="p">];</span>
-</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;orderedSet: %@&quot;</span><span class="p">,</span> <span class="n">orderedSet</span><span class="p">);</span>
+</span><span class='line'>  <span class="c1">//設定値を読み込む</span>
+</span><span class='line'>  <span class="n">NSInteger</span> <span class="n">i</span> <span class="o">=</span> <span class="p">[</span><span class="n">userDefaults</span> <span class="nl">integerForKey:</span><span class="s">@&quot;myValue&quot;</span><span class="p">];</span>
+</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;%ld&quot;</span><span class="p">,</span> <span class="p">(</span><span class="kt">long</span><span class="p">)</span><span class="n">i</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">//初期値が設定されていない場合は「0」になる</span>
+</span><span class='line'>  <span class="n">i</span> <span class="o">=</span> <span class="p">[</span><span class="n">userDefaults</span> <span class="nl">integerForKey:</span><span class="s">@&quot;noneValue&quot;</span><span class="p">];</span>
+</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;%ld&quot;</span><span class="p">,</span> <span class="p">(</span><span class="kt">long</span><span class="p">)</span><span class="n">i</span><span class="p">);</span>
 </span><span class='line'><span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
 <h2>出力結果</h2>
 
-<blockquote><p>myARray: ()<br />
-orderedSet: {()}</p></blockquote>
+<blockquote><p>6<br />
+0</p></blockquote>
 
 	</div>
 
@@ -155,7 +165,7 @@ orderedSet: {()}</p></blockquote>
   
 
 
-<time datetime="2013-04-06T00:02:00+09:00" pubdate data-updated="true">Apr 6<span>th</span>, 2013</time></div>
+<time datetime="2013-04-25T06:35:00+09:00" pubdate data-updated="true">Apr 25<span>th</span>, 2013</time></div>
 	<div class="tags">
 
 
