@@ -6,11 +6,11 @@
 	<title>Dolice Lab</title>
 	
 	
-	<meta name="description" content="DatePickerで指定した日付をラベルに表示するサンプルを作成しました。DatePickerで選んだ日付が指定したフォーマットで表示されます。 サンプルダウンロード https://github.com/masakihirokawa/objc-date-picker 必要な手順 &hellip;">
+	<meta name="description" content="UITextFieldに入力されたテキストをラベルに表示するサンプルを以下に作成しました。 サンプルダウンロード https://github.com/masakihirokawa/xcode-input-text 必要な手順 UITextFieldを MainStoryboardに配置し、 &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	<meta property="og:title" content="Dolice Lab" />
-<meta property="og:description" content="DatePickerで指定した日付をラベルに表示するサンプルを作成しました。DatePickerで選んだ日付が指定したフォーマットで表示されます。 サンプルダウンロード https://github.com/masakihirokawa/objc-date-picker 必要な手順 &hellip;" />
+<meta property="og:description" content="UITextFieldに入力されたテキストをラベルに表示するサンプルを以下に作成しました。 サンプルダウンロード https://github.com/masakihirokawa/xcode-input-text 必要な手順 UITextFieldを MainStoryboardに配置し、 &hellip;" />
 <meta property="og:url" content="http://lab.dolice.net/blog/page/16/" />
 <meta property="og:image" content="http://lab.dolice.net/images/facebook-icon.jpg" />
 <meta property="og:author" content="Masaki Hirokawa" />
@@ -84,6 +84,102 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/04/02/xcode-objc-input-text/">
+		
+			UITextFieldに入力したテキストをラベルに表示する</a>
+	</h2>
+	<div class="entry-content">
+		<p>UITextFieldに入力されたテキストをラベルに表示するサンプルを以下に作成しました。</p>
+
+<h2>サンプルダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/xcode-input-text">https://github.com/masakihirokawa/xcode-input-text</a></li>
+</ul>
+
+
+<h2>必要な手順</h2>
+
+<ol>
+<li>UITextFieldを MainStoryboardに配置し、ヘッダファイルにプロパティ定義します</li>
+<li>UITextFieldにテキストが入力された時のメソッドをヘッダファイルに定義します</li>
+<li>UITextFieldを controlキーを押しながらクリックし、Sent Eventsを Did End On Exitに指定します</li>
+<li>入力されたテキストを表示するための UILabelを配置し、ヘッダファイルにプロパティ定義します</li>
+</ol>
+
+
+<h2>ソースコード</h2>
+
+<h3>ViewController.h</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//ラベルのプロパティ定義</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">weak</span><span class="p">,</span> <span class="n">nonatomic</span><span class="p">)</span> <span class="kt">IBOutlet</span> <span class="n">UILabel</span> <span class="o">*</span><span class="n">myLabel</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//テキストフィールドのプロパティ定義</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">weak</span><span class="p">,</span> <span class="n">nonatomic</span><span class="p">)</span> <span class="kt">IBOutlet</span> <span class="n">UITextField</span> <span class="o">*</span><span class="n">myTextField</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//テキスト入力のメソッド定義</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">inputText:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>ViewController.m</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">inputText:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span> <span class="p">{</span>
+</span><span class='line'>  <span class="c1">//入力されたテキストをラベルに表示</span>
+</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">myLabel</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">myTextField</span><span class="p">.</span><span class="n">text</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-04-02T20:30:00+09:00" pubdate data-updated="true">Apr 2<span>nd</span>, 2013</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>, <a class='category' href='/blog/categories/xcode/'>xcode</a>
+
+
+</div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -289,152 +385,6 @@ orderedSet: Orange</p></blockquote>
 </div>
 </article>
 
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/04/01/objc-ui-alert-view/">
-		
-			UIAlertViewでアラートを表示する</a>
-	</h2>
-	<div class="entry-content">
-		<p>UIAlertViewでアラートを表示するサンプルを以下に作成しました。ボタンをタップするとアラートが表示されます。</p>
-
-<h2>サンプルダウンロード</h2>
-
-<ul>
-<li><a href="https://github.com/masakihirokawa/objc-ui-alert-view">https://github.com/masakihirokawa/objc-ui-alert-view</a></li>
-</ul>
-
-
-<h2>ソースコード</h2>
-
-<h3>ViewController.h</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;UIKit/UIKit.h&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> : <span class="nc">UIViewController</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">showAlertView:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>ViewController.m</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;ViewController.h&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> <span class="p">()</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@implementation</span> <span class="nc">ViewController</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">showAlertView:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span> <span class="p">{</span>
-</span><span class='line'>  <span class="n">UIAlertView</span> <span class="o">*</span><span class="n">alertView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIAlertView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithTitle:</span><span class="s">@&quot;タイトル&quot;</span>
-</span><span class='line'>                                                      <span class="nl">message:</span><span class="s">@&quot;本文&quot;</span>
-</span><span class='line'>                                                     <span class="nl">delegate:</span><span class="nb">nil</span>
-</span><span class='line'>                                            <span class="nl">cancelButtonTitle:</span><span class="nb">nil</span>
-</span><span class='line'>                                            <span class="nl">otherButtonTitles:</span><span class="s">@&quot;OK&quot;</span><span class="p">,</span> <span class="nb">nil</span><span class="p">];</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">alertView</span> <span class="n">show</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">alertView:</span><span class="p">(</span><span class="n">UIAlertView</span> <span class="o">*</span><span class="p">)</span><span class="nv">alertView</span>
-</span><span class='line'><span class="nf">clickedButtonAtIndex:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">buttonIndex</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="n">buttonIndex</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="c1">//Cancel</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">buttonIndex</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="c1">//OK</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-04-01T19:41:00+09:00" pubdate data-updated="true">Apr 1<span>st</span>, 2013</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>
-
-
-</div>
-	
-</div>
-</article>
-
 <nav id="pagenavi">
     
         <a href="/blog/page/15/" class="prev">Prev</a>
@@ -472,7 +422,7 @@ orderedSet: Orange</p></blockquote>
   <div id="category" class="information-box">
 <section>
   <h1>Categories</h1>
-  <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (29)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (117)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (25)</a></li></ul>
+  <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (30)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (118)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (25)</a></li></ul>
 </section>
 
 
@@ -481,6 +431,10 @@ orderedSet: Orange</p></blockquote>
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/04/26/download-objc-send-to-line/">iPhoneアプリに「LINEで送る」ボタンを組み込むサンプル</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2013/04/25/objc-delegate/">デリゲート経由でメソッドを呼び出す方法</a>
@@ -516,10 +470,6 @@ orderedSet: Orange</p></blockquote>
     
       <li class="post">
         <a href="/blog/2013/04/21/objc-ns-selector-from-string/">セレクタの文字列からセレクタを取得する</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/04/20/objc-is-kind-of-class/">特定のクラスのインスタンスか調べる</a>
       </li>
     
   </ul>
