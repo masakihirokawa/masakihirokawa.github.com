@@ -6,11 +6,29 @@
 	<title>Dolice Lab</title>
 	
 	
-	<meta name="description" content="セットには、重複したオブジェクトは登録されないという特徴があります。そのため、重複しているオブジェクトが存在する可能性がある配列からセットを作成してオブジェクトを取得することで、重複していない配列を簡単に作成することができます。 サンプルダウンロード https://github.com/ &hellip;">
+	<meta name="description" content="高速列挙を使用して配列やセットからオブジェクトを順番に取得する方法を以下に記載します。 サンプルダウンロード https://github.com/masakihirokawa/objc-in-array-or-set-original ソースコード 1
+2
+3
+4
+5
+6
+7
+8
+9
+10 &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	<meta property="og:title" content="Dolice Lab" />
-<meta property="og:description" content="セットには、重複したオブジェクトは登録されないという特徴があります。そのため、重複しているオブジェクトが存在する可能性がある配列からセットを作成してオブジェクトを取得することで、重複していない配列を簡単に作成することができます。 サンプルダウンロード https://github.com/ &hellip;" />
+<meta property="og:description" content="高速列挙を使用して配列やセットからオブジェクトを順番に取得する方法を以下に記載します。 サンプルダウンロード https://github.com/masakihirokawa/objc-in-array-or-set-original ソースコード 1
+2
+3
+4
+5
+6
+7
+8
+9
+10 &hellip;" />
 <meta property="og:url" content="http://lab.dolice.net/blog/page/27/" />
 <meta property="og:image" content="http://lab.dolice.net/images/facebook-icon.jpg" />
 <meta property="og:author" content="Masaki Hirokawa" />
@@ -84,6 +102,125 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/03/25/objc-in-the-array/">
+		
+			高速列挙を使用してオブジェクトを取得する</a>
+	</h2>
+	<div class="entry-content">
+		<p>高速列挙を使用して配列やセットからオブジェクトを順番に取得する方法を以下に記載します。</p>
+
+<h2>サンプルダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-in-array-or-set-original">https://github.com/masakihirokawa/objc-in-array-or-set-original</a></li>
+</ul>
+
+
+<h2>ソースコード</h2>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">main</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="c1">//配列を生成する</span>
+</span><span class='line'>  <span class="n">NSArray</span> <span class="o">*</span><span class="n">myArray</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSArray</span> <span class="nl">arrayWithObjects:</span>
+</span><span class='line'>                      <span class="s">@&quot;Apple&quot;</span><span class="p">,</span>
+</span><span class='line'>                      <span class="s">@&quot;Banana&quot;</span><span class="p">,</span>
+</span><span class='line'>                      <span class="s">@&quot;Orange&quot;</span><span class="p">,</span>
+</span><span class='line'>                      <span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">//セットを生成する</span>
+</span><span class='line'>  <span class="n">NSSet</span> <span class="o">*</span><span class="n">mySet</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSSet</span> <span class="nl">setWithArray:</span><span class="n">myArray</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">//順序付けされたセットを生成する</span>
+</span><span class='line'>  <span class="n">NSOrderedSet</span> <span class="o">*</span><span class="n">orderdSet</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">orderdSet</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSOrderedSet</span> <span class="nl">orderedSetWithArray:</span><span class="n">myArray</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">//高速列挙を使用して配列からオブジェクトを取得する</span>
+</span><span class='line'>  <span class="kt">id</span> <span class="n">value</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">for</span> <span class="p">(</span><span class="n">value</span> <span class="k">in</span> <span class="n">myArray</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;%@&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">//高速列挙を使用してセットからオブジェクトを取得する</span>
+</span><span class='line'>  <span class="k">for</span> <span class="p">(</span><span class="n">value</span> <span class="k">in</span> <span class="n">mySet</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;%@&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">//高速列挙を使用して順序付けされたセットからオブジェクトを取得する</span>
+</span><span class='line'>  <span class="k">for</span> <span class="p">(</span><span class="n">value</span> <span class="k">in</span> <span class="n">orderdSet</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;%@&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-25T08:45:00+09:00" pubdate data-updated="true">Mar 25<span>th</span>, 2013</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>
+
+
+</div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -264,99 +401,6 @@ Orange</p></blockquote>
 </div>
 </article>
 
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/03/24/objc-get-dictionary/">
-		
-			辞書からオブジェクトを取得する</a>
-	</h2>
-	<div class="entry-content">
-		<p>辞書からオブジェクトを取得する方法を以下に記載します。</p>
-
-<h2>サンプルダウンロード</h2>
-
-<ul>
-<li><a href="https://github.com/masakihirokawa/objc-object-for-key">https://github.com/masakihirokawa/objc-object-for-key</a></li>
-</ul>
-
-
-<h2>ソースコード</h2>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">main</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="c1">//辞書を生成する</span>
-</span><span class='line'>  <span class="n">NSDictionary</span> <span class="o">*</span><span class="n">myDictionary</span><span class="p">;</span>
-</span><span class='line'>  <span class="n">myDictionary</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSDictionary</span> <span class="nl">dictionaryWithObjectsAndKeys:</span>
-</span><span class='line'>                  <span class="s">@&quot;Apple&quot;</span><span class="p">,</span> <span class="s">@&quot;Key1&quot;</span><span class="p">,</span>
-</span><span class='line'>                  <span class="s">@&quot;Banana&quot;</span><span class="p">,</span> <span class="s">@&quot;Key2&quot;</span><span class="p">,</span>
-</span><span class='line'>                  <span class="s">@&quot;Orange&quot;</span><span class="p">,</span> <span class="s">@&quot;Key3&quot;</span><span class="p">,</span>
-</span><span class='line'>                  <span class="nb">nil</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="c1">//キーを指定してオブジェクトを取得する</span>
-</span><span class='line'>  <span class="kt">id</span> <span class="n">myObject</span> <span class="o">=</span> <span class="p">[</span><span class="n">myDictionary</span> <span class="nl">objectForKey:</span><span class="s">@&quot;Key1&quot;</span><span class="p">];</span>
-</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;Key1 = %@&quot;</span><span class="p">,</span> <span class="n">myObject</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>実行結果</h2>
-
-<blockquote><p>Key1 = Apple</p></blockquote>
-
-<h2>補足</h2>
-
-<ol>
-<li>キーに対応するオブジェクトが存在しない場合は nilが返ります</li>
-<li>キーは大文字・小文字も区別されます</li>
-</ol>
-
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-03-24T21:58:00+09:00" pubdate data-updated="true">Mar 24<span>th</span>, 2013</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>
-
-
-</div>
-	
-</div>
-</article>
-
 <nav id="pagenavi">
     
         <a href="/blog/page/26/" class="prev">Prev</a>
@@ -394,7 +438,7 @@ Orange</p></blockquote>
   <div id="category" class="information-box">
 <section>
   <h1>Categories</h1>
-  <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (30)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (118)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (25)</a></li></ul>
+  <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (31)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (118)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (26)</a></li></ul>
 </section>
 
 
@@ -403,6 +447,10 @@ Orange</p></blockquote>
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/04/29/download-xcode-marketing/">iOSアプリの売り上げやダウンロード数をチェックできるサービス</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2013/04/26/download-objc-send-to-line/">iPhoneアプリに「LINEで送る」ボタンを組み込むサンプル</a>
@@ -438,10 +486,6 @@ Orange</p></blockquote>
     
       <li class="post">
         <a href="/blog/2013/04/21/objc-ns-notification-center/">通知センターから通知を受け取るサンプル</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/04/21/objc-ns-selector-from-string/">セレクタの文字列からセレクタを取得する</a>
       </li>
     
   </ul>
