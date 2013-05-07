@@ -6,11 +6,11 @@
 	<title>Dolice Lab</title>
 	
 	
-	<meta name="description" content="指定した URLの画像を UIImageViewに表示するサンプルを作成しました。下記よりサンプルのダウンロードが行えます。 サンプルダウンロード https://github.com/masakihirokawa/objc-ui-image-image-with-data 必要な手順 &hellip;">
+	<meta name="description" content="ユーザーデフォルトを使用して入力されたテキストを保存するサンプルを作成しました。入力された値を保存し、次回起動時に値を引き継ぎます。下記よりサンプルのダウンロードが行えます。 サンプルダウンロード https://github.com/masakihirokawa/objc-ns-user- &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	<meta property="og:title" content="Dolice Lab" />
-<meta property="og:description" content="指定した URLの画像を UIImageViewに表示するサンプルを作成しました。下記よりサンプルのダウンロードが行えます。 サンプルダウンロード https://github.com/masakihirokawa/objc-ui-image-image-with-data 必要な手順 &hellip;" />
+<meta property="og:description" content="ユーザーデフォルトを使用して入力されたテキストを保存するサンプルを作成しました。入力された値を保存し、次回起動時に値を引き継ぎます。下記よりサンプルのダウンロードが行えます。 サンプルダウンロード https://github.com/masakihirokawa/objc-ns-user- &hellip;" />
 <meta property="og:url" content="http://lab.dolice.net/blog/page/15/" />
 <meta property="og:image" content="http://lab.dolice.net/images/facebook-icon.jpg" />
 <meta property="og:author" content="Masaki Hirokawa" />
@@ -84,6 +84,112 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/04/04/objc-ns-user-defaults/">
+		
+			ユーザーデフォルトを使用して入力されたテキストを保存する</a>
+	</h2>
+	<div class="entry-content">
+		<p>ユーザーデフォルトを使用して入力されたテキストを保存するサンプルを作成しました。入力された値を保存し、次回起動時に値を引き継ぎます。下記よりサンプルのダウンロードが行えます。</p>
+
+<h2>サンプルダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-ns-user-defaults">https://github.com/masakihirokawa/objc-ns-user-defaults</a></li>
+</ul>
+
+
+<h2>必要な手順</h2>
+
+<ol>
+<li>UITextFieldを MainStoryboardに配置し、プロパティとメソッドを定義します</li>
+<li>UITextFieldを controlキーを押しながらクリックし、Sent Eventsを Did End On Exitに設定します（これにより、returnキーが押された時に入力が確定されます）</li>
+</ol>
+
+
+<h2>ソースコード</h2>
+
+<h3>ViewController.h</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">weak</span><span class="p">,</span> <span class="n">nonatomic</span><span class="p">)</span> <span class="kt">IBOutlet</span> <span class="n">UITextField</span> <span class="o">*</span><span class="n">myTextField</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">inputText:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>ViewController.m</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//キーから値を取得する</span>
+</span><span class='line'>  <span class="n">NSUserDefaults</span> <span class="o">*</span><span class="n">defaults</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSUserDefaults</span> <span class="n">standardUserDefaults</span><span class="p">];</span>
+</span><span class='line'>  <span class="n">NSString</span> <span class="o">*</span><span class="n">defaultStr</span> <span class="o">=</span> <span class="p">[</span><span class="n">defaults</span> <span class="nl">stringForKey:</span><span class="s">@&quot;MY_KEY&quot;</span><span class="p">];</span>
+</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">myTextField</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">defaultStr</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">inputText:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span> <span class="p">{</span>
+</span><span class='line'>  <span class="c1">//指定したキーに入力された値を保存する</span>
+</span><span class='line'>  <span class="n">NSUserDefaults</span><span class="o">*</span> <span class="n">defaults</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSUserDefaults</span> <span class="n">standardUserDefaults</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">defaults</span> <span class="nl">setObject:</span> <span class="n">self</span><span class="p">.</span><span class="n">myTextField</span><span class="p">.</span><span class="n">text</span> <span class="nl">forKey:</span><span class="s">@&quot;MY_KEY&quot;</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">defaults</span> <span class="n">synchronize</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-04-04T21:21:00+09:00" pubdate data-updated="true">Apr 4<span>th</span>, 2013</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>
+
+
+</div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -266,104 +372,6 @@
 </div>
 </article>
 
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/04/03/xcode-objc-ui-slider/">
-		
-			UISliderを使用してラベルの値を変化させる</a>
-	</h2>
-	<div class="entry-content">
-		<p>UISliderをスライドさせた値をラベルに表示するサンプルを作成しました。</p>
-
-<p>スライダーの最大値を1と指定し、スライダーを離した時だけラベルの値を更新するよう設定しています（Continuousのチェックボックスをオフ）。</p>
-
-<h2>サンプルダウンロード</h2>
-
-<ul>
-<li><a href="https://github.com/masakihirokawa/objc-ui-slider">https://github.com/masakihirokawa/objc-ui-slider</a></li>
-</ul>
-
-
-<h2>必要な手順</h2>
-
-<ol>
-<li>UISliderを MainStoryboardに配置し、ヘッダファイルにプロパティ定義します</li>
-<li>UISliderが動作した時のメソッドをヘッダファイルに定義します</li>
-<li>MainStoryboardにあるスライダーを選択し、Update Eventsの Continuousのチェックボックスをオフにします（これによりスライダーを離した時のみ値が更新されるようになります）</li>
-<li>スライダーからの値を表示するための UILabelを配置し、ヘッダファイルにプロパティ定義します</li>
-</ol>
-
-
-<h2>ソースコード</h2>
-
-<h3>ViewController.h</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//ラベルのプロパティ定義</span>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">weak</span><span class="p">,</span> <span class="n">nonatomic</span><span class="p">)</span> <span class="kt">IBOutlet</span> <span class="n">UILabel</span> <span class="o">*</span><span class="n">myLabel</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//テキストフィールドのプロパティ定義</span>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">weak</span><span class="p">,</span> <span class="n">nonatomic</span><span class="p">)</span> <span class="kt">IBOutlet</span> <span class="n">UITextField</span> <span class="o">*</span><span class="n">myTextField</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//テキスト入力のメソッド定義</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">inputText:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span><span class="p">;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>ViewController.m</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">inputText:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span> <span class="p">{</span>
-</span><span class='line'>  <span class="c1">//入力されたテキストをラベルに表示</span>
-</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">myLabel</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">myTextField</span><span class="p">.</span><span class="n">text</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-04-03T10:31:00+09:00" pubdate data-updated="true">Apr 3<span>rd</span>, 2013</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>, <a class='category' href='/blog/categories/xcode/'>xcode</a>
-
-
-</div>
-	
-</div>
-</article>
-
 <nav id="pagenavi">
     
         <a href="/blog/page/14/" class="prev">Prev</a>
@@ -401,7 +409,7 @@
   <div id="category" class="information-box">
 <section>
   <h1>Categories</h1>
-  <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (31)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (118)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (26)</a></li></ul>
+  <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (31)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (119)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (26)</a></li></ul>
 </section>
 
 
@@ -410,6 +418,10 @@
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/05/07/objc-commit-animations-slide-in/">Objective-Cのスライドインアニメーション</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2013/04/29/download-xcode-marketing/">iOSアプリの売り上げやダウンロード数をチェックできるサービス</a>
@@ -445,10 +457,6 @@
     
       <li class="post">
         <a href="/blog/2013/04/22/objc-ns-user-defaults/">ユーザーデフォルトに設定値を保存する</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/04/21/objc-ns-notification-center/">通知センターから通知を受け取るサンプル</a>
       </li>
     
   </ul>
