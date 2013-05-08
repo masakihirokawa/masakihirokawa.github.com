@@ -6,13 +6,11 @@
 	<title>Dolice Lab</title>
 	
 	
-	<meta name="description" content="iAd広告(横320×縦50ピクセル)をアプリに掲載する方法を以下に記載します。 Xcodeの TARGETSにある Summaryを開き、Linked Frameworks and Librariesの項目から iAd.frameworkを追加します
-次に MainStorybordを開き、 &hellip;">
+	<meta name="description" content="JavaScriptで指定した基点からの角度を Radian型と Degree型で取得するクラス（Angle.js）を作成しました。 ダウンロード https://github.com/masakihirokawa/js/blob/master/display/angle.js 機能リスト &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	<meta property="og:title" content="Dolice Lab" />
-<meta property="og:description" content="iAd広告(横320×縦50ピクセル)をアプリに掲載する方法を以下に記載します。 Xcodeの TARGETSにある Summaryを開き、Linked Frameworks and Librariesの項目から iAd.frameworkを追加します
-次に MainStorybordを開き、 &hellip;" />
+<meta property="og:description" content="JavaScriptで指定した基点からの角度を Radian型と Degree型で取得するクラス（Angle.js）を作成しました。 ダウンロード https://github.com/masakihirokawa/js/blob/master/display/angle.js 機能リスト &hellip;" />
 <meta property="og:url" content="http://lab.dolice.net/blog/page/40/" />
 <meta property="og:image" content="http://lab.dolice.net/images/facebook-icon.jpg" />
 <meta property="og:author" content="Masaki Hirokawa" />
@@ -86,6 +84,281 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/03/16/javascript-angle/">
+		
+			JavaScriptの角度取得クラス</a>
+	</h2>
+	<div class="entry-content">
+		<p>JavaScriptで指定した基点からの角度を Radian型と Degree型で取得するクラス（<a href="https://github.com/masakihirokawa/js/blob/master/display/angle.js">Angle.js</a>）を作成しました。</p>
+
+<h2>ダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/js/blob/master/display/angle.js">https://github.com/masakihirokawa/js/blob/master/display/angle.js</a></li>
+</ul>
+
+
+<h2>機能リスト</h2>
+
+<ol>
+<li><em>getRadian</em>: 指定した基点から目的座標までの角度をラジアン型で取得</li>
+<li><em>getDegree</em>: 指定した基点から目的座標までの角度をディグリー型で取得</li>
+</ol>
+
+
+<h2>使用例</h2>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c1">//基準座標と目標座標から角度を初期化</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">angle</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Angle</span><span class="p">(</span><span class="nx">criteriaX</span><span class="p">,</span> <span class="nx">criteriaY</span><span class="p">,</span> <span class="nx">aimX</span><span class="p">,</span> <span class="nx">aimY</span><span class="p">);</span>
+</span><span class='line'><span class="c1">//角度をラジアン型で取得</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">radian</span> <span class="o">=</span> <span class="nx">angle</span><span class="p">.</span><span class="nx">getRadian</span><span class="p">();</span>
+</span><span class='line'><span class="c1">//角度をディグリー型で取得</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">degree</span> <span class="o">=</span> <span class="nx">angle</span><span class="p">.</span><span class="nx">getDegree</span><span class="p">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>ソースコード</h2>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">Angle</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">criteriaX</span><span class="p">,</span> <span class="nx">criteriaY</span><span class="p">,</span> <span class="nx">aimX</span><span class="p">,</span> <span class="nx">aimY</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">nMouseX</span> <span class="o">=</span> <span class="nx">aimX</span> <span class="o">-</span> <span class="nx">criteriaX</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">nMouseY</span> <span class="o">=</span> <span class="nx">aimY</span> <span class="o">-</span> <span class="nx">criteriaY</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">nRadian</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">atan2</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">nMouseY</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">nMouseX</span><span class="p">);</span>
+</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">nDegree</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">nRadian</span> <span class="o">/</span> <span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">PI</span> <span class="o">/</span> <span class="mi">180</span><span class="p">);</span>
+</span><span class='line'>  <span class="k">this</span><span class="p">.</span><span class="nx">nAngle</span> <span class="o">=</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">nRadian</span> <span class="o">*</span> <span class="p">(</span><span class="mi">180</span> <span class="o">/</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">PI</span><span class="p">)</span> <span class="o">+</span> <span class="mi">360</span><span class="p">)</span> <span class="o">%</span> <span class="mi">360</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="nx">Angle</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">getRadian</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">return</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">nRadian</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="nx">Angle</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">getDegree</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">return</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">nDegree</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="nx">Angle</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">getAngle</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">return</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">nAngle</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-16T13:46:00+09:00" pubdate data-updated="true">Mar 16<span>th</span>, 2013</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/download/'>download</a>, <a class='category' href='/blog/categories/javascript/'>javascript</a>
+
+
+</div>
+	
+</div>
+</article>
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/03/16/javascript-randomize/">
+		
+			JavaScriptの乱数生成クラス</a>
+	</h2>
+	<div class="entry-content">
+		<p>JavaScriptで乱数を生成するクラス（<a href="https://github.com/masakihirokawa/js/blob/master/util/randomize.js">Randomize.js</a>）を作成しました。</p>
+
+<p>各インスタンスの機能は以下の通りです。</p>
+
+<h2>ダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/js/blob/master/util/randomize.js">https://github.com/masakihirokawa/js/blob/master/util/randomize.js</a></li>
+</ul>
+
+
+<h2>機能リスト</h2>
+
+<ol>
+<li><em>shuffleArray</em>: 配列をシャッフルし取得</li>
+<li><em>shuffle</em>: 指定した範囲内の数列をシャッフルし取得</li>
+<li><em>exact</em>: 指定したナンバー以外の乱数を取得</li>
+<li><em>range</em>: 指定した範囲内の数列から乱数を取得</li>
+</ol>
+
+
+<h2>使用方法</h2>
+
+<h3>myArrayの要素をシャッフルし、shuffledArrayへ代入する</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">myArray</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">9</span><span class="p">]</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">shuffledArray</span> <span class="o">=</span> <span class="nx">Randomize</span><span class="p">.</span><span class="nx">shuffleArray</span><span class="p">(</span><span class="nx">myArray</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>1～12までの数値をシャッフルし、12個の要素を持つ配列として shuffledArrayへ代入する</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">shuffledArray</span> <span class="o">=</span> <span class="nx">Randomize</span><span class="p">.</span><span class="nx">shuffle</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">12</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>1～12までの乱数を取得し、myUintへ代入する(ただし 第1引数に渡した 3は返らない)</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">myUint</span> <span class="o">=</span> <span class="nx">Randomize</span><span class="p">.</span><span class="nx">exact</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">12</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>1～12までの乱数を取得し、myUintへ代入する</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">myUint</span> <span class="o">=</span> <span class="nx">Randomize</span><span class="p">.</span><span class="nx">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">12</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>ソースコード</h2>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">Randomize</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>  <span class="nx">shuffleList</span> <span class="o">:</span> <span class="p">[],</span>
+</span><span class='line'>  <span class="nx">shuffleNum</span> <span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+</span><span class='line'>  <span class="nx">tmpList</span> <span class="o">:</span> <span class="p">[],</span>
+</span><span class='line'>  <span class="nx">tmpId</span> <span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+</span><span class='line'>  <span class="nx">shuffleArray</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">arr</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">Randomize</span><span class="p">.</span><span class="nx">shuffleList</span> <span class="o">=</span> <span class="nx">arr</span><span class="p">;</span>
+</span><span class='line'>    <span class="nx">Randomize</span><span class="p">.</span><span class="nx">shuffleNum</span> <span class="o">=</span> <span class="nx">Randomize</span><span class="p">.</span><span class="nx">shuffleList</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">while</span><span class="p">(</span><span class="nx">Randomize</span><span class="p">.</span><span class="nx">shuffleNum</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">_m</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span> <span class="o">*</span> <span class="nx">Randomize</span><span class="p">.</span><span class="nx">shuffleNum</span><span class="p">);</span>
+</span><span class='line'>      <span class="k">this</span><span class="p">.</span><span class="nx">_n</span> <span class="o">=</span> <span class="nx">Randomize</span><span class="p">.</span><span class="nx">shuffleList</span><span class="p">[</span><span class="o">--</span><span class="nx">Randomize</span><span class="p">.</span><span class="nx">shuffleNum</span><span class="p">];</span>
+</span><span class='line'>      <span class="nx">Randomize</span><span class="p">.</span><span class="nx">shuffleList</span><span class="p">[</span><span class="nx">Randomize</span><span class="p">.</span><span class="nx">shuffleNum</span><span class="p">]</span> <span class="o">=</span> <span class="nx">Randomize</span><span class="p">.</span><span class="nx">shuffleList</span><span class="p">[</span><span class="k">this</span><span class="p">.</span><span class="nx">_m</span><span class="p">];</span>
+</span><span class='line'>      <span class="nx">Randomize</span><span class="p">.</span><span class="nx">shuffleList</span><span class="p">[</span><span class="k">this</span><span class="p">.</span><span class="nx">_m</span><span class="p">]</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">_n</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">(</span><span class="nx">Randomize</span><span class="p">.</span><span class="nx">shuffleList</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">},</span>
+</span><span class='line'>  <span class="nx">shuffle</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">min</span><span class="p">,</span> <span class="nx">max</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">max</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">Randomize</span><span class="p">.</span><span class="nx">tmpList</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">=</span> <span class="nx">i</span> <span class="o">+</span> <span class="nx">min</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="nx">Randomize</span><span class="p">.</span><span class="nx">shuffleList</span> <span class="o">=</span> <span class="nx">Randomize</span><span class="p">.</span><span class="nx">shuffleArray</span><span class="p">(</span><span class="nx">Randomize</span><span class="p">.</span><span class="nx">tmpList</span><span class="p">);</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">(</span><span class="nx">Randomize</span><span class="p">.</span><span class="nx">shuffleList</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">},</span>
+</span><span class='line'>  <span class="nx">exact</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">exceptId</span><span class="p">,</span> <span class="nx">min</span><span class="p">,</span> <span class="nx">max</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">do</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">Randomize</span><span class="p">.</span><span class="nx">tmpId</span> <span class="o">=</span> <span class="nx">Randomize</span><span class="p">.</span><span class="nx">range</span><span class="p">(</span><span class="nx">min</span><span class="p">,</span> <span class="nx">max</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span> <span class="k">while</span> <span class="p">(</span><span class="nx">Randomize</span><span class="p">.</span><span class="nx">tmpId</span> <span class="o">==</span> <span class="nx">exceptId</span><span class="p">);</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">(</span><span class="nx">Randomize</span><span class="p">.</span><span class="nx">tmpId</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">},</span>
+</span><span class='line'>  <span class="nx">range</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">min</span><span class="p">,</span> <span class="nx">max</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span> <span class="o">*</span> <span class="p">(</span><span class="nx">max</span> <span class="o">-</span> <span class="nx">min</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span> <span class="o">+</span> <span class="nx">min</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-16T13:21:00+09:00" pubdate data-updated="true">Mar 16<span>th</span>, 2013</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/download/'>download</a>, <a class='category' href='/blog/categories/javascript/'>javascript</a>
+
+
+</div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -245,180 +518,6 @@
 </div>
 </article>
 
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/03/15/hide-navigationbar-button/">
-		
-			UINavigationBarの左ボタンを消す方法</a>
-	</h2>
-	<div class="entry-content">
-		<p>ナビゲーションバーを使用すると、左側にボタンが表示されます。</p>
-
-<p>この左側のボタンを消したい時は、以下のようにダミーボタンを挿入すると解決します。</p>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">initNavigationBar</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="n">UINavigationItem</span> <span class="o">*</span><span class="n">navigation</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UINavigationItem</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithTitle:</span><span class="nb">nil</span><span class="p">];</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">self</span> <span class="nl">initNavigationLeftButton:</span><span class="n">navigation</span><span class="p">];</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">navigationBar</span> <span class="nl">pushNavigationItem:</span><span class="n">navigation</span> <span class="nl">animated:</span><span class="n">YES</span><span class="p">];</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">insertSubview:</span><span class="n">self</span><span class="p">.</span><span class="n">navigationBar</span> <span class="nl">atIndex:</span><span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">subviews</span> <span class="n">count</span><span class="p">]];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">initNavigationLeftButton:</span><span class="p">(</span><span class="n">UINavigationItem</span> <span class="o">*</span><span class="p">)</span><span class="nv">navigation</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="n">UIView</span><span class="o">*</span> <span class="n">dummyView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)];</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">navigationItem</span> <span class="nl">setHidesBackButton:</span><span class="n">YES</span><span class="p">];</span>
-</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">navigationItem</span><span class="p">.</span><span class="n">hidesBackButton</span> <span class="o">=</span> <span class="n">YES</span><span class="p">;</span>
-</span><span class='line'>  <span class="n">UIBarButtonItem</span><span class="o">*</span> <span class="n">dummyButton</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIBarButtonItem</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithCustomView:</span><span class="n">dummyView</span><span class="p">];</span>
-</span><span class='line'>  <span class="n">dummyButton</span><span class="p">.</span><span class="n">enabled</span> <span class="o">=</span> <span class="n">NO</span><span class="p">;</span>
-</span><span class='line'>  <span class="n">navigation</span><span class="p">.</span><span class="n">leftBarButtonItem</span> <span class="o">=</span> <span class="n">dummyButton</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-03-15T11:41:00+09:00" pubdate data-updated="true">Mar 15<span>th</span>, 2013</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>, <a class='category' href='/blog/categories/xcode/'>xcode</a>
-
-
-</div>
-	
-</div>
-</article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/03/14/determining-the-device/">
-		
-			iOSデバイスの判別法</a>
-	</h2>
-	<div class="entry-content">
-		<p>iOSデバイスを判別するには、以下のようにスクリーンサイズを基準に判別する方法があります。</p>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nf">iOSDevice</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="k">if</span><span class="p">(</span><span class="n">UI_USER_INTERFACE_IDIOM</span><span class="p">()</span> <span class="o">==</span> <span class="n">UIUserInterfaceIdiomPhone</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">([[</span><span class="n">UIScreen</span> <span class="n">mainScreen</span><span class="p">]</span> <span class="nl">respondsToSelector:</span> <span class="k">@selector</span><span class="p">(</span><span class="n">scale</span><span class="p">)])</span> <span class="p">{</span>
-</span><span class='line'>      <span class="n">CGSize</span> <span class="n">result</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIScreen</span> <span class="n">mainScreen</span><span class="p">]</span> <span class="n">bounds</span><span class="p">].</span><span class="n">size</span><span class="p">;</span>
-</span><span class='line'>      <span class="n">CGFloat</span> <span class="n">scale</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIScreen</span> <span class="n">mainScreen</span><span class="p">].</span><span class="n">scale</span><span class="p">;</span>
-</span><span class='line'>      <span class="n">result</span> <span class="o">=</span> <span class="n">CGSizeMake</span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">width</span> <span class="o">*</span> <span class="n">scale</span><span class="p">,</span> <span class="n">result</span><span class="p">.</span><span class="n">height</span> <span class="o">*</span> <span class="n">scale</span><span class="p">);</span>
-</span><span class='line'>      <span class="k">if</span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">height</span> <span class="o">==</span> <span class="mi">960</span><span class="p">){</span>
-</span><span class='line'>        <span class="k">return</span> <span class="p">(</span><span class="s">@&quot;iPhone4&quot;</span><span class="p">);</span>
-</span><span class='line'>      <span class="p">}</span>
-</span><span class='line'>      <span class="k">if</span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">height</span> <span class="o">==</span> <span class="mi">1136</span><span class="p">){</span>
-</span><span class='line'>        <span class="k">return</span> <span class="p">(</span><span class="s">@&quot;iPhone5&quot;</span><span class="p">);</span>
-</span><span class='line'>      <span class="p">}</span>
-</span><span class='line'>    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-</span><span class='line'>      <span class="k">return</span> <span class="p">(</span><span class="s">@&quot;iPhone3&quot;</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">([[</span><span class="n">UIScreen</span> <span class="n">mainScreen</span><span class="p">]</span> <span class="nl">respondsToSelector:</span> <span class="k">@selector</span><span class="p">(</span><span class="n">scale</span><span class="p">)])</span> <span class="p">{</span>
-</span><span class='line'>      <span class="k">return</span> <span class="p">(</span><span class="s">@&quot;iPad Retina&quot;</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-</span><span class='line'>      <span class="k">return</span> <span class="p">(</span><span class="s">@&quot;iPad&quot;</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>  <span class="k">return</span> <span class="p">(</span><span class="s">@&quot;unknown&quot;</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-03-14T10:48:00+09:00" pubdate data-updated="true">Mar 14<span>th</span>, 2013</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>
-
-
-</div>
-	
-</div>
-</article>
-
 <nav id="pagenavi">
     
         <a href="/blog/page/39/" class="prev">Prev</a>
@@ -456,7 +555,7 @@
   <div id="category" class="information-box">
 <section>
   <h1>Categories</h1>
-  <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (31)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (119)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (26)</a></li></ul>
+  <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (31)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (121)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (26)</a></li></ul>
 </section>
 
 
@@ -465,6 +564,14 @@
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/05/09/objc-randomize-boolean/">ランダム値から真偽値を生成し振り分け処理する方法</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/05/08/objc-ns-timer-scheduled-timer-with-time-interval/">遅延実行タイマーの使用方法</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2013/05/07/objc-commit-animations-slide-in/">Objective-Cのスライドインアニメーション</a>
@@ -496,14 +603,6 @@
     
       <li class="post">
         <a href="/blog/2013/04/24/objc-ns-user-defaults-object-for-key/">ユーザーデフォルトから設定値を読み込む</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/04/23/objc-remove-ns-user-defaults/">ユーザーデフォルトから設定値を削除する</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/04/22/objc-ns-user-defaults/">ユーザーデフォルトに設定値を保存する</a>
       </li>
     
   </ul>

@@ -88,6 +88,8 @@
 	<div class="entry-content">
 	  <p>Objective-Cでスライドインアニメーションを実装するサンプルを以下に作成しました。</p>
 
+<p>サンプルでは、ラベルが1秒間かけて下からスライドインするようアニメーションを指定しています。</p>
+
 <h2>サンプルダウンロード</h2>
 
 <ul>
@@ -95,7 +97,7 @@
 </ul>
 
 
-<h2>ソースコード</h2>
+<h2>アニメーションの実行</h2>
 
 <figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -125,6 +127,109 @@
 </span><span class='line'>  <span class="c1">//アニメーション実行</span>
 </span><span class='line'>  <span class="p">[</span><span class="n">UIView</span> <span class="n">commitAnimations</span><span class="p">];</span>
 </span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>ソースコード</h2>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;ViewController.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> <span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//アニメーションさせるラベル</span>
+</span><span class='line'><span class="k">@property</span> <span class="n">UILabel</span> <span class="o">*</span><span class="n">animationLabel</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">ViewController</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//アニメーションさせるラベルを初期化</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">self</span> <span class="n">initAnimationLabel</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//スライドインアニメーション</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">self</span> <span class="n">slideInAnimation</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">didReceiveMemoryWarning</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">super</span> <span class="n">didReceiveMemoryWarning</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//アニメーションさせるラベルを初期化</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">initAnimationLabel</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="n">_animationLabel</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UILabel</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">568</span><span class="p">,</span> <span class="mi">320</span><span class="p">,</span> <span class="mi">568</span><span class="p">)];</span>
+</span><span class='line'>  <span class="n">_animationLabel</span><span class="p">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIColor</span> <span class="n">blueColor</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">_animationLabel</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//スライドインアニメーション</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">slideInAnimation</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="c1">//アニメーション開始</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">UIView</span> <span class="nl">beginAnimations:</span><span class="nb">nil</span> <span class="nl">context:</span><span class="nb">NULL</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//アニメーション秒数</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">UIView</span> <span class="nl">setAnimationDuration:</span><span class="mf">1.0f</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//デリゲート指定</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">UIView</span> <span class="nl">setAnimationDelegate:</span><span class="n">self</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//アニメーションの目標値を指定</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">_animationLabel</span> <span class="nl">setFrame:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">320</span><span class="p">,</span> <span class="mi">568</span><span class="p">)];</span>
+</span><span class='line'>  <span class="c1">//アニメーション実行</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">UIView</span> <span class="n">commitAnimations</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
@@ -205,7 +310,7 @@
   <div id="category" class="information-box">
 <section>
   <h1>Categories</h1>
-  <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (31)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (119)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (26)</a></li></ul>
+  <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (31)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (121)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (26)</a></li></ul>
 </section>
 
 
@@ -214,6 +319,14 @@
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/05/09/objc-randomize-boolean/">ランダム値から真偽値を生成し振り分け処理する方法</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/05/08/objc-ns-timer-scheduled-timer-with-time-interval/">遅延実行タイマーの使用方法</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2013/05/07/objc-commit-animations-slide-in/">Objective-Cのスライドインアニメーション</a>
@@ -245,14 +358,6 @@
     
       <li class="post">
         <a href="/blog/2013/04/24/objc-ns-user-defaults-object-for-key/">ユーザーデフォルトから設定値を読み込む</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/04/23/objc-remove-ns-user-defaults/">ユーザーデフォルトから設定値を削除する</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/04/22/objc-ns-user-defaults/">ユーザーデフォルトに設定値を保存する</a>
       </li>
     
   </ul>
