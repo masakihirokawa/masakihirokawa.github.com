@@ -3,20 +3,20 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>Dolice Lab</title>
+	<title>UIImageViewの画像サイズを自動的に設定する方法 - Dolice Lab</title>
 	
 	
-	<meta name="description" content="セットには、重複したオブジェクトは登録されないという特徴があります。そのため、重複しているオブジェクトが存在する可能性がある配列からセットを作成してオブジェクトを取得することで、重複していない配列を簡単に作成することができます。 サンプルダウンロード https://github.com/ &hellip;">
+	<meta name="description" content="UIImageViewの画像サイズを自動的に設定する方法">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-	<meta property="og:title" content="Dolice Lab" />
-<meta property="og:description" content="セットには、重複したオブジェクトは登録されないという特徴があります。そのため、重複しているオブジェクトが存在する可能性がある配列からセットを作成してオブジェクトを取得することで、重複していない配列を簡単に作成することができます。 サンプルダウンロード https://github.com/ &hellip;" />
-<meta property="og:url" content="http://lab.dolice.net/blog/page/29/" />
+	<meta property="og:title" content="UIImageViewの画像サイズを自動的に設定する方法 - Dolice Lab" />
+<meta property="og:description" content="UIImageViewの画像サイズを自動的に設定する方法" />
+<meta property="og:url" content="http://lab.dolice.net/blog/2013/05/13/objc-ui-view-content-mode-center/" />
 <meta property="og:image" content="http://lab.dolice.net/images/facebook-icon.jpg" />
 <meta property="og:author" content="Masaki Hirokawa" />
 <meta property="og:site_name" content="Dolice Lab" />
 	<link href="/atom.xml" rel="alternate" title="Dolice Lab" type="application/atom+xml">
-	<link rel="canonical" href="http://lab.dolice.net/blog/page/29/">
+	<link rel="canonical" href="http://lab.dolice.net/blog/2013/05/13/objc-ui-view-content-mode-center/">
 	<link href="/favicon.ico" rel="shortcut icon">
 	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
 	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
@@ -83,23 +83,17 @@
 	
 		
 	
-	<div id="content" class="inner">
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/03/25/objc-no-overlap-array/">
-		
-			重複していない配列を作成する</a>
-	</h2>
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">UIImageViewの画像サイズを自動的に設定する方法</h2>
 	<div class="entry-content">
-		<p>セットには、重複したオブジェクトは登録されないという特徴があります。そのため、重複しているオブジェクトが存在する可能性がある配列からセットを作成してオブジェクトを取得することで、重複していない配列を簡単に作成することができます。</p>
+	  <p>UIImageViewの画像サイズを自動的に合わせるサンプルを以下に作成しました。</p>
+
+<p>UIImageViewの contentModeというプロパティに UIViewContentModeCenterをセットすることで元画像のサイズに合わせることができます。</p>
 
 <h2>サンプルダウンロード</h2>
 
 <ul>
-<li><a href="https://github.com/masakihirokawa/objc-not-overlap-array">https://github.com/masakihirokawa/objc-not-overlap-array</a></li>
+<li><a href="https://github.com/masakihirokawa/objc-ui-view-content-mode-center">https://github.com/masakihirokawa/objc-ui-view-content-mode-center</a></li>
 </ul>
 
 
@@ -114,41 +108,20 @@
 <span class='line-number'>7</span>
 <span class='line-number'>8</span>
 <span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">main</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setImage</span>
 </span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="c1">//重複している可能性がある配列</span>
-</span><span class='line'>  <span class="n">NSArray</span> <span class="o">*</span><span class="n">myArray</span><span class="p">;</span>
-</span><span class='line'>  <span class="n">myArray</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSArray</span> <span class="nl">arrayWithObjects:</span>
-</span><span class='line'>             <span class="s">@&quot;Apple&quot;</span><span class="p">,</span> <span class="s">@&quot;Banana&quot;</span><span class="p">,</span> <span class="s">@&quot;Apple&quot;</span><span class="p">,</span> <span class="nb">nil</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;originalArray = %@&quot;</span><span class="p">,</span> <span class="n">myArray</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="c1">//配列からセットを作成する</span>
-</span><span class='line'>  <span class="n">NSSet</span> <span class="o">*</span><span class="n">mySet</span><span class="p">;</span>
-</span><span class='line'>  <span class="n">mySet</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSSet</span> <span class="nl">setWithArray:</span><span class="n">myArray</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="c1">//セットからオブジェクトを作成する</span>
-</span><span class='line'>  <span class="n">myArray</span> <span class="o">=</span> <span class="p">[</span><span class="n">mySet</span> <span class="n">allObjects</span><span class="p">];</span>
-</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;newArray = &quot;</span><span class="p">,</span> <span class="n">myArray</span><span class="p">);</span>
+</span><span class='line'>  <span class="c1">//UIImageViewの作成</span>
+</span><span class='line'>  <span class="n">UIImageView</span> <span class="o">*</span><span class="n">imageView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIImageView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithImage:</span><span class="p">[</span><span class="n">UIImage</span> <span class="nl">imageNamed:</span><span class="s">@&quot;Pandora_640_1136.jpg&quot;</span><span class="p">]];</span>
+</span><span class='line'>  <span class="c1">//UIImageViewのサイズを自動的に画像のサイズに合わせる</span>
+</span><span class='line'>  <span class="n">imageView</span><span class="p">.</span><span class="n">contentMode</span> <span class="o">=</span> <span class="n">UIViewContentModeCenter</span><span class="p">;</span>
+</span><span class='line'>  <span class="c1">//画面に追加</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">imageView</span><span class="p">];</span>
 </span><span class='line'><span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<h2>実行結果</h2>
 
-<blockquote><p>originalArray = (Apple, Banana, Apple)<br />
-newArray = (Apple, Banana)</p></blockquote>
 
-		
-		
 	</div>
 
 
@@ -165,7 +138,7 @@ newArray = (Apple, Banana)</p></blockquote>
   
 
 
-<time datetime="2013-03-25T08:39:00+09:00" pubdate data-updated="true">Mar 25<span>th</span>, 2013</time></div>
+<time datetime="2013-05-13T23:35:00+09:00" pubdate data-updated="true">May 13<span>th</span>, 2013</time></div>
 	<div class="tags">
 
 
@@ -177,195 +150,25 @@ newArray = (Apple, Banana)</p></blockquote>
 </div>
 </article>
 
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/03/24/objc-get-all-dictionary/">
-		
-			辞書に格納されているオブジェクトを全て取得する</a>
-	</h2>
-	<div class="entry-content">
-		<p>辞書に格納されているオブジェクトを全て取得するには、allValuesメソッドを使用します。allValueメソッドは、辞書に格納されているオブジェクトを全て格納した配列を作成して返します。</p>
-
-<h2>サンプルダウンロード</h2>
-
-<ul>
-<li><a href="https://github.com/masakihirokawa/objc-all-values">https://github.com/masakihirokawa/objc-all-values</a></li>
-</ul>
-
-
-<h2>ソースコード</h2>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">main</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="c1">//辞書を作成する</span>
-</span><span class='line'>  <span class="n">NSDictionary</span> <span class="o">*</span><span class="n">myDictionary</span><span class="p">;</span>
-</span><span class='line'>  <span class="n">myDictionary</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSDictionary</span> <span class="nl">dictionaryWithObjectsAndKeys:</span>
-</span><span class='line'>                  <span class="s">@&quot;Apple&quot;</span><span class="p">,</span> <span class="s">@&quot;Key1&quot;</span><span class="p">,</span>
-</span><span class='line'>                  <span class="s">@&quot;Banana&quot;</span><span class="p">,</span> <span class="s">@&quot;Key2&quot;</span><span class="p">,</span>
-</span><span class='line'>                  <span class="s">@&quot;Orange&quot;</span><span class="p">,</span> <span class="s">@&quot;Key3&quot;</span><span class="p">,</span>
-</span><span class='line'>                  <span class="nb">nil</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="c1">//格納されている全てのオブジェクトを取得する</span>
-</span><span class='line'>  <span class="n">NSArray</span> <span class="o">*</span><span class="n">allObjects</span> <span class="o">=</span> <span class="p">[</span><span class="n">myDictionary</span> <span class="n">allValues</span><span class="p">];</span>
-</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;All = %@&quot;</span><span class="p">,</span> <span class="n">allObjects</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>実行結果</h2>
-
-<blockquote><p>  Apple,<br />
-Banana,<br />
-Orange</p></blockquote>
-
-		
-		
+	<div class="share addthis">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+	
+	
+	<a class="addthis_button_tweet"></a>
+	
+	
+	<a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+  &nbsp;&nbsp;
+  <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard" title="このエントリーをはてなブックマークに追加"><img src="http://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="http://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
 	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-03-24T22:06:00+09:00" pubdate data-updated="true">Mar 24<span>th</span>, 2013</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>
-
-
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
 </div>
-	
-</div>
-</article>
 
 
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/03/24/objc-get-dictionary/">
-		
-			辞書からオブジェクトを取得する</a>
-	</h2>
-	<div class="entry-content">
-		<p>辞書からオブジェクトを取得する方法を以下に記載します。</p>
-
-<h2>サンプルダウンロード</h2>
-
-<ul>
-<li><a href="https://github.com/masakihirokawa/objc-object-for-key">https://github.com/masakihirokawa/objc-object-for-key</a></li>
-</ul>
-
-
-<h2>ソースコード</h2>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">main</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="c1">//辞書を生成する</span>
-</span><span class='line'>  <span class="n">NSDictionary</span> <span class="o">*</span><span class="n">myDictionary</span><span class="p">;</span>
-</span><span class='line'>  <span class="n">myDictionary</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSDictionary</span> <span class="nl">dictionaryWithObjectsAndKeys:</span>
-</span><span class='line'>                  <span class="s">@&quot;Apple&quot;</span><span class="p">,</span> <span class="s">@&quot;Key1&quot;</span><span class="p">,</span>
-</span><span class='line'>                  <span class="s">@&quot;Banana&quot;</span><span class="p">,</span> <span class="s">@&quot;Key2&quot;</span><span class="p">,</span>
-</span><span class='line'>                  <span class="s">@&quot;Orange&quot;</span><span class="p">,</span> <span class="s">@&quot;Key3&quot;</span><span class="p">,</span>
-</span><span class='line'>                  <span class="nb">nil</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="c1">//キーを指定してオブジェクトを取得する</span>
-</span><span class='line'>  <span class="kt">id</span> <span class="n">myObject</span> <span class="o">=</span> <span class="p">[</span><span class="n">myDictionary</span> <span class="nl">objectForKey:</span><span class="s">@&quot;Key1&quot;</span><span class="p">];</span>
-</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;Key1 = %@&quot;</span><span class="p">,</span> <span class="n">myObject</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>実行結果</h2>
-
-<blockquote><p>Key1 = Apple</p></blockquote>
-
-<h2>補足</h2>
-
-<ol>
-<li>キーに対応するオブジェクトが存在しない場合は nilが返ります</li>
-<li>キーは大文字・小文字も区別されます</li>
-</ol>
-
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-03-24T21:58:00+09:00" pubdate data-updated="true">Mar 24<span>th</span>, 2013</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>
-
-
-</div>
-	
-</div>
-</article>
-
-<nav id="pagenavi">
-    
-        <a href="/blog/page/28/" class="prev">Prev</a>
-    
-    
-        <a href="/blog/page/30/" class="next">Next</a>
-    
-    <div class="center"><a href="/blog/archives">Archives</a></div>
-</nav>
 <div id="information">
   <div id="aboutmetwitter" class="information-box">
 
@@ -453,7 +256,7 @@ Orange</p></blockquote>
 <section>
   <h1>GitHub Repos</h1>
   <ul id="gh_repos">
-    <li class="loading">Status updating&#8230;</li>
+    <li class="loading">Status updating...</li>
   </ul>
   
   <a href="https://github.com/masakihirokawa">@masakihirokawa</a> on GitHub
@@ -484,19 +287,6 @@ Orange</p></blockquote>
   <div class="clear-left"></div>
 </div>
 
-<div class="addthis">
-  <!-- AddThis Button BEGIN -->
-  <div class="addthis_toolbox addthis_default_style " addthis:url="http://lab.dolice.net">
-  <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
-  <a class="addthis_button_tweet"></a>
-  <a class="addthis_button_pinterest_pinit"></a>
-  <a class="addthis_counter addthis_pill_style"></a>
-  &nbsp;&nbsp;
-  <a href="http://b.hatena.ne.jp/entry/http://lab.dolice.net" class="hatena-bookmark-button" data-hatena-bookmark-layout="standard" title="このエントリーをはてなブックマークに追加"><img src="http://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="http://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
-  </div>
-  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-4ee1a8a55afc2a85"></script>
-  <!-- AddThis Button END -->
-</div>
 <section id="recommended">
   <header id="recommended-header">
     <h1>Recommended Books</h1>
