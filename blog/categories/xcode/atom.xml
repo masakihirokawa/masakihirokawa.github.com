@@ -4,7 +4,7 @@
   <title><![CDATA[Category: xcode | Dolice Lab]]></title>
   <link href="http://lab.dolice.net/blog/categories/xcode/atom.xml" rel="self"/>
   <link href="http://lab.dolice.net/"/>
-  <updated>2013-05-17T23:02:12+09:00</updated>
+  <updated>2013-05-20T21:15:32+09:00</updated>
   <id>http://lab.dolice.net/</id>
   <author>
     <name><![CDATA[Masaki Hirokawa]]></name>
@@ -12,6 +12,86 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[iOS端末情報を取得する「Device」クラスに2つの機能を追加しました]]></title>
+    <link href="http://lab.dolice.net/blog/2013/05/20/download-objc-classes-device3/"/>
+    <updated>2013-05-20T23:10:00+09:00</updated>
+    <id>http://lab.dolice.net/blog/2013/05/20/download-objc-classes-device3</id>
+    <content type="html"><![CDATA[<p>iPhone/iPadのデバイス名を判別する <a href="https://github.com/masakihirokawa/objc-classes-devce3" title="Deviceクラス">Deviceクラス</a>に2つの機能を追加しました。</p>
+
+<p>今回は以下の2つの機能を追加しています。</p>
+
+<ol>
+<li>4インチ端末であるかの情報取得</li>
+<li>iOS6以降であるかの情報取得</li>
+</ol>
+
+
+<p>以下よりサンプルコードを含めたソースファイルをダウンロードできます。</p>
+
+<h2>ダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-classes-devce3">https://github.com/masakihirokawa/objc-classes-devce3</a></li>
+</ul>
+
+
+<h2>サンプルソースコード</h2>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//4インチ端末であれば1が返る</span>
+</span><span class='line'><span class="n">self</span><span class="p">.</span><span class="n">label4inch</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">@&quot;%@%d&quot;</span><span class="p">,</span> <span class="s">@&quot;is4inch: &quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">Device</span> <span class="n">is4inch</span><span class="p">]];</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">//iOS6以降であれば1が返る</span>
+</span><span class='line'><span class="n">self</span><span class="p">.</span><span class="n">labeliOS6</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">@&quot;%@%d&quot;</span><span class="p">,</span> <span class="s">@&quot;isiOS6: &quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">Device</span> <span class="n">isiOS6</span><span class="p">]];</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h2>ソースコード</h2>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//4インチ端末であるか</span>
+</span><span class='line'><span class="k">+</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span> <span class="nf">is4inch</span> <span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">CGSize</span> <span class="n">screenSize</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIScreen</span> <span class="n">mainScreen</span><span class="p">]</span> <span class="n">bounds</span><span class="p">].</span><span class="n">size</span><span class="p">;</span>
+</span><span class='line'><span class="k">return</span> <span class="p">(</span><span class="n">screenSize</span><span class="p">.</span><span class="n">width</span> <span class="o">==</span> <span class="mf">320.0</span> <span class="o">&amp;</span><span class="n">amp</span><span class="p">;</span><span class="o">&amp;</span><span class="n">amp</span><span class="p">;</span> <span class="n">screenSize</span><span class="p">.</span><span class="n">height</span> <span class="o">==</span> <span class="mf">568.0</span><span class="p">);</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">//iOS6以降であるか</span>
+</span><span class='line'><span class="o">+</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span> <span class="n">isiOS6</span> <span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">NSString</span> <span class="o">*</span><span class="n">osversion</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIDevice</span> <span class="n">currentDevice</span><span class="p">].</span><span class="n">systemVersion</span><span class="p">;</span>
+</span><span class='line'><span class="n">NSArray</span> <span class="o">*</span><span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="n">osversion</span> <span class="nl">componentsSeparatedByString:</span><span class="s">@&quot;.&quot;</span><span class="p">];</span>
+</span><span class='line'><span class="k">return</span> <span class="p">([(</span><span class="n">NSString</span><span class="o">*</span><span class="p">)[</span><span class="n">a</span> <span class="nl">objectAtIndex:</span><span class="mi">0</span><span class="p">]</span> <span class="n">intValue</span><span class="p">]</span> <span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">=</span> <span class="mi">6</span><span class="p">);</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[シンプルなカメラアプリを作成しました]]></title>
@@ -843,88 +923,6 @@
 <h2>まとめ</h2>
 
 <p>色々なサービスやアプリを列挙しましたが、2週間ほど試用した結果、当方は「<a href="http://appfigures.com" title="AppFigures">AppFigures</a>」と「<a href="http://www.ideaswarm.com/AppViz2.html" title="AppViz 2">AppViz 2</a>」の組み合わせに落ち着きました。今後、他にも良いサービスを見つけたら紹介して行きます。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[iPhoneアプリをローカライズするまでの全スクリーンショット]]></title>
-    <link href="http://lab.dolice.net/blog/2013/04/17/xcode-localize/"/>
-    <updated>2013-04-17T11:58:00+09:00</updated>
-    <id>http://lab.dolice.net/blog/2013/04/17/xcode-localize</id>
-    <content type="html"><![CDATA[<p>iOSアプリをローカライズするまでの全スクリーンショットに手順を添えて紹介します。</p>
-
-<p>下記にサンプルを用意しました。スクリーンショットも同梱しています。</p>
-
-<h2>サンプルダウンロード</h2>
-
-<ul>
-<li><a href="https://github.com/masakihirokawa/xcode-localize">https://github.com/masakihirokawa/xcode-localize</a></li>
-</ul>
-
-
-<h2>スクリーンショットとローカライズ手順</h2>
-
-<h3>1. PROJECT -> info -> Localizationsの項目に Japaniese (ja)を追加する</h3>
-
-<p><img src="/images/article/localize/screenshot1.png" title="1. PROJECT -&gt; info -&gt; Localizationsの項目に Japaniese (ja)を追加する" alt="1. PROJECT -&gt; info -&gt; Localizationsの項目に Japaniese (ja)を追加する" /></p>
-
-<h3>2. MainStoryboard.storyboardと InfoPlist.stringsにチェックを入れて Finishを選択</h3>
-
-<p><img src="/images/article/localize/screenshot2.png" title="2. MainStoryboard.storyboardと InfoPlist.stringsにチェックを入れて Finishを選択" alt="2. MainStoryboard.storyboardと InfoPlist.stringsにチェックを入れて Finishを選択" /></p>
-
-<h3>3. MainStoryboardが複製され、Japanieseと Englishの2つに分かれました</h3>
-
-<p><img src="/images/article/localize/screenshot3.png" title="3. MainStoryboardが複製され、Japanieseと Englishの2つに分かれました" alt="3. MainStoryboardが複製され、Japanieseと Englishの2つに分かれました" /></p>
-
-<h3>4. Strings Filesを新規作成します</h3>
-
-<p><img src="/images/article/localize/screenshot4.png" title="4. Strings Filesを新規作成します" alt="4. Strings Filesを新規作成します" /></p>
-
-<h3>5. ファイル名を「Localizable.strings」にします</h3>
-
-<p><img src="/images/article/localize/screenshot5.png" title="5. ファイル名を「Localizable.strings」にします" alt="5. ファイル名を「Localizable.strings」にします" /></p>
-
-<h3>6. 作成した Localizable.stringsファイルを選択し、「Localize…」ボタンを押します</h3>
-
-<p><img src="/images/article/localize/screenshot6.png" title="6. 作成した Localizable.stringsファイルを選択し、「Localize…」ボタンを押します" alt="6. 作成した Localizable.stringsファイルを選択し、「Localize…」ボタンを押します" /></p>
-
-<h3>7. Englishと Japanieseの両方にチェックを入れます</h3>
-
-<p><img src="/images/article/localize/screenshot7.png" title="7. Englishと Japanieseの両方にチェックを入れます" alt="7. Englishと Japanieseの両方にチェックを入れます" /></p>
-
-<h3>8. Localizable.stringsファイルに各国の単語を定義します</h3>
-
-<p><img src="/images/article/localize/screenshot8.png" title="8. Localizable.stringsファイルに各国の単語を定義します" alt="8. Localizable.stringsファイルに各国の単語を定義します" /></p>
-
-<h3>9. アプリ名とアプリアイコンの下に表示される名前を指定することも出来ます</h3>
-
-<p><img src="/images/article/localize/screenshot9.png" title="9. アプリ名とアプリアイコンの下に表示される名前を指定することも出来ます" alt="9. アプリ名とアプリアイコンの下に表示される名前を指定することも出来ます" /></p>
-
-<h3>10. 「NSLocalizedStrings」にキーワードを指定すると、各国語に対応した単語が表示されます</h3>
-
-<p><img src="/images/article/localize/screenshot10.png" title="10. 「NSLocalizedStrings」にキーワードを指定すると、各国語に対応した単語が表示されます" alt="10. 「NSLocalizedStrings」にキーワードを指定すると、各国語に対応した単語が表示されます" /></p>
-
-<h2>ソースコード</h2>
-
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">main</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;%@&quot;</span><span class="p">,</span> <span class="n">NSLocalizedString</span><span class="p">(</span><span class="s">@&quot;AppName&quot;</span><span class="p">,</span> <span class="nb">nil</span><span class="p">));</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
-
-<h2>出力結果</h2>
-
-<h3>システム言語を英語に設定していた場合</h3>
-
-<blockquote><p>My Apps</p></blockquote>
-
-<h3>システム言語を日本語に設定していた場合</h3>
-
-<blockquote><p>マイアプリ</p></blockquote>
 ]]></content>
   </entry>
   
