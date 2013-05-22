@@ -13,8 +13,11 @@
 5
 6
 7
-_myArray = [NSMutableArray array];
-for (uint i = 0; i &lt; [_myArray count]; ++i) { int m = [_myArray &hellip;">
+8
+9
+10
+- (NSMutableArray *)shuffledList:(NSMutableArray *)tmpArray
+{ NSMutableArray *results = &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	<meta property="og:title" content="Dolice Lab" />
@@ -25,8 +28,11 @@ for (uint i = 0; i &lt; [_myArray count]; ++i) { int m = [_myArray &hellip;">
 5
 6
 7
-_myArray = [NSMutableArray array];
-for (uint i = 0; i &lt; [_myArray count]; ++i) { int m = [_myArray &hellip;" />
+8
+9
+10
+- (NSMutableArray *)shuffledList:(NSMutableArray *)tmpArray
+{ NSMutableArray *results = &hellip;" />
 <meta property="og:url" content="http://lab.dolice.net/blog/page/44/" />
 <meta property="og:image" content="http://lab.dolice.net/images/facebook-icon.jpg" />
 <meta property="og:author" content="Masaki Hirokawa" />
@@ -100,6 +106,105 @@ for (uint i = 0; i &lt; [_myArray count]; ++i) { int m = [_myArray &hellip;" />
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/03/14/shuffle-the-array-in-objective-c-using-the-fisher-yates-method/">
+		
+			Fisher-Yates法を使用した配列のシャッフル</a>
+	</h2>
+	<div class="entry-content">
+		<p>配列をシャッフルし取得するには、以下のようにコードを記述します。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSMutableArray</span> <span class="o">*</span><span class="p">)</span><span class="nf">shuffledList:</span><span class="p">(</span><span class="n">NSMutableArray</span> <span class="o">*</span><span class="p">)</span><span class="nv">tmpArray</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="n">NSMutableArray</span> <span class="o">*</span><span class="n">results</span> <span class="o">=</span> <span class="n">tmpArray</span><span class="p">;</span>
+</span><span class='line'>  <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="p">[</span><span class="n">results</span> <span class="n">count</span><span class="p">];</span>
+</span><span class='line'>  <span class="k">while</span><span class="p">(</span><span class="o">--</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="n">rand</span><span class="p">()</span> <span class="o">%</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">results</span> <span class="nl">exchangeObjectAtIndex:</span><span class="n">i</span> <span class="nl">withObjectAtIndex:</span><span class="n">j</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="k">return</span> <span class="p">[</span><span class="n">NSMutableArray</span> <span class="nl">arrayWithArray:</span><span class="n">results</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>クラスで実装する場合</h2>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">@interface</span> <span class="nc">NSArray</span> <span class="nl">(randomized)</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSArray</span> <span class="o">*</span><span class="p">)</span> <span class="nf">randomizedArray</span><span class="p">;</span>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">NSArray</span> <span class="nl">(randomized)</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSArray</span> <span class="o">*</span><span class="p">)</span> <span class="nf">randomizedArray</span> <span class="p">{</span>
+</span><span class='line'>   <span class="n">NSMutableArray</span> <span class="o">*</span><span class="n">results</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSMutableArray</span> <span class="nl">arrayWithArray:</span><span class="n">self</span><span class="p">];</span>
+</span><span class='line'>   <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="p">[</span><span class="n">results</span> <span class="n">count</span><span class="p">];</span>
+</span><span class='line'>   <span class="k">while</span><span class="p">(</span><span class="o">--</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="n">rand</span><span class="p">()</span> <span class="o">%</span> <span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">);</span>
+</span><span class='line'>      <span class="p">[</span><span class="n">results</span> <span class="nl">exchangeObjectAtIndex:</span><span class="n">i</span> <span class="nl">withObjectAtIndex:</span><span class="n">j</span><span class="p">];</span>
+</span><span class='line'>   <span class="p">}</span>
+</span><span class='line'>   <span class="k">return</span> <span class="p">[</span><span class="n">NSArray</span> <span class="nl">arrayWithArray:</span><span class="n">results</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-14T10:41:00+09:00" pubdate data-updated="true">Mar 14<span>th</span>, 2013</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>
+
+
+</div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -270,45 +375,6 @@ for (uint i = 0; i &lt; [_myArray count]; ++i) { int m = [_myArray &hellip;" />
 </div>
 </article>
 
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/03/14/about-this-blog/">
-		
-			About This Blog</a>
-	</h2>
-	<div class="entry-content">
-		<p>GitHubに Octopressをインストールし、dolice.netのドメインで開設しました。<br />
-ここには技術ノートをメインに書いて行きます。<br />
-制作の過程で役立った事を中心に書き留めて行きたいと思います。</p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-03-14T01:15:00+09:00" pubdate data-updated="true">Mar 14<span>th</span>, 2013</time></div>
-	<div class="tags">
-
-</div>
-	
-</div>
-</article>
-
 <nav id="pagenavi">
     
         <a href="/blog/page/43/" class="prev">Prev</a>
@@ -346,7 +412,7 @@ for (uint i = 0; i &lt; [_myArray count]; ++i) { int m = [_myArray &hellip;" />
   <div id="category" class="information-box">
 <section>
   <h1>Categories</h1>
-  <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (35)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (127)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (30)</a></li></ul>
+  <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (35)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (128)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (30)</a></li></ul>
 </section>
 
 
@@ -355,6 +421,10 @@ for (uint i = 0; i &lt; [_myArray count]; ++i) { int m = [_myArray &hellip;" />
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/05/22/download-objc-ui-navigationbar-title-image/">ナビゲーションバーのタイトルを画像にする方法</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2013/05/20/download-objc-classes-device3/">iOS端末情報を取得する「Device」クラスに2つの機能を追加しました</a>
@@ -390,10 +460,6 @@ for (uint i = 0; i &lt; [_myArray count]; ++i) { int m = [_myArray &hellip;" />
     
       <li class="post">
         <a href="/blog/2013/05/07/objc-commit-animations-slide-in/">Objective-Cのスライドインアニメーション</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/04/29/download-xcode-marketing/">iOSアプリの売り上げやダウンロード数をチェックできるサービス</a>
       </li>
     
   </ul>
