@@ -6,11 +6,11 @@
 	<title>Dolice Lab</title>
 	
 	
-	<meta name="description" content="クラス名からクラスを取得するには、「NSClassFromString」を使用します。以下にサンプルを作成しました。 サンプルダウンロード https://github.com/masakihirokawa/objc-ns-class-from-string ソースコード MyClass.m 1 &hellip;">
+	<meta name="description" content="Objective-Cでメンバ変数を宣言する場合、ヘッダファイルに @propertyを記述し、実装ファイルに @synthesize宣言を入れるのが一般的ですが、実装ファイルに @propertyを宣言するだけでも問題ないようです。この方がシンプルに記述でき、機密性も保たれるのと、setter &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	<meta property="og:title" content="Dolice Lab" />
-<meta property="og:description" content="クラス名からクラスを取得するには、「NSClassFromString」を使用します。以下にサンプルを作成しました。 サンプルダウンロード https://github.com/masakihirokawa/objc-ns-class-from-string ソースコード MyClass.m 1 &hellip;" />
+<meta property="og:description" content="Objective-Cでメンバ変数を宣言する場合、ヘッダファイルに @propertyを記述し、実装ファイルに @synthesize宣言を入れるのが一般的ですが、実装ファイルに @propertyを宣言するだけでも問題ないようです。この方がシンプルに記述でき、機密性も保たれるのと、setter &hellip;" />
 <meta property="og:url" content="http://lab.dolice.net/blog/page/9/" />
 <meta property="og:image" content="http://lab.dolice.net/images/facebook-icon.jpg" />
 <meta property="og:author" content="Masaki Hirokawa" />
@@ -84,6 +84,171 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/04/19/objc-property/">
+		
+			Objective-Cでメンバ変数をシンプルに宣言する方法</a>
+	</h2>
+	<div class="entry-content">
+		<p>Objective-Cでメンバ変数を宣言する場合、ヘッダファイルに @propertyを記述し、実装ファイルに @synthesize宣言を入れるのが一般的ですが、実装ファイルに @propertyを宣言するだけでも問題ないようです。この方がシンプルに記述でき、機密性も保たれるのと、setter/getterの役割も兼ねてくれるので良いですね。</p>
+
+<p>以下にサンプルを作成しました。</p>
+
+<h2>サンプルダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-propetry-and-synthesize">https://github.com/masakihirokawa/objc-propetry-and-synthesize</a></li>
+</ul>
+
+
+<h2>ソースコード</h2>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;ViewController.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> <span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@property</span> <span class="n">NSString</span> <span class="o">*</span><span class="n">sampleStr</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="kt">int</span> <span class="n">sampleInt</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="kt">BOOL</span> <span class="n">sampleBool</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">ViewController</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">self</span> <span class="n">main</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">self</span> <span class="n">debugStr</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">self</span> <span class="n">debugInt</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">self</span> <span class="n">debugBool</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">main</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="n">_sampleStr</span> <span class="o">=</span> <span class="s">@&quot;サンプル&quot;</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">_sampleInt</span> <span class="o">=</span> <span class="mi">777</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">_sampleBool</span> <span class="o">=</span> <span class="n">YES</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">debugStr</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;_sampleStr: %@&quot;</span><span class="p">,</span> <span class="n">_sampleStr</span><span class="p">);</span>
+</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;self.sampleStr: %@&quot;</span><span class="p">,</span> <span class="n">self</span><span class="p">.</span><span class="n">sampleStr</span><span class="p">);</span>
+</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;[self sampleStr]: %@&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">self</span> <span class="n">sampleStr</span><span class="p">]);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">debugInt</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;_sampleInt: %d&quot;</span><span class="p">,</span> <span class="n">_sampleInt</span><span class="p">);</span>
+</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;self.sampleInt: %d&quot;</span><span class="p">,</span> <span class="n">self</span><span class="p">.</span><span class="n">sampleInt</span><span class="p">);</span>
+</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;[self sampleInt]: %d&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">self</span> <span class="n">sampleInt</span><span class="p">]);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">debugBool</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;_sampleBool: %d&quot;</span><span class="p">,</span> <span class="n">_sampleBool</span><span class="p">);</span>
+</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;self.sampleBool: %d&quot;</span><span class="p">,</span> <span class="n">self</span><span class="p">.</span><span class="n">sampleBool</span><span class="p">);</span>
+</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;[self sampleBool]: %d&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">self</span> <span class="n">sampleBool</span><span class="p">]);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>出力結果</h2>
+
+<blockquote><p>サンプル<br />
+777<br />
+YES</p></blockquote>
+
+<h2>参考サイト</h2>
+
+<p><a href="http://qiita.com/items/8bcd083e59d68ad94927" title="Modern Objective-Cでのシンプルなプロパティ記述方式">Modern Objective-Cでのシンプルなプロパティ記述方式</a></p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-04-19T16:05:00+09:00" pubdate data-updated="true">Apr 19<span>th</span>, 2013</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>
+
+
+</div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -456,121 +621,6 @@
 </div>
 </article>
 
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/04/17/xcode-localize/">
-		
-			iPhoneアプリをローカライズするまでの全スクリーンショット</a>
-	</h2>
-	<div class="entry-content">
-		<p>iOSアプリをローカライズするまでの全スクリーンショットに手順を添えて紹介します。</p>
-
-<p>下記にサンプルを用意しました。スクリーンショットも同梱しています。</p>
-
-<h2>サンプルダウンロード</h2>
-
-<ul>
-<li><a href="https://github.com/masakihirokawa/xcode-localize">https://github.com/masakihirokawa/xcode-localize</a></li>
-</ul>
-
-
-<h2>スクリーンショットとローカライズ手順</h2>
-
-<h3>1. PROJECT -> info -> Localizationsの項目に Japaniese (ja)を追加する</h3>
-
-<p><img src="/images/article/localize/screenshot1.png" title="1. PROJECT -&gt; info -&gt; Localizationsの項目に Japaniese (ja)を追加する" alt="1. PROJECT -&gt; info -&gt; Localizationsの項目に Japaniese (ja)を追加する" /></p>
-
-<h3>2. MainStoryboard.storyboardと InfoPlist.stringsにチェックを入れて Finishを選択</h3>
-
-<p><img src="/images/article/localize/screenshot2.png" title="2. MainStoryboard.storyboardと InfoPlist.stringsにチェックを入れて Finishを選択" alt="2. MainStoryboard.storyboardと InfoPlist.stringsにチェックを入れて Finishを選択" /></p>
-
-<h3>3. MainStoryboardが複製され、Japanieseと Englishの2つに分かれました</h3>
-
-<p><img src="/images/article/localize/screenshot3.png" title="3. MainStoryboardが複製され、Japanieseと Englishの2つに分かれました" alt="3. MainStoryboardが複製され、Japanieseと Englishの2つに分かれました" /></p>
-
-<h3>4. Strings Filesを新規作成します</h3>
-
-<p><img src="/images/article/localize/screenshot4.png" title="4. Strings Filesを新規作成します" alt="4. Strings Filesを新規作成します" /></p>
-
-<h3>5. ファイル名を「Localizable.strings」にします</h3>
-
-<p><img src="/images/article/localize/screenshot5.png" title="5. ファイル名を「Localizable.strings」にします" alt="5. ファイル名を「Localizable.strings」にします" /></p>
-
-<h3>6. 作成した Localizable.stringsファイルを選択し、「Localize…」ボタンを押します</h3>
-
-<p><img src="/images/article/localize/screenshot6.png" title="6. 作成した Localizable.stringsファイルを選択し、「Localize…」ボタンを押します" alt="6. 作成した Localizable.stringsファイルを選択し、「Localize…」ボタンを押します" /></p>
-
-<h3>7. Englishと Japanieseの両方にチェックを入れます</h3>
-
-<p><img src="/images/article/localize/screenshot7.png" title="7. Englishと Japanieseの両方にチェックを入れます" alt="7. Englishと Japanieseの両方にチェックを入れます" /></p>
-
-<h3>8. Localizable.stringsファイルに各国の単語を定義します</h3>
-
-<p><img src="/images/article/localize/screenshot8.png" title="8. Localizable.stringsファイルに各国の単語を定義します" alt="8. Localizable.stringsファイルに各国の単語を定義します" /></p>
-
-<h3>9. アプリ名とアプリアイコンの下に表示される名前を指定することも出来ます</h3>
-
-<p><img src="/images/article/localize/screenshot9.png" title="9. アプリ名とアプリアイコンの下に表示される名前を指定することも出来ます" alt="9. アプリ名とアプリアイコンの下に表示される名前を指定することも出来ます" /></p>
-
-<h3>10. 「NSLocalizedStrings」にキーワードを指定すると、各国語に対応した単語が表示されます</h3>
-
-<p><img src="/images/article/localize/screenshot10.png" title="10. 「NSLocalizedStrings」にキーワードを指定すると、各国語に対応した単語が表示されます" alt="10. 「NSLocalizedStrings」にキーワードを指定すると、各国語に対応した単語が表示されます" /></p>
-
-<h2>ソースコード</h2>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">main</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;%@&quot;</span><span class="p">,</span> <span class="n">NSLocalizedString</span><span class="p">(</span><span class="s">@&quot;AppName&quot;</span><span class="p">,</span> <span class="nb">nil</span><span class="p">));</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>出力結果</h2>
-
-<h3>システム言語を英語に設定していた場合</h3>
-
-<blockquote><p>My Apps</p></blockquote>
-
-<h3>システム言語を日本語に設定していた場合</h3>
-
-<blockquote><p>マイアプリ</p></blockquote>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-04-17T11:58:00+09:00" pubdate data-updated="true">Apr 17<span>th</span>, 2013</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/download/'>download</a>, <a class='category' href='/blog/categories/objective-c/'>objective-c</a>, <a class='category' href='/blog/categories/xcode/'>xcode</a>
-
-
-</div>
-	
-</div>
-</article>
-
 <nav id="pagenavi">
     
         <a href="/blog/page/8/" class="prev">Prev</a>
@@ -608,7 +658,7 @@
   <div id="category" class="information-box">
 <section>
   <h1>Categories</h1>
-  <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (35)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (128)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (30)</a></li></ul>
+  <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (36)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (129)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (31)</a></li></ul>
 </section>
 
 
@@ -617,6 +667,10 @@
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/05/23/download-xcode-objc-camera2/">カメラアプリのサンプル改訂版</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2013/05/22/download-objc-ui-navigationbar-title-image/">ナビゲーションバーのタイトルを画像にする方法</a>
@@ -652,10 +706,6 @@
     
       <li class="post">
         <a href="/blog/2013/05/08/objc-ns-timer-scheduled-timer-with-time-interval/">遅延実行タイマーの使用方法</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/05/07/objc-commit-animations-slide-in/">Objective-Cのスライドインアニメーション</a>
       </li>
     
   </ul>
