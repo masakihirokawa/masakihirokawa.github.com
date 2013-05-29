@@ -6,15 +6,11 @@
 	<title>Dolice Lab</title>
 	
 	
-	<meta name="description" content="以前に作成したシンプルなカメラアプリに機能を追加しましたので、以下にソースコードを公開しました。 主な機能は下記の通りです。 主な機能 カメラ機能
-フォトライブラリ展開
-撮影した写真の書き込み機能 サンプルダウンロード https://github.com/masakihirokawa/objc &hellip;">
+	<meta name="description" content="Objective-Cで UIImageをリサイズするクラスメソッドを作成しました。 サンプルでは、Imageクラスにある resizeというシングルトンメソッドを呼ぶ事で画像をリサイズしています。 下記よりサンプルのダウンロードが行えます。 ダウンロード https://github.com/ &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	<meta property="og:title" content="Dolice Lab" />
-<meta property="og:description" content="以前に作成したシンプルなカメラアプリに機能を追加しましたので、以下にソースコードを公開しました。 主な機能は下記の通りです。 主な機能 カメラ機能
-フォトライブラリ展開
-撮影した写真の書き込み機能 サンプルダウンロード https://github.com/masakihirokawa/objc &hellip;" />
+<meta property="og:description" content="Objective-Cで UIImageをリサイズするクラスメソッドを作成しました。 サンプルでは、Imageクラスにある resizeというシングルトンメソッドを呼ぶ事で画像をリサイズしています。 下記よりサンプルのダウンロードが行えます。 ダウンロード https://github.com/ &hellip;" />
 <meta property="og:url" content="http://lab.dolice.net/blog/page/3/" />
 <meta property="og:image" content="http://lab.dolice.net/images/facebook-icon.jpg" />
 <meta property="og:author" content="Masaki Hirokawa" />
@@ -88,6 +84,122 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/05/24/objc-resize-image/">
+		
+			UIImageをリサイズする方法</a>
+	</h2>
+	<div class="entry-content">
+		<p>Objective-Cで UIImageをリサイズするクラスメソッドを作成しました。</p>
+
+<p>サンプルでは、Imageクラスにある resizeというシングルトンメソッドを呼ぶ事で画像をリサイズしています。</p>
+
+<p>下記よりサンプルのダウンロードが行えます。</p>
+
+<h2>ダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-ui-image-resize">https://github.com/masakihirokawa/objc-ui-image-resize</a></li>
+</ul>
+
+
+<h2>ソースコード</h2>
+
+<h3>Image.m</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//画像をリサイズする</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nf">resize:</span><span class="p">(</span><span class="n">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nv">image</span>
+</span><span class='line'>               <span class="nf">rect:</span><span class="p">(</span><span class="n">CGRect</span><span class="p">)</span><span class="nv">rect</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">UIGraphicsBeginImageContext</span><span class="p">(</span><span class="n">rect</span><span class="p">.</span><span class="n">size</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">image</span> <span class="nl">drawInRect:</span><span class="n">rect</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">UIImage</span><span class="o">*</span> <span class="n">resizedImage</span> <span class="o">=</span> <span class="n">UIGraphicsGetImageFromCurrentImageContext</span><span class="p">();</span>
+</span><span class='line'>    <span class="n">CGContextRef</span> <span class="n">context</span> <span class="o">=</span> <span class="n">UIGraphicsGetCurrentContext</span><span class="p">();</span>
+</span><span class='line'>    <span class="n">CGContextSetInterpolationQuality</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">kCGInterpolationHigh</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">UIGraphicsEndImageContext</span><span class="p">();</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">resizedImage</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>サンプルソースコード</h2>
+
+<h3>ViewController.m</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">resizeImage</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">//画像をリサイズして UIImageに格納</span>
+</span><span class='line'>    <span class="n">UIImage</span> <span class="o">*</span><span class="n">sampleImage</span> <span class="o">=</span> <span class="p">[</span><span class="n">Image</span> <span class="nl">resize:</span><span class="p">[</span><span class="n">Image</span> <span class="nl">getUIImageFromResources:</span><span class="s">@&quot;Asymmetry_640_1136&quot;</span> <span class="nl">ext:</span><span class="s">@&quot;jpg&quot;</span><span class="p">]</span>
+</span><span class='line'>                                    <span class="nl">rect:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">320</span><span class="p">,</span> <span class="mi">568</span><span class="p">)];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//画像を UIImageViewに格納</span>
+</span><span class='line'>    <span class="n">UIImageView</span> <span class="o">*</span><span class="n">sampleImageView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIImageView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithImage:</span><span class="n">sampleImage</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//画面に追加</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">sampleImageView</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-05-24T23:25:00+09:00" pubdate data-updated="true">May 24<span>th</span>, 2013</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>
+
+
+</div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -758,119 +870,6 @@
 </div>
 </article>
 
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/05/22/download-objc-ui-navigationbar-title-image/">
-		
-			ナビゲーションバーのタイトルを画像にする方法</a>
-	</h2>
-	<div class="entry-content">
-		<p>ナビゲーションバーのタイトルと背景を画像にするサンプルを以下に作成しました。</p>
-
-<p>サンプルでは、まず UINavigationItemを定義し、その titleViewプロパティに UIImageViewを入れる事でナビゲーションバーのタイトルを画像にしています。</p>
-
-<p>背景画像は、UINavigationBarの setBackgroundImageメソッドを使用することで任意の画像を指定できます。</p>
-
-<p>下記よりサンプルのダウンロードが行えます。</p>
-
-<h2>ダウンロード</h2>
-
-<ul>
-<li><a href="https://github.com/masakihirokawa/objc-ui-navigationbar-title-image">https://github.com/masakihirokawa/objc-ui-navigationbar-title-image</a></li>
-</ul>
-
-
-<h2>サンプルソースコード</h2>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//ナビゲーションバー初期化</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">initNavigationBar</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="c1">//ナビゲーションバーの設定</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">navigationController</span> <span class="nl">setNavigationBarHidden:</span><span class="n">NO</span> <span class="nl">animated:</span><span class="n">YES</span><span class="p">];</span>
-</span><span class='line'>    <span class="n">UINavigationBar</span> <span class="o">*</span><span class="n">navigationBar</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UINavigationBar</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">320</span><span class="p">,</span> <span class="mi">44</span><span class="p">)];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">navigationBar</span> <span class="n">sizeToFit</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//ナビゲーションバーの背景画像を指定</span>
-</span><span class='line'>    <span class="n">UIImage</span> <span class="o">*</span><span class="n">backgroundImage</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIImage</span> <span class="nl">imageNamed:</span><span class="s">@&quot;navigationbar_background.png&quot;</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">navigationBar</span> <span class="nl">setBackgroundImage:</span><span class="n">backgroundImage</span> <span class="nl">forBarMetrics:</span><span class="n">UIBarMetricsDefault</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//ナビゲーションアイテム定義</span>
-</span><span class='line'>    <span class="n">UINavigationItem</span> <span class="o">*</span><span class="n">navigationItem</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UINavigationItem</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//タイトル画像設定</span>
-</span><span class='line'>    <span class="n">UIImageView</span> <span class="o">*</span><span class="n">navigationTitle</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIImageView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithImage:</span><span class="p">[</span><span class="n">UIImage</span> <span class="nl">imageNamed:</span><span class="s">@&quot;navigationbar_title.png&quot;</span><span class="p">]];</span>
-</span><span class='line'>    <span class="n">navigationTitle</span><span class="p">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">320</span><span class="p">,</span> <span class="mi">44</span><span class="p">);</span>
-</span><span class='line'>    <span class="n">navigationItem</span><span class="p">.</span><span class="n">titleView</span> <span class="o">=</span> <span class="n">navigationTitle</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//ナビゲーションバーにアイテムを追加する</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">navigationBar</span> <span class="nl">pushNavigationItem:</span><span class="n">navigationItem</span> <span class="nl">animated:</span><span class="n">YES</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//ナビゲーションバーを画面の最前面に追加する</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">navigationBar</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-05-22T22:17:00+09:00" pubdate data-updated="true">May 22<span>nd</span>, 2013</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>
-
-
-</div>
-	
-</div>
-</article>
-
 <nav id="pagenavi">
     
         <a href="/blog/page/2/" class="prev">Prev</a>
@@ -908,7 +907,7 @@
   <div id="category" class="information-box">
 <section>
   <h1>Categories</h1>
-  <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (37)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (136)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (32)</a></li></ul>
+  <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (37)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (137)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (32)</a></li></ul>
 </section>
 
 
@@ -917,6 +916,10 @@
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/05/29/objc-ui-button-basic/">UIButtonの基本的な使い方をまとめました</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2013/05/27/objc-background-pattern-draw-rect/">drawRectメソッドをオーバーライドして背景にパターンを適用する</a>
@@ -952,10 +955,6 @@
     
       <li class="post">
         <a href="/blog/2013/05/22/download-objc-ui-navigationbar-title-image/">ナビゲーションバーのタイトルを画像にする方法</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/05/20/download-objc-classes-device3/">iOS端末情報を取得する「Device」クラスに2つの機能を追加しました</a>
       </li>
     
   </ul>
