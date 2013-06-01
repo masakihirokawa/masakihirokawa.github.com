@@ -182,12 +182,6 @@
 <span class='line-number'>40</span>
 <span class='line-number'>41</span>
 <span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
 </pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//アニメーション開始</span>
 </span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">startAnimation</span>
 </span><span class='line'><span class="p">{</span>
@@ -229,12 +223,6 @@
 </span><span class='line'>
 </span><span class='line'>    <span class="c1">//ステージに追加</span>
 </span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="p">[</span><span class="n">fbfAnimation</span> <span class="n">animationImageView</span><span class="p">]];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//fpsリセット (変更した場合のみ)</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">fbfAnimation</span> <span class="n">resetFps</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//レクタングル指定を元に戻す (変更した場合のみ)</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">fbfAnimation</span> <span class="n">resetRectangle</span><span class="p">];</span>
 </span><span class='line'><span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
@@ -275,6 +263,7 @@
 <span class='line-number'>30</span>
 <span class='line-number'>31</span>
 <span class='line-number'>32</span>
+<span class='line-number'>33</span>
 </pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;UIKit/UIKit.h&gt;</span>
 </span><span class='line'>
 </span><span class='line'><span class="cp">#define ANIM_FPS                24.0f</span>
@@ -294,6 +283,7 @@
 </span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">assign</span><span class="p">)</span> <span class="kt">id</span><span class="o">&lt;</span><span class="n">FrameByFrameAnimationDelegate</span><span class="o">&gt;</span> <span class="n">fa_delegate</span><span class="p">;</span>
 </span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">retain</span><span class="p">)</span> <span class="n">UIImageView</span> <span class="o">*</span><span class="n">animationImageView</span><span class="p">;</span>
 </span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">init</span><span class="p">;</span>
 </span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setAnimating:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">animationType</span> <span class="o">:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="n">animationImageNum</span> <span class="o">:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="n">animationImagePrefix</span> <span class="o">:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="n">animationRepeatNum</span><span class="p">;</span>
 </span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setFps:</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="nv">fps</span><span class="p">;</span>
 </span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">resetFps</span><span class="p">;</span>
@@ -446,6 +436,16 @@
 <span class='line-number'>132</span>
 <span class='line-number'>133</span>
 <span class='line-number'>134</span>
+<span class='line-number'>135</span>
+<span class='line-number'>136</span>
+<span class='line-number'>137</span>
+<span class='line-number'>138</span>
+<span class='line-number'>139</span>
+<span class='line-number'>140</span>
+<span class='line-number'>141</span>
+<span class='line-number'>142</span>
+<span class='line-number'>143</span>
+<span class='line-number'>144</span>
 </pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;FrameByFrameAnimation.h&quot;</span>
 </span><span class='line'>
 </span><span class='line'><span class="k">@implementation</span> <span class="nc">FrameByFrameAnimation</span>
@@ -460,6 +460,16 @@
 </span><span class='line'><span class="n">CGFloat</span>   <span class="n">_animationFps</span>         <span class="o">=</span> <span class="n">ANIM_FPS</span><span class="p">;</span>
 </span><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="n">_animationImageExt</span>    <span class="o">=</span> <span class="n">ANIM_IMAGE_EXT</span><span class="p">;</span>
 </span><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="n">_animationType</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//初期化</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">init</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span><span class="p">(</span><span class="n">self</span> <span class="o">==</span> <span class="p">[</span><span class="n">super</span> <span class="n">init</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">self</span> <span class="n">resetFps</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">self</span> <span class="n">resetRectangle</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">self</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
 </span><span class='line'>
 </span><span class='line'><span class="c1">//アニメーション設定</span>
 </span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setAnimating:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">animationType</span>
@@ -477,8 +487,8 @@
 </span><span class='line'>                                                                        <span class="n">_animationImageHeight</span><span class="p">)];</span>
 </span><span class='line'>
 </span><span class='line'>    <span class="c1">//最後の画像が消えないようにする</span>
-</span><span class='line'>    <span class="n">_animationImageView</span><span class="p">.</span><span class="n">image</span> <span class="o">=</span> <span class="p">[</span><span class="n">FrameByFrameAnimation</span> <span class="nl">getUIImageFromResources:</span><span class="p">[</span><span class="n">self</span> <span class="nl">animationImageName:animationImagePrefix:</span><span class="n">animationImageNum</span><span class="p">]</span>
-</span><span class='line'>                                                                           <span class="nl">ext:</span><span class="n">_animationImageExt</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">_animationImageView</span><span class="p">.</span><span class="n">image</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="nl">getUIImageFromResources:</span><span class="p">[</span><span class="n">self</span> <span class="nl">animationImageName:animationImagePrefix:</span><span class="n">animationImageNum</span><span class="p">]</span>
+</span><span class='line'>                                                          <span class="nl">ext:</span><span class="n">_animationImageExt</span><span class="p">];</span>
 </span><span class='line'>
 </span><span class='line'>    <span class="c1">//画像をタップ可能にする</span>
 </span><span class='line'>    <span class="n">_animationImageView</span><span class="p">.</span><span class="n">userInteractionEnabled</span> <span class="o">=</span> <span class="n">YES</span><span class="p">;</span>
@@ -566,13 +576,13 @@
 </span><span class='line'>        <span class="n">NSString</span> <span class="o">*</span><span class="n">imageTitle</span> <span class="o">=</span> <span class="p">[</span><span class="n">animationImageNameList</span> <span class="nl">objectAtIndex:</span><span class="n">i</span><span class="p">];</span>
 </span><span class='line'>
 </span><span class='line'>        <span class="c1">//画像の配列に画像ファイルを追加</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">imageArray</span> <span class="nl">addObject:</span><span class="p">[</span><span class="n">FrameByFrameAnimation</span> <span class="nl">getUIImageFromResources:</span><span class="n">imageTitle</span>
-</span><span class='line'>                                                                         <span class="nl">ext:</span><span class="n">_animationImageExt</span><span class="p">]];</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">imageArray</span> <span class="nl">addObject:</span><span class="p">[</span><span class="n">self</span> <span class="nl">getUIImageFromResources:</span><span class="n">imageTitle</span>
+</span><span class='line'>                                                        <span class="nl">ext:</span><span class="n">_animationImageExt</span><span class="p">]];</span>
 </span><span class='line'>    <span class="p">}</span>
 </span><span class='line'>    <span class="k">return</span> <span class="p">(</span><span class="n">imageArray</span><span class="p">);</span>
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'>
-</span><span class='line'><span class="o">+</span> <span class="p">(</span><span class="n">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nl">getUIImageFromResources:</span><span class="p">(</span><span class="n">NSString</span><span class="o">*</span><span class="p">)</span><span class="n">fileName</span> <span class="nl">ext:</span><span class="p">(</span><span class="n">NSString</span><span class="o">*</span><span class="p">)</span><span class="n">ext</span>
+</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="n">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nl">getUIImageFromResources:</span><span class="p">(</span><span class="n">NSString</span><span class="o">*</span><span class="p">)</span><span class="n">fileName</span> <span class="nl">ext:</span><span class="p">(</span><span class="n">NSString</span><span class="o">*</span><span class="p">)</span><span class="n">ext</span>
 </span><span class='line'><span class="p">{</span>
 </span><span class='line'>  <span class="n">NSString</span> <span class="o">*</span><span class="n">path</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSBundle</span> <span class="n">mainBundle</span><span class="p">]</span> <span class="nl">pathForResource:</span><span class="n">fileName</span> <span class="nl">ofType:</span><span class="n">ext</span><span class="p">];</span>
 </span><span class='line'>  <span class="n">UIImage</span> <span class="o">*</span><span class="n">img</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIImage</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithContentsOfFile:</span><span class="n">path</span><span class="p">];</span>
