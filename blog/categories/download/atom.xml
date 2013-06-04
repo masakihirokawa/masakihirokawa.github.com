@@ -4,7 +4,7 @@
   <title><![CDATA[Category: download | Dolice Lab]]></title>
   <link href="http://lab.dolice.net/blog/categories/download/atom.xml" rel="self"/>
   <link href="http://lab.dolice.net/"/>
-  <updated>2013-06-04T11:21:08+09:00</updated>
+  <updated>2013-06-04T22:20:29+09:00</updated>
   <id>http://lab.dolice.net/</id>
   <author>
     <name><![CDATA[Masaki Hirokawa]]></name>
@@ -12,6 +12,1552 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[2種類の画像アニメーションを実行する「DCImageAnimation」クラス]]></title>
+    <link href="http://lab.dolice.net/blog/2013/06/05/download-objc-classes-dc-image-animation/"/>
+    <updated>2013-06-05T08:21:00+09:00</updated>
+    <id>http://lab.dolice.net/blog/2013/06/05/download-objc-classes-dc-image-animation</id>
+    <content type="html"><![CDATA[<p><img src="http://lab.dolice.net/images/article/frame-by-frame-animation.jpg" alt="" /></p>
+
+<p>画像のタイマーアニメーションとコマ送りアニメーションを実行する「DCImageAnimation」クラスを作成しました。</p>
+
+<p>「<a href="http://lab.dolice.net/blog/2013/05/31/download-objc-classes-frame-by-frame-animation2/" title="FrameByFrameAnimation">FrameByFrameAnimation</a>」クラスを改良し、タイマーでも動作するようにしたものです。これによりメモリ使用量が30％軽減されています。</p>
+
+<p>アニメーションは主に以下のパラメータを渡して使用します。</p>
+
+<ol>
+<li>アニメーションの種類（終了時のメソッド処理分岐用）</li>
+<li>アニメーションのフレーム数</li>
+<li>アニメーション画像ファイル名の接頭詞</li>
+<li>アニメーションのリピート回数／ループの有無</li>
+</ol>
+
+
+<p>デリケードメソッドを指定する事もでき、アニメーション終了後に任意のメソッドを呼ぶことができます。</p>
+
+<p>下記よりサンプルのダウンロードが行えます。</p>
+
+<h2>サンプルダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-classes-dc-image-animation">https://github.com/masakihirokawa/objc-classes-dc-image-animation</a></li>
+</ul>
+
+
+<h2>使用方法</h2>
+
+<h3>タイマーアニメーション</h3>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//タイマーアニメーション開始</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">startTimerAnimation</span>
+</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="c1">//クラス初期化</span>
+</span><span class='line'><span class="n">DCImageAnimation</span> <span class="o">*</span><span class="n">timerAnimation</span> <span class="o">=</span> <span class="p">[[</span><span class="n">DCImageAnimation</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//アニメーション開始</span>
+</span><span class='line'><span class="p">[</span><span class="n">timerAnimation</span> <span class="nl">startTimerAnimating:</span><span class="n">animationType</span> <span class="c1">//アニメーション名 (終了時の処理分岐用)</span>
+</span><span class='line'>                                   <span class="o">:</span><span class="n">animationFrames</span> <span class="c1">//アニメーションの総フレーム数</span>
+</span><span class='line'>                                   <span class="o">:</span><span class="n">animationPrefix</span> <span class="c1">//アニメーション画像の接頭詞</span>
+</span><span class='line'>                                   <span class="o">:</span><span class="n">isLoopAnimation</span><span class="p">];</span> <span class="c1">//アニメーションをループさせるか</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//ステージに追加</span>
+</span><span class='line'><span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="p">[</span><span class="n">timerAnimation</span> <span class="n">timerAnimationImageView</span><span class="p">]];</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h3>コマ送りアニメーション</h3>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//コマ送りアニメーション開始</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">startFrameAnimation</span>
+</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="c1">//クラス初期化</span>
+</span><span class='line'><span class="n">DCImageAnimation</span> <span class="o">*</span><span class="n">frameAnimation</span> <span class="o">=</span> <span class="p">[[</span><span class="n">DCImageAnimation</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//アニメーション開始</span>
+</span><span class='line'><span class="p">[</span><span class="n">frameAnimation</span> <span class="nl">startFrameAnimating:</span><span class="n">animationType</span> <span class="c1">//アニメーション名 (終了時の処理分岐用)</span>
+</span><span class='line'>                                   <span class="o">:</span><span class="n">animationFrames</span> <span class="c1">//アニメーションの総フレーム数</span>
+</span><span class='line'>                                   <span class="o">:</span><span class="n">animationPrefix</span> <span class="c1">//アニメーション画像の接頭詞</span>
+</span><span class='line'>                                   <span class="o">:</span><span class="n">animationRepeatNum</span><span class="p">];</span> <span class="c1">//アニメーションのリピート回数</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//ステージに追加</span>
+</span><span class='line'><span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="p">[</span><span class="n">frameAnimation</span> <span class="n">frameAnimationImageView</span><span class="p">]];</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h2>サンプルソースコード</h2>
+
+<h3>ViewController.h</h3>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">import</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">UIKit</span><span class="o">/</span><span class="n">UIKit</span><span class="p">.</span><span class="n">h</span><span class="o">&gt;&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">import</span> <span class="s">&quot;DCImageAnimation.h&quot;</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">define</span> <span class="n">IMAGE_WIDTH</span>  <span class="mi">85</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">define</span> <span class="n">IMAGE_HEIGHT</span> <span class="mi">120</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">define</span> <span class="n">ANIM_TYPE</span>    <span class="mi">2</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">@interface</span> <span class="nc">ViewController</span> : <span class="nc">UIViewController</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h3>ViewController.m</h3>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+<span class='line-number'>102</span>
+<span class='line-number'>103</span>
+<span class='line-number'>104</span>
+<span class='line-number'>105</span>
+<span class='line-number'>106</span>
+<span class='line-number'>107</span>
+<span class='line-number'>108</span>
+<span class='line-number'>109</span>
+<span class='line-number'>110</span>
+<span class='line-number'>111</span>
+<span class='line-number'>112</span>
+<span class='line-number'>113</span>
+<span class='line-number'>114</span>
+<span class='line-number'>115</span>
+<span class='line-number'>116</span>
+<span class='line-number'>117</span>
+<span class='line-number'>118</span>
+<span class='line-number'>119</span>
+<span class='line-number'>120</span>
+<span class='line-number'>121</span>
+<span class='line-number'>122</span>
+<span class='line-number'>123</span>
+<span class='line-number'>124</span>
+<span class='line-number'>125</span>
+<span class='line-number'>126</span>
+<span class='line-number'>127</span>
+<span class='line-number'>128</span>
+<span class='line-number'>129</span>
+<span class='line-number'>130</span>
+<span class='line-number'>131</span>
+<span class='line-number'>132</span>
+<span class='line-number'>133</span>
+<span class='line-number'>134</span>
+<span class='line-number'>135</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">import</span> <span class="s">&quot;ViewController.h&quot;</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">@interface</span> <span class="nc">ViewController</span> <span class="p">()</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">@end</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">@implementation</span> <span class="nc">ViewController</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">//アニメーションのタイプ</span>
+</span><span class='line'><span class="k">enum</span> <span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">TIMER_ANIMATION</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="c1">//タイマーアニメーション</span>
+</span><span class='line'><span class="n">FRAME_ANIMATION</span> <span class="o">=</span> <span class="mi">2</span> <span class="c1">//コマ送りアニメーション</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">};</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">ul</span><span class="o">&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="n">li</span><span class="o">&gt;&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">viewDidLoad</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>  <span class="c1">//アニメーション開始</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="n">ANIM_TYPE</span> <span class="o">==</span> <span class="n">TIMER_ANIMATION</span><span class="p">)</span> <span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span>  <span class="c1">//タイマーアニメーション</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">self</span> <span class="n">startTimerAnimation</span><span class="p">];</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">ANIM_TYPE</span> <span class="o">==</span> <span class="n">FRAME_ANIMATION</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span>  <span class="c1">//コマ送りアニメーション</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">self</span> <span class="n">startFrameAnimation</span><span class="p">];</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">ul</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">//タイマーアニメーション開始</span>
+</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">startTimerAnimation</span>
+</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="c1">//クラス初期化</span>
+</span><span class='line'><span class="n">DCImageAnimation</span> <span class="o">*</span><span class="n">timerAnimation</span> <span class="o">=</span> <span class="p">[[</span><span class="n">DCImageAnimation</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//fps変更 (指定がない場合は 24fpsになります)</span>
+</span><span class='line'><span class="p">[</span><span class="n">timerAnimation</span> <span class="nl">setFps:</span><span class="mf">16.0f</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//アニメーション画像のレクタングル指定 (指定がない場合は W320*H480pxになります)</span>
+</span><span class='line'><span class="p">[</span><span class="n">timerAnimation</span> <span class="nl">setRectangle:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">center</span><span class="p">.</span><span class="n">x</span> <span class="o">-</span> <span class="p">(</span><span class="n">IMAGE_WIDTH</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span>
+</span><span class='line'>                                        <span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">center</span><span class="p">.</span><span class="n">y</span> <span class="o">-</span> <span class="p">(</span><span class="n">IMAGE_HEIGHT</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span>
+</span><span class='line'>                                        <span class="n">IMAGE_WIDTH</span><span class="p">,</span>
+</span><span class='line'>                                        <span class="n">IMAGE_HEIGHT</span><span class="p">)];</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//クラス側のデリゲートに渡す</span>
+</span><span class='line'><span class="n">timerAnimation</span><span class="p">.</span><span class="n">dc_delegate</span> <span class="o">=</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="n">self</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//アニメーションのタイプ (アニメーション終了時の処理を分岐させる時に指定します)</span>
+</span><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="n">animationType</span> <span class="o">=</span> <span class="s">@&quot;timer&quot;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//アニメーションの総フレーム数</span>
+</span><span class='line'><span class="n">NSInteger</span> <span class="n">animationFrames</span> <span class="o">=</span> <span class="mi">14</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//アニメーションファイルの接頭詞</span>
+</span><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="n">animationPrefix</span> <span class="o">=</span> <span class="s">@&quot;frame&quot;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//アニメーションをループさせるか</span>
+</span><span class='line'><span class="kt">BOOL</span> <span class="n">isLoopAnimation</span> <span class="o">=</span> <span class="n">YES</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//アニメーション開始</span>
+</span><span class='line'><span class="p">[</span><span class="n">timerAnimation</span> <span class="nl">startTimerAnimating:</span><span class="n">animationType</span>
+</span><span class='line'>                                   <span class="o">:</span><span class="n">animationFrames</span>
+</span><span class='line'>                                   <span class="o">:</span><span class="n">animationPrefix</span>
+</span><span class='line'>                                   <span class="o">:</span><span class="n">isLoopAnimation</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//タグを指定 (省いても問題ありません)</span>
+</span><span class='line'><span class="p">[</span><span class="n">timerAnimation</span> <span class="n">timerAnimationImageView</span><span class="p">].</span><span class="n">tag</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//ステージに追加</span>
+</span><span class='line'><span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="p">[</span><span class="n">timerAnimation</span> <span class="n">timerAnimationImageView</span><span class="p">]];</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">//コマ送りアニメーション開始</span>
+</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">startFrameAnimation</span>
+</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="c1">//クラス初期化</span>
+</span><span class='line'><span class="n">DCImageAnimation</span> <span class="o">*</span><span class="n">frameAnimation</span> <span class="o">=</span> <span class="p">[[</span><span class="n">DCImageAnimation</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//fps変更 (指定がない場合は 24fpsになります)</span>
+</span><span class='line'><span class="p">[</span><span class="n">frameAnimation</span> <span class="nl">setFps:</span><span class="mf">16.0f</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//アニメーション画像のレクタングル指定 (指定がない場合は W320*H480pxになります)</span>
+</span><span class='line'><span class="p">[</span><span class="n">frameAnimation</span> <span class="nl">setRectangle:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">center</span><span class="p">.</span><span class="n">x</span> <span class="o">-</span> <span class="p">(</span><span class="n">IMAGE_WIDTH</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span>
+</span><span class='line'>                                        <span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">center</span><span class="p">.</span><span class="n">y</span> <span class="o">-</span> <span class="p">(</span><span class="n">IMAGE_HEIGHT</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span>
+</span><span class='line'>                                        <span class="n">IMAGE_WIDTH</span><span class="p">,</span>
+</span><span class='line'>                                        <span class="n">IMAGE_HEIGHT</span><span class="p">)];</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//クラス側のデリゲートに渡す</span>
+</span><span class='line'><span class="n">frameAnimation</span><span class="p">.</span><span class="n">dc_delegate</span> <span class="o">=</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="n">self</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//アニメーションのタイプ (アニメーション終了時の処理を分岐させる時に指定します)</span>
+</span><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="n">animationType</span> <span class="o">=</span> <span class="s">@&quot;frame&quot;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//アニメーションの総フレーム数</span>
+</span><span class='line'><span class="n">NSInteger</span> <span class="n">animationFrames</span> <span class="o">=</span> <span class="mi">14</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//アニメーションファイルの接頭詞</span>
+</span><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="n">animationPrefix</span> <span class="o">=</span> <span class="s">@&quot;frame&quot;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//アニメーションのリピート回数 (0の場合は無限ループします)</span>
+</span><span class='line'><span class="n">NSInteger</span> <span class="n">animationRepeatNum</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//アニメーション開始</span>
+</span><span class='line'><span class="p">[</span><span class="n">frameAnimation</span> <span class="nl">startFrameAnimating:</span><span class="n">animationType</span>
+</span><span class='line'>                                   <span class="o">:</span><span class="n">animationFrames</span>
+</span><span class='line'>                                   <span class="o">:</span><span class="n">animationPrefix</span>
+</span><span class='line'>                                   <span class="o">:</span><span class="n">animationRepeatNum</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//タグを指定 (省いても問題ありません)</span>
+</span><span class='line'><span class="p">[</span><span class="n">frameAnimation</span> <span class="n">frameAnimationImageView</span><span class="p">].</span><span class="n">tag</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//ステージに追加</span>
+</span><span class='line'><span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="p">[</span><span class="n">frameAnimation</span> <span class="n">frameAnimationImageView</span><span class="p">]];</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h2>ソースコード</h2>
+
+<h3>DCImageAnimation.h</h3>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">import</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">UIKit</span><span class="o">/</span><span class="n">UIKit</span><span class="p">.</span><span class="n">h</span><span class="o">&gt;&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">define</span> <span class="n">SECOND</span>                  <span class="mf">60.0f</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">define</span> <span class="n">ANIM_FPS</span>                <span class="mf">24.0f</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">define</span> <span class="n">ANIM_IMAGE_X</span>            <span class="mi">0</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">define</span> <span class="n">ANIM_IMAGE_Y</span>            <span class="mi">0</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">define</span> <span class="n">ANIM_IMAGE_WIDTH</span>        <span class="mi">320</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">define</span> <span class="n">ANIM_IMAGE_HEIGHT</span>       <span class="mi">480</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">define</span> <span class="n">ANIM_IMAGE_HEIGHT_4INCH</span> <span class="mi">568</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">define</span> <span class="n">ANIM_IMAGE_EXT</span>          <span class="s">@&quot;png&quot;</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">@protocol</span> <span class="nc">DCImageAnimationDelegate</span>;<span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">@interface</span> <span class="nc">DCImageAnimation</span> : <span class="nc">UIImageView</span> <span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="kt">id</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">DCImageAnimationDelegate</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="n">_dc_delegate</span><span class="p">;</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">assign</span><span class="p">)</span> <span class="kt">id</span><span class="o">&lt;</span><span class="n">DCImageAnimationDelegate</span><span class="o">&gt;</span> <span class="n">dc_delegate</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">retain</span><span class="p">)</span> <span class="n">UIImageView</span> <span class="o">&lt;</span><span class="n">em</span><span class="o">&gt;</span><span class="n">frameAnimationImageView</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">retain</span><span class="p">)</span> <span class="n">UIImageView</span> <span class="o">&lt;/</span><span class="n">em</span><span class="o">&gt;</span><span class="n">timerAnimationImageView</span><span class="p">;</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">ul</span><span class="o">&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="n">li</span><span class="o">&gt;</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="n">init</span><span class="p">;</span><span class="o">&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="n">li</span><span class="o">&gt;</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">startFrameAnimating:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">&lt;</span><span class="n">em</span><span class="o">&gt;</span><span class="p">)</span><span class="n">animationType</span> <span class="o">:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="n">animationImageNum</span> <span class="o">:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">&lt;/</span><span class="n">em</span><span class="o">&gt;</span><span class="p">)</span><span class="n">animationImagePrefix</span> <span class="o">:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="n">animationRepeatNum</span><span class="p">;</span><span class="o">&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="n">li</span><span class="o">&gt;</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">startTimerAnimating:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">&lt;</span><span class="n">em</span><span class="o">&gt;</span><span class="p">)</span><span class="n">animationType</span> <span class="o">:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="n">animationImageNum</span> <span class="o">:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">&lt;/</span><span class="n">em</span><span class="o">&gt;</span><span class="p">)</span><span class="n">animationImagePrefix</span> <span class="o">:</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="n">isInfiniteLoopAnimation</span><span class="p">;</span><span class="o">&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="n">li</span><span class="o">&gt;</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">setFps:</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="n">fps</span><span class="p">;</span><span class="o">&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="n">li</span><span class="o">&gt;</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">resetFps</span><span class="p">;</span><span class="o">&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="n">li</span><span class="o">&gt;</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">setRectangle:</span><span class="p">(</span><span class="n">CGRect</span><span class="p">)</span><span class="n">rect</span><span class="p">;</span><span class="o">&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="n">li</span><span class="o">&gt;</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">resetRectangle</span><span class="p">;</span><span class="o">&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">ul</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">@end</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">pragma</span> <span class="n">mark</span> <span class="n">delegate</span> <span class="n">prottype</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">@protocol</span> <span class="nc">DCImageAnimationDelegate</span><span class="o">&lt;</span><span class="n">NSObject</span><span class="o">&gt;</span>
+</span><span class='line'><span class="k">@optional</span>
+</span><span class='line'><span class="c1">//ここにデリゲートメソッドを指定します&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h3>DCImageAnimation.m</h3>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+<span class='line-number'>102</span>
+<span class='line-number'>103</span>
+<span class='line-number'>104</span>
+<span class='line-number'>105</span>
+<span class='line-number'>106</span>
+<span class='line-number'>107</span>
+<span class='line-number'>108</span>
+<span class='line-number'>109</span>
+<span class='line-number'>110</span>
+<span class='line-number'>111</span>
+<span class='line-number'>112</span>
+<span class='line-number'>113</span>
+<span class='line-number'>114</span>
+<span class='line-number'>115</span>
+<span class='line-number'>116</span>
+<span class='line-number'>117</span>
+<span class='line-number'>118</span>
+<span class='line-number'>119</span>
+<span class='line-number'>120</span>
+<span class='line-number'>121</span>
+<span class='line-number'>122</span>
+<span class='line-number'>123</span>
+<span class='line-number'>124</span>
+<span class='line-number'>125</span>
+<span class='line-number'>126</span>
+<span class='line-number'>127</span>
+<span class='line-number'>128</span>
+<span class='line-number'>129</span>
+<span class='line-number'>130</span>
+<span class='line-number'>131</span>
+<span class='line-number'>132</span>
+<span class='line-number'>133</span>
+<span class='line-number'>134</span>
+<span class='line-number'>135</span>
+<span class='line-number'>136</span>
+<span class='line-number'>137</span>
+<span class='line-number'>138</span>
+<span class='line-number'>139</span>
+<span class='line-number'>140</span>
+<span class='line-number'>141</span>
+<span class='line-number'>142</span>
+<span class='line-number'>143</span>
+<span class='line-number'>144</span>
+<span class='line-number'>145</span>
+<span class='line-number'>146</span>
+<span class='line-number'>147</span>
+<span class='line-number'>148</span>
+<span class='line-number'>149</span>
+<span class='line-number'>150</span>
+<span class='line-number'>151</span>
+<span class='line-number'>152</span>
+<span class='line-number'>153</span>
+<span class='line-number'>154</span>
+<span class='line-number'>155</span>
+<span class='line-number'>156</span>
+<span class='line-number'>157</span>
+<span class='line-number'>158</span>
+<span class='line-number'>159</span>
+<span class='line-number'>160</span>
+<span class='line-number'>161</span>
+<span class='line-number'>162</span>
+<span class='line-number'>163</span>
+<span class='line-number'>164</span>
+<span class='line-number'>165</span>
+<span class='line-number'>166</span>
+<span class='line-number'>167</span>
+<span class='line-number'>168</span>
+<span class='line-number'>169</span>
+<span class='line-number'>170</span>
+<span class='line-number'>171</span>
+<span class='line-number'>172</span>
+<span class='line-number'>173</span>
+<span class='line-number'>174</span>
+<span class='line-number'>175</span>
+<span class='line-number'>176</span>
+<span class='line-number'>177</span>
+<span class='line-number'>178</span>
+<span class='line-number'>179</span>
+<span class='line-number'>180</span>
+<span class='line-number'>181</span>
+<span class='line-number'>182</span>
+<span class='line-number'>183</span>
+<span class='line-number'>184</span>
+<span class='line-number'>185</span>
+<span class='line-number'>186</span>
+<span class='line-number'>187</span>
+<span class='line-number'>188</span>
+<span class='line-number'>189</span>
+<span class='line-number'>190</span>
+<span class='line-number'>191</span>
+<span class='line-number'>192</span>
+<span class='line-number'>193</span>
+<span class='line-number'>194</span>
+<span class='line-number'>195</span>
+<span class='line-number'>196</span>
+<span class='line-number'>197</span>
+<span class='line-number'>198</span>
+<span class='line-number'>199</span>
+<span class='line-number'>200</span>
+<span class='line-number'>201</span>
+<span class='line-number'>202</span>
+<span class='line-number'>203</span>
+<span class='line-number'>204</span>
+<span class='line-number'>205</span>
+<span class='line-number'>206</span>
+<span class='line-number'>207</span>
+<span class='line-number'>208</span>
+<span class='line-number'>209</span>
+<span class='line-number'>210</span>
+<span class='line-number'>211</span>
+<span class='line-number'>212</span>
+<span class='line-number'>213</span>
+<span class='line-number'>214</span>
+<span class='line-number'>215</span>
+<span class='line-number'>216</span>
+<span class='line-number'>217</span>
+<span class='line-number'>218</span>
+<span class='line-number'>219</span>
+<span class='line-number'>220</span>
+<span class='line-number'>221</span>
+<span class='line-number'>222</span>
+<span class='line-number'>223</span>
+<span class='line-number'>224</span>
+<span class='line-number'>225</span>
+<span class='line-number'>226</span>
+<span class='line-number'>227</span>
+<span class='line-number'>228</span>
+<span class='line-number'>229</span>
+<span class='line-number'>230</span>
+<span class='line-number'>231</span>
+<span class='line-number'>232</span>
+<span class='line-number'>233</span>
+<span class='line-number'>234</span>
+<span class='line-number'>235</span>
+<span class='line-number'>236</span>
+<span class='line-number'>237</span>
+<span class='line-number'>238</span>
+<span class='line-number'>239</span>
+<span class='line-number'>240</span>
+<span class='line-number'>241</span>
+<span class='line-number'>242</span>
+<span class='line-number'>243</span>
+<span class='line-number'>244</span>
+<span class='line-number'>245</span>
+<span class='line-number'>246</span>
+<span class='line-number'>247</span>
+<span class='line-number'>248</span>
+<span class='line-number'>249</span>
+<span class='line-number'>250</span>
+<span class='line-number'>251</span>
+<span class='line-number'>252</span>
+<span class='line-number'>253</span>
+<span class='line-number'>254</span>
+<span class='line-number'>255</span>
+<span class='line-number'>256</span>
+<span class='line-number'>257</span>
+<span class='line-number'>258</span>
+<span class='line-number'>259</span>
+<span class='line-number'>260</span>
+<span class='line-number'>261</span>
+<span class='line-number'>262</span>
+<span class='line-number'>263</span>
+<span class='line-number'>264</span>
+<span class='line-number'>265</span>
+<span class='line-number'>266</span>
+<span class='line-number'>267</span>
+<span class='line-number'>268</span>
+<span class='line-number'>269</span>
+<span class='line-number'>270</span>
+<span class='line-number'>271</span>
+<span class='line-number'>272</span>
+<span class='line-number'>273</span>
+<span class='line-number'>274</span>
+<span class='line-number'>275</span>
+<span class='line-number'>276</span>
+<span class='line-number'>277</span>
+<span class='line-number'>278</span>
+<span class='line-number'>279</span>
+<span class='line-number'>280</span>
+<span class='line-number'>281</span>
+<span class='line-number'>282</span>
+<span class='line-number'>283</span>
+<span class='line-number'>284</span>
+<span class='line-number'>285</span>
+<span class='line-number'>286</span>
+<span class='line-number'>287</span>
+<span class='line-number'>288</span>
+<span class='line-number'>289</span>
+<span class='line-number'>290</span>
+<span class='line-number'>291</span>
+<span class='line-number'>292</span>
+<span class='line-number'>293</span>
+<span class='line-number'>294</span>
+<span class='line-number'>295</span>
+<span class='line-number'>296</span>
+<span class='line-number'>297</span>
+<span class='line-number'>298</span>
+<span class='line-number'>299</span>
+<span class='line-number'>300</span>
+<span class='line-number'>301</span>
+<span class='line-number'>302</span>
+<span class='line-number'>303</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">import</span> <span class="s">&quot;DCImageAnimation.h&quot;</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">@implementation</span> <span class="nc">DCImageAnimation</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">@synthesize</span> <span class="n">dc_delegate</span><span class="p">;</span>
+</span><span class='line'><span class="k">@synthesize</span> <span class="n">frameAnimationImageView</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">em</span><span class="o">&gt;</span><span class="n">frameAnimationImageView</span><span class="p">;</span>
+</span><span class='line'><span class="k">@synthesize</span> <span class="n">timerAnimationImageView</span> <span class="o">=</span> <span class="o">&lt;/</span><span class="n">em</span><span class="o">&gt;</span><span class="n">timerAnimationImageView</span><span class="p">;</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="n">NSInteger</span> <span class="o">&lt;</span><span class="n">em</span><span class="o">&gt;</span><span class="n">animationImageX</span>          <span class="o">=</span> <span class="n">ANIM_IMAGE_X</span><span class="p">;</span>
+</span><span class='line'><span class="n">NSInteger</span> <span class="o">&lt;/</span><span class="n">em</span><span class="o">&gt;</span><span class="n">animationImageY</span>          <span class="o">=</span> <span class="n">ANIM_IMAGE_Y</span><span class="p">;</span>
+</span><span class='line'><span class="n">NSInteger</span> <span class="o">&lt;</span><span class="n">em</span><span class="o">&gt;</span><span class="n">animationImageWidth</span>      <span class="o">=</span> <span class="n">ANIM_IMAGE_WIDTH</span><span class="p">;</span>
+</span><span class='line'><span class="n">NSInteger</span> <span class="o">&lt;/</span><span class="n">em</span><span class="o">&gt;</span><span class="n">animationImageHeight</span>     <span class="o">=</span> <span class="n">ANIM_IMAGE_HEIGHT</span><span class="p">;</span>
+</span><span class='line'><span class="n">CGFloat</span>   <span class="o">&lt;</span><span class="n">em</span><span class="o">&gt;</span><span class="n">animationFps</span>             <span class="o">=</span> <span class="n">ANIM_FPS</span><span class="p">;</span>
+</span><span class='line'><span class="n">NSString</span> <span class="o">*&lt;/</span><span class="n">em</span><span class="o">&gt;</span><span class="n">animationImageExt</span>        <span class="o">=</span> <span class="n">ANIM_IMAGE_EXT</span><span class="p">;</span>
+</span><span class='line'><span class="n">NSString</span> <span class="o">&lt;</span><span class="n">em</span><span class="o">&gt;</span><span class="n">_animationType</span><span class="p">;</span>
+</span><span class='line'><span class="n">NSTimer</span>  <span class="o">&lt;/</span><span class="n">em</span><span class="o">&gt;&lt;</span><span class="n">em</span><span class="o">&gt;</span><span class="n">animationTimer</span><span class="p">;</span>
+</span><span class='line'><span class="n">NSInteger</span> <span class="o">&lt;/</span><span class="n">em</span><span class="o">&gt;</span><span class="n">animationTimerCount</span>      <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'><span class="kt">BOOL</span>      <span class="n">_isLoopAnimation</span>          <span class="o">=</span> <span class="n">NO</span><span class="p">;</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">//初期化</span>
+</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="n">init</span>
+</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">self</span> <span class="o">=</span> <span class="p">[</span><span class="n">super</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'><span class="p">[</span><span class="n">self</span> <span class="n">resetFps</span><span class="p">];</span>
+</span><span class='line'><span class="p">[</span><span class="n">self</span> <span class="n">resetRectangle</span><span class="p">];</span>
+</span><span class='line'><span class="k">return</span> <span class="n">self</span><span class="p">;</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">//アニメーション設定</span>
+</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">startFrameAnimating:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="n">animationType</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span>                       <span class="o">:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="n">animationImageNum</span>
+</span><span class='line'>                       <span class="o">:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="n">animationImagePrefix</span>
+</span><span class='line'>                       <span class="o">:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="n">animationRepeatNum</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="c1">//アニメーションの種類を保持</span>
+</span><span class='line'><span class="n">_animationType</span> <span class="o">=</span> <span class="n">animationType</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//イメージビュー初期化</span>
+</span><span class='line'><span class="n">_frameAnimationImageView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIImageView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="n">_animationImageX</span><span class="p">,</span>
+</span><span class='line'>                                                                         <span class="n">_animationImageY</span><span class="p">,</span>
+</span><span class='line'>                                                                         <span class="n">_animationImageWidth</span><span class="p">,</span>
+</span><span class='line'>                                                                         <span class="n">_animationImageHeight</span><span class="p">)];</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//最後の画像が消えないようにする</span>
+</span><span class='line'><span class="n">_frameAnimationImageView</span><span class="p">.</span><span class="n">image</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="nl">getUIImageFromResources:</span><span class="p">[</span><span class="n">self</span> <span class="nl">animationImageName:animationImagePrefix:</span><span class="n">animationImageNum</span><span class="p">]</span>
+</span><span class='line'>                                                           <span class="nl">ext:</span><span class="n">_animationImageExt</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//画像をタップ可能にする</span>
+</span><span class='line'><span class="n">_frameAnimationImageView</span><span class="p">.</span><span class="n">userInteractionEnabled</span> <span class="o">=</span> <span class="n">YES</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//アニメーションフレームを配列に入れる</span>
+</span><span class='line'><span class="n">NSMutableArray</span> <span class="o">*</span><span class="n">animationImageArray</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSMutableArray</span> <span class="n">array</span><span class="p">];</span>
+</span><span class='line'><span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="o">=</span> <span class="n">animationImageNum</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">animationImageArray</span> <span class="nl">addObject:</span><span class="p">[</span><span class="n">self</span> <span class="nl">animationImageName:animationImagePrefix:</span><span class="n">i</span><span class="p">]];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="n">_frameAnimationImageView</span><span class="p">.</span><span class="n">animationImages</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="nl">animationImages:</span><span class="n">animationImageArray</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//アニメーションの秒数を設定</span>
+</span><span class='line'><span class="n">_frameAnimationImageView</span><span class="p">.</span><span class="n">animationDuration</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="nl">animationSeconds:</span><span class="n">animationImageNum</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//アニメーションのリピート回数を設定</span>
+</span><span class='line'><span class="n">_frameAnimationImageView</span><span class="p">.</span><span class="n">animationRepeatCount</span> <span class="o">=</span> <span class="n">animationRepeatNum</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//アニメーション開始</span>
+</span><span class='line'><span class="p">[</span><span class="n">_frameAnimationImageView</span> <span class="n">startAnimating</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//アニメーション終了時のメソッド定義</span>
+</span><span class='line'><span class="p">[</span><span class="n">self</span> <span class="nl">performSelector:</span><span class="k">@selector</span><span class="p">(</span><span class="nl">animationDidFinish:</span><span class="p">)</span>
+</span><span class='line'>           <span class="nl">withObject:</span><span class="nb">nil</span>
+</span><span class='line'>           <span class="nl">afterDelay:</span><span class="n">_frameAnimationImageView</span><span class="p">.</span><span class="n">animationDuration</span><span class="p">];</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">//アニメーション設定</span>
+</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">startTimerAnimating:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="n">animationType</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span>                       <span class="o">:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="n">animationImageNum</span>
+</span><span class='line'>                       <span class="o">:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="n">animationImagePrefix</span>
+</span><span class='line'>                       <span class="o">:</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="n">isLoopAnimation</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="c1">//アニメーションの種類を保持</span>
+</span><span class='line'><span class="n">_animationType</span> <span class="o">=</span> <span class="n">animationType</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//イメージビュー初期化</span>
+</span><span class='line'><span class="n">_timerAnimationImageView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIImageView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="n">_animationImageX</span><span class="p">,</span>
+</span><span class='line'>                                                                         <span class="n">_animationImageY</span><span class="p">,</span>
+</span><span class='line'>                                                                         <span class="n">_animationImageWidth</span><span class="p">,</span>
+</span><span class='line'>                                                                         <span class="n">_animationImageHeight</span><span class="p">)];</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//画像をタップ可能にする</span>
+</span><span class='line'><span class="n">_timerAnimationImageView</span><span class="p">.</span><span class="n">userInteractionEnabled</span> <span class="o">=</span> <span class="n">YES</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//アニメーションフレームを配列に入れる</span>
+</span><span class='line'><span class="n">NSMutableArray</span> <span class="o">*</span><span class="n">animationImageArray</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSMutableArray</span> <span class="n">array</span><span class="p">];</span>
+</span><span class='line'><span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="o">=</span> <span class="n">animationImageNum</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">animationImageArray</span> <span class="nl">addObject:</span><span class="p">[</span><span class="n">self</span> <span class="nl">animationImageName:animationImagePrefix:</span><span class="n">i</span><span class="p">]];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//リピートの有無を格納</span>
+</span><span class='line'><span class="n">_isLoopAnimation</span> <span class="o">=</span> <span class="n">isLoopAnimation</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//アニメーションタイマー開始</span>
+</span><span class='line'><span class="p">[</span><span class="n">self</span> <span class="nl">setAnimationTimerEvent:</span><span class="p">[</span><span class="n">self</span> <span class="nl">animationImages:</span><span class="n">animationImageArray</span><span class="p">]];</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">//アニメーションタイマーイベント発行</span>
+</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">setAnimationTimerEvent:</span><span class="p">(</span><span class="n">NSArray</span> <span class="o">*</span><span class="p">)</span><span class="n">animationImageList</span>
+</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="c1">//タイマーに渡すパラメータ格納</span>
+</span><span class='line'><span class="n">NSDictionary</span> <span class="o">*</span><span class="n">userInfo</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSDictionary</span> <span class="nl">dictionaryWithObject:</span><span class="n">animationImageList</span> <span class="nl">forKey:</span><span class="s">@&quot;animationImageList&quot;</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//タイマー実行</span>
+</span><span class='line'><span class="n">_animationTimer</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSTimer</span> <span class="nl">scheduledTimerWithTimeInterval:</span><span class="p">[</span><span class="n">self</span> <span class="n">animationTimerInterval</span><span class="p">]</span>
+</span><span class='line'>                                                   <span class="nl">target:</span><span class="n">self</span>
+</span><span class='line'>                                                 <span class="nl">selector:</span><span class="k">@selector</span><span class="p">(</span><span class="nl">startAnimation:</span><span class="p">)</span>
+</span><span class='line'>                                                 <span class="nl">userInfo:</span><span class="n">userInfo</span>
+</span><span class='line'>                                                  <span class="nl">repeats:</span><span class="n">YES</span><span class="p">];</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">//タイマーアニメーション開始</span>
+</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">startAnimation:</span><span class="p">(</span><span class="n">NSTimer</span> <span class="o">*</span><span class="p">)</span><span class="n">timer</span>
+</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">NSArray</span> <span class="o">*</span><span class="n">animationImageList</span> <span class="o">=</span> <span class="p">[(</span><span class="n">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="n">timer</span><span class="p">.</span><span class="n">userInfo</span> <span class="nl">objectForKey:</span><span class="s">@&quot;animationImageList&quot;</span><span class="p">];</span>
+</span><span class='line'><span class="n">_timerAnimationImageView</span><span class="p">.</span><span class="n">image</span> <span class="o">=</span> <span class="p">[</span><span class="n">animationImageList</span> <span class="nl">objectAtIndex:</span><span class="n">_animationTimerCount</span><span class="p">];</span>
+</span><span class='line'><span class="n">_animationTimerCount</span><span class="o">++</span><span class="p">;</span>
+</span><span class='line'><span class="k">if</span> <span class="p">([</span><span class="n">animationImageList</span> <span class="n">count</span><span class="p">]</span> <span class="o">==</span> <span class="n">_animationTimerCount</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">//タイマー削除</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="n">clearAnimationTimer</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//最終フレームの処理</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">_isLoopAnimation</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="c1">//再起処理</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">self</span> <span class="nl">setAnimationTimerEvent:</span><span class="n">animationImageList</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>        <span class="c1">//アニメーション終了時のメソッド呼び出し</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">self</span> <span class="n">animationDidStop</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">//アニメーションタイマー削除</span>
+</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">clearAnimationTimer</span>
+</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="k">if</span> <span class="p">(</span><span class="n">_animationTimer</span> <span class="o">!=</span> <span class="nb">nil</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">_animationTimer</span> <span class="n">invalidate</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="n">_animationTimerCount</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">//アニメーション終了時のメソッド</span>
+</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">animationDidFinish:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="n">selector</span>
+</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="p">[</span><span class="n">self</span> <span class="n">onEndAnimation</span><span class="p">];</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">//アニメーション終了時のメソッド</span>
+</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">animationDidStop</span>
+</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="p">[</span><span class="n">self</span> <span class="n">onEndAnimation</span><span class="p">];</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">//アニメーション終了時の処理</span>
+</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">onEndAnimation</span>
+</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="c1">//ここでデリゲートメソッドを呼ぶ事ができます</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">//fps指定</span>
+</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">setFps:</span><span class="p">(</span><span class="n">CGFloat</span><span class="p">)</span><span class="n">fps</span>
+</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">_animationFps</span> <span class="o">=</span> <span class="n">fps</span><span class="p">;</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">//fpsリセット</span>
+</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">resetFps</span>
+</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">_animationFps</span> <span class="o">=</span> <span class="n">ANIM_FPS</span><span class="p">;</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">//レクタングル指定</span>
+</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">setRectangle:</span><span class="p">(</span><span class="n">CGRect</span><span class="p">)</span><span class="n">rect</span>
+</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">_animationImageX</span>      <span class="o">=</span> <span class="n">rect</span><span class="p">.</span><span class="n">origin</span><span class="p">.</span><span class="n">x</span><span class="p">;</span>
+</span><span class='line'><span class="n">_animationImageY</span>      <span class="o">=</span> <span class="n">rect</span><span class="p">.</span><span class="n">origin</span><span class="p">.</span><span class="n">y</span><span class="p">;</span>
+</span><span class='line'><span class="n">_animationImageWidth</span>  <span class="o">=</span> <span class="n">rect</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span><span class="p">;</span>
+</span><span class='line'><span class="n">_animationImageHeight</span> <span class="o">=</span> <span class="n">rect</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">height</span><span class="p">;</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">//レクタングルリセット</span>
+</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">resetRectangle</span>
+</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="p">[</span><span class="n">self</span> <span class="nl">setRectangle:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="n">ANIM_IMAGE_X</span><span class="p">,</span>
+</span><span class='line'>                              <span class="n">ANIM_IMAGE_Y</span><span class="p">,</span>
+</span><span class='line'>                              <span class="n">ANIM_IMAGE_WIDTH</span><span class="p">,</span>
+</span><span class='line'>                              <span class="n">ANIM_IMAGE_HEIGHT</span><span class="p">)];</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">//アニメーション秒数を取得</span>
+</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="n">CGFloat</span><span class="p">)</span><span class="nl">animationSeconds:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="n">animationImageNum</span>
+</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="k">return</span> <span class="p">(</span><span class="n">animationImageNum</span> <span class="o">/</span> <span class="n">_animationFps</span><span class="p">);</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">//アニメーションタイマーのインターバル取得</span>
+</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="n">CGFloat</span><span class="p">)</span><span class="n">animationTimerInterval</span>
+</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="k">return</span> <span class="p">(</span><span class="n">SECOND</span> <span class="o">/</span> <span class="n">_animationFps</span><span class="p">)</span> <span class="o">/</span> <span class="n">SECOND</span><span class="p">;</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">//アニメーション画像を取得</span>
+</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="n">NSString</span> <span class="o">&lt;</span><span class="n">em</span><span class="o">&gt;</span><span class="p">)</span><span class="nl">animationImageName:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">&lt;/</span><span class="n">em</span><span class="o">&gt;</span><span class="p">)</span><span class="n">animationImageSuffix</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span>                            <span class="o">:</span><span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">animationFrame</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="k">return</span> <span class="p">([</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">@&quot;%@%@&quot;</span><span class="p">,</span> <span class="n">animationImageSuffix</span><span class="p">,</span> <span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">@&quot;%d&quot;</span><span class="p">,</span> <span class="n">animationFrame</span><span class="p">]]);</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">//画像ファイル名を配列で取得する</span>
+</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="n">NSArray</span> <span class="o">&lt;</span><span class="n">em</span><span class="o">&gt;</span><span class="p">)</span><span class="nl">animationImages:</span><span class="p">(</span><span class="n">NSMutableArray</span> <span class="o">&lt;/</span><span class="n">em</span><span class="o">&gt;</span><span class="p">)</span><span class="n">animationImageNameList</span>
+</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="c1">//画像の配列を作成</span>
+</span><span class='line'><span class="n">NSMutableArray</span> <span class="o">*</span><span class="n">imageArray</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSMutableArray</span> <span class="n">array</span><span class="p">];</span>
+</span><span class='line'><span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="n">animationImageNameList</span><span class="p">.</span><span class="n">count</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">NSString</span> <span class="o">*</span><span class="n">imageTitle</span> <span class="o">=</span> <span class="p">[</span><span class="n">animationImageNameList</span> <span class="nl">objectAtIndex:</span><span class="n">i</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//画像の配列に画像ファイルを追加</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">imageArray</span> <span class="nl">addObject:</span><span class="p">[</span><span class="n">self</span> <span class="nl">getUIImageFromResources:</span><span class="n">imageTitle</span>
+</span><span class='line'>                                                    <span class="nl">ext:</span><span class="n">_animationImageExt</span><span class="p">]];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="k">return</span> <span class="p">(</span><span class="n">imageArray</span><span class="p">);</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">//画像リソースの取得</span>
+</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="n">UIImage</span> <span class="o">&lt;</span><span class="n">em</span><span class="o">&gt;</span><span class="p">)</span><span class="nl">getUIImageFromResources:</span><span class="p">(</span><span class="n">NSString</span><span class="o">&lt;/</span><span class="n">em</span><span class="o">&gt;</span><span class="p">)</span><span class="n">fileName</span> <span class="nl">ext:</span><span class="p">(</span><span class="n">NSString</span><span class="o">*</span><span class="p">)</span><span class="n">ext</span>
+</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">NSString</span> <span class="o">*</span><span class="n">path</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSBundle</span> <span class="n">mainBundle</span><span class="p">]</span> <span class="nl">pathForResource:</span><span class="n">fileName</span> <span class="nl">ofType:</span><span class="n">ext</span><span class="p">];</span>
+</span><span class='line'><span class="n">UIImage</span> <span class="o">*</span><span class="n">img</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIImage</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithContentsOfFile:</span><span class="n">path</span><span class="p">];</span>
+</span><span class='line'><span class="k">return</span> <span class="p">(</span><span class="n">img</span><span class="p">);</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h2>関連記事</h2>
+
+<p><a href="http://lab.dolice.net/blog/2013/05/31/download-objc-classes-frame-by-frame-animation2/" title="パラパラアニメを実行する「FrameByFrameAnimation」クラス改訂版">パラパラアニメを実行する「FrameByFrameAnimation」クラス改訂版</a></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[2種類のボタンを生成する「DCButton」クラス]]></title>
+    <link href="http://lab.dolice.net/blog/2013/06/04/download-objc-classes-dc-button/"/>
+    <updated>2013-06-04T23:35:00+09:00</updated>
+    <id>http://lab.dolice.net/blog/2013/06/04/download-objc-classes-dc-button</id>
+    <content type="html"><![CDATA[<p>テキストボタンと画像ボタンをシンプルな記述で生成する「DCButton」クラスを作成しました。</p>
+
+<p>下記よりサンプルとソースコードのダウンロードが行えます。</p>
+
+<h2>ダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-classes-dc-button">https://github.com/masakihirokawa/objc-classes-dc-button</a></li>
+</ul>
+
+
+<h2>使用方法</h2>
+
+<h3>テキストボタンの取得</h3>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">UIButton</span> <span class="o">*</span><span class="n">planeButton</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCButton</span> <span class="nl">planeButton:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="mi">140</span><span class="p">,</span> <span class="mi">240</span><span class="p">,</span> <span class="mi">36</span><span class="p">)</span>
+</span><span class='line'>                                         <span class="nl">text:</span><span class="s">@&quot;Button&quot;</span>
+</span><span class='line'>                                     <span class="nl">delegate:</span><span class="n">self</span>
+</span><span class='line'>                                       <span class="nl">action:</span><span class="k">@selector</span><span class="p">(</span><span class="nl">buttonDidTap:</span><span class="p">)</span>
+</span><span class='line'>                                          <span class="nl">tag:</span><span class="mi">0</span><span class="p">];</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h3>画像ボタンの取得</h3>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">UIButton</span> <span class="o">*</span><span class="n">imageButton</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCButton</span> <span class="nl">imageButton:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">240</span><span class="p">,</span> <span class="mi">36</span><span class="p">)</span>
+</span><span class='line'>                                          <span class="nl">img:</span><span class="p">[</span><span class="n">UIImage</span> <span class="nl">imageNamed:</span><span class="s">@&quot;button.png&quot;</span><span class="p">]</span>
+</span><span class='line'>                                 <span class="nl">isHighlighte:</span><span class="n">NO</span>
+</span><span class='line'>                                       <span class="nl">on_img:</span><span class="nb">nil</span>
+</span><span class='line'>                                     <span class="nl">delegate:</span><span class="n">self</span>
+</span><span class='line'>                                       <span class="nl">action:</span><span class="k">@selector</span><span class="p">(</span><span class="nl">buttonDidTap:</span><span class="p">)</span>
+</span><span class='line'>                                          <span class="nl">tag:</span><span class="mi">1</span><span class="p">];</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h2>サンプルソースコード</h2>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//ボタンのタイプ</span>
+</span><span class='line'><span class="k">enum</span> <span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">BUTTON_PLANE</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+</span><span class='line'><span class="n">BUTTON_IMAGE</span> <span class="o">=</span> <span class="mi">1</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">};</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">ul</span><span class="o">&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="n">li</span><span class="o">&gt;&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">viewDidLoad</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>  <span class="c1">//プレーンボタンの作成</span>
+</span><span class='line'>  <span class="n">UIButton</span> <span class="o">*</span><span class="n">planeButton</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCButton</span> <span class="nl">planeButton:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="mi">140</span><span class="p">,</span> <span class="mi">240</span><span class="p">,</span> <span class="mi">36</span><span class="p">)</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span>                                       <span class="nl">text:</span><span class="s">@&quot;Button&quot;</span>
+</span><span class='line'>                                   <span class="nl">delegate:</span><span class="n">self</span>
+</span><span class='line'>                                     <span class="nl">action:</span><span class="k">@selector</span><span class="p">(</span><span class="nl">buttonDidTap:</span><span class="p">)</span>
+</span><span class='line'>                                        <span class="nl">tag:</span><span class="n">BUTTON_PLANE</span><span class="p">];</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>  <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">planeButton</span><span class="p">];</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>  <span class="c1">//イメージボタンの作成</span>
+</span><span class='line'>  <span class="n">UIButton</span> <span class="o">*</span><span class="n">imageButton</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCButton</span> <span class="nl">imageButton:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">240</span><span class="p">,</span> <span class="mi">36</span><span class="p">)</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span>                                        <span class="nl">img:</span><span class="p">[</span><span class="n">UIImage</span> <span class="nl">imageNamed:</span><span class="s">@&quot;button.png&quot;</span><span class="p">]</span>
+</span><span class='line'>                               <span class="nl">isHighlighte:</span><span class="n">NO</span>
+</span><span class='line'>                                     <span class="nl">on_img:</span><span class="nb">nil</span>
+</span><span class='line'>                                   <span class="nl">delegate:</span><span class="n">self</span>
+</span><span class='line'>                                     <span class="nl">action:</span><span class="k">@selector</span><span class="p">(</span><span class="nl">buttonDidTap:</span><span class="p">)</span>
+</span><span class='line'>                                        <span class="nl">tag:</span><span class="n">BUTTON_IMAGE</span><span class="p">];</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>  <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">imageButton</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">ul</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">//ボタンのタップイベント</span>
+</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">buttonDidTap:</span><span class="p">(</span><span class="n">UIButton</span> <span class="o">*</span><span class="p">)</span><span class="n">button</span>
+</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="c1">//タグを格納</span>
+</span><span class='line'><span class="n">NSInteger</span> <span class="n">eventType</span> <span class="o">=</span> <span class="n">button</span><span class="p">.</span><span class="n">tag</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//タグによって振り分け処理</span>
+</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="n">eventType</span> <span class="o">==</span> <span class="n">BUTTON_PLANE</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">UIAlertView</span> <span class="o">*</span><span class="n">alert</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIAlertView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithTitle:</span><span class="nb">nil</span>
+</span><span class='line'>                                                    <span class="nl">message:</span><span class="s">@&quot;planeButtonDidTap&quot;</span>
+</span><span class='line'>                                                   <span class="nl">delegate:</span><span class="nb">nil</span>
+</span><span class='line'>                                          <span class="nl">cancelButtonTitle:</span><span class="nb">nil</span>
+</span><span class='line'>                                          <span class="nl">otherButtonTitles:</span><span class="s">@&quot;OK&quot;</span><span class="p">,</span> <span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">alert</span> <span class="n">show</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">eventType</span> <span class="o">==</span> <span class="n">BUTTON_IMAGE</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">UIAlertView</span> <span class="o">*</span><span class="n">alert</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIAlertView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithTitle:</span><span class="nb">nil</span>
+</span><span class='line'>                                                    <span class="nl">message:</span><span class="s">@&quot;imageButtonDidTap&quot;</span>
+</span><span class='line'>                                                   <span class="nl">delegate:</span><span class="nb">nil</span>
+</span><span class='line'>                                          <span class="nl">cancelButtonTitle:</span><span class="nb">nil</span>
+</span><span class='line'>                                          <span class="nl">otherButtonTitles:</span><span class="s">@&quot;OK&quot;</span><span class="p">,</span> <span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">alert</span> <span class="n">show</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h2>ソースコード</h2>
+
+<h3>DCButton.h</h3>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">import</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">UIKit</span><span class="o">/</span><span class="n">UIKit</span><span class="p">.</span><span class="n">h</span><span class="o">&gt;&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">@interface</span> <span class="nc">DCButton</span> : <span class="nc">UIButton</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">ul</span><span class="o">&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="n">li</span><span class="o">&gt;</span><span class="p">(</span><span class="n">UIButton</span> <span class="o">&lt;</span><span class="n">em</span><span class="o">&gt;</span><span class="p">)</span><span class="nl">planeButton:</span><span class="p">(</span><span class="n">CGRect</span><span class="p">)</span><span class="n">frame</span> <span class="nl">text:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">&lt;/</span><span class="n">em</span><span class="o">&gt;</span><span class="p">)</span><span class="n">text</span> <span class="nl">delegate:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="n">delegate</span> <span class="nl">action:</span><span class="p">(</span><span class="kt">SEL</span><span class="p">)</span><span class="n">action</span> <span class="nl">tag:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="n">tag</span><span class="p">;</span><span class="o">&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="n">li</span><span class="o">&gt;</span><span class="p">(</span><span class="n">UIButton</span> <span class="o">&lt;</span><span class="n">em</span><span class="o">&gt;</span><span class="p">)</span><span class="nl">imageButton:</span><span class="p">(</span><span class="n">CGRect</span><span class="p">)</span><span class="n">frame</span> <span class="nl">img:</span><span class="p">(</span><span class="n">UIImage</span> <span class="o">&lt;/</span><span class="n">em</span><span class="o">&gt;</span><span class="p">)</span><span class="n">img</span> <span class="nl">isHighlighte:</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="n">isHighlighte</span> <span class="nl">on_img:</span><span class="p">(</span><span class="n">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="n">on_img</span> <span class="nl">delegate:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="n">delegate</span> <span class="nl">action:</span><span class="p">(</span><span class="kt">SEL</span><span class="p">)</span><span class="n">action</span> <span class="nl">tag:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="n">tag</span><span class="p">;</span><span class="o">&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">ul</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h3>DCAnimation.m</h3>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">import</span> <span class="s">&quot;DCButton.h&quot;</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">@implementation</span> <span class="nc">DCButton</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">//テキストボタン</span>
+</span><span class='line'><span class="o">+</span> <span class="p">(</span><span class="n">UIButton</span> <span class="o">&lt;</span><span class="n">em</span><span class="o">&gt;</span><span class="p">)</span><span class="nl">planeButton:</span><span class="p">(</span><span class="n">CGRect</span><span class="p">)</span><span class="n">frame</span> <span class="nl">text:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">&lt;/</span><span class="n">em</span><span class="o">&gt;</span><span class="p">)</span><span class="n">text</span> <span class="nl">delegate:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="n">delegate</span> <span class="nl">action:</span><span class="p">(</span><span class="kt">SEL</span><span class="p">)</span><span class="n">action</span> <span class="nl">tag:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="n">tag</span>
+</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="c1">//ボタン作成</span>
+</span><span class='line'><span class="n">UIButton</span> <span class="o">*</span><span class="n">button</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIButton</span> <span class="nl">buttonWithType:</span><span class="n">UIButtonTypeRoundedRect</span><span class="p">];</span>
+</span><span class='line'><span class="p">[</span><span class="n">button</span> <span class="nl">setTitle:</span><span class="n">text</span> <span class="nl">forState:</span><span class="n">UIControlStateNormal</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//ボタンのフレームを指定</span>
+</span><span class='line'><span class="p">[</span><span class="n">button</span> <span class="n">sizeToFit</span><span class="p">];</span>
+</span><span class='line'><span class="n">button</span><span class="p">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">frame</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//画面が変わってもボタンの位置を自動調整</span>
+</span><span class='line'><span class="n">button</span><span class="p">.</span><span class="n">autoresizingMask</span> <span class="o">=</span>
+</span><span class='line'>    <span class="n">UIViewAutoresizingFlexibleWidth</span> <span class="o">|</span>
+</span><span class='line'>    <span class="n">UIViewAutoresizingFlexibleHeight</span> <span class="o">|</span>
+</span><span class='line'>    <span class="n">UIViewAutoresizingFlexibleLeftMargin</span> <span class="o">|</span>
+</span><span class='line'>    <span class="n">UIViewAutoresizingFlexibleRightMargin</span> <span class="o">|</span>
+</span><span class='line'>    <span class="n">UIViewAutoresizingFlexibleTopMargin</span> <span class="o">|</span>
+</span><span class='line'>    <span class="n">UIViewAutoresizingFlexibleBottomMargin</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//ボタンのタグを指定</span>
+</span><span class='line'><span class="n">button</span><span class="p">.</span><span class="n">tag</span> <span class="o">=</span> <span class="n">tag</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//ボタンをタップした時に指定のメソッドを呼ぶ</span>
+</span><span class='line'><span class="p">[</span><span class="n">button</span> <span class="nl">addTarget:</span><span class="n">delegate</span>
+</span><span class='line'>           <span class="nl">action:</span><span class="n">action</span>
+</span><span class='line'> <span class="nl">forControlEvents:</span><span class="n">UIControlEventTouchUpInside</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">return</span> <span class="p">(</span><span class="n">button</span><span class="p">);</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">//画像ボタン</span>
+</span><span class='line'><span class="o">+</span> <span class="p">(</span><span class="n">UIButton</span> <span class="o">&lt;</span><span class="n">em</span><span class="o">&gt;</span><span class="p">)</span><span class="nl">imageButton:</span><span class="p">(</span><span class="n">CGRect</span><span class="p">)</span><span class="n">frame</span> <span class="nl">img:</span><span class="p">(</span><span class="n">UIImage</span> <span class="o">&lt;/</span><span class="n">em</span><span class="o">&gt;</span><span class="p">)</span><span class="n">img</span> <span class="nl">isHighlighte:</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="n">isHighlighte</span> <span class="nl">on_img:</span><span class="p">(</span><span class="n">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="n">on_img</span> <span class="nl">delegate:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="n">delegate</span> <span class="nl">action:</span><span class="p">(</span><span class="kt">SEL</span><span class="p">)</span><span class="n">action</span> <span class="nl">tag:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="n">tag</span>
+</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="c1">//ボタン作成</span>
+</span><span class='line'><span class="n">UIButton</span> <span class="o">*</span><span class="n">button</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIButton</span> <span class="nl">buttonWithType:</span><span class="n">UIButtonTypeCustom</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//ボタンのフレームを指定</span>
+</span><span class='line'><span class="p">[</span><span class="n">button</span> <span class="nl">setFrame:</span><span class="n">frame</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//ボタンの画像を指定</span>
+</span><span class='line'><span class="p">[</span><span class="n">button</span> <span class="nl">setImage:</span><span class="n">img</span> <span class="nl">forState:</span><span class="n">UIControlStateNormal</span><span class="p">];</span>
+</span><span class='line'><span class="n">button</span><span class="p">.</span><span class="n">adjustsImageWhenDisabled</span> <span class="o">=</span> <span class="n">NO</span><span class="p">;</span>
+</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">isHighlighte</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">button</span><span class="p">.</span><span class="n">showsTouchWhenHighlighted</span> <span class="o">=</span> <span class="n">NO</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">button</span><span class="p">.</span><span class="n">adjustsImageWhenHighlighted</span> <span class="o">=</span> <span class="n">NO</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span> <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">on_img</span> <span class="o">!=</span> <span class="nb">nil</span> <span class="o">||</span> <span class="o">!</span><span class="p">[</span><span class="n">on_img</span> <span class="nl">isEqual:</span><span class="p">[</span><span class="n">NSNull</span> <span class="n">null</span><span class="p">]])</span> <span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">button</span> <span class="nl">setImage:</span><span class="n">on_img</span> <span class="nl">forState:</span><span class="n">UIControlStateNormal</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//ボタンのタグを指定</span>
+</span><span class='line'><span class="p">[</span><span class="n">button</span> <span class="nl">setTag:</span><span class="n">tag</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//ボタンをタップした時に指定のメソッドを呼ぶ</span>
+</span><span class='line'><span class="p">[</span><span class="n">button</span> <span class="nl">addTarget:</span><span class="n">delegate</span>
+</span><span class='line'>           <span class="nl">action:</span><span class="n">action</span>
+</span><span class='line'> <span class="nl">forControlEvents:</span><span class="n">UIControlEventTouchUpInside</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">return</span> <span class="p">(</span><span class="n">button</span><span class="p">);</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[パラパラアニメを実行する「FrameByFrameAnimation」クラス改訂版]]></title>
@@ -1797,418 +3343,6 @@
 </span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
 </span><span class='line'>
 </span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[加速度センサーのサンプル]]></title>
-    <link href="http://lab.dolice.net/blog/2013/05/23/download-xcode-objc-accelerometer/"/>
-    <updated>2013-05-23T22:40:00+09:00</updated>
-    <id>http://lab.dolice.net/blog/2013/05/23/download-xcode-objc-accelerometer</id>
-    <content type="html"><![CDATA[<p>iOSの加速度センサーからデバイスの傾きや向きを取得するサンプルを作成しました。</p>
-
-<p>主な機能は下記の通りです。</p>
-
-<h2>主な機能</h2>
-
-<ol>
-<li>X方向の傾き表示</li>
-<li>Y方向の傾き表示</li>
-<li>Z方向の傾き表示</li>
-<li>デバイスの向きを表示</li>
-</ol>
-
-
-<p>以下よりサンプルのダウンロードが行えます。</p>
-
-<h2>サンプルダウンロード</h2>
-
-<ul>
-<li><a href="https://github.com/masakihirokawa/objc-accelerometer">https://github.com/masakihirokawa/objc-accelerometer</a></li>
-</ul>
-
-
-<h2>ソースコード</h2>
-
-<h3>ViewController.h</h3>
-
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">import</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">UIKit</span><span class="o">/</span><span class="n">UIKit</span><span class="p">.</span><span class="n">h</span><span class="o">&gt;&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">@interface</span> <span class="nc">ViewController</span> : <span class="nc">UIViewController</span> <span class="o">&lt;</span><span class="n">UIAccelerometerDelegate</span><span class="o">&gt;</span> <span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">UILabel</span><span class="o">*</span>   <span class="n">_label</span><span class="p">;</span>
-</span><span class='line'><span class="kt">float</span>      <span class="n">_aX</span><span class="p">;</span>
-</span><span class='line'><span class="kt">float</span>      <span class="n">_aY</span><span class="p">;</span>
-</span><span class='line'><span class="kt">float</span>      <span class="n">_aZ</span><span class="p">;</span>
-</span><span class='line'><span class="n">NSString</span><span class="o">*</span>  <span class="n">_orientation</span><span class="p">;</span>
-</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
-
-<h3>ViewController.m</h3>
-
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-<span class='line-number'>65</span>
-<span class='line-number'>66</span>
-<span class='line-number'>67</span>
-<span class='line-number'>68</span>
-<span class='line-number'>69</span>
-<span class='line-number'>70</span>
-<span class='line-number'>71</span>
-<span class='line-number'>72</span>
-<span class='line-number'>73</span>
-<span class='line-number'>74</span>
-<span class='line-number'>75</span>
-<span class='line-number'>76</span>
-<span class='line-number'>77</span>
-<span class='line-number'>78</span>
-<span class='line-number'>79</span>
-<span class='line-number'>80</span>
-<span class='line-number'>81</span>
-<span class='line-number'>82</span>
-<span class='line-number'>83</span>
-<span class='line-number'>84</span>
-<span class='line-number'>85</span>
-<span class='line-number'>86</span>
-<span class='line-number'>87</span>
-<span class='line-number'>88</span>
-<span class='line-number'>89</span>
-<span class='line-number'>90</span>
-<span class='line-number'>91</span>
-<span class='line-number'>92</span>
-<span class='line-number'>93</span>
-<span class='line-number'>94</span>
-<span class='line-number'>95</span>
-<span class='line-number'>96</span>
-<span class='line-number'>97</span>
-<span class='line-number'>98</span>
-<span class='line-number'>99</span>
-<span class='line-number'>100</span>
-<span class='line-number'>101</span>
-<span class='line-number'>102</span>
-<span class='line-number'>103</span>
-<span class='line-number'>104</span>
-<span class='line-number'>105</span>
-<span class='line-number'>106</span>
-<span class='line-number'>107</span>
-<span class='line-number'>108</span>
-<span class='line-number'>109</span>
-<span class='line-number'>110</span>
-<span class='line-number'>111</span>
-<span class='line-number'>112</span>
-<span class='line-number'>113</span>
-<span class='line-number'>114</span>
-<span class='line-number'>115</span>
-<span class='line-number'>116</span>
-<span class='line-number'>117</span>
-<span class='line-number'>118</span>
-<span class='line-number'>119</span>
-<span class='line-number'>120</span>
-<span class='line-number'>121</span>
-<span class='line-number'>122</span>
-<span class='line-number'>123</span>
-<span class='line-number'>124</span>
-<span class='line-number'>125</span>
-<span class='line-number'>126</span>
-<span class='line-number'>127</span>
-<span class='line-number'>128</span>
-<span class='line-number'>129</span>
-<span class='line-number'>130</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">import</span> <span class="s">&quot;ViewController.h&quot;</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">define</span> <span class="n">FILTERING_FACTOR</span> <span class="mf">0.1</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">@interface</span> <span class="nc">ViewController</span> <span class="p">()</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">@end</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">@implementation</span> <span class="nc">ViewController</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">//初期化</span>
-</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">viewDidLoad</span>
-</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//ラベルの生成</span>
-</span><span class='line'><span class="n">_label</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="nl">makeLabel:</span><span class="n">CGPointMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-</span><span class='line'>                    <span class="nl">text:</span><span class="s">@&quot;Accelerometer&quot;</span>
-</span><span class='line'>                    <span class="nl">font:</span><span class="p">[</span><span class="n">UIFont</span> <span class="nl">systemFontOfSize:</span><span class="mi">16</span><span class="p">]];</span>
-</span><span class='line'><span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">_label</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//値の初期化</span>
-</span><span class='line'><span class="n">_aX</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'><span class="n">_aY</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'><span class="n">_aZ</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'><span class="n">_orientation</span> <span class="o">=</span> <span class="s">@&quot;&quot;</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//加速度通知の開始</span>
-</span><span class='line'><span class="n">UIAccelerometer</span> <span class="o">*</span><span class="n">accelermeter</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIAccelerometer</span> <span class="n">sharedAccelerometer</span><span class="p">];</span>
-</span><span class='line'><span class="n">accelermeter</span><span class="p">.</span><span class="n">updateInterval</span> <span class="o">=</span> <span class="mf">0.1f</span><span class="p">;</span>
-</span><span class='line'><span class="n">accelermeter</span><span class="p">.</span><span class="n">delegate</span> <span class="o">=</span> <span class="n">self</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//端末回転通知の開始</span>
-</span><span class='line'><span class="p">[[</span><span class="n">UIDevice</span> <span class="n">currentDevice</span><span class="p">]</span> <span class="n">beginGeneratingDeviceOrientationNotifications</span><span class="p">];</span>
-</span><span class='line'><span class="p">[[</span><span class="n">NSNotificationCenter</span> <span class="n">defaultCenter</span><span class="p">]</span> <span class="nl">addObserver:</span><span class="n">self</span>
-</span><span class='line'>                                         <span class="nl">selector:</span><span class="k">@selector</span><span class="p">(</span><span class="nl">didRotate:</span><span class="p">)</span>
-</span><span class='line'>                                             <span class="nl">name:</span><span class="n">UIDeviceOrientationDidChangeNotification</span>
-</span><span class='line'>                                           <span class="nl">object:</span><span class="nb">nil</span><span class="p">];</span>
-</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">//ラベルのリサイズ</span>
-</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">resizeLabel:</span><span class="p">(</span><span class="n">UILabel</span> <span class="o">*</span><span class="p">)</span><span class="n">label</span>
-</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">CGRect</span> <span class="n">frame</span> <span class="o">=</span> <span class="n">label</span><span class="p">.</span><span class="n">frame</span><span class="p">;</span>
-</span><span class='line'><span class="n">frame</span><span class="p">.</span><span class="n">size</span> <span class="o">=</span> <span class="p">[</span><span class="n">label</span><span class="p">.</span><span class="n">text</span> <span class="nl">sizeWithFont:</span><span class="n">label</span><span class="p">.</span><span class="n">font</span>
-</span><span class='line'>                    <span class="nl">constrainedToSize:</span><span class="n">CGSizeMake</span><span class="p">(</span><span class="mi">512</span><span class="p">,</span> <span class="mi">512</span><span class="p">)</span>
-</span><span class='line'>                        <span class="nl">lineBreakMode:</span><span class="n">NSLineBreakByWordWrapping</span><span class="p">];</span>
-</span><span class='line'><span class="p">[</span><span class="n">label</span> <span class="nl">setFrame:</span><span class="n">frame</span><span class="p">];</span>
-</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">//ラベルの生成</span>
-</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="n">UILabel</span> <span class="o">*</span><span class="p">)</span><span class="nl">makeLabel:</span><span class="p">(</span><span class="n">CGPoint</span><span class="p">)</span><span class="n">pos</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span>             <span class="nl">text:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="n">text</span>
-</span><span class='line'>             <span class="nl">font:</span><span class="p">(</span><span class="n">UIFont</span> <span class="o">*</span><span class="p">)</span><span class="n">font</span>
-</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">UILabel</span> <span class="o">*</span><span class="n">label</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UILabel</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'><span class="p">[</span><span class="n">label</span> <span class="nl">setText:</span><span class="n">text</span><span class="p">];</span>
-</span><span class='line'><span class="p">[</span><span class="n">label</span> <span class="nl">setFont:</span><span class="n">font</span><span class="p">];</span>
-</span><span class='line'><span class="p">[</span><span class="n">label</span> <span class="nl">setTextColor:</span><span class="p">[</span><span class="n">UIColor</span> <span class="n">blackColor</span><span class="p">]];</span>
-</span><span class='line'><span class="p">[</span><span class="n">label</span> <span class="nl">setBackgroundColor:</span><span class="p">[</span><span class="n">UIColor</span> <span class="n">clearColor</span><span class="p">]];</span>
-</span><span class='line'><span class="p">[</span><span class="n">label</span> <span class="nl">setTextAlignment:</span><span class="n">NSTextAlignmentLeft</span><span class="p">];</span>
-</span><span class='line'><span class="p">[</span><span class="n">label</span> <span class="nl">setNumberOfLines:</span><span class="mi">0</span><span class="p">];</span>
-</span><span class='line'><span class="p">[</span><span class="n">label</span> <span class="nl">setLineBreakMode:</span><span class="n">NSLineBreakByWordWrapping</span><span class="p">];</span>
-</span><span class='line'><span class="p">[</span><span class="n">self</span> <span class="nl">resizeLabel:</span><span class="n">label</span><span class="p">];</span>
-</span><span class='line'><span class="k">return</span> <span class="n">label</span><span class="p">;</span>
-</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">//端末の向きの取得</span>
-</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">didRotate:</span><span class="p">(</span><span class="n">NSNotification</span> <span class="o">*</span><span class="p">)</span><span class="n">notification</span>
-</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">UIDeviceOrientation</span> <span class="n">orientation</span> <span class="o">=</span> <span class="p">[[</span><span class="n">notification</span> <span class="n">object</span><span class="p">]</span> <span class="n">orientation</span><span class="p">];</span>
-</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="n">orientation</span> <span class="o">==</span> <span class="n">UIDeviceOrientationLandscapeLeft</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="n">_orientation</span> <span class="o">=</span> <span class="s">@&quot;横(左90度回転)&quot;</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">orientation</span> <span class="o">==</span> <span class="n">UIDeviceOrientationLandscapeRight</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="n">_orientation</span> <span class="o">=</span> <span class="s">@&quot;横(右90度回転)&quot;</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">orientation</span><span class="o">==</span><span class="n">UIDeviceOrientationPortraitUpsideDown</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="n">_orientation</span> <span class="o">=</span> <span class="s">@&quot;縦(上下逆)&quot;</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">orientation</span> <span class="o">==</span> <span class="n">UIDeviceOrientationPortrait</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="n">_orientation</span> <span class="o">=</span> <span class="s">@&quot;縦&quot;</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">orientation</span> <span class="o">==</span> <span class="n">UIDeviceOrientationFaceUp</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="n">_orientation</span> <span class="o">=</span> <span class="s">@&quot;画面が上向き&quot;</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">orientation</span> <span class="o">==</span> <span class="n">UIDeviceOrientationFaceDown</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="n">_orientation</span> <span class="o">=</span> <span class="s">@&quot;画面が下向き&quot;</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">//加速度通知時に呼ばれる</span>
-</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">accelerometer:</span><span class="p">(</span><span class="n">UIAccelerometer</span> <span class="o">*</span><span class="p">)</span><span class="n">accelerometer</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span>    <span class="nl">didAccelerate:</span><span class="p">(</span><span class="n">UIAcceleration</span> <span class="o">*</span><span class="p">)</span><span class="n">acceleration</span>
-</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="c1">//加速度にローパスフィルタをあてる</span>
-</span><span class='line'><span class="n">_aX</span> <span class="o">=</span> <span class="p">(</span><span class="n">acceleration</span><span class="p">.</span><span class="n">x</span> <span class="o">*</span> <span class="n">FILTERING_FACTOR</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">_aX</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">FILTERING_FACTOR</span><span class="p">));</span>
-</span><span class='line'><span class="n">_aY</span> <span class="o">=</span> <span class="p">(</span><span class="n">acceleration</span><span class="p">.</span><span class="n">y</span> <span class="o">*</span> <span class="n">FILTERING_FACTOR</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">_aY</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">FILTERING_FACTOR</span><span class="p">));</span>
-</span><span class='line'><span class="n">_aZ</span> <span class="o">=</span> <span class="p">(</span><span class="n">acceleration</span><span class="p">.</span><span class="n">z</span> <span class="o">*</span> <span class="n">FILTERING_FACTOR</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">_aZ</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">FILTERING_FACTOR</span><span class="p">));</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//ラベルの更新</span>
-</span><span class='line'><span class="n">NSMutableString</span> <span class="o">*</span><span class="n">str</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSMutableString</span> <span class="n">string</span><span class="p">];</span>
-</span><span class='line'><span class="p">[</span><span class="n">str</span> <span class="nl">appendString:</span><span class="s">@&quot;Accelerometer</span><span class="se">\n\n</span><span class="s">&quot;</span><span class="p">];</span>
-</span><span class='line'><span class="p">[</span><span class="n">str</span> <span class="nl">appendFormat:</span><span class="s">@&quot;X軸加速度: %+.2f</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">_aX</span><span class="p">];</span>
-</span><span class='line'><span class="p">[</span><span class="n">str</span> <span class="nl">appendFormat:</span><span class="s">@&quot;Y軸加速度: %+.2f</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">_aY</span><span class="p">];</span>
-</span><span class='line'><span class="p">[</span><span class="n">str</span> <span class="nl">appendFormat:</span><span class="s">@&quot;Z軸加速度: %+.2f</span><span class="se">\n\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">_aZ</span><span class="p">];</span>
-</span><span class='line'><span class="p">[</span><span class="n">str</span> <span class="nl">appendFormat:</span><span class="s">@&quot;端末の向き: %@&quot;</span><span class="p">,</span> <span class="n">_orientation</span><span class="p">];</span>
-</span><span class='line'><span class="p">[</span><span class="n">_label</span> <span class="nl">setText:</span><span class="n">str</span><span class="p">];</span>
-</span><span class='line'><span class="p">[</span><span class="n">self</span> <span class="nl">resizeLabel:</span><span class="n">_label</span><span class="p">];</span>
-</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[iOS端末情報を取得する「Device」クラスに2つの機能を追加しました]]></title>
-    <link href="http://lab.dolice.net/blog/2013/05/20/download-objc-classes-device3/"/>
-    <updated>2013-05-20T23:10:00+09:00</updated>
-    <id>http://lab.dolice.net/blog/2013/05/20/download-objc-classes-device3</id>
-    <content type="html"><![CDATA[<p>iPhone/iPadのデバイス名を判別する <a href="https://github.com/masakihirokawa/objc-classes-devce3" title="Deviceクラス">Deviceクラス</a>に2つの機能を追加しました。</p>
-
-<p>今回は以下の2つの機能を追加しています。</p>
-
-<ol>
-<li>4インチ端末であるかの情報取得</li>
-<li>iOS6以降であるかの情報取得</li>
-</ol>
-
-
-<p>以下よりサンプルコードを含めたソースファイルをダウンロードできます。</p>
-
-<h2>ダウンロード</h2>
-
-<ul>
-<li><a href="https://github.com/masakihirokawa/objc-classes-devce3">https://github.com/masakihirokawa/objc-classes-devce3</a></li>
-</ul>
-
-
-<h2>サンプルソースコード</h2>
-
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//4インチ端末であれば1が返る</span>
-</span><span class='line'><span class="n">self</span><span class="p">.</span><span class="n">label4inch</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">@&quot;%@%d&quot;</span><span class="p">,</span> <span class="s">@&quot;is4inch: &quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">Device</span> <span class="n">is4inch</span><span class="p">]];</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">//iOS6以降であれば1が返る</span>
-</span><span class='line'><span class="n">self</span><span class="p">.</span><span class="n">labeliOS6</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">@&quot;%@%d&quot;</span><span class="p">,</span> <span class="s">@&quot;isiOS6: &quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">Device</span> <span class="n">isiOS6</span><span class="p">]];</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
-
-<h2>ソースコード</h2>
-
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//4インチ端末であるか</span>
-</span><span class='line'><span class="k">+</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span> <span class="nf">is4inch</span> <span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">CGSize</span> <span class="n">screenSize</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIScreen</span> <span class="n">mainScreen</span><span class="p">]</span> <span class="n">bounds</span><span class="p">].</span><span class="n">size</span><span class="p">;</span>
-</span><span class='line'><span class="k">return</span> <span class="p">(</span><span class="n">screenSize</span><span class="p">.</span><span class="n">width</span> <span class="o">==</span> <span class="mf">320.0</span> <span class="o">&amp;</span><span class="n">amp</span><span class="p">;</span><span class="o">&amp;</span><span class="n">amp</span><span class="p">;</span> <span class="n">screenSize</span><span class="p">.</span><span class="n">height</span> <span class="o">==</span> <span class="mf">568.0</span><span class="p">);</span>
-</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">//iOS6以降であるか</span>
-</span><span class='line'><span class="o">+</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span> <span class="n">isiOS6</span> <span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">NSString</span> <span class="o">*</span><span class="n">osversion</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIDevice</span> <span class="n">currentDevice</span><span class="p">].</span><span class="n">systemVersion</span><span class="p">;</span>
-</span><span class='line'><span class="n">NSArray</span> <span class="o">*</span><span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="n">osversion</span> <span class="nl">componentsSeparatedByString:</span><span class="s">@&quot;.&quot;</span><span class="p">];</span>
-</span><span class='line'><span class="k">return</span> <span class="p">([(</span><span class="n">NSString</span><span class="o">*</span><span class="p">)[</span><span class="n">a</span> <span class="nl">objectAtIndex:</span><span class="mi">0</span><span class="p">]</span> <span class="n">intValue</span><span class="p">]</span> <span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">=</span> <span class="mi">6</span><span class="p">);</span>
-</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure></notextile></div></p>
 ]]></content>
   </entry>
