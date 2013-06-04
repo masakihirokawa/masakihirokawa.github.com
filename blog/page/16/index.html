@@ -6,31 +6,11 @@
 	<title>Dolice Lab</title>
 	
 	
-	<meta name="description" content="特定の日時のオブジェクトを取得するには、NSCalendarクラスを使用します。以下にサンプルを作成しました。 サンプルダウンロード https://github.com/masakihirokawa/objc-ns-calendar ソースコード 1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11 &hellip;">
+	<meta name="description" content="2つの日時を比較し、新しい方の日時を取得するサンプルを以下に作成しました。 新しい方の日時を取得するには、「laterDate」メソッドを使用します。逆に古い方の日時を取得するには、「earlierDate」メソッドを使用します。 サンプルダウンロード https://github.com/ &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	<meta property="og:title" content="Dolice Lab" />
-<meta property="og:description" content="特定の日時のオブジェクトを取得するには、NSCalendarクラスを使用します。以下にサンプルを作成しました。 サンプルダウンロード https://github.com/masakihirokawa/objc-ns-calendar ソースコード 1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11 &hellip;" />
+<meta property="og:description" content="2つの日時を比較し、新しい方の日時を取得するサンプルを以下に作成しました。 新しい方の日時を取得するには、「laterDate」メソッドを使用します。逆に古い方の日時を取得するには、「earlierDate」メソッドを使用します。 サンプルダウンロード https://github.com/ &hellip;" />
 <meta property="og:url" content="http://lab.dolice.net/blog/page/16/" />
 <meta property="og:image" content="http://lab.dolice.net/images/facebook-icon.jpg" />
 <meta property="og:author" content="Masaki Hirokawa" />
@@ -104,6 +84,125 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/04/14/objc-date-later-date/">
+		
+			2つの日時を比較し新しい方の日時を取得する</a>
+	</h2>
+	<div class="entry-content">
+		<p>2つの日時を比較し、新しい方の日時を取得するサンプルを以下に作成しました。</p>
+
+<p>新しい方の日時を取得するには、「laterDate」メソッドを使用します。逆に古い方の日時を取得するには、「earlierDate」メソッドを使用します。</p>
+
+<h2>サンプルダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-date-later-date">https://github.com/masakihirokawa/objc-date-later-date</a></li>
+</ul>
+
+
+<h2>ソースコード</h2>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">main</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="n">NSDate</span> <span class="o">*</span><span class="n">dates</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="nb">nil</span><span class="p">,</span> <span class="nb">nil</span><span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">//日時を作成する</span>
+</span><span class='line'>  <span class="n">NSCalendar</span> <span class="o">*</span><span class="n">calendar</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSCalendar</span> <span class="n">currentCalendar</span><span class="p">];</span>
+</span><span class='line'>  <span class="n">NSDateComponents</span> <span class="o">*</span><span class="n">components</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">//UTCタイムゾーンを設定する</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">calendar</span> <span class="nl">setTimeZone:</span><span class="p">[</span><span class="n">NSTimeZone</span> <span class="nl">timeZoneForSecondsFromGMT:</span><span class="mi">0</span><span class="p">]];</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">//2013/04/11のオブジェクトを作成する</span>
+</span><span class='line'>  <span class="n">components</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSDateComponents</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">components</span> <span class="nl">setYear:</span><span class="mi">2013</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">components</span> <span class="nl">setMonth:</span><span class="mi">4</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">components</span> <span class="nl">setDay:</span><span class="mi">11</span><span class="p">];</span>
+</span><span class='line'>  <span class="n">dates</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">calendar</span> <span class="nl">dateFromComponents:</span><span class="n">components</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">//2013/04/14のオブジェクトを作成する</span>
+</span><span class='line'>  <span class="n">components</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSDateComponents</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">components</span> <span class="nl">setYear:</span><span class="mi">2013</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">components</span> <span class="nl">setMonth:</span><span class="mi">4</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">components</span> <span class="nl">setDay:</span><span class="mi">14</span><span class="p">];</span>
+</span><span class='line'>  <span class="n">dates</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">calendar</span> <span class="nl">dateFromComponents:</span><span class="n">components</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">//2つの日時で新しい方の日時を取得する</span>
+</span><span class='line'>  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;laterDate: %@&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">dates</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="nl">laterDate:</span><span class="n">dates</span><span class="p">[</span><span class="n">i</span><span class="p">]]);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>出力結果</h2>
+
+<blockquote><p>laterDate: 2013-04-14 00:00:00 +0000</p></blockquote>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-04-14T11:15:00+09:00" pubdate data-updated="true">Apr 14<span>th</span>, 2013</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>
+
+
+</div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -312,106 +411,6 @@
 </div>
 </article>
 
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/04/12/objc-dictionary-remove-all-objects/">
-		
-			辞書に格納されている全てのオブジェクトを削除する</a>
-	</h2>
-	<div class="entry-content">
-		<p>辞書に格納されている全てのオブジェクトを削除するには、「removeAllObjects」メソッドを使用します。以下にサンプルを作成しました。</p>
-
-<h2>サンプルダウンロード</h2>
-
-<ul>
-<li><a href="https://github.com/masakihirokawa/objc-dictionary-remove-all-objects">https://github.com/masakihirokawa/objc-dictionary-remove-all-objects</a></li>
-</ul>
-
-
-<h2>ソースコード</h2>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">main</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="c1">//辞書を生成する</span>
-</span><span class='line'>  <span class="n">NSMutableDictionary</span> <span class="o">*</span><span class="n">dic</span><span class="p">;</span>
-</span><span class='line'>  <span class="n">dic</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSMutableDictionary</span> <span class="nl">dictionaryWithObjectsAndKeys:</span>
-</span><span class='line'>         <span class="s">@&quot;Apple&quot;</span><span class="p">,</span> <span class="s">@&quot;Key1&quot;</span><span class="p">,</span>
-</span><span class='line'>         <span class="s">@&quot;Banana&quot;</span><span class="p">,</span> <span class="s">@&quot;Key2&quot;</span><span class="p">,</span>
-</span><span class='line'>         <span class="s">@&quot;Orange&quot;</span><span class="p">,</span> <span class="s">@&quot;Key3&quot;</span><span class="p">,</span>
-</span><span class='line'>         <span class="s">@&quot;Lemon&quot;</span><span class="p">,</span> <span class="s">@&quot;Key4&quot;</span><span class="p">,</span>
-</span><span class='line'>         <span class="s">@&quot;Greaps&quot;</span><span class="p">,</span> <span class="s">@&quot;Key5&quot;</span><span class="p">,</span>
-</span><span class='line'>         <span class="nb">nil</span><span class="p">];</span>
-</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;%@&quot;</span><span class="p">,</span> <span class="n">dic</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="c1">//オブジェクトを全て削除する</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">dic</span> <span class="n">removeAllObjects</span><span class="p">];</span>
-</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;%@&quot;</span><span class="p">,</span> <span class="n">dic</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>出力結果</h2>
-
-<blockquote><p>dic: {<br />
-&#8220;@Key1&#8221; = Apple;<br />
-&#8220;@Key2&#8221; = Banana;<br />
-&#8220;@Key3&#8221; = Orange;<br />
-&#8220;@Key4&#8221; = Lemon;<br />
-&#8220;@Key5&#8221; = Greaps;<br />
-}<br />
-<br />
-dic : {<br />
-}</p></blockquote>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-04-12T13:05:00+09:00" pubdate data-updated="true">Apr 12<span>th</span>, 2013</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>
-
-
-</div>
-	
-</div>
-</article>
-
 <nav id="pagenavi">
     
         <a href="/blog/page/15/" class="prev">Prev</a>
@@ -449,7 +448,7 @@ dic : {<br />
   <div id="category" class="information-box">
 <section>
   <h1>Categories</h1>
-  <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (39)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (139)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (33)</a></li></ul>
+  <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (39)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (140)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (33)</a></li></ul>
 </section>
 
 
@@ -458,6 +457,10 @@ dic : {<br />
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/06/04/objc-animations-repeat/">アニメーションをリピート再生する方法</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2013/05/31/download-objc-classes-frame-by-frame-animation2/">パラパラアニメを実行する「FrameByFrameAnimation」クラス改訂版</a>
@@ -493,10 +496,6 @@ dic : {<br />
     
       <li class="post">
         <a href="/blog/2013/05/24/objc-resize-image/">UIImageをリサイズする方法</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/05/23/download-xcode-objc-camera2/">カメラアプリのサンプル改訂版を公開しました</a>
       </li>
     
   </ul>
