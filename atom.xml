@@ -4,7 +4,7 @@
   <title><![CDATA[Dolice Lab]]></title>
   <link href="http://lab.dolice.net/atom.xml" rel="self"/>
   <link href="http://lab.dolice.net/"/>
-  <updated>2013-06-06T00:53:51+09:00</updated>
+  <updated>2013-06-07T00:02:46+09:00</updated>
   <id>http://lab.dolice.net/</id>
   <author>
     <name><![CDATA[Masaki Hirokawa]]></name>
@@ -12,6 +12,251 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[シンプルな記述でタイマーイベントを呼び出す「DCTimer」クラス]]></title>
+    <link href="http://lab.dolice.net/blog/2013/06/06/download-objc-classes-dc-timer/"/>
+    <updated>2013-06-06T23:50:00+09:00</updated>
+    <id>http://lab.dolice.net/blog/2013/06/06/download-objc-classes-dc-timer</id>
+    <content type="html"><![CDATA[<p>2種類のタイマーイベントをシングルトンメソッドで呼び出す「DCTimer」クラスを作成しました。userInfo経由でパラメータを渡して実行する事も可能です。</p>
+
+<p>下記よりサンプルとソースコードのダウンロードが行えます。</p>
+
+<h2>ダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-classes-dc-timer">https://github.com/masakihirokawa/objc-classes-dc-timer</a></li>
+</ul>
+
+
+<h2>使用方法</h2>
+
+<h3>一定間隔で実行するタイマーイベント呼び出し</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//1秒間隔で timerEventメソッドを呼び出し</span>
+</span><span class='line'><span class="p">[</span><span class="n">DCTimer</span> <span class="nl">setTimer:</span><span class="mf">1.0f</span> <span class="nl">delegate:</span><span class="n">self</span> <span class="nl">selector:</span><span class="k">@selector</span><span class="p">(</span><span class="nl">timerEvent:</span><span class="p">)</span> <span class="nl">userInfo:</span><span class="nb">nil</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>指定した時間後に実行するタイマーイベント呼び出し</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//2秒後に delayTimerEventメソッドを呼び出し</span>
+</span><span class='line'><span class="p">[</span><span class="n">DCTimer</span> <span class="nl">setDelayTimer:</span><span class="mf">2.0f</span> <span class="nl">delegate:</span><span class="n">self</span> <span class="nl">selector:</span><span class="k">@selector</span><span class="p">(</span><span class="nl">delayTimerEvent:</span><span class="p">)</span> <span class="nl">userInfo:</span><span class="nb">nil</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>サンプルソースコード</h2>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//ラベル初期化</span>
+</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">timerLabel</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">delayTimerLabel</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//タイマー呼び出し</span>
+</span><span class='line'>    <span class="n">NSDictionary</span> <span class="o">*</span><span class="n">timerUserInfo</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSDictionary</span> <span class="nl">dictionaryWithObject:</span><span class="s">@&quot;called telayTimer method&quot;</span> <span class="nl">forKey:</span><span class="s">@&quot;message&quot;</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">DCTimer</span> <span class="nl">setTimer:</span><span class="mf">1.0f</span>
+</span><span class='line'>             <span class="nl">delegate:</span><span class="n">self</span>
+</span><span class='line'>             <span class="nl">selector:</span><span class="k">@selector</span><span class="p">(</span><span class="nl">timerEvent:</span><span class="p">)</span>
+</span><span class='line'>             <span class="nl">userInfo:</span><span class="n">timerUserInfo</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//遅延実行タイマー呼び出し</span>
+</span><span class='line'>    <span class="n">NSDictionary</span> <span class="o">*</span><span class="n">delayTimerUserInfo</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSDictionary</span> <span class="nl">dictionaryWithObject:</span><span class="s">@&quot;called setDelayTimer method&quot;</span> <span class="nl">forKey:</span><span class="s">@&quot;message&quot;</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">DCTimer</span> <span class="nl">setDelayTimer:</span><span class="mf">2.0f</span>
+</span><span class='line'>                  <span class="nl">delegate:</span><span class="n">self</span>
+</span><span class='line'>                  <span class="nl">selector:</span><span class="k">@selector</span><span class="p">(</span><span class="nl">delayTimerEvent:</span><span class="p">)</span>
+</span><span class='line'>                  <span class="nl">userInfo:</span><span class="n">delayTimerUserInfo</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//一定間隔に実行されるタイマーイベント</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">timerEvent:</span><span class="p">(</span><span class="n">NSTimer</span> <span class="o">*</span><span class="p">)</span><span class="nv">timer</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">_timerCount</span><span class="o">++</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">NSString</span> <span class="o">*</span><span class="n">message</span> <span class="o">=</span> <span class="p">[(</span><span class="n">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="n">timer</span><span class="p">.</span><span class="n">userInfo</span> <span class="nl">objectForKey:</span><span class="s">@&quot;message&quot;</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">timerLabel</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">@&quot;%@: %d&quot;</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">_timerCount</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//一定時間後に実行されるタイマーイベント</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">delayTimerEvent:</span><span class="p">(</span><span class="n">NSTimer</span> <span class="o">*</span><span class="p">)</span><span class="nv">timer</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">NSString</span> <span class="o">*</span><span class="n">message</span> <span class="o">=</span> <span class="p">[(</span><span class="n">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="n">timer</span><span class="p">.</span><span class="n">userInfo</span> <span class="nl">objectForKey:</span><span class="s">@&quot;message&quot;</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">delayTimerLabel</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">message</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//タイマーの停止</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">stopTimer:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="p">[[</span><span class="n">DCTimer</span> <span class="n">timer</span><span class="p">]</span> <span class="n">invalidate</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>ソースコード</h2>
+
+<h3>DCTimer.h</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;Foundation/Foundation.h&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">DCTimer</span> : <span class="nc">NSTimer</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setTimer:</span><span class="p">(</span><span class="n">CGFloat</span><span class="p">)</span><span class="nv">timeInterval</span> <span class="nf">delegate:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">delegate</span> <span class="nf">selector:</span><span class="p">(</span><span class="kt">SEL</span><span class="p">)</span><span class="nv">selector</span> <span class="nf">userInfo:</span><span class="p">(</span><span class="n">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nv">userInfo</span><span class="p">;</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">clearTimer</span><span class="p">;</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setDelayTimer:</span><span class="p">(</span><span class="n">CGFloat</span><span class="p">)</span><span class="nv">timeInterval</span> <span class="nf">delegate:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">delegate</span> <span class="nf">selector:</span><span class="p">(</span><span class="kt">SEL</span><span class="p">)</span><span class="nv">selector</span> <span class="nf">userInfo:</span><span class="p">(</span><span class="n">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nv">userInfo</span><span class="p">;</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSTimer</span> <span class="o">*</span><span class="p">)</span><span class="nf">timer</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>DCTimer.m</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;DCTimer.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">DCTimer</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">static</span> <span class="n">NSTimer</span> <span class="o">*</span><span class="n">timer</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//タイマー定義</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setTimer:</span><span class="p">(</span><span class="n">CGFloat</span><span class="p">)</span><span class="nv">timeInterval</span> <span class="nf">delegate:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">delegate</span> <span class="nf">selector:</span><span class="p">(</span><span class="kt">SEL</span><span class="p">)</span><span class="nv">selector</span> <span class="nf">userInfo:</span><span class="p">(</span><span class="n">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nv">userInfo</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">timer</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSTimer</span> <span class="nl">scheduledTimerWithTimeInterval:</span><span class="n">timeInterval</span>
+</span><span class='line'>                                             <span class="nl">target:</span><span class="n">delegate</span>
+</span><span class='line'>                                           <span class="nl">selector:</span><span class="n">selector</span>
+</span><span class='line'>                                           <span class="nl">userInfo:</span><span class="n">userInfo</span>
+</span><span class='line'>                                            <span class="nl">repeats:</span><span class="n">YES</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//タイマー削除</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">clearTimer</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">timer</span> <span class="o">!=</span> <span class="nb">nil</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">timer</span> <span class="n">invalidate</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//遅延実行タイマー定義</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setDelayTimer:</span><span class="p">(</span><span class="n">CGFloat</span><span class="p">)</span><span class="nv">timeInterval</span> <span class="nf">delegate:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">delegate</span> <span class="nf">selector:</span><span class="p">(</span><span class="kt">SEL</span><span class="p">)</span><span class="nv">selector</span> <span class="nf">userInfo:</span><span class="p">(</span><span class="n">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nv">userInfo</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">NSTimer</span> <span class="nl">scheduledTimerWithTimeInterval:</span><span class="n">timeInterval</span>
+</span><span class='line'>                                     <span class="nl">target:</span><span class="n">delegate</span>
+</span><span class='line'>                                   <span class="nl">selector:</span><span class="n">selector</span>
+</span><span class='line'>                                   <span class="nl">userInfo:</span><span class="n">userInfo</span>
+</span><span class='line'>                                    <span class="nl">repeats:</span><span class="n">NO</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//タイマー取得</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSTimer</span> <span class="o">*</span><span class="p">)</span><span class="nf">timer</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">(</span><span class="n">timer</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[数値の桁数を取得する方法]]></title>
@@ -4504,314 +4749,6 @@
 </span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span> <span class="nf">isIpadRetina</span>
 </span><span class='line'><span class="p">{</span>
 </span><span class='line'>  <span class="k">return</span> <span class="p">([[</span><span class="n">Device</span> <span class="n">iOSDevice</span><span class="p">]</span> <span class="nl">isEqualToString:</span><span class="s">@&quot;iPad Retina&quot;</span><span class="p">]);</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[5種類のアニメーションを実行する「DCAnimation」クラス]]></title>
-    <link href="http://lab.dolice.net/blog/2013/05/14/download-objc-classes-dc-animation/"/>
-    <updated>2013-05-14T23:12:00+09:00</updated>
-    <id>http://lab.dolice.net/blog/2013/05/14/download-objc-classes-dc-animation</id>
-    <content type="html"><![CDATA[<p>5種類のアニメーションをシンプルな記述で実行する「DCAnimation」クラスを作成しました。主な機能は以下の通りです。</p>
-
-<h2>主な機能</h2>
-
-<ol>
-<li>フェードイン・フェードアウトアニメーション</li>
-<li>スライドインアニメーション</li>
-<li>回転アニメーション</li>
-<li>拡大縮小アニメーション</li>
-<li>平行移動アニメーション</li>
-</ol>
-
-
-<h2>ダウンロード</h2>
-
-<ul>
-<li><a href="https://github.com/masakihirokawa/objc-classes-dc-animation">https://github.com/masakihirokawa/objc-classes-dc-animation</a></li>
-</ul>
-
-
-<h2>サンプルソースコード</h2>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;ViewController.h&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> <span class="p">()</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@property</span> <span class="kt">BOOL</span> <span class="n">isAnimationTargetFadeIn</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@implementation</span> <span class="nc">ViewController</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//フェードアニメーション実行</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">startFadeAnimation:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span> <span class="p">{</span>
-</span><span class='line'>  <span class="c1">//アニメーション秒数とフェードモードを指定</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">DCAnimation</span> <span class="nl">fade:</span><span class="n">self</span><span class="p">.</span><span class="n">animationTargetImage</span>
-</span><span class='line'>           <span class="nl">duration:</span><span class="mf">0.5f</span>
-</span><span class='line'>           <span class="nl">isFadeIn:</span><span class="n">_isAnimationTargetFadeIn</span><span class="p">];</span>
-</span><span class='line'>  <span class="c1">//フェードインフラグ切り替え</span>
-</span><span class='line'>  <span class="n">_isAnimationTargetFadeIn</span> <span class="o">=</span> <span class="o">!</span><span class="n">_isAnimationTargetFadeIn</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//スライドアニメーション実行</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">startSlideAnimation:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span> <span class="p">{</span>
-</span><span class='line'>  <span class="c1">//アニメーション秒数と目標座標・サイズを指定</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">DCAnimation</span> <span class="nl">slide:</span><span class="n">self</span><span class="p">.</span><span class="n">animationTargetImage</span>
-</span><span class='line'>            <span class="nl">duration:</span><span class="mf">0.5f</span>
-</span><span class='line'>             <span class="nl">aimRect:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">57</span><span class="p">,</span> <span class="mi">57</span><span class="p">)];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//回転アニメーション実行</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">startRotateAnimation:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span> <span class="p">{</span>
-</span><span class='line'>  <span class="c1">//アニメーション秒数と目標回転度数を指定</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">DCAnimation</span> <span class="nl">rotate:</span><span class="n">self</span><span class="p">.</span><span class="n">animationTargetImage</span>
-</span><span class='line'>             <span class="nl">duration:</span><span class="mf">0.5f</span>
-</span><span class='line'>             <span class="nl">aimAngle:</span><span class="mi">90</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">startScaleAnimation:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span> <span class="p">{</span>
-</span><span class='line'>  <span class="c1">//アニメーション秒数と目標スケール値を指定</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">DCAnimation</span> <span class="nl">scale:</span><span class="n">self</span><span class="p">.</span><span class="n">animationTargetImage</span>
-</span><span class='line'>            <span class="nl">duration:</span><span class="mf">0.5f</span>
-</span><span class='line'>            <span class="nl">aimScale:</span><span class="mf">2.0f</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">startTranslateAnimation:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span> <span class="p">{</span>
-</span><span class='line'>  <span class="c1">//アニメーション秒数とXYの移動量を指定</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">DCAnimation</span> <span class="nl">translate:</span><span class="n">self</span><span class="p">.</span><span class="n">animationTargetImage</span>
-</span><span class='line'>                <span class="nl">duration:</span><span class="mf">0.5f</span>
-</span><span class='line'>             <span class="nl">movePosition:</span><span class="mi">100</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>ソースコード</h2>
-
-<h3>DCAnimation.h</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;UIKit/UIKit.h&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@interface</span> <span class="nc">DCAnimation</span> : <span class="nc">UIView</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">fade:</span><span class="p">(</span><span class="n">UIImageView</span> <span class="o">*</span><span class="p">)</span><span class="nv">imageView</span> <span class="nf">duration:</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="nv">duration</span> <span class="nf">isFadeIn:</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nv">isFadeIn</span><span class="p">;</span>
-</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">slide:</span><span class="p">(</span><span class="n">UIImageView</span> <span class="o">*</span><span class="p">)</span><span class="nv">imageView</span> <span class="nf">duration:</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="nv">duration</span> <span class="nf">aimRect:</span><span class="p">(</span><span class="n">CGRect</span><span class="p">)</span><span class="nv">rect</span><span class="p">;</span>
-</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">rotate:</span><span class="p">(</span><span class="n">UIImageView</span> <span class="o">*</span><span class="p">)</span><span class="nv">imageView</span> <span class="nf">duration:</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="nv">duration</span> <span class="nf">aimAngle:</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="nv">angle</span><span class="p">;</span>
-</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">scale:</span><span class="p">(</span><span class="n">UIImageView</span> <span class="o">*</span><span class="p">)</span><span class="nv">imageView</span> <span class="nf">duration:</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="nv">duration</span> <span class="nf">aimScale:</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="nv">scale</span><span class="p">;</span>
-</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">translate:</span><span class="p">(</span><span class="n">UIImageView</span> <span class="o">*</span><span class="p">)</span><span class="nv">imageView</span> <span class="nf">duration:</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="nv">duration</span> <span class="nf">movePosition:</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="nv">position</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>DCAnimation.m</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;DCAnimation.h&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@implementation</span> <span class="nc">DCAnimation</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//フェードアニメーション</span>
-</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">fade:</span><span class="p">(</span><span class="n">UIImageView</span> <span class="o">*</span><span class="p">)</span><span class="nv">imageView</span>
-</span><span class='line'>    <span class="nf">duration:</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="nv">duration</span>
-</span><span class='line'>    <span class="nf">isFadeIn:</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nv">isFadeIn</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">UIView</span> <span class="nl">beginAnimations:</span><span class="nb">nil</span> <span class="nl">context:</span><span class="nb">NULL</span><span class="p">];</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">UIView</span> <span class="nl">setAnimationDuration:</span><span class="n">duration</span><span class="p">];</span>
-</span><span class='line'>  <span class="n">imageView</span><span class="p">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="n">isFadeIn</span> <span class="o">?</span> <span class="mi">0</span> <span class="o">:</span> <span class="mf">1.0f</span><span class="p">;</span>
-</span><span class='line'>  <span class="n">imageView</span><span class="p">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="n">isFadeIn</span> <span class="o">?</span> <span class="mf">1.0f</span> <span class="o">:</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">UIView</span> <span class="n">commitAnimations</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//スライドアニメーション</span>
-</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">slide:</span><span class="p">(</span><span class="n">UIImageView</span> <span class="o">*</span><span class="p">)</span><span class="nv">imageView</span>
-</span><span class='line'>     <span class="nf">duration:</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="nv">duration</span>
-</span><span class='line'>      <span class="nf">aimRect:</span><span class="p">(</span><span class="n">CGRect</span><span class="p">)</span><span class="nv">rect</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">UIView</span> <span class="nl">beginAnimations:</span><span class="nb">nil</span> <span class="nl">context:</span><span class="nb">NULL</span><span class="p">];</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">UIView</span> <span class="nl">setAnimationDuration:</span><span class="n">duration</span><span class="p">];</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">imageView</span> <span class="nl">setFrame:</span><span class="n">rect</span><span class="p">];</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">UIView</span> <span class="n">commitAnimations</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//回転アニメーション</span>
-</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">rotate:</span><span class="p">(</span><span class="n">UIImageView</span> <span class="o">*</span><span class="p">)</span><span class="nv">imageView</span>
-</span><span class='line'>      <span class="nf">duration:</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="nv">duration</span>
-</span><span class='line'>      <span class="nf">aimAngle:</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="nv">angle</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">UIView</span> <span class="nl">beginAnimations:</span><span class="nb">nil</span> <span class="nl">context:</span><span class="nb">NULL</span><span class="p">];</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">UIView</span> <span class="nl">setAnimationDuration:</span><span class="n">duration</span><span class="p">];</span>
-</span><span class='line'>  <span class="n">CGAffineTransform</span> <span class="n">rotate</span> <span class="o">=</span> <span class="n">CGAffineTransformMakeRotation</span><span class="p">(</span><span class="n">angle</span> <span class="o">*</span> <span class="p">(</span><span class="n">M_PI</span> <span class="o">/</span> <span class="mf">180.0f</span><span class="p">));</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">imageView</span> <span class="nl">setTransform:</span><span class="n">rotate</span><span class="p">];</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">UIView</span> <span class="n">commitAnimations</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//拡縮アニメーション</span>
-</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">scale:</span><span class="p">(</span><span class="n">UIImageView</span> <span class="o">*</span><span class="p">)</span><span class="nv">imageView</span>
-</span><span class='line'>      <span class="nf">duration:</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="nv">duration</span>
-</span><span class='line'>      <span class="nf">aimScale:</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="nv">scale</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">UIView</span> <span class="nl">beginAnimations:</span><span class="nb">nil</span> <span class="nl">context:</span><span class="nb">NULL</span><span class="p">];</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">UIView</span> <span class="nl">setAnimationDuration:</span><span class="n">duration</span><span class="p">];</span>
-</span><span class='line'>  <span class="n">CGAffineTransform</span> <span class="n">aimScale</span> <span class="o">=</span> <span class="n">CGAffineTransformMakeScale</span><span class="p">(</span><span class="n">scale</span><span class="p">,</span> <span class="n">scale</span><span class="p">);</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">imageView</span> <span class="nl">setTransform:</span><span class="n">aimScale</span><span class="p">];</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">UIView</span> <span class="n">commitAnimations</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//XY方向に平行移動</span>
-</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">translate:</span><span class="p">(</span><span class="n">UIImageView</span> <span class="o">*</span><span class="p">)</span><span class="nv">imageView</span>
-</span><span class='line'>         <span class="nf">duration:</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="nv">duration</span>
-</span><span class='line'>      <span class="nf">movePosition:</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="nv">position</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">UIView</span> <span class="nl">beginAnimations:</span><span class="nb">nil</span> <span class="nl">context:</span><span class="nb">NULL</span><span class="p">];</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">UIView</span> <span class="nl">setAnimationDuration:</span><span class="n">duration</span><span class="p">];</span>
-</span><span class='line'>  <span class="n">CGAffineTransform</span> <span class="n">translate</span> <span class="o">=</span> <span class="n">CGAffineTransformMakeTranslation</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="n">position</span><span class="p">);</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">imageView</span> <span class="nl">setTransform:</span><span class="n">translate</span><span class="p">];</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">UIView</span> <span class="n">commitAnimations</span><span class="p">];</span>
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'>
 </span><span class='line'><span class="k">@end</span>
