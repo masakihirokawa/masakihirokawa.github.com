@@ -4,7 +4,7 @@
   <title><![CDATA[Dolice Lab]]></title>
   <link href="http://lab.dolice.net/atom.xml" rel="self"/>
   <link href="http://lab.dolice.net/"/>
-  <updated>2013-06-08T12:43:50+09:00</updated>
+  <updated>2013-06-09T11:22:48+09:00</updated>
   <id>http://lab.dolice.net/</id>
   <author>
     <name><![CDATA[Masaki Hirokawa]]></name>
@@ -12,6 +12,161 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[上下左右のフリックを検知する]]></title>
+    <link href="http://lab.dolice.net/blog/2013/06/09/objc-flick/"/>
+    <updated>2013-06-09T11:21:00+09:00</updated>
+    <id>http://lab.dolice.net/blog/2013/06/09/objc-flick</id>
+    <content type="html"><![CDATA[<p>上下左右のフリックを検知し、それぞれの方向で処理を分けるサンプルを以下に作成しました。</p>
+
+<p>下記よりサンプルのダウンロードが行えます。</p>
+
+<h2>ダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-flick">https://github.com/masakihirokawa/objc-flick</a></li>
+</ul>
+
+
+<h2>ソースコード</h2>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;ViewController.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> <span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@property</span> <span class="n">NSTimeInterval</span> <span class="n">timestampBegan</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="n">CGPoint</span> <span class="n">pointBegan</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">ViewController</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">touchesBegan:</span><span class="p">(</span><span class="n">NSSet</span> <span class="o">*</span><span class="p">)</span><span class="nv">touches</span> <span class="nf">withEvent:</span><span class="p">(</span><span class="n">UIEvent</span> <span class="o">*</span><span class="p">)</span><span class="nv">event</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">//タッチした時間と位置を保存</span>
+</span><span class='line'>    <span class="n">UITouch</span> <span class="o">*</span><span class="n">touch</span> <span class="o">=</span> <span class="p">[</span><span class="n">touches</span> <span class="n">anyObject</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">_timestampBegan</span> <span class="o">=</span> <span class="n">event</span><span class="p">.</span><span class="n">timestamp</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">_pointBegan</span> <span class="o">=</span> <span class="p">[</span><span class="n">touch</span> <span class="nl">locationInView:</span><span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">touchesEnded:</span><span class="p">(</span><span class="n">NSSet</span> <span class="o">*</span><span class="p">)</span><span class="nv">touches</span> <span class="nf">withEvent:</span><span class="p">(</span><span class="n">UIEvent</span> <span class="o">*</span><span class="p">)</span><span class="nv">event</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">static</span> <span class="k">const</span> <span class="n">NSTimeInterval</span> <span class="n">kFlickJudgeTimeInterval</span> <span class="o">=</span> <span class="mf">0.3</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">static</span> <span class="k">const</span> <span class="n">NSInteger</span> <span class="n">kFlickMinimumDistance</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">UITouch</span> <span class="o">*</span><span class="n">touchEnded</span> <span class="o">=</span> <span class="p">[</span><span class="n">touches</span> <span class="n">anyObject</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">CGPoint</span> <span class="n">pointEnded</span> <span class="o">=</span> <span class="p">[</span><span class="n">touchEnded</span> <span class="nl">locationInView:</span><span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">NSInteger</span> <span class="n">distanceHorizontal</span> <span class="o">=</span> <span class="n">ABS</span><span class="p">(</span><span class="n">pointEnded</span><span class="p">.</span><span class="n">x</span> <span class="o">-</span> <span class="n">_pointBegan</span><span class="p">.</span><span class="n">x</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">NSInteger</span> <span class="n">distanceVertical</span> <span class="o">=</span> <span class="n">ABS</span><span class="p">(</span><span class="n">pointEnded</span><span class="p">.</span><span class="n">y</span> <span class="o">-</span> <span class="n">_pointBegan</span><span class="p">.</span><span class="n">y</span><span class="p">);</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">kFlickMinimumDistance</span> <span class="o">&gt;</span> <span class="n">distanceHorizontal</span> <span class="o">&amp;&amp;</span> <span class="n">kFlickMinimumDistance</span> <span class="o">&gt;</span> <span class="n">distanceVertical</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="c1">//縦にも横にもあまり移動していなければreturn</span>
+</span><span class='line'>        <span class="k">return</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="n">NSTimeInterval</span> <span class="n">timeBeganToEnded</span> <span class="o">=</span> <span class="n">event</span><span class="p">.</span><span class="n">timestamp</span> <span class="o">-</span> <span class="n">_timestampBegan</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">kFlickJudgeTimeInterval</span> <span class="o">&gt;</span> <span class="n">timeBeganToEnded</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="c1">//フリックした場合の処理</span>
+</span><span class='line'>        <span class="n">NSString</span> <span class="o">*</span><span class="n">message</span><span class="p">;</span>
+</span><span class='line'>        <span class="c1">//どの方向にフリックしたかを判定</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">distanceHorizontal</span> <span class="o">&gt;</span> <span class="n">distanceVertical</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="k">if</span> <span class="p">(</span><span class="n">pointEnded</span><span class="p">.</span><span class="n">x</span> <span class="o">&gt;</span> <span class="n">_pointBegan</span><span class="p">.</span><span class="n">x</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                <span class="n">message</span> <span class="o">=</span> <span class="s">@&quot;右フリック&quot;</span><span class="p">;</span>
+</span><span class='line'>            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>                <span class="n">message</span> <span class="o">=</span> <span class="s">@&quot;左フリック&quot;</span><span class="p">;</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>            <span class="k">if</span> <span class="p">(</span><span class="n">pointEnded</span><span class="p">.</span><span class="n">y</span> <span class="o">&gt;</span> <span class="n">_pointBegan</span><span class="p">.</span><span class="n">y</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                <span class="n">message</span> <span class="o">=</span> <span class="s">@&quot;下フリック&quot;</span><span class="p">;</span>
+</span><span class='line'>            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>                <span class="n">message</span> <span class="o">=</span> <span class="s">@&quot;上フリック&quot;</span><span class="p">;</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="n">UIAlertView</span> <span class="o">*</span><span class="n">alert</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIAlertView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithTitle:</span><span class="nb">nil</span>
+</span><span class='line'>                                                        <span class="nl">message:</span><span class="n">message</span>
+</span><span class='line'>                                                       <span class="nl">delegate:</span><span class="nb">nil</span>
+</span><span class='line'>                                              <span class="nl">cancelButtonTitle:</span><span class="nb">nil</span>
+</span><span class='line'>                                              <span class="nl">otherButtonTitles:</span><span class="s">@&quot;OK&quot;</span><span class="p">,</span> <span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">alert</span> <span class="n">show</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[ダブルタップを検知する方法]]></title>
@@ -4569,124 +4724,6 @@
 </span><span class='line'>    <span class="n">NSString</span> <span class="o">*</span><span class="n">osversion</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIDevice</span> <span class="n">currentDevice</span><span class="p">].</span><span class="n">systemVersion</span><span class="p">;</span>
 </span><span class='line'>    <span class="n">NSArray</span> <span class="o">*</span><span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="n">osversion</span> <span class="nl">componentsSeparatedByString:</span><span class="s">@&quot;.&quot;</span><span class="p">];</span>
 </span><span class='line'>    <span class="k">return</span> <span class="p">([(</span><span class="n">NSString</span><span class="o">*</span><span class="p">)[</span><span class="n">a</span> <span class="nl">objectAtIndex:</span><span class="mi">0</span><span class="p">]</span> <span class="n">intValue</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">6</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[シンプルなカメラアプリを作成しました]]></title>
-    <link href="http://lab.dolice.net/blog/2013/05/17/download-xcode-objc-camera/"/>
-    <updated>2013-05-17T22:11:00+09:00</updated>
-    <id>http://lab.dolice.net/blog/2013/05/17/download-xcode-objc-camera</id>
-    <content type="html"><![CDATA[<p>シンプルなカメラアプリを作成しました。カメラを開く機能と、フォトライブラリの閲覧機能が備わっています。</p>
-
-<p>下記よりサンプルのダウンロードが行えます。</p>
-
-<h2>サンプルダウンロード</h2>
-
-<ul>
-<li><a href="https://github.com/masakihirokawa/objc-xcode-camera">https://github.com/masakihirokawa/objc-xcode-camera</a></li>
-</ul>
-
-
-<h2>ソースコード</h2>
-
-<h3>ViewController.h</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//デリゲート指定</span>
-</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> : <span class="nc">UIViewController</span> <span class="o">&lt;</span><span class="n">UIImagePickerControllerDelegate</span><span class="p">,</span> <span class="n">UINavigationControllerDelegate</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//カメラを開く</span>
-</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="n">pictureFromCamera</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//フォトライブラリを開く</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">pictureFromRoll</span><span class="p">;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>ViewController.m</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//カメラを開く</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">pictureFromCamera</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="k">if</span> <span class="p">([</span><span class="n">UIImagePickerController</span> <span class="nl">isSourceTypeAvailable:</span><span class="n">UIImagePickerControllerSourceTypeCamera</span><span class="p">])</span> <span class="p">{</span>
-</span><span class='line'>    <span class="n">UIImagePickerController</span> <span class="o">*</span><span class="n">imagePickerController</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIImagePickerController</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'>    <span class="n">imagePickerController</span><span class="p">.</span><span class="n">delegate</span> <span class="o">=</span> <span class="n">self</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">imagePickerController</span><span class="p">.</span><span class="n">sourceType</span> <span class="o">=</span> <span class="n">UIImagePickerControllerSourceTypeCamera</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="nl">presentViewController:</span><span class="n">imagePickerController</span>  <span class="nl">animated:</span><span class="n">YES</span> <span class="nl">completion:</span> <span class="nb">nil</span><span class="p">];</span>
-</span><span class='line'>  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-</span><span class='line'>    <span class="n">UIAlertView</span> <span class="o">*</span><span class="n">newView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIAlertView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithTitle:</span><span class="nb">nil</span>
-</span><span class='line'>                                                      <span class="nl">message:</span><span class="s">@&quot;Camera not alaivable&quot;</span>
-</span><span class='line'>                                                     <span class="nl">delegate:</span><span class="nb">nil</span>
-</span><span class='line'>                                            <span class="nl">cancelButtonTitle:</span><span class="s">@&quot;OK&quot;</span>
-</span><span class='line'>                                            <span class="nl">otherButtonTitles:</span><span class="nb">nil</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">newView</span> <span class="n">show</span><span class="p">];</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//フォトライブラリを開く</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">pictureFromRoll</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="k">if</span> <span class="p">([</span><span class="n">UIImagePickerController</span> <span class="nl">isSourceTypeAvailable:</span><span class="n">UIImagePickerControllerSourceTypePhotoLibrary</span><span class="p">])</span> <span class="p">{</span>
-</span><span class='line'>    <span class="n">UIImagePickerController</span> <span class="o">*</span><span class="n">imagePickerController</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIImagePickerController</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'>    <span class="n">imagePickerController</span><span class="p">.</span><span class="n">delegate</span> <span class="o">=</span> <span class="n">self</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">imagePickerController</span><span class="p">.</span><span class="n">sourceType</span> <span class="o">=</span> <span class="n">UIImagePickerControllerSourceTypePhotoLibrary</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="nl">presentViewController:</span><span class="n">imagePickerController</span>  <span class="nl">animated:</span><span class="n">YES</span> <span class="nl">completion:</span> <span class="nb">nil</span><span class="p">];</span>
-</span><span class='line'>  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-</span><span class='line'>    <span class="n">UIAlertView</span> <span class="o">*</span><span class="n">newView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIAlertView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithTitle:</span><span class="nb">nil</span>
-</span><span class='line'>                                                      <span class="nl">message:</span><span class="s">@&quot;Photo Library not alaivable&quot;</span>
-</span><span class='line'>                                                     <span class="nl">delegate:</span><span class="nb">nil</span>
-</span><span class='line'>                                            <span class="nl">cancelButtonTitle:</span><span class="s">@&quot;OK&quot;</span>
-</span><span class='line'>                                            <span class="nl">otherButtonTitles:</span><span class="nb">nil</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">newView</span> <span class="n">show</span><span class="p">];</span>
-</span><span class='line'>  <span class="p">}</span>
 </span><span class='line'><span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
