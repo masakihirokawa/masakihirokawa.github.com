@@ -6,11 +6,11 @@
 	<title>Dolice Lab</title>
 	
 	
-	<meta name="description" content="RSSリーダーのテンプレートを作成しました。ここでは Appleのニュースフィードを指定しています。画面を下方向にフリックして更新すると記事リストが表示されます。 サンプルダウンロード https://github.com/masakihirokawa/xcode-news-reader &hellip;">
+	<meta name="description" content="辞書から複数のオブジェクトを削除するには、「removeObjectsForKeys」メソッドを使用します。以下にサンプルを作成しました。 サンプルダウンロード https://github.com/masakihirokawa/objc-remove-objects-for-key &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	<meta property="og:title" content="Dolice Lab" />
-<meta property="og:description" content="RSSリーダーのテンプレートを作成しました。ここでは Appleのニュースフィードを指定しています。画面を下方向にフリックして更新すると記事リストが表示されます。 サンプルダウンロード https://github.com/masakihirokawa/xcode-news-reader &hellip;" />
+<meta property="og:description" content="辞書から複数のオブジェクトを削除するには、「removeObjectsForKeys」メソッドを使用します。以下にサンプルを作成しました。 サンプルダウンロード https://github.com/masakihirokawa/objc-remove-objects-for-key &hellip;" />
 <meta property="og:url" content="http://lab.dolice.net/blog/page/20/" />
 <meta property="og:image" content="http://lab.dolice.net/images/facebook-icon.jpg" />
 <meta property="og:author" content="Masaki Hirokawa" />
@@ -84,6 +84,109 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/04/11/objc-remove-objects-for-key/">
+		
+			辞書から複数のオブジェクトを削除する</a>
+	</h2>
+	<div class="entry-content">
+		<p>辞書から複数のオブジェクトを削除するには、「removeObjectsForKeys」メソッドを使用します。以下にサンプルを作成しました。</p>
+
+<h2>サンプルダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-remove-objects-for-key">https://github.com/masakihirokawa/objc-remove-objects-for-key</a></li>
+</ul>
+
+
+<h2>ソースコード</h2>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">main</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="c1">//辞書を生成する</span>
+</span><span class='line'>  <span class="n">NSMutableDictionary</span> <span class="o">*</span><span class="n">dic</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">dic</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSMutableDictionary</span> <span class="nl">dictionaryWithObjectsAndKeys:</span>
+</span><span class='line'>         <span class="s">@&quot;Apple&quot;</span><span class="p">,</span> <span class="s">@&quot;@Key1&quot;</span><span class="p">,</span>
+</span><span class='line'>         <span class="s">@&quot;Banana&quot;</span><span class="p">,</span> <span class="s">@&quot;@Key2&quot;</span><span class="p">,</span>
+</span><span class='line'>         <span class="s">@&quot;Orange&quot;</span><span class="p">,</span> <span class="s">@&quot;@Key3&quot;</span><span class="p">,</span>
+</span><span class='line'>         <span class="s">@&quot;Lemon&quot;</span><span class="p">,</span> <span class="s">@&quot;@Key4&quot;</span><span class="p">,</span>
+</span><span class='line'>         <span class="s">@&quot;Greaps&quot;</span><span class="p">,</span> <span class="s">@&quot;@Key5&quot;</span><span class="p">,</span>
+</span><span class='line'>         <span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">//削除するための配列を生成する</span>
+</span><span class='line'>  <span class="n">NSArray</span> <span class="o">*</span><span class="n">keysArray</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">keysArray</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSArray</span> <span class="nl">arrayWithObjects:</span>
+</span><span class='line'>               <span class="s">@&quot;Key3&quot;</span><span class="p">,</span> <span class="s">@&quot;Key4&quot;</span><span class="p">,</span> <span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">dic</span> <span class="nl">removeObjectsForKeys:</span><span class="n">keysArray</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;dic: %@&quot;</span><span class="p">,</span> <span class="n">dic</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>出力結果</h2>
+
+<blockquote><p>dic: {<br />
+&#8220;@Key1&#8221; = Apple;<br />
+&#8220;@Key2&#8221; = Banana;<br />
+&#8220;@Key3&#8221; = Orange;<br />
+&#8220;@Key4&#8221; = Lemon;<br />
+&#8220;@Key5&#8221; = Greaps;<br />
+}</p></blockquote>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-04-11T11:55:00+09:00" pubdate data-updated="true">Apr 11<span>th</span>, 2013</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>
+
+
+</div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -597,94 +700,6 @@ Key5 = Greaps;</p></blockquote>
 </div>
 </article>
 
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/04/09/objc-add-entries-from-dictionary/">
-		
-			他の辞書からオブジェクトを一括して追加する</a>
-	</h2>
-	<div class="entry-content">
-		<p>他の辞書に登録されているオブジェクトを一括して変更可能な辞書に追加するには、「addEntriesFromDictionary」メソッドを使用します。</p>
-
-<h2>サンプルダウンロード</h2>
-
-<ul>
-<li><a href="https://github.com/masakihirokawa/objc-add-entries-from-dictionary">https://github.com/masakihirokawa/objc-add-entries-from-dictionary</a></li>
-</ul>
-
-
-<h2>ソースコード</h2>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">main</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="c1">//空の辞書を生成する</span>
-</span><span class='line'>  <span class="n">NSMutableDictionary</span> <span class="o">*</span><span class="n">dic</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSMutableDictionary</span> <span class="n">dictionary</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="c1">//別の辞書に登録されているオブジェクトを一括して追加する</span>
-</span><span class='line'>  <span class="n">NSDictionary</span> <span class="o">*</span><span class="n">otherDic</span><span class="p">;</span>
-</span><span class='line'>  <span class="n">otherDic</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSDictionary</span> <span class="nl">dictionaryWithObjectsAndKeys:</span>
-</span><span class='line'>              <span class="s">@&quot;Apple&quot;</span><span class="p">,</span> <span class="s">@&quot;Key1&quot;</span><span class="p">,</span>
-</span><span class='line'>              <span class="s">@&quot;Banana&quot;</span><span class="p">,</span> <span class="s">@&quot;Key2&quot;</span><span class="p">,</span>
-</span><span class='line'>              <span class="nb">nil</span><span class="p">];</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">dic</span> <span class="nl">addEntriesFromDictionary:</span><span class="n">otherDic</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;%@&quot;</span><span class="p">,</span> <span class="n">dic</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>出力結果</h2>
-
-<blockquote><p>Key1 = Apple;<br />
-Key2 = Banana;</p></blockquote>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-04-09T22:35:00+09:00" pubdate data-updated="true">Apr 9<span>th</span>, 2013</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>
-
-
-</div>
-	
-</div>
-</article>
-
 <nav id="pagenavi">
     
         <a href="/blog/page/19/" class="prev">Prev</a>
@@ -722,7 +737,7 @@ Key2 = Banana;</p></blockquote>
   <div id="category" class="information-box">
 <section>
   <h1>Categories</h1>
-  <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (42)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (146)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (35)</a></li></ul>
+  <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (42)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (147)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (35)</a></li></ul>
 </section>
 
 
@@ -731,6 +746,10 @@ Key2 = Banana;</p></blockquote>
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/06/11/objc-multi-touch/">マルチタッチの検知</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2013/06/09/objc-flick/">上下左右のフリックを検知する</a>
@@ -766,10 +785,6 @@ Key2 = Banana;</p></blockquote>
     
       <li class="post">
         <a href="/blog/2013/05/30/download-objc-classes-dc-animation2/">7種類のアニメーションを実行する「DCAnimation」クラス</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/05/29/objc-ui-button-basic/">UIButtonの基本的な使い方をまとめました</a>
       </li>
     
   </ul>
