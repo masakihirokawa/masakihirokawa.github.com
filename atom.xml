@@ -4,7 +4,7 @@
   <title><![CDATA[Dolice Lab]]></title>
   <link href="http://lab.dolice.net/atom.xml" rel="self"/>
   <link href="http://lab.dolice.net/"/>
-  <updated>2013-06-14T12:55:38+09:00</updated>
+  <updated>2013-06-16T10:33:42+09:00</updated>
   <id>http://lab.dolice.net/</id>
   <author>
     <name><![CDATA[Masaki Hirokawa]]></name>
@@ -12,6 +12,185 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[ピンチイン/ピンチアウトの検知]]></title>
+    <link href="http://lab.dolice.net/blog/2013/06/16/objc-pinch-in-pinch-out/"/>
+    <updated>2013-06-16T10:31:00+09:00</updated>
+    <id>http://lab.dolice.net/blog/2013/06/16/objc-pinch-in-pinch-out</id>
+    <content type="html"><![CDATA[<p>2本指での画面ピンチイン/ピンチアウトで画像を拡大縮小するサンプルを以下に作成しました。</p>
+
+<p>下記よりサンプルのダウンロードが行えます。</p>
+
+<h2>ダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-pinch-in-pinch-out">https://github.com/masakihirokawa/objc-pinch-in-pinch-out</a></li>
+</ul>
+
+
+<h2>ソースコード</h2>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;ViewController.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> <span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="n">CGFloat</span><span class="p">)</span><span class="nl">distanceWithPointA:</span><span class="p">(</span><span class="n">CGPoint</span><span class="p">)</span><span class="n">pointA</span> <span class="nl">pointB:</span><span class="p">(</span><span class="n">CGPoint</span><span class="p">)</span><span class="n">pointB</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@property</span> <span class="n">UIImageView</span> <span class="o">*</span><span class="n">imageView</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">ViewController</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//背景色を黒に設定</span>
+</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIColor</span> <span class="n">blackColor</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//マルチタッチの有効化</span>
+</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">multipleTouchEnabled</span> <span class="o">=</span> <span class="n">YES</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//イメージの読み込み</span>
+</span><span class='line'>    <span class="n">UIImage</span> <span class="o">*</span><span class="n">image</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIImage</span> <span class="nl">imageNamed:</span><span class="s">@&quot;Pandora_640_1136.jpg&quot;</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">_imageView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIImageView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">320</span><span class="p">,</span> <span class="mi">578</span><span class="p">)];</span>
+</span><span class='line'>    <span class="n">_imageView</span><span class="p">.</span><span class="n">image</span> <span class="o">=</span> <span class="n">image</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">_imageView</span><span class="p">.</span><span class="n">center</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">center</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">_imageView</span><span class="p">.</span><span class="n">contentMode</span> <span class="o">=</span> <span class="n">UIViewContentModeScaleAspectFill</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">_imageView</span><span class="p">.</span><span class="n">autoresizingMask</span> <span class="o">=</span>
+</span><span class='line'>        <span class="n">UIViewAutoresizingFlexibleLeftMargin</span> <span class="o">|</span>
+</span><span class='line'>        <span class="n">UIViewAutoresizingFlexibleRightMargin</span> <span class="o">|</span>
+</span><span class='line'>        <span class="n">UIViewAutoresizingFlexibleTopMargin</span> <span class="o">|</span>
+</span><span class='line'>        <span class="n">UIViewAutoresizingFlexibleBottomMargin</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//イメージを画面に追加</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">_imageView</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">touchesMoved:</span><span class="p">(</span><span class="n">NSSet</span> <span class="o">*</span><span class="p">)</span><span class="nv">touches</span> <span class="nf">withEvent:</span><span class="p">(</span><span class="n">UIEvent</span> <span class="o">*</span><span class="p">)</span><span class="nv">event</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">([</span><span class="n">touches</span> <span class="n">count</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="c1">//2本指でタッチしている場合は、２点間の距離を計算</span>
+</span><span class='line'>        <span class="n">NSArray</span> <span class="o">*</span><span class="n">twoFingers</span> <span class="o">=</span> <span class="p">[</span><span class="n">touches</span> <span class="n">allObjects</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">UITouch</span> <span class="o">*</span><span class="n">touch1</span> <span class="o">=</span> <span class="p">[</span><span class="n">twoFingers</span> <span class="nl">objectAtIndex:</span><span class="mi">0</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">UITouch</span> <span class="o">*</span><span class="n">touch2</span> <span class="o">=</span> <span class="p">[</span><span class="n">twoFingers</span> <span class="nl">objectAtIndex:</span><span class="mi">1</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">CGPoint</span> <span class="n">previous1</span> <span class="o">=</span> <span class="p">[</span><span class="n">touch1</span> <span class="nl">previousLocationInView:</span><span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">CGPoint</span> <span class="n">previous2</span> <span class="o">=</span> <span class="p">[</span><span class="n">touch2</span> <span class="nl">previousLocationInView:</span><span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">CGPoint</span> <span class="n">now1</span> <span class="o">=</span> <span class="p">[</span><span class="n">touch1</span> <span class="nl">locationInView:</span><span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">CGPoint</span> <span class="n">now2</span> <span class="o">=</span> <span class="p">[</span><span class="n">touch2</span> <span class="nl">locationInView:</span><span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">//現状の距離と、前回の距離を比較して距離が縮まったか離れたかを判別</span>
+</span><span class='line'>        <span class="n">CGFloat</span> <span class="n">previousDistance</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="nl">distanceWithPointA:</span><span class="n">previous1</span> <span class="nl">pointB:</span><span class="n">previous2</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">CGFloat</span> <span class="n">distance</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="nl">distanceWithPointA:</span><span class="n">now1</span> <span class="nl">pointB:</span><span class="n">now2</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">CGFloat</span> <span class="n">scale</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">;</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">previousDistance</span> <span class="o">&gt;</span> <span class="n">distance</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="c1">//距離が縮まったらならピンチイン</span>
+</span><span class='line'>            <span class="n">scale</span> <span class="o">-=</span> <span class="p">(</span> <span class="n">previousDistance</span> <span class="o">-</span> <span class="n">distance</span> <span class="p">)</span> <span class="o">/</span> <span class="mf">300.0</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">distance</span> <span class="o">&gt;</span> <span class="n">previousDistance</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="c1">// 距離が広がったならピンチアウト</span>
+</span><span class='line'>            <span class="n">scale</span> <span class="o">+=</span> <span class="p">(</span> <span class="n">distance</span> <span class="o">-</span> <span class="n">previousDistance</span> <span class="p">)</span> <span class="o">/</span> <span class="mf">300.0</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="n">CGAffineTransform</span> <span class="n">newTransform</span> <span class="o">=</span>
+</span><span class='line'>            <span class="n">CGAffineTransformScale</span><span class="p">(</span><span class="n">_imageView</span><span class="p">.</span><span class="n">transform</span><span class="p">,</span> <span class="n">scale</span><span class="p">,</span> <span class="n">scale</span><span class="p">);</span>
+</span><span class='line'>        <span class="n">_imageView</span><span class="p">.</span><span class="n">transform</span> <span class="o">=</span> <span class="n">newTransform</span><span class="p">;</span>
+</span><span class='line'>        <span class="n">_imageView</span><span class="p">.</span><span class="n">center</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">center</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">CGFloat</span><span class="p">)</span><span class="nf">distanceWithPointA:</span><span class="p">(</span><span class="n">CGPoint</span><span class="p">)</span><span class="nv">pointA</span> <span class="nf">pointB:</span><span class="p">(</span><span class="n">CGPoint</span><span class="p">)</span><span class="nv">pointB</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">CGFloat</span> <span class="n">dx</span> <span class="o">=</span> <span class="n">fabs</span><span class="p">(</span> <span class="n">pointB</span><span class="p">.</span><span class="n">x</span> <span class="o">-</span> <span class="n">pointA</span><span class="p">.</span><span class="n">x</span> <span class="p">);</span>
+</span><span class='line'>    <span class="n">CGFloat</span> <span class="n">dy</span> <span class="o">=</span> <span class="n">fabs</span><span class="p">(</span> <span class="n">pointB</span><span class="p">.</span><span class="n">y</span> <span class="o">-</span> <span class="n">pointA</span><span class="p">.</span><span class="n">y</span> <span class="p">);</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">dx</span> <span class="o">*</span> <span class="n">dx</span> <span class="o">+</span> <span class="n">dy</span> <span class="o">*</span> <span class="n">dy</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[ダブルスライドの検知]]></title>
@@ -4485,90 +4664,6 @@
 </span><span class='line'>
 </span><span class='line'>    <span class="c1">//画面に追加</span>
 </span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">maskedImageView</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[UIImageをリサイズする方法]]></title>
-    <link href="http://lab.dolice.net/blog/2013/05/24/objc-resize-image/"/>
-    <updated>2013-05-24T23:25:00+09:00</updated>
-    <id>http://lab.dolice.net/blog/2013/05/24/objc-resize-image</id>
-    <content type="html"><![CDATA[<p>Objective-Cで UIImageをリサイズするクラスメソッドを作成しました。</p>
-
-<p>サンプルでは、Imageクラスにある resizeというシングルトンメソッドを呼ぶ事で画像をリサイズしています。</p>
-
-<p>下記よりサンプルのダウンロードが行えます。</p>
-
-<h2>ダウンロード</h2>
-
-<ul>
-<li><a href="https://github.com/masakihirokawa/objc-ui-image-resize">https://github.com/masakihirokawa/objc-ui-image-resize</a></li>
-</ul>
-
-
-<h2>ソースコード</h2>
-
-<h3>Image.m</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//画像をリサイズする</span>
-</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nf">resize:</span><span class="p">(</span><span class="n">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nv">image</span>
-</span><span class='line'>               <span class="nf">rect:</span><span class="p">(</span><span class="n">CGRect</span><span class="p">)</span><span class="nv">rect</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">UIGraphicsBeginImageContext</span><span class="p">(</span><span class="n">rect</span><span class="p">.</span><span class="n">size</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">image</span> <span class="nl">drawInRect:</span><span class="n">rect</span><span class="p">];</span>
-</span><span class='line'>    <span class="n">UIImage</span><span class="o">*</span> <span class="n">resizedImage</span> <span class="o">=</span> <span class="n">UIGraphicsGetImageFromCurrentImageContext</span><span class="p">();</span>
-</span><span class='line'>    <span class="n">CGContextRef</span> <span class="n">context</span> <span class="o">=</span> <span class="n">UIGraphicsGetCurrentContext</span><span class="p">();</span>
-</span><span class='line'>    <span class="n">CGContextSetInterpolationQuality</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">kCGInterpolationHigh</span><span class="p">);</span>
-</span><span class='line'>    <span class="n">UIGraphicsEndImageContext</span><span class="p">();</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">resizedImage</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>サンプルソースコード</h2>
-
-<h3>ViewController.m</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">resizeImage</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="c1">//画像をリサイズして UIImageに格納</span>
-</span><span class='line'>    <span class="n">UIImage</span> <span class="o">*</span><span class="n">sampleImage</span> <span class="o">=</span> <span class="p">[</span><span class="n">Image</span> <span class="nl">resize:</span><span class="p">[</span><span class="n">Image</span> <span class="nl">getUIImageFromResources:</span><span class="s">@&quot;Asymmetry_640_1136&quot;</span> <span class="nl">ext:</span><span class="s">@&quot;jpg&quot;</span><span class="p">]</span>
-</span><span class='line'>                                    <span class="nl">rect:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">320</span><span class="p">,</span> <span class="mi">568</span><span class="p">)];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//画像を UIImageViewに格納</span>
-</span><span class='line'>    <span class="n">UIImageView</span> <span class="o">*</span><span class="n">sampleImageView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIImageView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithImage:</span><span class="n">sampleImage</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//画面に追加</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">sampleImageView</span><span class="p">];</span>
 </span><span class='line'><span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
