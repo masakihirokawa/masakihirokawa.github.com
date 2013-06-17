@@ -6,17 +6,11 @@
 	<title>Dolice Lab</title>
 	
 	
-	<meta name="description" content="配列からオブジェクトを全て削除するには、「removeAllObjects」メソッドを使用します。以下にサンプルを作成しました。 サンプルダウンロード https://github.com/masakihirokawa/objc-remove-all-objects ソースコード 1
-2
-3
-4 &hellip;">
+	<meta name="description" content="Objective-Cでコマ送りアニメーションを実行するためのクラスを作成しました。 「アニメーションの総フレーム数」、「画像ファイル名の接頭詞」、「アニメーション秒数」、「アニメーションリピート回数」、「アニメーション画像の座標・寸法」の順にパラメータを渡して使用します。 &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	<meta property="og:title" content="Dolice Lab" />
-<meta property="og:description" content="配列からオブジェクトを全て削除するには、「removeAllObjects」メソッドを使用します。以下にサンプルを作成しました。 サンプルダウンロード https://github.com/masakihirokawa/objc-remove-all-objects ソースコード 1
-2
-3
-4 &hellip;" />
+<meta property="og:description" content="Objective-Cでコマ送りアニメーションを実行するためのクラスを作成しました。 「アニメーションの総フレーム数」、「画像ファイル名の接頭詞」、「アニメーション秒数」、「アニメーションリピート回数」、「アニメーション画像の座標・寸法」の順にパラメータを渡して使用します。 &hellip;" />
 <meta property="og:url" content="http://lab.dolice.net/blog/page/25/" />
 <meta property="og:image" content="http://lab.dolice.net/images/facebook-icon.jpg" />
 <meta property="og:author" content="Masaki Hirokawa" />
@@ -90,6 +84,394 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/04/06/download-xcode-objc-frame-by-frame-animation/">
+		
+			Objective-Cでコマ送りアニメーションを実行するクラス</a>
+	</h2>
+	<div class="entry-content">
+		<p><img src="http://lab.dolice.net/images/article/frame-by-frame-animation.jpg" alt="" /></p>
+
+<p>Objective-Cでコマ送りアニメーションを実行するためのクラスを作成しました。</p>
+
+<p>「アニメーションの総フレーム数」、「画像ファイル名の接頭詞」、「アニメーション秒数」、「アニメーションリピート回数」、「アニメーション画像の座標・寸法」の順にパラメータを渡して使用します。</p>
+
+<p>下記よりサンプルのダウンロードが行えます。</p>
+
+<h2>サンプルダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-frame-by-frame-animation">https://github.com/masakihirokawa/objc-frame-by-frame-animation</a></li>
+</ul>
+
+
+<h2>使用方法</h2>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//クラス初期化</span>
+</span><span class='line'><span class="n">FrameByFrameAnimation</span> <span class="o">*</span><span class="n">fbfAnimation</span> <span class="o">=</span> <span class="p">[[</span><span class="n">FrameByFrameAnimation</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'><span class="c1">//アニメーション開始</span>
+</span><span class='line'><span class="p">[</span><span class="n">fbfAnimation</span> <span class="nl">setAnimating:</span><span class="n">animationFrames</span>
+</span><span class='line'>                          <span class="o">:</span><span class="n">animationPrefix</span>
+</span><span class='line'>                          <span class="o">:</span><span class="n">animationDuration</span>
+</span><span class='line'>                          <span class="o">:</span><span class="n">animationRepeatNum</span>
+</span><span class='line'>                          <span class="o">:</span><span class="n">animationImageX</span>
+</span><span class='line'>                          <span class="o">:</span><span class="n">animationImageY</span>
+</span><span class='line'>                          <span class="o">:</span><span class="n">animationImageWidth</span>
+</span><span class='line'>                          <span class="o">:</span><span class="n">animationImageHeight</span><span class="p">];</span>
+</span><span class='line'><span class="c1">//ステージに追加</span>
+</span><span class='line'><span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="p">[</span><span class="n">fbfAnimation</span> <span class="n">animationImageView</span><span class="p">]];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>ソースコード</h2>
+
+<h3>ViewController.m</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;ViewController.h&quot;</span>
+</span><span class='line'><span class="cp">#import &quot;FrameByFrameAnimation.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> <span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">ViewController</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//アニメーションのフレームレート</span>
+</span><span class='line'><span class="kt">float</span> <span class="k">const</span> <span class="n">_animationFps</span> <span class="o">=</span> <span class="mf">24.0f</span><span class="p">;</span>
+</span><span class='line'><span class="c1">//アニメーションのリピート回数を無限に指定</span>
+</span><span class='line'><span class="n">NSInteger</span> <span class="n">_animationRepeatNum</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'><span class="c1">//アニメーションの座標・寸法指定</span>
+</span><span class='line'><span class="n">NSInteger</span> <span class="n">_animationImageX</span><span class="p">;</span>
+</span><span class='line'><span class="n">NSInteger</span> <span class="n">_animationImageY</span><span class="p">;</span>
+</span><span class='line'><span class="n">NSInteger</span> <span class="k">const</span> <span class="n">_animationImageWidth</span> <span class="o">=</span> <span class="mi">85</span><span class="p">;</span>
+</span><span class='line'><span class="n">NSInteger</span> <span class="k">const</span> <span class="n">_animationImageHeight</span> <span class="o">=</span> <span class="mi">120</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//アニメーション開始</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">self</span> <span class="n">startAnimationImage</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">didReceiveMemoryWarning</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">super</span> <span class="n">didReceiveMemoryWarning</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//アニメーション開始</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">startAnimationImage</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="c1">//クラス初期化</span>
+</span><span class='line'>  <span class="n">FrameByFrameAnimation</span> <span class="o">*</span><span class="n">fbfAnimation</span> <span class="o">=</span> <span class="p">[[</span><span class="n">FrameByFrameAnimation</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//アニメーションの総フレーム数</span>
+</span><span class='line'>  <span class="n">NSInteger</span> <span class="n">animationFrames</span> <span class="o">=</span> <span class="mi">14</span><span class="p">;</span>
+</span><span class='line'>  <span class="c1">//アニメーションファイルの接頭詞</span>
+</span><span class='line'>  <span class="n">NSString</span> <span class="o">*</span><span class="n">animationPrefix</span> <span class="o">=</span> <span class="s">@&quot;frame&quot;</span><span class="p">;</span>
+</span><span class='line'>  <span class="c1">//アニメーションをセンターに配置</span>
+</span><span class='line'>  <span class="n">NSInteger</span> <span class="n">_animationImageX</span> <span class="o">=</span> <span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">frame</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">_animationImageWidth</span> <span class="o">/</span> <span class="mi">2</span><span class="p">);</span>
+</span><span class='line'>  <span class="n">NSInteger</span> <span class="n">_animationImageY</span> <span class="o">=</span> <span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">frame</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">height</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">_animationImageHeight</span> <span class="o">/</span> <span class="mi">2</span><span class="p">);</span>
+</span><span class='line'>  <span class="c1">//アニメーション開始</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">fbfAnimation</span> <span class="nl">setAnimating:</span><span class="n">animationFrames</span>
+</span><span class='line'>                            <span class="o">:</span><span class="n">animationPrefix</span>
+</span><span class='line'>                            <span class="o">:</span><span class="p">[</span><span class="n">self</span> <span class="nl">animationSeconds:</span><span class="n">animationFrames</span><span class="p">]</span>
+</span><span class='line'>                            <span class="o">:</span><span class="n">_animationRepeatNum</span>
+</span><span class='line'>                            <span class="o">:</span><span class="n">_animationImageX</span>
+</span><span class='line'>                            <span class="o">:</span><span class="n">_animationImageY</span>
+</span><span class='line'>                            <span class="o">:</span><span class="n">_animationImageWidth</span>
+</span><span class='line'>                            <span class="o">:</span><span class="n">_animationImageHeight</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//ステージに追加</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="p">[</span><span class="n">fbfAnimation</span> <span class="n">animationImageView</span><span class="p">]];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//アニメーション秒数を取得</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="nf">animationSeconds:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">animationFrames</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="k">return</span> <span class="p">(</span><span class="n">animationFrames</span> <span class="o">/</span> <span class="n">_animationFps</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>FrameByFrameAnimation.h</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;UIKit/UIKit.h&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">FrameByFrameAnimation</span> : <span class="nc">UIImageView</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">retain</span><span class="p">)</span> <span class="n">UIImageView</span> <span class="o">*</span><span class="n">animationImageView</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setAnimating:</span><span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="nv">animationImageNum</span> <span class="o">:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="n">animationImageSuffix</span> <span class="o">:</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="n">animationDuration</span> <span class="o">:</span><span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">animationRepeatCount</span> <span class="o">:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="n">animationImageX</span> <span class="o">:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="n">animationImageY</span> <span class="o">:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="n">animationImageWidth</span> <span class="o">:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="n">animationImageHeight</span><span class="p">;</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSArray</span> <span class="o">*</span><span class="p">)</span><span class="nf">animationImages:</span><span class="p">(</span><span class="n">NSMutableArray</span> <span class="o">*</span><span class="p">)</span><span class="nv">animationImageNameList</span><span class="p">;</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nf">getUIImageFromResources:</span><span class="p">(</span><span class="n">NSString</span><span class="o">*</span><span class="p">)</span><span class="nv">fileName</span> <span class="nf">ext:</span><span class="p">(</span><span class="n">NSString</span><span class="o">*</span><span class="p">)</span><span class="nv">ext</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>FrameByFrameAnimation.m</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;FrameByFrameAnimation.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">FrameByFrameAnimation</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@synthesize</span> <span class="n">animationImageView</span> <span class="o">=</span> <span class="n">_animationImageView</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">initWithFrame:</span><span class="p">(</span><span class="n">CGRect</span><span class="p">)</span><span class="nv">frame</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="n">self</span> <span class="o">=</span> <span class="p">[</span><span class="n">super</span> <span class="nl">initWithFrame:</span><span class="n">frame</span><span class="p">];</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="n">self</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="k">return</span> <span class="n">self</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//アニメーション設定</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setAnimating:</span><span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="nv">animationImageNum</span> <span class="o">:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="n">animationImageSuffix</span> <span class="o">:</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="n">animationDuration</span> <span class="o">:</span><span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">animationRepeatCount</span> <span class="o">:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="n">animationImageX</span> <span class="o">:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="n">animationImageY</span> <span class="o">:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="n">animationImageWidth</span> <span class="o">:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="n">animationImageHeight</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="c1">//UIImageView初期化</span>
+</span><span class='line'>  <span class="n">_animationImageView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIImageView</span> <span class="n">alloc</span><span class="p">]</span>
+</span><span class='line'>                         <span class="nl">initWithFrame:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="n">animationImageX</span><span class="p">,</span>
+</span><span class='line'>                                                  <span class="n">animationImageY</span><span class="p">,</span>
+</span><span class='line'>                                                  <span class="n">animationImageWidth</span><span class="p">,</span>
+</span><span class='line'>                                                  <span class="n">animationImageHeight</span><span class="p">)];</span>
+</span><span class='line'>  <span class="c1">//アニメーションフレームを配列に入れる</span>
+</span><span class='line'>  <span class="n">NSMutableArray</span> <span class="o">*</span><span class="n">animationImageArray</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSMutableArray</span> <span class="n">array</span><span class="p">];</span>
+</span><span class='line'>  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="n">animationImageNum</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">animationImageArray</span> <span class="nl">addObject:</span><span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">@&quot;%@%@&quot;</span><span class="p">,</span> <span class="n">animationImageSuffix</span><span class="p">,</span> <span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">@&quot;%d&quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">]]];</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="n">_animationImageView</span><span class="p">.</span><span class="n">animationImages</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="nl">animationImages:</span><span class="n">animationImageArray</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//アニメーションの秒数を設定</span>
+</span><span class='line'>  <span class="n">_animationImageView</span><span class="p">.</span><span class="n">animationDuration</span> <span class="o">=</span> <span class="n">animationDuration</span><span class="p">;</span>
+</span><span class='line'>  <span class="c1">//アニメーションのリピート回数を設定</span>
+</span><span class='line'>  <span class="n">_animationImageView</span><span class="p">.</span><span class="n">animationRepeatCount</span> <span class="o">=</span> <span class="n">animationRepeatCount</span><span class="p">;</span>
+</span><span class='line'>  <span class="c1">//アニメーション開始</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">_animationImageView</span> <span class="n">startAnimating</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//アニメーション終了時のメソッド定義</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">self</span> <span class="nl">performSelector:</span><span class="k">@selector</span><span class="p">(</span><span class="nl">animationDidFinish:</span><span class="p">)</span> <span class="nl">withObject:</span><span class="nb">nil</span>
+</span><span class='line'>             <span class="nl">afterDelay:</span><span class="n">_animationImageView</span><span class="p">.</span><span class="n">animationDuration</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//アニメーション終了時のメソッド</span>
+</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">animationDidFinish:</span><span class="p">(</span><span class="kt">SEL</span><span class="p">)</span><span class="n">selector</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;Animation is complete&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//画像ファイル名を配列で取得する</span>
+</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="n">NSArray</span> <span class="o">*</span><span class="p">)</span><span class="nl">animationImages:</span><span class="p">(</span><span class="n">NSMutableArray</span> <span class="o">*</span><span class="p">)</span><span class="n">animationImageNameList</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="c1">//画像の配列を作成</span>
+</span><span class='line'>  <span class="n">NSMutableArray</span> <span class="o">*</span><span class="n">imageArray</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSMutableArray</span> <span class="n">array</span><span class="p">];</span>
+</span><span class='line'>  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">animationImageNameList</span><span class="p">.</span><span class="n">count</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">NSString</span> <span class="o">*</span><span class="n">imageTitle</span> <span class="o">=</span> <span class="p">[</span><span class="n">animationImageNameList</span> <span class="nl">objectAtIndex:</span><span class="n">i</span><span class="p">];</span>
+</span><span class='line'>    <span class="c1">//画像の配列に画像ファイルを追加</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">imageArray</span> <span class="nl">addObject:</span><span class="p">[</span><span class="n">FrameByFrameAnimation</span> <span class="nl">getUIImageFromResources:</span><span class="n">imageTitle</span> <span class="nl">ext:</span><span class="s">@&quot;png&quot;</span><span class="p">]];</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="k">return</span> <span class="p">(</span><span class="n">imageArray</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//画像ファイルを取得</span>
+</span><span class='line'><span class="o">+</span> <span class="p">(</span><span class="n">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nl">getUIImageFromResources:</span><span class="p">(</span><span class="n">NSString</span><span class="o">*</span><span class="p">)</span><span class="n">fileName</span> <span class="nl">ext:</span><span class="p">(</span><span class="n">NSString</span><span class="o">*</span><span class="p">)</span><span class="n">ext</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="n">NSString</span> <span class="o">*</span><span class="n">path</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSBundle</span> <span class="n">mainBundle</span><span class="p">]</span> <span class="nl">pathForResource:</span><span class="n">fileName</span> <span class="nl">ofType:</span><span class="n">ext</span><span class="p">];</span>
+</span><span class='line'>  <span class="n">UIImage</span> <span class="o">*</span><span class="n">img</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIImage</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithContentsOfFile:</span><span class="n">path</span><span class="p">];</span>
+</span><span class='line'>  <span class="k">return</span> <span class="n">img</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-04-06T00:35:00+09:00" pubdate data-updated="true">Apr 6<span>th</span>, 2013</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/download/'>download</a>, <a class='category' href='/blog/categories/objective-c/'>objective-c</a>, <a class='category' href='/blog/categories/xcode/'>xcode</a>
+
+
+</div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -277,112 +659,6 @@ orderedSet: Apple</p></blockquote>
 </div>
 </article>
 
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/04/04/objc-ns-user-defaults/">
-		
-			ユーザーデフォルトを使用して入力されたテキストを保存する</a>
-	</h2>
-	<div class="entry-content">
-		<p>ユーザーデフォルトを使用して入力されたテキストを保存するサンプルを作成しました。入力された値を保存し、次回起動時に値を引き継ぎます。下記よりサンプルのダウンロードが行えます。</p>
-
-<h2>サンプルダウンロード</h2>
-
-<ul>
-<li><a href="https://github.com/masakihirokawa/objc-ns-user-defaults">https://github.com/masakihirokawa/objc-ns-user-defaults</a></li>
-</ul>
-
-
-<h2>必要な手順</h2>
-
-<ol>
-<li>UITextFieldを MainStoryboardに配置し、プロパティとメソッドを定義します</li>
-<li>UITextFieldを controlキーを押しながらクリックし、Sent Eventsを Did End On Exitに設定します（これにより、returnキーが押された時に入力が確定されます）</li>
-</ol>
-
-
-<h2>ソースコード</h2>
-
-<h3>ViewController.h</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">weak</span><span class="p">,</span> <span class="n">nonatomic</span><span class="p">)</span> <span class="kt">IBOutlet</span> <span class="n">UITextField</span> <span class="o">*</span><span class="n">myTextField</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">inputText:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span><span class="p">;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>ViewController.m</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
-</span><span class='line'>  <span class="c1">//キーから値を取得する</span>
-</span><span class='line'>  <span class="n">NSUserDefaults</span> <span class="o">*</span><span class="n">defaults</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSUserDefaults</span> <span class="n">standardUserDefaults</span><span class="p">];</span>
-</span><span class='line'>  <span class="n">NSString</span> <span class="o">*</span><span class="n">defaultStr</span> <span class="o">=</span> <span class="p">[</span><span class="n">defaults</span> <span class="nl">stringForKey:</span><span class="s">@&quot;MY_KEY&quot;</span><span class="p">];</span>
-</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">myTextField</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">defaultStr</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">inputText:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span> <span class="p">{</span>
-</span><span class='line'>  <span class="c1">//指定したキーに入力された値を保存する</span>
-</span><span class='line'>  <span class="n">NSUserDefaults</span><span class="o">*</span> <span class="n">defaults</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSUserDefaults</span> <span class="n">standardUserDefaults</span><span class="p">];</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">defaults</span> <span class="nl">setObject:</span> <span class="n">self</span><span class="p">.</span><span class="n">myTextField</span><span class="p">.</span><span class="n">text</span> <span class="nl">forKey:</span><span class="s">@&quot;MY_KEY&quot;</span><span class="p">];</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">defaults</span> <span class="n">synchronize</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-04-04T21:21:00+09:00" pubdate data-updated="true">Apr 4<span>th</span>, 2013</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>
-
-
-</div>
-	
-</div>
-</article>
-
 <nav id="pagenavi">
     
         <a href="/blog/page/24/" class="prev">Prev</a>
@@ -420,7 +696,7 @@ orderedSet: Apple</p></blockquote>
   <div id="category" class="information-box">
 <section>
   <h1>Categories</h1>
-  <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (43)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (151)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (36)</a></li></ul>
+  <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (43)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (152)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (36)</a></li></ul>
 </section>
 
 
@@ -429,6 +705,10 @@ orderedSet: Apple</p></blockquote>
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/06/17/objc-label-for-motion/">シェイクモーションの検知</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2013/06/16/objc-pinch-in-pinch-out/">ピンチイン/ピンチアウトの検知</a>
@@ -464,10 +744,6 @@ orderedSet: Apple</p></blockquote>
     
       <li class="post">
         <a href="/blog/2013/06/05/objc-digits/">数値の桁数を取得する方法</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/06/05/download-objc-classes-dc-image-animation/">2種類の画像アニメーションを実行する「DCImageAnimation」クラス</a>
       </li>
     
   </ul>
