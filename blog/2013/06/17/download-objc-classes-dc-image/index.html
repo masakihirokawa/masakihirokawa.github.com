@@ -86,9 +86,9 @@
 	<div id="content" class="inner"><article class="post">
 	<h2 class="title">4種類の機能を搭載する「DCImage」クラス</h2>
 	<div class="entry-content">
-	  <p>イメージビューの生成や全画面画像の判別取得、マスク適用にリサイズ処理など4種類の機能を実装する「DCImage」クラスを作成しました。</p>
+	  <p>「イメージビューの生成」や「全画面画像の取得」、「マスク適用」に「リサイズ処理」など4種類の機能を実装する「DCImage」クラスを作成しました。</p>
 
-<p>全画面背景画像を取得するため、「DCDevice」クラスを使用しています。</p>
+<p>全画面画像を取得する部分では、「DCDevice」クラスを使用しています。デバイス情報を判別し、解像度別に用意した画像を読み込む機能ですので、画像ファイルを適切な名称にリネームし、リソースに追加しておく必要があります。</p>
 
 <p>下記よりサンプルとソースコードのダウンロードが行えます。</p>
 
@@ -102,8 +102,8 @@
 <h2>主な機能</h2>
 
 <ol>
-<li>画像(UIImageView) の取得</li>
-<li>全画面背景画像の取得 (デバイス判別機能付き)</li>
+<li>イメージビューの取得</li>
+<li>全画面画像の取得 (デバイス判別機能を使用)</li>
 <li>画像にマスク適用</li>
 <li>画像のリサイズ</li>
 </ol>
@@ -307,6 +307,13 @@
 <span class='line-number'>93</span>
 <span class='line-number'>94</span>
 <span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+<span class='line-number'>102</span>
 </pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;ViewController.h&quot;</span>
 </span><span class='line'>
 </span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> <span class="p">()</span>
@@ -315,24 +322,31 @@
 </span><span class='line'>
 </span><span class='line'><span class="k">@implementation</span> <span class="nc">ViewController</span>
 </span><span class='line'>
+</span><span class='line'><span class="k">typedef</span> <span class="k">enum</span> <span class="n">sample</span> <span class="o">:</span> <span class="n">NSInteger</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">MODE_IMAGE_VIEW</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+</span><span class='line'>    <span class="n">MODE_BG_IMAGE</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+</span><span class='line'>    <span class="n">MODE_MASK_IMAGE</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
+</span><span class='line'>    <span class="n">MODE_RESIZE_IMAGE</span> <span class="o">=</span> <span class="mi">4</span>
+</span><span class='line'><span class="p">}</span> <span class="n">sample</span><span class="p">;</span>
+</span><span class='line'>
 </span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
 </span><span class='line'><span class="p">{</span>
 </span><span class='line'>    <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
 </span><span class='line'>  
 </span><span class='line'>    <span class="k">switch</span> <span class="p">(</span><span class="n">MODE</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="k">case</span> <span class="mi">1</span><span class="o">:</span>
+</span><span class='line'>        <span class="k">case</span> <span class="nl">MODE_IMAGE_VIEW:</span>
 </span><span class='line'>            <span class="c1">//イメージを表示</span>
 </span><span class='line'>            <span class="p">[</span><span class="n">self</span> <span class="n">setImageView</span><span class="p">];</span>
 </span><span class='line'>            <span class="k">break</span><span class="p">;</span>
-</span><span class='line'>        <span class="k">case</span> <span class="mi">2</span><span class="o">:</span>
+</span><span class='line'>        <span class="k">case</span> <span class="nl">MODE_BG_IMAGE:</span>
 </span><span class='line'>            <span class="c1">//全画面の背景画像を表示</span>
 </span><span class='line'>            <span class="p">[</span><span class="n">self</span> <span class="n">setBackgroundImage</span><span class="p">];</span>
 </span><span class='line'>            <span class="k">break</span><span class="p">;</span>
-</span><span class='line'>        <span class="k">case</span> <span class="mi">3</span><span class="o">:</span>
+</span><span class='line'>        <span class="k">case</span> <span class="nl">MODE_MASK_IMAGE:</span>
 </span><span class='line'>            <span class="c1">//画像にマスクを適用</span>
 </span><span class='line'>            <span class="p">[</span><span class="n">self</span> <span class="n">setImageMask</span><span class="p">];</span>
 </span><span class='line'>            <span class="k">break</span><span class="p">;</span>
-</span><span class='line'>        <span class="k">case</span> <span class="mi">4</span><span class="o">:</span>
+</span><span class='line'>        <span class="k">case</span> <span class="nl">MODE_RESIZE_IMAGE:</span>
 </span><span class='line'>            <span class="c1">//画像のリサイズ適用</span>
 </span><span class='line'>            <span class="p">[</span><span class="n">self</span> <span class="n">resizeImage</span><span class="p">];</span>
 </span><span class='line'>            <span class="k">break</span><span class="p">;</span>
