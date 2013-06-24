@@ -6,11 +6,11 @@
 	<title>Dolice Lab</title>
 	
 	
-	<meta name="description" content="ActionScript3.0で外部SWFの読み込みとロード状況の監視をする「SWFLoader」クラスを作成しました。 SWFファイルを読み込むターゲットと、SWFファイルへのパスを指定して使用します。 外部ファイルを読み込むターゲットと、外部ファイルへのパスを指定して使用します。 &hellip;">
+	<meta name="description" content="ActionScript3.0で不要になったインスタンスを削除しメモリを解放する「Cleaner」クラスを作成しました。 指定したオブジェクトの子を、任意の数まで削除します。新しい子から順番に削除するか、古い子から順番に削除するかの指定と、最後にオブジェクトへ &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	<meta property="og:title" content="Dolice Lab" />
-<meta property="og:description" content="ActionScript3.0で外部SWFの読み込みとロード状況の監視をする「SWFLoader」クラスを作成しました。 SWFファイルを読み込むターゲットと、SWFファイルへのパスを指定して使用します。 外部ファイルを読み込むターゲットと、外部ファイルへのパスを指定して使用します。 &hellip;" />
+<meta property="og:description" content="ActionScript3.0で不要になったインスタンスを削除しメモリを解放する「Cleaner」クラスを作成しました。 指定したオブジェクトの子を、任意の数まで削除します。新しい子から順番に削除するか、古い子から順番に削除するかの指定と、最後にオブジェクトへ &hellip;" />
 <meta property="og:url" content="http://lab.dolice.net/blog/page/56/" />
 <meta property="og:image" content="http://lab.dolice.net/images/facebook-icon.jpg" />
 <meta property="og:author" content="Masaki Hirokawa" />
@@ -84,6 +84,266 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/03/13/as3-cleaner/">
+		
+			AS3で不要になったインスタンスを削除しメモリを解放する「Cleaner」クラス</a>
+	</h2>
+	<div class="entry-content">
+		<p>ActionScript3.0で不要になったインスタンスを削除しメモリを解放する「<a href="https://github.com/masakihirokawa/as3/blob/master/net/dolice/utils/Cleaner.as">Cleaner</a>」クラスを作成しました。</p>
+
+<p>指定したオブジェクトの子を、任意の数まで削除します。新しい子から順番に削除するか、古い子から順番に削除するかの指定と、最後にオブジェクトへ nullを代入してメモリを解放するかの指定ができます。</p>
+
+<h2>ファイル</h2>
+
+<ul>
+<li><a href="http://dolice.net/php/dlc/dlcount.php?fname=Cleaner.zip&dir=/sample/">サンプル</a></li>
+<li><a href="https://github.com/masakihirokawa/as3/blob/master/net/dolice/utils/Cleaner.as">ダウンロード</a></li>
+</ul>
+
+
+<h2>使用方法</h2>
+
+<ul>
+<li>_container(DisplayObjectContainer)の子を、古いものから順番に全て削除する</li>
+</ul>
+
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='as3'><span class='line'><span class="n">Cleaner</span><span class="o">.</span><span class="na">deleteContainer</span><span class="o">(</span><span class="n">_container</span><span class="o">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>_mc(MovieClip)の子を、古いものから順番に全て削除し、最後に nullを代入する</li>
+</ul>
+
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='as3'><span class='line'><span class="n">Cleaner</span><span class="o">.</span><span class="na">deleteMovieClip</span><span class="o">(</span><span class="n">_mc</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="kc">null</span><span class="o">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>_sp(Sprite)の子を、最後の1つを除いて新しいものから順番に削除する</li>
+</ul>
+
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='as3'><span class='line'><span class="n">Cleaner</span><span class="o">.</span><span class="na">deleteSprite</span><span class="o">(</span><span class="n">_sp</span><span class="o">,</span> <span class="mi">1</span><span class="o">,</span> <span class="s2">&quot;null,undefined以外の文字列&quot;</span><span class="o">,</span> <span class="kc">true</span><span class="o">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>パラメータ解説</h2>
+
+<p><strong><em>container, </em>mc, _sp</strong></p>
+
+<blockquote><p>子を削除するオブジェクト</p>
+
+<p>[DisplayObjectContainer, MovieClip, Sprite][省略不可]</p></blockquote>
+
+<p><strong>remainNum</strong></p>
+
+<blockquote><p>幾つ子を残すか</p>
+
+<p>[uint][規定値:0][省略可]</p></blockquote>
+
+<p><strong>toNull</strong></p>
+
+<blockquote><p>最後にオブジェクトに nullを代入する場合は、nullか undefinedを指定[String][規定値:&#8221;String as Null&#8221;*1][省略可]</p></blockquote>
+
+<p><strong>isReverse</strong></p>
+
+<blockquote><p>新しいもの／上から順番に削除するか</p>
+
+<p>[Boolean][規定値:false][省略可]</p></blockquote>
+
+<h2>ソースコード</h2>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+</pre></td><td class='code'><pre><code class='as3'><span class='line'><span class="k">package</span> <span class="nn">net.dolice.utils</span><span class="o">{</span>
+</span><span class='line'>  <span class="k">import</span> <span class="nn">flash.display.DisplayObjectContainer</span><span class="o">;</span>
+</span><span class='line'>  <span class="k">import</span> <span class="nn">flash.display.MovieClip</span><span class="o">;</span>
+</span><span class='line'>  <span class="k">import</span> <span class="nn">flash.display.Sprite</span><span class="o">;</span>
+</span><span class='line'>  <span class="kd">public</span> <span class="kd">class</span> <span class="n">Cleaner</span> <span class="o">{</span>
+</span><span class='line'>      <span class="kd">public</span> <span class="kd">static</span> <span class="kd">function </span><span class="nf">deleteContainer</span><span class="o">(</span>
+</span><span class='line'>        <span class="n">_container</span><span class="o">:</span><span class="kt">DisplayObjectContainer</span><span class="o">,</span>
+</span><span class='line'>        <span class="n">remainNum</span><span class="o">:</span><span class="kt">uint</span><span class="o">=</span><span class="mi">0</span><span class="o">,</span>
+</span><span class='line'>        <span class="n">toNull</span><span class="o">:</span><span class="kt">String</span><span class="o">=</span><span class="s2">&quot;String as Null&quot;</span><span class="o">,</span>
+</span><span class='line'>        <span class="n">isReverse</span><span class="o">:</span><span class="kt">Boolean</span><span class="o">=</span><span class="kc">false</span>
+</span><span class='line'>      <span class="o">):</span><span class="kt">void</span> <span class="o">{</span>
+</span><span class='line'>          <span class="k">if</span> <span class="o">(</span><span class="n">_container</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>              <span class="k">return</span><span class="o">;</span>
+</span><span class='line'>          <span class="o">}</span>
+</span><span class='line'>          <span class="k">if</span> <span class="o">(</span><span class="n">isReverse</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>              <span class="k">while</span> <span class="o">(</span><span class="n">_container</span><span class="o">.</span><span class="na">numChildren</span> <span class="o">&gt;</span> <span class="n">remainNum</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>                  <span class="n">_container</span><span class="o">.</span><span class="na">removeChildAt</span><span class="o">(</span><span class="n">_container</span><span class="o">.</span><span class="na">numChildren</span> <span class="o">-</span> <span class="mi">1</span><span class="o">);</span>
+</span><span class='line'>              <span class="o">}</span>
+</span><span class='line'>          <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+</span><span class='line'>              <span class="k">while</span> <span class="o">(</span><span class="n">_container</span><span class="o">.</span><span class="na">numChildren</span> <span class="o">&gt;</span> <span class="n">remainNum</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>                  <span class="n">_container</span><span class="o">.</span><span class="na">removeChildAt</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
+</span><span class='line'>              <span class="o">}</span>
+</span><span class='line'>          <span class="o">}</span>
+</span><span class='line'>          <span class="k">if</span> <span class="o">(</span><span class="n">toNull</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>              <span class="n">_container</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+</span><span class='line'>          <span class="o">}</span>
+</span><span class='line'>      <span class="o">}</span>
+</span><span class='line'>      <span class="kd">public</span> <span class="kd">static</span> <span class="kd">function </span><span class="nf">deleteMovieClip</span><span class="o">(</span>
+</span><span class='line'>        <span class="n">_mc</span><span class="o">:</span><span class="kt">MovieClip</span><span class="o">,</span>
+</span><span class='line'>        <span class="n">remainNum</span><span class="o">:</span><span class="kt">uint</span><span class="o">=</span><span class="mi">0</span><span class="o">,</span>
+</span><span class='line'>        <span class="n">toNull</span><span class="o">:</span><span class="kt">String</span><span class="o">=</span><span class="s2">&quot;String as Null&quot;</span><span class="o">,</span>
+</span><span class='line'>        <span class="n">isReverse</span><span class="o">:</span><span class="kt">Boolean</span><span class="o">=</span><span class="kc">false</span>
+</span><span class='line'>      <span class="o">):</span><span class="kt">void</span> <span class="o">{</span>
+</span><span class='line'>          <span class="k">if</span> <span class="o">(</span><span class="n">_mc</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>              <span class="k">return</span><span class="o">;</span>
+</span><span class='line'>          <span class="o">}</span>
+</span><span class='line'>          <span class="k">if</span> <span class="o">(</span><span class="n">isReverse</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>              <span class="k">while</span> <span class="o">(</span><span class="n">_mc</span><span class="o">.</span><span class="na">numChildren</span> <span class="o">&gt;</span> <span class="n">remainNum</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>                  <span class="n">_mc</span><span class="o">.</span><span class="na">removeChildAt</span><span class="o">(</span><span class="n">_mc</span><span class="o">.</span><span class="na">numChildren</span> <span class="o">-</span> <span class="mi">1</span><span class="o">);</span>
+</span><span class='line'>              <span class="o">}</span>
+</span><span class='line'>          <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+</span><span class='line'>              <span class="k">while</span> <span class="o">(</span><span class="n">_mc</span><span class="o">.</span><span class="na">numChildren</span> <span class="o">&gt;</span> <span class="n">remainNum</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>                  <span class="n">_mc</span><span class="o">.</span><span class="na">removeChildAt</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
+</span><span class='line'>              <span class="o">}</span>
+</span><span class='line'>          <span class="o">}</span>
+</span><span class='line'>          <span class="k">if</span> <span class="o">(</span><span class="n">toNull</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>              <span class="n">_mc</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+</span><span class='line'>          <span class="o">}</span>
+</span><span class='line'>      <span class="o">}</span>
+</span><span class='line'>      <span class="kd">public</span> <span class="kd">static</span> <span class="kd">function </span><span class="nf">deleteSprite</span><span class="o">(</span>
+</span><span class='line'>        <span class="n">_sp</span><span class="o">:</span><span class="kt">Sprite</span><span class="o">,</span>
+</span><span class='line'>        <span class="n">remainNum</span><span class="o">:</span><span class="kt">uint</span><span class="o">=</span><span class="mi">0</span><span class="o">,</span>
+</span><span class='line'>        <span class="n">toNull</span><span class="o">:</span><span class="kt">String</span><span class="o">=</span><span class="s2">&quot;String as Null&quot;</span><span class="o">,</span>
+</span><span class='line'>        <span class="n">isReverse</span><span class="o">:</span><span class="kt">Boolean</span><span class="o">=</span><span class="kc">false</span>
+</span><span class='line'>      <span class="o">):</span><span class="kt">void</span> <span class="o">{</span>
+</span><span class='line'>          <span class="k">if</span> <span class="o">(</span><span class="n">_sp</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>              <span class="k">return</span><span class="o">;</span>
+</span><span class='line'>          <span class="o">}</span>
+</span><span class='line'>          <span class="k">if</span> <span class="o">(</span><span class="n">isReverse</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>              <span class="k">while</span> <span class="o">(</span><span class="n">_sp</span><span class="o">.</span><span class="na">numChildren</span> <span class="o">&gt;</span> <span class="n">remainNum</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>                  <span class="n">_sp</span><span class="o">.</span><span class="na">removeChildAt</span><span class="o">(</span><span class="n">_sp</span><span class="o">.</span><span class="na">numChildren</span> <span class="o">-</span> <span class="mi">1</span><span class="o">);</span>
+</span><span class='line'>              <span class="o">}</span>
+</span><span class='line'>          <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+</span><span class='line'>              <span class="k">while</span> <span class="o">(</span><span class="n">_sp</span><span class="o">.</span><span class="na">numChildren</span> <span class="o">&gt;</span> <span class="n">remainNum</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>                  <span class="n">_sp</span><span class="o">.</span><span class="na">removeChildAt</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
+</span><span class='line'>              <span class="o">}</span>
+</span><span class='line'>          <span class="o">}</span>
+</span><span class='line'>          <span class="k">if</span> <span class="o">(</span><span class="n">toNull</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>              <span class="n">_sp</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+</span><span class='line'>          <span class="o">}</span>
+</span><span class='line'>      <span class="o">}</span>
+</span><span class='line'>  <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-13T18:57:00+09:00" pubdate data-updated="true">Mar 13<span>th</span>, 2013</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/actionscript3/'>actionscript3</a>, <a class='category' href='/blog/categories/download/'>download</a>
+
+
+</div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -1933,184 +2193,6 @@
 </div>
 </article>
 
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/03/11/screensaver-squall/">
-		
-			スクリーンセーバー「Squall」</a>
-	</h2>
-	<div class="entry-content">
-		<p><img src="http://lab.dolice.net/images/article/screensaver/squall.jpg" title="Squall" alt="Squall" /></p>
-
-<p>強風や嵐、混沌をコンセプトに作成したスクリーンセーバーです。下記よりプレビューとダウンロードが行えます。是非ご使用ください。</p>
-
-<h2>プレビュー</h2>
-
-<ul>
-<li><a href="http://dolice.net/mathobj/squall/" title="ムービープレビュー">Preview</a></li>
-</ul>
-
-
-<h3>ダウンロード</h3>
-
-<ul>
-<li><a href="http://dolice.net/php/dlc/dlcount.php?fname=ss_squall_installer.exe&amp;dir=/mathobj/squall/">Windows版</a></li>
-<li><a href="http://dolice.net/php/dlc/dlcount.php?fname=ss_squall.zip&amp;dir=/mathobj/squall/">Mac版</a></li>
-</ul>
-
-
-<h3>スクリーンセーバー一括ダウンロード</h3>
-
-<ul>
-<li><a href="https://github.com/masakihirokawa/screensavers" title="masakihirokawa/screensavers - GitHub">masakihirokawa/screensavers - GitHub</a></li>
-</ul>
-
-
-<h2>ソースコード</h2>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-</pre></td><td class='code'><pre><code class='actionscript'><span class='line'><span class="k">var</span> <span class="nx">sw</span><span class="o">:</span><span class="nb">Number</span> <span class="o">=</span> <span class="nb">Stage</span><span class="p">.</span><span class="nx">width</span><span class="o">;//</span><span class="err">ステージサイズ</span>
-</span><span class='line'><span class="k">var</span> <span class="nx">linemax</span><span class="o">:</span><span class="nb">Number</span> <span class="o">=</span> <span class="mi">192</span><span class="o">;//</span><span class="err">ライン最大複製個数</span>
-</span><span class='line'><span class="k">var</span> <span class="nx">xmin</span><span class="o">:</span><span class="nb">Number</span> <span class="o">=</span> <span class="nx">getXposition</span><span class="p">();</span><span class="c1">//x座標最小値</span>
-</span><span class='line'><span class="k">var</span> <span class="nx">xmax</span><span class="o">:</span><span class="nb">Number</span> <span class="o">=</span> <span class="nx">sw</span><span class="o">;//</span><span class="nx">x</span><span class="err">座標最大値</span>
-</span><span class='line'><span class="k">var</span> <span class="nx">rotationmin</span><span class="o">:</span><span class="nb">Number</span> <span class="o">=</span> <span class="o">-</span><span class="mi">15</span><span class="o">;//</span><span class="err">回転角度最小値</span>
-</span><span class='line'><span class="k">var</span> <span class="nx">rotationmax</span><span class="o">:</span><span class="nb">Number</span> <span class="o">=</span> <span class="mi">30</span><span class="o">;//</span><span class="err">回転角度最大値</span>
-</span><span class='line'><span class="k">var</span> <span class="nx">alphamin</span><span class="o">:</span><span class="nb">Number</span> <span class="o">=</span> <span class="mi">5</span><span class="o">;//</span><span class="err">アルファ最小値</span>
-</span><span class='line'><span class="k">var</span> <span class="nx">alphamax</span><span class="o">:</span><span class="nb">Number</span> <span class="o">=</span> <span class="mi">30</span><span class="o">;//</span><span class="err">アルファ最大値</span>
-</span><span class='line'><span class="k">var</span> <span class="nx">c</span><span class="o">:</span><span class="nb">Number</span><span class="o">;//</span><span class="err">ライン複製回数</span>
-</span><span class='line'><span class="k">var</span> <span class="nx">d</span><span class="o">:</span><span class="nb">Number</span><span class="o">;//</span><span class="err">繰り返し回数</span>
-</span><span class='line'><span class="k">var</span> <span class="nx">r</span><span class="o">:</span><span class="nb">Boolean</span><span class="o">;//</span><span class="kc">true</span><span class="o">:</span><span class="err">偶数回</span> <span class="o">/</span> <span class="kc">false</span><span class="o">:</span><span class="err">奇数回</span> <span class="o">|</span> <span class="err">繰り返す毎に切り替え</span>
-</span><span class='line'><span class="kd">function</span> <span class="nx">iterate</span><span class="p">()</span><span class="o">:</span><span class="kc">Void</span> <span class="p">{</span>
-</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="nx">c</span><span class="o">&lt;</span><span class="nx">linemax</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>      <span class="nf">eval</span><span class="p">(</span><span class="s2">&quot;squall_mc.line_mc&quot;</span><span class="p">).</span><span class="nx">duplicateMovieClip</span><span class="p">(</span><span class="s2">&quot;line&quot;</span><span class="o">+</span><span class="nx">c</span><span class="o">,</span><span class="nx">c</span><span class="p">);</span>
-</span><span class='line'>      <span class="k">var</span> <span class="nx">newline_mc</span><span class="o">:</span><span class="nb">MovieClip</span> <span class="o">=</span> <span class="nf">eval</span><span class="p">(</span><span class="s2">&quot;squall_mc.line&quot;</span><span class="o">+</span><span class="nx">c</span><span class="p">);</span>
-</span><span class='line'>      <span class="k">var</span> <span class="nx">pastline_mc</span><span class="o">:</span><span class="nb">MovieClip</span> <span class="o">=</span> <span class="nf">eval</span><span class="p">(</span><span class="s2">&quot;squall_mc.line&quot;</span><span class="o">+</span><span class="p">(</span><span class="nx">c</span><span class="o">-</span><span class="mi">1</span><span class="p">));</span>
-</span><span class='line'>      <span class="nx">newline_mc</span><span class="p">.</span><span class="nx">_x</span> <span class="o">=</span> <span class="nx">pastline_mc</span><span class="p">.</span><span class="nx">_x</span><span class="o">+</span><span class="nx">randRange</span><span class="p">(</span><span class="nx">xmin</span><span class="o">,</span> <span class="nx">xmax</span><span class="p">);</span>
-</span><span class='line'>      <span class="nx">newline_mc</span><span class="p">.</span><span class="nx">_rotation</span> <span class="o">=</span> <span class="nx">pastline_mc</span><span class="p">.</span><span class="nx">_rotation</span><span class="o">+</span><span class="nx">randRange</span><span class="p">(</span><span class="nx">rotationmin</span><span class="o">,</span> <span class="nx">rotationmax</span><span class="p">);</span>
-</span><span class='line'>      <span class="nx">newline_mc</span><span class="p">.</span><span class="nx">_alpha</span> <span class="o">=</span> <span class="nx">randRange</span><span class="p">(</span><span class="nx">alphamin</span><span class="o">,</span> <span class="nx">alphamax</span><span class="p">);</span>
-</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="nx">newline_mc</span><span class="p">.</span><span class="nx">_x</span><span class="o">&lt;</span><span class="nx">xmin</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>          <span class="nx">newline_mc</span><span class="p">.</span><span class="nx">_x</span> <span class="o">=</span> <span class="nx">xmin</span><span class="o">;</span>
-</span><span class='line'>      <span class="p">}</span>
-</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="nx">newline_mc</span><span class="p">.</span><span class="nx">_x</span><span class="o">&gt;</span><span class="nx">xmax</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>          <span class="nx">newline_mc</span><span class="p">.</span><span class="nx">_x</span> <span class="o">=</span> <span class="nx">xmax</span><span class="o">;</span>
-</span><span class='line'>      <span class="p">}</span>
-</span><span class='line'>      <span class="nx">c</span><span class="o">++;</span>
-</span><span class='line'>  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-</span><span class='line'>      <span class="nx">xmax</span> <span class="o">=</span> <span class="nx">randRange</span><span class="p">(</span><span class="mi">0</span><span class="o">,</span> <span class="nx">sw</span><span class="p">);</span>
-</span><span class='line'>      <span class="nx">xmin</span> <span class="o">=</span> <span class="nx">getXposition</span><span class="p">();</span>
-</span><span class='line'>      <span class="c1">//r ? r=false : r=true;</span>
-</span><span class='line'>      <span class="nx">d</span><span class="o">++;</span>
-</span><span class='line'>      <span class="nx">c</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="nx">squall_mc</span><span class="p">.</span><span class="nx">onEnterFrame</span> <span class="o">=</span> <span class="nx">iterate</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">function</span> <span class="nx">getXposition</span><span class="p">()</span><span class="o">:</span><span class="nb">Number</span> <span class="p">{</span>
-</span><span class='line'>  <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="o">*</span><span class="p">(</span><span class="nx">sw</span><span class="o">/</span><span class="mi">5</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="nx">resizeListener</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Object</span><span class="p">();</span>
-</span><span class='line'><span class="nx">resizeListener</span><span class="p">.</span><span class="nx">onResize</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>  <span class="nx">sw</span> <span class="o">=</span> <span class="nb">Stage</span><span class="p">.</span><span class="nx">width</span><span class="o">;</span>
-</span><span class='line'>  <span class="nx">xmin</span> <span class="o">=</span> <span class="nx">getXposition</span><span class="p">();</span>
-</span><span class='line'>  <span class="nx">xmax</span> <span class="o">=</span> <span class="nx">sw</span><span class="o">;</span>
-</span><span class='line'><span class="p">};</span>
-</span><span class='line'><span class="nb">Stage</span><span class="p">.</span><span class="nx">addListener</span><span class="p">(</span><span class="nx">resizeListener</span><span class="p">);</span>
-</span><span class='line'><span class="nx">resizeListener</span><span class="p">.</span><span class="nx">onResize</span><span class="p">();</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">function</span> <span class="nx">randRange</span><span class="p">(</span><span class="nx">min</span><span class="o">,</span> <span class="nx">max</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>  <span class="k">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span><span class="o">*</span><span class="p">(</span><span class="nx">max</span><span class="o">-</span><span class="nx">min</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span><span class="o">+</span><span class="nx">min</span><span class="o">;</span>
-</span><span class='line'>  <span class="k">return</span> <span class="p">(</span><span class="nx">i</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-03-11T00:40:00+09:00" pubdate data-updated="true">Mar 11<span>th</span>, 2013</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/actionscript/'>actionscript</a>, <a class='category' href='/blog/categories/download/'>download</a>, <a class='category' href='/blog/categories/screensaver/'>screensaver</a>
-
-
-</div>
-	
-</div>
-</article>
-
 <nav id="pagenavi">
     
         <a href="/blog/page/55/" class="prev">Prev</a>
@@ -2148,7 +2230,7 @@
   <div id="category" class="information-box">
 <section>
   <h1>Categories</h1>
-  <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (45)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (155)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (36)</a></li></ul>
+  <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (45)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (156)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (36)</a></li></ul>
 </section>
 
 
@@ -2157,6 +2239,10 @@
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/06/24/objc-ui-button-shows-touch-when-highlighted/">タップ時に背景が光るボタンのサンプル</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2013/06/21/objc-ui-accelerometer-ball-sample/">加速度センサーを使用した動くボールのサンプル</a>
@@ -2192,10 +2278,6 @@
     
       <li class="post">
         <a href="/blog/2013/06/11/objc-multi-touch/">マルチタッチの検知</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/06/09/objc-flick/">上下左右フリックの検知</a>
       </li>
     
   </ul>
