@@ -6,15 +6,11 @@
 	<title>Dolice Lab</title>
 	
 	
-	<meta name="description" content="角丸のラベルを表示する方法を以下に記載します。 必要な手順 QuartzCore.frameworkを読み込みます
-ソースコードの任意の箇所でラベルを角丸に指定します
-[[myLabel layer] setCornerRadius:8.0]; サンプルダウンロード https://github &hellip;">
+	<meta name="description" content="GPSから緯度と経度を取得し、矢印が北を向くコンパスのサンプルを作成しました。 サンプルダウンロード https://github.com/masakihirokawa/xcode-compass 必要なフレームワーク CoreLocation.framework ソースコード &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	<meta property="og:title" content="Dolice Lab" />
-<meta property="og:description" content="角丸のラベルを表示する方法を以下に記載します。 必要な手順 QuartzCore.frameworkを読み込みます
-ソースコードの任意の箇所でラベルを角丸に指定します
-[[myLabel layer] setCornerRadius:8.0]; サンプルダウンロード https://github &hellip;" />
+<meta property="og:description" content="GPSから緯度と経度を取得し、矢印が北を向くコンパスのサンプルを作成しました。 サンプルダウンロード https://github.com/masakihirokawa/xcode-compass 必要なフレームワーク CoreLocation.framework ソースコード &hellip;" />
 <meta property="og:url" content="http://lab.dolice.net/blog/page/36/" />
 <meta property="og:image" content="http://lab.dolice.net/images/facebook-icon.jpg" />
 <meta property="og:author" content="Masaki Hirokawa" />
@@ -88,6 +84,267 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/03/30/download-xcode-objc-compass/">
+		
+			緯度と経度を取得しコンパスを作成する</a>
+	</h2>
+	<div class="entry-content">
+		<p>GPSから緯度と経度を取得し、矢印が北を向くコンパスのサンプルを作成しました。</p>
+
+<h2>サンプルダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/xcode-compass">https://github.com/masakihirokawa/xcode-compass</a></li>
+</ul>
+
+
+<h2>必要なフレームワーク</h2>
+
+<ul>
+<li>CoreLocation.framework</li>
+</ul>
+
+
+<h2>ソースコード</h2>
+
+<h3>ViewController.h</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;UIKit/UIKit.h&gt;</span>
+</span><span class='line'><span class="cp">#import &lt;CoreLocation/CoreLocation.h&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> : <span class="nc">UIViewController</span> <span class="o">&lt;</span><span class="n">CLLocationManagerDelegate</span><span class="o">&gt;</span> <span class="p">{</span>
+</span><span class='line'>  <span class="n">CLLocationManager</span> <span class="o">*</span><span class="n">_locationManager</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">weak</span><span class="p">,</span> <span class="n">nonatomic</span><span class="p">)</span> <span class="kt">IBOutlet</span> <span class="n">UILabel</span> <span class="o">*</span><span class="n">latLabel</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">weak</span><span class="p">,</span> <span class="n">nonatomic</span><span class="p">)</span> <span class="kt">IBOutlet</span> <span class="n">UILabel</span> <span class="o">*</span><span class="n">lngLabel</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">weak</span><span class="p">,</span> <span class="n">nonatomic</span><span class="p">)</span> <span class="kt">IBOutlet</span> <span class="n">UIImageView</span> <span class="o">*</span><span class="n">compass</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>ViewController.m</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;ViewController.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> <span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">ViewController</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
+</span><span class='line'>  <span class="n">_locationManager</span> <span class="o">=</span> <span class="p">[[</span><span class="n">CLLocationManager</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>  <span class="n">_locationManager</span><span class="p">.</span><span class="n">delegate</span> <span class="o">=</span> <span class="n">self</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">_locationManager</span><span class="p">.</span><span class="n">desiredAccuracy</span> <span class="o">=</span> <span class="n">kCLLocationAccuracyHundredMeters</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">_locationManager</span><span class="p">.</span><span class="n">distanceFilter</span> <span class="o">=</span> <span class="n">kCLDistanceFilterNone</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">_locationManager</span> <span class="n">startUpdatingLocation</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">_locationManager</span> <span class="n">startUpdatingHeading</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">locationManager:</span><span class="p">(</span><span class="n">CLLocationManager</span> <span class="o">*</span><span class="p">)</span><span class="nv">manager</span>
+</span><span class='line'>    <span class="nf">didUpdateToLocation:</span><span class="p">(</span><span class="n">CLLocation</span> <span class="o">*</span><span class="p">)</span><span class="nv">newLocation</span> <span class="nf">fromLocation:</span><span class="p">(</span><span class="n">CLLocation</span> <span class="o">*</span><span class="p">)</span><span class="nv">oldLocation</span> <span class="p">{</span>
+</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">latLabel</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">@&quot;緯度=%g&quot;</span><span class="p">,</span> <span class="n">newLocation</span><span class="p">.</span><span class="n">coordinate</span><span class="p">.</span><span class="n">latitude</span><span class="p">];</span>
+</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">lngLabel</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">@&quot;軽度=%g&quot;</span><span class="p">,</span> <span class="n">newLocation</span><span class="p">.</span><span class="n">coordinate</span><span class="p">.</span><span class="n">longitude</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">locationManager:</span><span class="p">(</span><span class="n">CLLocationManager</span> <span class="o">*</span><span class="p">)</span><span class="nv">manager</span>
+</span><span class='line'>       <span class="nf">didUpdateHeading:</span><span class="p">(</span><span class="n">CLHeading</span> <span class="o">*</span><span class="p">)</span><span class="nv">heading</span> <span class="p">{</span>
+</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">compass</span><span class="p">.</span><span class="n">transform</span> <span class="o">=</span> <span class="n">CGAffineTransformMakeRotation</span><span class="p">(</span><span class="o">-</span><span class="n">heading</span><span class="p">.</span><span class="n">magneticHeading</span> <span class="o">*</span> <span class="n">M_PI</span><span class="o">/</span><span class="mi">180</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">didReceiveMemoryWarning</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">super</span> <span class="n">didReceiveMemoryWarning</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-30T19:12:00+09:00" pubdate data-updated="true">Mar 30<span>th</span>, 2013</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/download/'>download</a>, <a class='category' href='/blog/categories/objective-c/'>objective-c</a>, <a class='category' href='/blog/categories/xcode/'>xcode</a>
+
+
+</div>
+	
+</div>
+</article>
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/03/30/objc-number-with-int/">
+		
+			配列に数値を挿入する</a>
+	</h2>
+	<div class="entry-content">
+		<p>配列に数値を代入する方法を以下に記載します。</p>
+
+<h2>サンプルダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-number-with-int">https://github.com/masakihirokawa/objc-number-with-int</a></li>
+</ul>
+
+
+<h2>ソースコード</h2>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">main</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="c1">//配列に数値をセット</span>
+</span><span class='line'>  <span class="n">NSArray</span> <span class="o">*</span><span class="n">myArray</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSArray</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithObjects:</span>
+</span><span class='line'>                      <span class="p">[</span><span class="n">NSNumber</span> <span class="nl">numberWithInt:</span><span class="mi">0</span><span class="p">],</span>
+</span><span class='line'>                      <span class="p">[</span><span class="n">NSNumber</span> <span class="nl">numberWithInt:</span><span class="mi">0</span><span class="p">],</span>
+</span><span class='line'>                      <span class="p">[</span><span class="n">NSNumber</span> <span class="nl">numberWithInt:</span><span class="mi">320</span><span class="p">],</span>
+</span><span class='line'>                      <span class="p">[</span><span class="n">NSNumber</span> <span class="nl">numberWithInt:</span><span class="mi">568</span><span class="p">],</span>
+</span><span class='line'>                      <span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;myArray: %@&quot;</span><span class="p">,</span> <span class="n">myArray</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">//変更可能な配列に数値を挿入</span>
+</span><span class='line'>  <span class="n">NSMutableArray</span> <span class="o">*</span><span class="n">rectangle</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSMutableArray</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">rectangle</span> <span class="nl">addObject:</span><span class="p">[</span><span class="n">NSNumber</span> <span class="nl">numberWithInt:</span><span class="mi">0</span><span class="p">]];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">rectangle</span> <span class="nl">addObject:</span><span class="p">[</span><span class="n">NSNumber</span> <span class="nl">numberWithInt:</span><span class="mi">0</span><span class="p">]];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">rectangle</span> <span class="nl">addObject:</span><span class="p">[</span><span class="n">NSNumber</span> <span class="nl">numberWithInt:</span><span class="mi">320</span><span class="p">]];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">rectangle</span> <span class="nl">addObject:</span><span class="p">[</span><span class="n">NSNumber</span> <span class="nl">numberWithInt:</span><span class="mi">568</span><span class="p">]];</span>
+</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;rectangle: %@&quot;</span><span class="p">,</span> <span class="n">rectangle</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>出力結果</h2>
+
+<blockquote><p>myArray: (0, 0, 320, 568)<br />
+rectangle: (0, 0, 320, 568 )</p></blockquote>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-30T17:37:00+09:00" pubdate data-updated="true">Mar 30<span>th</span>, 2013</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>
+
+
+</div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -217,208 +474,6 @@
 </div>
 </article>
 
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/03/29/objc-array-by-adding-objects-from-array/">
-		
-			配列の結合</a>
-	</h2>
-	<div class="entry-content">
-		<p>配列を結合するには、「arrayByAddingObjectsFromArray」メソッドを使用します。以下にサンプルを作成しました。</p>
-
-<h2>サンプルダウンロード</h2>
-
-<ul>
-<li><a href="https://github.com/masakihirokawa/objc-array-by-adding-objects-from-array">https://github.com/masakihirokawa/objc-array-by-adding-objects-from-array</a></li>
-</ul>
-
-
-<h2>ソースコード</h2>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">main</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="c1">//配列を生成する</span>
-</span><span class='line'>  <span class="n">NSArray</span> <span class="o">*</span><span class="n">myArray</span><span class="p">;</span>
-</span><span class='line'>  <span class="n">myArray</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSArray</span> <span class="nl">arrayWithObjects:</span>
-</span><span class='line'>             <span class="s">@&quot;Apple&quot;</span><span class="p">,</span> <span class="s">@&quot;Banana&quot;</span><span class="p">,</span> <span class="s">@&quot;Orange&quot;</span><span class="p">,</span> <span class="nb">nil</span><span class="p">];</span>
-</span><span class='line'>  <span class="n">NSArray</span> <span class="o">*</span><span class="n">myArraySecond</span><span class="p">;</span>
-</span><span class='line'>  <span class="n">myArraySecond</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSArray</span> <span class="nl">arrayWithObjects:</span>
-</span><span class='line'>             <span class="s">@&quot;Lemon&quot;</span><span class="p">,</span> <span class="s">@&quot;Grapes&quot;</span><span class="p">,</span> <span class="nb">nil</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="c1">//配列を結合する</span>
-</span><span class='line'>  <span class="n">NSArray</span> <span class="o">*</span><span class="n">linkedArray</span><span class="p">;</span>
-</span><span class='line'>  <span class="n">linkedArray</span> <span class="o">=</span> <span class="p">[</span><span class="n">myArray</span> <span class="nl">arrayByAddingObjectsFromArray:</span><span class="n">myArraySecond</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;%@&quot;</span><span class="p">,</span> <span class="n">linkedArray</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>実行結果</h2>
-
-<blockquote><p>Apple,<br />
-Banana,<br />
-Orange,<br />
-Lemon,<br />
-Grapes</p></blockquote>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-03-29T10:41:00+09:00" pubdate data-updated="true">Mar 29<span>th</span>, 2013</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>
-
-
-</div>
-	
-</div>
-</article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/03/29/xcode-objc-uinavigationbar-title/">
-		
-			ナビゲーションバーのフォントスタイルをカスタマイズする</a>
-	</h2>
-	<div class="entry-content">
-		<p>ラベルを使用することで、ナビゲーションバーに表示するタイトルテキストのフォントスタイルをカスタマイズできます。以下にサンプルを作成しましたので、ご参考になれば幸いです。</p>
-
-<h2>サンプルダウンロード</h2>
-
-<ul>
-<li><a href="https://github.com/masakihirokawa/objc-ui-navigationbar-title">https://github.com/masakihirokawa/objc-ui-navigationbar-title</a></li>
-</ul>
-
-
-<h2>ソースコード</h2>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">initNavigationBar</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="c1">//UINavigationItem定義</span>
-</span><span class='line'>  <span class="n">UINavigationItem</span> <span class="o">*</span><span class="n">navigation</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UINavigationItem</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'>  <span class="c1">//タイトルフォント設定</span>
-</span><span class='line'>  <span class="n">UILabel</span><span class="o">*</span> <span class="n">label</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UILabel</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">320</span><span class="p">,</span> <span class="mi">44</span><span class="p">)];</span>
-</span><span class='line'>  <span class="c1">//背景色指定</span>
-</span><span class='line'>  <span class="n">label</span><span class="p">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIColor</span> <span class="n">clearColor</span><span class="p">];</span>
-</span><span class='line'>  <span class="c1">//フォントサイズ指定</span>
-</span><span class='line'>  <span class="n">label</span><span class="p">.</span><span class="n">font</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIFont</span> <span class="nl">boldSystemFontOfSize:</span><span class="mf">17.0</span><span class="p">];</span>
-</span><span class='line'>  <span class="c1">//影の色指定</span>
-</span><span class='line'>  <span class="n">label</span><span class="p">.</span><span class="n">shadowColor</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIColor</span> <span class="nl">colorWithWhite:</span><span class="mf">0.0</span> <span class="nl">alpha:</span><span class="mf">0.5</span><span class="p">];</span>
-</span><span class='line'>  <span class="c1">//フォントをセンタリングする</span>
-</span><span class='line'>  <span class="n">label</span><span class="p">.</span><span class="n">textAlignment</span> <span class="o">=</span> <span class="n">NSTextAlignmentCenter</span><span class="p">;</span>
-</span><span class='line'>  <span class="c1">//フォントの色指定</span>
-</span><span class='line'>  <span class="n">label</span><span class="p">.</span><span class="n">textColor</span> <span class="o">=</span><span class="p">[</span><span class="n">UIColor</span> <span class="n">whiteColor</span><span class="p">];</span>
-</span><span class='line'>  <span class="c1">//タイトルテキスト指定</span>
-</span><span class='line'>  <span class="n">label</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="s">@&quot;タイトル&quot;</span><span class="p">;</span>
-</span><span class='line'>  <span class="c1">//UINavigationItemの titleViewにラベルを挿入</span>
-</span><span class='line'>  <span class="n">navigation</span><span class="p">.</span><span class="n">titleView</span> <span class="o">=</span> <span class="n">label</span><span class="p">;</span>
-</span><span class='line'>  <span class="c1">//戻るボタンを消す</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">self</span> <span class="nl">initDummyButton:</span><span class="n">navigation</span><span class="p">];</span>
-</span><span class='line'>  <span class="c1">//UINavigationItemを UINavigationBarに追加</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">navigationBar</span> <span class="nl">pushNavigationItem:</span><span class="n">navigation</span> <span class="nl">animated:</span><span class="n">NO</span><span class="p">];</span>
-</span><span class='line'>  <span class="c1">//UINavigationBarをステージ上に追加</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">insertSubview:</span><span class="n">self</span><span class="p">.</span><span class="n">navigationBar</span> <span class="nl">atIndex:</span><span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">subviews</span> <span class="n">count</span><span class="p">]];</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-03-29T09:19:00+09:00" pubdate data-updated="true">Mar 29<span>th</span>, 2013</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>, <a class='category' href='/blog/categories/xcode/'>xcode</a>
-
-
-</div>
-	
-</div>
-</article>
-
 <nav id="pagenavi">
     
         <a href="/blog/page/35/" class="prev">Prev</a>
@@ -456,7 +511,7 @@ Grapes</p></blockquote>
   <div id="category" class="information-box">
 <section>
   <h1>Categories</h1>
-  <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (46)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (159)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (36)</a></li></ul>
+  <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (48)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (161)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (36)</a></li></ul>
 </section>
 
 
@@ -465,6 +520,14 @@ Grapes</p></blockquote>
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/07/01/download-objc-classes-2013-jul/">Objective-Cクラスのまとめ</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/07/01/download-objc-classes-dc-activity-indicator/">アクティビティインジケーターを制御する「DCActivityIndicator」クラス</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2013/06/30/download-objc-classes-dc-social/">Facebook/Twitter/LINEへ投稿する「DCSocial」クラス</a>
@@ -496,14 +559,6 @@ Grapes</p></blockquote>
     
       <li class="post">
         <a href="/blog/2013/06/17/objc-label-for-motion/">シェイクモーションの検知</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/06/16/objc-pinch-in-pinch-out/">ピンチイン/ピンチアウトの検知</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/06/14/objc-double-slide/">ダブルスライドの検知</a>
       </li>
     
   </ul>
@@ -565,6 +620,22 @@ Grapes</p></blockquote>
   </header>
   <article id="recommended-inner">
     <div id="recommended-wrapper">
+      <div class="recommended-container" class="clear-left">
+        <dl class="recommended-product">
+          <dt class="recommended-product-image"><a href="http://www.amazon.co.jp/gp/product/4844333852/ref=as_li_qf_sp_asin_il?ie=UTF8&camp=247&creative=1211&creativeASIN=4844333852&linkCode=as2&tag=pinocchio-22"><img border="0" src="http://ws-fe.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=4844333852&Format=_SL110_&ID=AsinImage&MarketPlace=JP&ServiceVersion=20070822&WS=1&tag=pinocchio-22" ></a><img src="http://ir-jp.amazon-adsystem.com/e/ir?t=pinocchio-22&l=as2&o=9&a=4844333852" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" /></dt>
+          <dd class="recommended-product-detail">
+            <p class="recommended-product-name"><b><a href="http://www.amazon.co.jp/gp/product/4844333852/ref=as_li_qf_sp_asin_tl?ie=UTF8&camp=247&creative=1211&creativeASIN=4844333852&linkCode=as2&tag=pinocchio-22">iPhoneアプリ開発エキスパートガイド iOS 6対応</a><img src="http://ir-jp.amazon-adsystem.com/e/ir?t=pinocchio-22&l=as2&o=9&a=4844333852" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" /></b></p>
+            <p class="recommended-product-caption">iOS6に完全対応した内容で、これからモダンスタイルで開発したい方に必携の1冊です。他の参考書では動作しないコードがよくありますが、この参考書のコードは全て動作しました。初心者の方のみではなく、中級者の方にもお薦めできる内容です。</p></dd>
+        </dl>
+      </div>
+      <div class="recommended-container">
+        <dl class="recommended-product">
+          <dt class="recommended-product-image"><a href="http://www.amazon.co.jp/gp/product/477751711X/ref=as_li_qf_sp_asin_il?ie=UTF8&camp=247&creative=1211&creativeASIN=477751711X&linkCode=as2&tag=pinocchio-22"><img border="0" src="http://ws-fe.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=477751711X&Format=_SL110_&ID=AsinImage&MarketPlace=JP&ServiceVersion=20070822&WS=1&tag=pinocchio-22" ></a><img src="http://ir-jp.amazon-adsystem.com/e/ir?t=pinocchio-22&l=as2&o=9&a=477751711X" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" /></dt>
+          <dd class="recommended-product-detail">
+            <p class="recommended-product-name"><b><a href="http://www.amazon.co.jp/gp/product/477751711X/ref=as_li_qf_sp_asin_tl?ie=UTF8&camp=247&creative=1211&creativeASIN=477751711X&linkCode=as2&tag=pinocchio-22">cocos2dでつくるiPhoneゲーム―自由で速い、ゲーム用フレームワークを使う! (I・O BOOKS)</a><img src="http://ir-jp.amazon-adsystem.com/e/ir?t=pinocchio-22&l=as2&o=9&a=477751711X" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" /></b></p>
+            <p class="recommended-product-caption">cocos2dでゲームを開発したいという方に必携の1冊です。実際にゲームを作りながら学習して行く内容で、とても身に付き易い構成になっています。バージョン2.0以降に対応した日本語のリファレンスは、2013年7月現在でこの1冊のみです。</p></dd>
+        </dl>
+      </div>
       <div class="recommended-container" class="clear-left">
         <dl class="recommended-product">
           <dt class="recommended-product-image"><a href="http://www.amazon.co.jp/gp/product/4797369434/ref=as_li_qf_sp_asin_il?ie=UTF8&camp=247&creative=1211&creativeASIN=4797369434&linkCode=as2&tag=pinocchio-22"><img border="0" src="http://ws.assoc-amazon.jp/widgets/q?_encoding=UTF8&ASIN=4797369434&Format=_SL110_&ID=AsinImage&MarketPlace=JP&ServiceVersion=20070822&WS=1&tag=pinocchio-22" ></a><img src="http://www.assoc-amazon.jp/e/ir?t=pinocchio-22&l=as2&o=9&a=4797369434" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" /></dt>

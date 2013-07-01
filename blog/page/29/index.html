@@ -6,11 +6,11 @@
 	<title>Dolice Lab</title>
 	
 	
-	<meta name="description" content="UISwitchで入力された値をラベルに表示するサンプルを以下に作成しました。スイッチを切り替えるとラベルの表示も切り替わります。 サンプルダウンロード https://github.com/masakihirokawa/xcode-ui-switch 必要な手順 UISwitchを &hellip;">
+	<meta name="description" content="ユーザーデフォルトを使用して入力されたテキストを保存するサンプルを作成しました。入力された値を保存し、次回起動時に値を引き継ぎます。下記よりサンプルのダウンロードが行えます。 サンプルダウンロード https://github.com/masakihirokawa/objc-ns-user- &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	<meta property="og:title" content="Dolice Lab" />
-<meta property="og:description" content="UISwitchで入力された値をラベルに表示するサンプルを以下に作成しました。スイッチを切り替えるとラベルの表示も切り替わります。 サンプルダウンロード https://github.com/masakihirokawa/xcode-ui-switch 必要な手順 UISwitchを &hellip;" />
+<meta property="og:description" content="ユーザーデフォルトを使用して入力されたテキストを保存するサンプルを作成しました。入力された値を保存し、次回起動時に値を引き継ぎます。下記よりサンプルのダウンロードが行えます。 サンプルダウンロード https://github.com/masakihirokawa/objc-ns-user- &hellip;" />
 <meta property="og:url" content="http://lab.dolice.net/blog/page/29/" />
 <meta property="og:image" content="http://lab.dolice.net/images/facebook-icon.jpg" />
 <meta property="og:author" content="Masaki Hirokawa" />
@@ -84,6 +84,197 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/04/04/objc-ns-user-defaults/">
+		
+			ユーザーデフォルトを使用して入力されたテキストを保存する</a>
+	</h2>
+	<div class="entry-content">
+		<p>ユーザーデフォルトを使用して入力されたテキストを保存するサンプルを作成しました。入力された値を保存し、次回起動時に値を引き継ぎます。下記よりサンプルのダウンロードが行えます。</p>
+
+<h2>サンプルダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-ns-user-defaults">https://github.com/masakihirokawa/objc-ns-user-defaults</a></li>
+</ul>
+
+
+<h2>必要な手順</h2>
+
+<ol>
+<li>UITextFieldを MainStoryboardに配置し、プロパティとメソッドを定義します</li>
+<li>UITextFieldを controlキーを押しながらクリックし、Sent Eventsを Did End On Exitに設定します（これにより、returnキーが押された時に入力が確定されます）</li>
+</ol>
+
+
+<h2>ソースコード</h2>
+
+<h3>ViewController.h</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">weak</span><span class="p">,</span> <span class="n">nonatomic</span><span class="p">)</span> <span class="kt">IBOutlet</span> <span class="n">UITextField</span> <span class="o">*</span><span class="n">myTextField</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">inputText:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>ViewController.m</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//キーから値を取得する</span>
+</span><span class='line'>  <span class="n">NSUserDefaults</span> <span class="o">*</span><span class="n">defaults</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSUserDefaults</span> <span class="n">standardUserDefaults</span><span class="p">];</span>
+</span><span class='line'>  <span class="n">NSString</span> <span class="o">*</span><span class="n">defaultStr</span> <span class="o">=</span> <span class="p">[</span><span class="n">defaults</span> <span class="nl">stringForKey:</span><span class="s">@&quot;MY_KEY&quot;</span><span class="p">];</span>
+</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">myTextField</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">defaultStr</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">inputText:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span> <span class="p">{</span>
+</span><span class='line'>  <span class="c1">//指定したキーに入力された値を保存する</span>
+</span><span class='line'>  <span class="n">NSUserDefaults</span><span class="o">*</span> <span class="n">defaults</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSUserDefaults</span> <span class="n">standardUserDefaults</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">defaults</span> <span class="nl">setObject:</span> <span class="n">self</span><span class="p">.</span><span class="n">myTextField</span><span class="p">.</span><span class="n">text</span> <span class="nl">forKey:</span><span class="s">@&quot;MY_KEY&quot;</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">defaults</span> <span class="n">synchronize</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-04-04T21:21:00+09:00" pubdate data-updated="true">Apr 4<span>th</span>, 2013</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>
+
+
+</div>
+	
+</div>
+</article>
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/04/04/xcode-objc-ui-image-image-with-data/">
+		
+			指定した URLの画像を UIImageViewに表示する</a>
+	</h2>
+	<div class="entry-content">
+		<p>指定した URLの画像を UIImageViewに表示するサンプルを作成しました。下記よりサンプルのダウンロードが行えます。</p>
+
+<h2>サンプルダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-ui-image-image-with-data">https://github.com/masakihirokawa/objc-ui-image-image-with-data</a></li>
+</ul>
+
+
+<h2>必要な手順</h2>
+
+<ol>
+<li>UIImageViewを MainStoryboardに配置し、ヘッダファイルにプロパティ定義します</li>
+</ol>
+
+
+<h2>ソースコード</h2>
+
+<h3>ViewController.h</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">weak</span><span class="p">,</span> <span class="n">nonatomic</span><span class="p">)</span> <span class="kt">IBOutlet</span> <span class="n">UIImageView</span> <span class="o">*</span><span class="n">myImageView</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>ViewController.m</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setImage</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="n">NSURL</span> <span class="o">*</span><span class="n">myURL</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSURL</span> <span class="nl">URLWithString:</span><span class="s">@&quot;http://dolice.net/v7/images/wallpaper/iPhone5/Pandora_640_1136.jpg&quot;</span><span class="p">];</span>
+</span><span class='line'>  <span class="n">NSData</span> <span class="o">*</span> <span class="n">myData</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSData</span> <span class="nl">dataWithContentsOfURL:</span><span class="n">myURL</span><span class="p">];</span>
+</span><span class='line'>  <span class="n">UIImage</span> <span class="o">*</span><span class="n">myImage</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIImage</span> <span class="nl">imageWithData:</span><span class="n">myData</span><span class="p">];</span>
+</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">myImageView</span><span class="p">.</span><span class="n">image</span> <span class="o">=</span> <span class="n">myImage</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-04-04T18:29:00+09:00" pubdate data-updated="true">Apr 4<span>th</span>, 2013</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>, <a class='category' href='/blog/categories/xcode/'>xcode</a>
+
+
+</div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -181,198 +372,6 @@
 </div>
 </article>
 
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/04/03/xcode-objc-ui-slider/">
-		
-			UISliderを使用してラベルの値を変化させる</a>
-	</h2>
-	<div class="entry-content">
-		<p>UISliderをスライドさせた値をラベルに表示するサンプルを作成しました。</p>
-
-<p>スライダーの最大値を1と指定し、スライダーを離した時だけラベルの値を更新するよう設定しています（Continuousのチェックボックスをオフ）。</p>
-
-<h2>サンプルダウンロード</h2>
-
-<ul>
-<li><a href="https://github.com/masakihirokawa/objc-ui-slider">https://github.com/masakihirokawa/objc-ui-slider</a></li>
-</ul>
-
-
-<h2>必要な手順</h2>
-
-<ol>
-<li>UISliderを MainStoryboardに配置し、ヘッダファイルにプロパティ定義します</li>
-<li>UISliderが動作した時のメソッドをヘッダファイルに定義します</li>
-<li>MainStoryboardにあるスライダーを選択し、Update Eventsの Continuousのチェックボックスをオフにします（これによりスライダーを離した時のみ値が更新されるようになります）</li>
-<li>スライダーからの値を表示するための UILabelを配置し、ヘッダファイルにプロパティ定義します</li>
-</ol>
-
-
-<h2>ソースコード</h2>
-
-<h3>ViewController.h</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//ラベルのプロパティ定義</span>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">weak</span><span class="p">,</span> <span class="n">nonatomic</span><span class="p">)</span> <span class="kt">IBOutlet</span> <span class="n">UILabel</span> <span class="o">*</span><span class="n">myLabel</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//テキストフィールドのプロパティ定義</span>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">weak</span><span class="p">,</span> <span class="n">nonatomic</span><span class="p">)</span> <span class="kt">IBOutlet</span> <span class="n">UITextField</span> <span class="o">*</span><span class="n">myTextField</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//テキスト入力のメソッド定義</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">inputText:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span><span class="p">;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>ViewController.m</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">inputText:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span> <span class="p">{</span>
-</span><span class='line'>  <span class="c1">//入力されたテキストをラベルに表示</span>
-</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">myLabel</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">myTextField</span><span class="p">.</span><span class="n">text</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-04-03T10:31:00+09:00" pubdate data-updated="true">Apr 3<span>rd</span>, 2013</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>, <a class='category' href='/blog/categories/xcode/'>xcode</a>
-
-
-</div>
-	
-</div>
-</article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/04/03/objc-remove-object-at-index/">
-		
-			配列の指定した位置にあるオブジェクトを削除する</a>
-	</h2>
-	<div class="entry-content">
-		<p>配列のインデックス番号を指定しオブジェクトを削除するサンプルを以下に作成しました。</p>
-
-<h2>サンプルダウンロード</h2>
-
-<ul>
-<li><a href="https://github.com/masakihirokawa/objc-remove-object-at-index">https://github.com/masakihirokawa/objc-remove-object-at-index</a></li>
-</ul>
-
-
-<h2>ソースコード</h2>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">main</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="c1">//配列を生成する</span>
-</span><span class='line'>  <span class="n">NSMutableArray</span> <span class="o">*</span><span class="n">myArray</span><span class="p">;</span>
-</span><span class='line'>  <span class="n">myArray</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSMutableArray</span> <span class="nl">arrayWithObjects:</span>
-</span><span class='line'>             <span class="s">@&quot;Apple&quot;</span><span class="p">,</span> <span class="s">@&quot;Banana&quot;</span><span class="p">,</span> <span class="s">@&quot;Orange&quot;</span><span class="p">,</span> <span class="nb">nil</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="c1">//順序付けされたセットを生成する</span>
-</span><span class='line'>  <span class="n">NSMutableOrderedSet</span> <span class="o">*</span><span class="n">orderedSet</span><span class="p">;</span>
-</span><span class='line'>  <span class="n">orderedSet</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSMutableOrderedSet</span> <span class="nl">orderedSetWithArray:</span><span class="n">myArray</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="c1">//インデックス番号を指定してオブジェクトを削除する</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">myArray</span> <span class="nl">removeObjectAtIndex:</span><span class="mi">0</span><span class="p">];</span>
-</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;myArray: %@&quot;</span><span class="p">,</span> <span class="n">myArray</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="p">[</span><span class="n">orderedSet</span> <span class="nl">removeObjectAtIndex:</span><span class="mi">0</span><span class="p">];</span>
-</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;orderedSet: %@&quot;</span><span class="p">,</span> <span class="n">orderedSet</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>出力結果</h2>
-
-<blockquote><p>myArray: Banana, Orange<br />
-orderedSet: Banana, Orange</p></blockquote>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-04-03T10:13:00+09:00" pubdate data-updated="true">Apr 3<span>rd</span>, 2013</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>
-
-
-</div>
-	
-</div>
-</article>
-
 <nav id="pagenavi">
     
         <a href="/blog/page/28/" class="prev">Prev</a>
@@ -410,7 +409,7 @@ orderedSet: Banana, Orange</p></blockquote>
   <div id="category" class="information-box">
 <section>
   <h1>Categories</h1>
-  <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (46)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (159)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (36)</a></li></ul>
+  <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (48)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (161)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (36)</a></li></ul>
 </section>
 
 
@@ -419,6 +418,14 @@ orderedSet: Banana, Orange</p></blockquote>
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/07/01/download-objc-classes-2013-jul/">Objective-Cクラスのまとめ</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/07/01/download-objc-classes-dc-activity-indicator/">アクティビティインジケーターを制御する「DCActivityIndicator」クラス</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2013/06/30/download-objc-classes-dc-social/">Facebook/Twitter/LINEへ投稿する「DCSocial」クラス</a>
@@ -450,14 +457,6 @@ orderedSet: Banana, Orange</p></blockquote>
     
       <li class="post">
         <a href="/blog/2013/06/17/objc-label-for-motion/">シェイクモーションの検知</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/06/16/objc-pinch-in-pinch-out/">ピンチイン/ピンチアウトの検知</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/06/14/objc-double-slide/">ダブルスライドの検知</a>
       </li>
     
   </ul>
@@ -519,6 +518,22 @@ orderedSet: Banana, Orange</p></blockquote>
   </header>
   <article id="recommended-inner">
     <div id="recommended-wrapper">
+      <div class="recommended-container" class="clear-left">
+        <dl class="recommended-product">
+          <dt class="recommended-product-image"><a href="http://www.amazon.co.jp/gp/product/4844333852/ref=as_li_qf_sp_asin_il?ie=UTF8&camp=247&creative=1211&creativeASIN=4844333852&linkCode=as2&tag=pinocchio-22"><img border="0" src="http://ws-fe.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=4844333852&Format=_SL110_&ID=AsinImage&MarketPlace=JP&ServiceVersion=20070822&WS=1&tag=pinocchio-22" ></a><img src="http://ir-jp.amazon-adsystem.com/e/ir?t=pinocchio-22&l=as2&o=9&a=4844333852" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" /></dt>
+          <dd class="recommended-product-detail">
+            <p class="recommended-product-name"><b><a href="http://www.amazon.co.jp/gp/product/4844333852/ref=as_li_qf_sp_asin_tl?ie=UTF8&camp=247&creative=1211&creativeASIN=4844333852&linkCode=as2&tag=pinocchio-22">iPhoneアプリ開発エキスパートガイド iOS 6対応</a><img src="http://ir-jp.amazon-adsystem.com/e/ir?t=pinocchio-22&l=as2&o=9&a=4844333852" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" /></b></p>
+            <p class="recommended-product-caption">iOS6に完全対応した内容で、これからモダンスタイルで開発したい方に必携の1冊です。他の参考書では動作しないコードがよくありますが、この参考書のコードは全て動作しました。初心者の方のみではなく、中級者の方にもお薦めできる内容です。</p></dd>
+        </dl>
+      </div>
+      <div class="recommended-container">
+        <dl class="recommended-product">
+          <dt class="recommended-product-image"><a href="http://www.amazon.co.jp/gp/product/477751711X/ref=as_li_qf_sp_asin_il?ie=UTF8&camp=247&creative=1211&creativeASIN=477751711X&linkCode=as2&tag=pinocchio-22"><img border="0" src="http://ws-fe.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=477751711X&Format=_SL110_&ID=AsinImage&MarketPlace=JP&ServiceVersion=20070822&WS=1&tag=pinocchio-22" ></a><img src="http://ir-jp.amazon-adsystem.com/e/ir?t=pinocchio-22&l=as2&o=9&a=477751711X" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" /></dt>
+          <dd class="recommended-product-detail">
+            <p class="recommended-product-name"><b><a href="http://www.amazon.co.jp/gp/product/477751711X/ref=as_li_qf_sp_asin_tl?ie=UTF8&camp=247&creative=1211&creativeASIN=477751711X&linkCode=as2&tag=pinocchio-22">cocos2dでつくるiPhoneゲーム―自由で速い、ゲーム用フレームワークを使う! (I・O BOOKS)</a><img src="http://ir-jp.amazon-adsystem.com/e/ir?t=pinocchio-22&l=as2&o=9&a=477751711X" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" /></b></p>
+            <p class="recommended-product-caption">cocos2dでゲームを開発したいという方に必携の1冊です。実際にゲームを作りながら学習して行く内容で、とても身に付き易い構成になっています。バージョン2.0以降に対応した日本語のリファレンスは、2013年7月現在でこの1冊のみです。</p></dd>
+        </dl>
+      </div>
       <div class="recommended-container" class="clear-left">
         <dl class="recommended-product">
           <dt class="recommended-product-image"><a href="http://www.amazon.co.jp/gp/product/4797369434/ref=as_li_qf_sp_asin_il?ie=UTF8&camp=247&creative=1211&creativeASIN=4797369434&linkCode=as2&tag=pinocchio-22"><img border="0" src="http://ws.assoc-amazon.jp/widgets/q?_encoding=UTF8&ASIN=4797369434&Format=_SL110_&ID=AsinImage&MarketPlace=JP&ServiceVersion=20070822&WS=1&tag=pinocchio-22" ></a><img src="http://www.assoc-amazon.jp/e/ir?t=pinocchio-22&l=as2&o=9&a=4797369434" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" /></dt>

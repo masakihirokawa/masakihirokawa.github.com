@@ -6,29 +6,11 @@
 	<title>Dolice Lab</title>
 	
 	
-	<meta name="description" content="一定時間後にメソッドを実行するには以下のように記述します。 ソースコード 1
-2
-3
-4
-5
-6
-7
-8
-9
-- (void)viewDidLoad //2.5秒後に myFuncメソッドを実行 [self performSelector:@selector(myFunc) withObject &hellip;">
+	<meta name="description" content="Objective-Cでフェードイン・フェードアウトアニメーションを実行するサンプルを以下に作成しました。ボタンを押すと背景画像がアニメーションします。 サンプルダウンロード https://github.com/masakihirokawa/objc-animations-fade &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	<meta property="og:title" content="Dolice Lab" />
-<meta property="og:description" content="一定時間後にメソッドを実行するには以下のように記述します。 ソースコード 1
-2
-3
-4
-5
-6
-7
-8
-9
-- (void)viewDidLoad //2.5秒後に myFuncメソッドを実行 [self performSelector:@selector(myFunc) withObject &hellip;" />
+<meta property="og:description" content="Objective-Cでフェードイン・フェードアウトアニメーションを実行するサンプルを以下に作成しました。ボタンを押すと背景画像がアニメーションします。 サンプルダウンロード https://github.com/masakihirokawa/objc-animations-fade &hellip;" />
 <meta property="og:url" content="http://lab.dolice.net/blog/page/33/" />
 <meta property="og:image" content="http://lab.dolice.net/images/facebook-icon.jpg" />
 <meta property="og:author" content="Masaki Hirokawa" />
@@ -107,6 +89,306 @@
     <article class="post">
 	<h2 class="title">
 		
+		<a href="/blog/2013/03/31/xcode-objc-animations-fade-in-out/">
+		
+			フェードイン・フェードアウトアニメーションの実行</a>
+	</h2>
+	<div class="entry-content">
+		<p>Objective-Cでフェードイン・フェードアウトアニメーションを実行するサンプルを以下に作成しました。ボタンを押すと背景画像がアニメーションします。</p>
+
+<h2>サンプルダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-animations-fade">https://github.com/masakihirokawa/objc-animations-fade</a></li>
+</ul>
+
+
+<h2>ソースコード</h2>
+
+<h3>ViewController.h</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;UIKit/UIKit.h&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> : <span class="nc">UIViewController</span> <span class="p">{</span>
+</span><span class='line'>  <span class="kt">BOOL</span> <span class="n">_isFadeIn</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">weak</span><span class="p">,</span> <span class="n">nonatomic</span><span class="p">)</span> <span class="kt">IBOutlet</span> <span class="n">UIButton</span> <span class="o">*</span><span class="n">sampleButton</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">weak</span><span class="p">,</span> <span class="n">nonatomic</span><span class="p">)</span> <span class="kt">IBOutlet</span> <span class="n">UIImageView</span> <span class="o">*</span><span class="n">sampleImageView</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">buttonFadeInOut:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>ViewController.m</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;ViewController.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> <span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">ViewController</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
+</span><span class='line'>  <span class="n">_isFadeIn</span> <span class="o">=</span> <span class="n">YES</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">didReceiveMemoryWarning</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">super</span> <span class="n">didReceiveMemoryWarning</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">buttonFadeInOut:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="n">_isFadeIn</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">//フェードアウトアニメーション実行</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="n">sampleImageFadeOut</span><span class="p">];</span>
+</span><span class='line'>    <span class="c1">//ボタンのテキストを変更</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">_sampleButton</span> <span class="nl">setTitle:</span><span class="s">@&quot;fadeIn&quot;</span> <span class="nl">forState:</span><span class="n">UIControlStateNormal</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">//フェードインアニメーション実行</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="n">sampleImageFadeIn</span><span class="p">];</span>
+</span><span class='line'>    <span class="c1">//ボタンのテキストを変更</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">_sampleButton</span> <span class="nl">setTitle:</span><span class="s">@&quot;fadeOut&quot;</span> <span class="nl">forState:</span><span class="n">UIControlStateNormal</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="n">_isFadeIn</span> <span class="o">=</span> <span class="o">!</span><span class="n">_isFadeIn</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">sampleImageFadeIn</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="c1">//フェードイン</span>
+</span><span class='line'>  <span class="n">_sampleImageView</span><span class="p">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>  <span class="c1">//アニメーションのタイプを指定</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">UIView</span> <span class="nl">beginAnimations:</span><span class="s">@&quot;fadeIn&quot;</span> <span class="nl">context:</span><span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//イージング指定</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">UIView</span> <span class="nl">setAnimationCurve:</span><span class="n">UIViewAnimationCurveEaseInOut</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//アニメーション秒数を指定</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">UIView</span> <span class="nl">setAnimationDuration:</span><span class="mf">0.3</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//目標のアルファ値を指定</span>
+</span><span class='line'>  <span class="n">_sampleImageView</span><span class="p">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+</span><span class='line'>  <span class="c1">//アニメーション実行</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">UIView</span> <span class="n">commitAnimations</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">sampleImageFadeOut</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="c1">//フェードアウト</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">UIView</span> <span class="nl">beginAnimations:</span><span class="s">@&quot;fadeOut&quot;</span> <span class="nl">context:</span><span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//イージング指定</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">UIView</span> <span class="nl">setAnimationCurve:</span><span class="n">UIViewAnimationCurveEaseOut</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//アニメーション秒数を指定</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">UIView</span> <span class="nl">setAnimationDuration:</span><span class="mf">0.15</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//目標のアルファ値を指定</span>
+</span><span class='line'>  <span class="n">_sampleImageView</span><span class="p">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>  <span class="c1">//アニメーション実行</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">UIView</span> <span class="n">commitAnimations</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-31T08:55:00+09:00" pubdate data-updated="true">Mar 31<span>st</span>, 2013</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>, <a class='category' href='/blog/categories/xcode/'>xcode</a>
+
+
+</div>
+	
+</div>
+</article>
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/03/31/objc-remove-object-in-range/">
+		
+			検索範囲を指定してオブジェクトを削除する</a>
+	</h2>
+	<div class="entry-content">
+		<p>特定の範囲内にあるオブジェクトを検索して削除したい場合は、「removeObject:inRange」メソッドを使用します。以下にサンプルを作成しました。</p>
+
+<h2>サンプルダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-remove-object-in-range">https://github.com/masakihirokawa/objc-remove-object-in-range</a></li>
+</ul>
+
+
+<h2>ソースコード</h2>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">main</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="c1">//配列を生成する</span>
+</span><span class='line'>  <span class="n">NSMutableArray</span> <span class="o">*</span><span class="n">myArray</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">myArray</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSMutableArray</span> <span class="nl">arrayWithObjects:</span>
+</span><span class='line'>             <span class="s">@&quot;Apple&quot;</span><span class="p">,</span> <span class="s">@&quot;Banana&quot;</span><span class="p">,</span> <span class="s">@&quot;Orange&quot;</span><span class="p">,</span> <span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">//範囲を指定して削除する</span>
+</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;myArray: %@&quot;</span><span class="p">,</span> <span class="n">myArray</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">myArray</span> <span class="nl">removeObject:</span><span class="s">@&quot;Apple&quot;</span>
+</span><span class='line'>                <span class="nl">inRange:</span><span class="n">NSMakeRange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)];</span>
+</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;myArray: %@&quot;</span><span class="p">,</span> <span class="n">myArray</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>出力結果</h2>
+
+<blockquote><p>myArray: Apple, Banana, Orange<br />
+myArray: Banana, Orange</p></blockquote>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-31T08:50:00+09:00" pubdate data-updated="true">Mar 31<span>st</span>, 2013</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>
+
+
+</div>
+	
+</div>
+</article>
+
+
+    <article class="post">
+	<h2 class="title">
+		
 		<a href="/blog/2013/03/31/objc-perform-selector-after-delay/">
 		
 			一定時間後にメソッドを実行するタイマー</a>
@@ -169,193 +451,6 @@
 </div>
 </article>
 
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/03/31/objc-remove-object/">
-		
-			配列やセットからオブジェクトを削除する</a>
-	</h2>
-	<div class="entry-content">
-		<p>配列やセットからオブジェクトを削除するサンプルを以下に作成しました。</p>
-
-<h2>サンプルダウンロード</h2>
-
-<ul>
-<li><a href="https://github.com/masakihirokawa/objc-remove-object">https://github.com/masakihirokawa/objc-remove-object</a></li>
-</ul>
-
-
-<h2>ソースコード</h2>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">main</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="c1">//配列を生成する</span>
-</span><span class='line'>  <span class="n">NSMutableArray</span> <span class="o">*</span><span class="n">myArray</span><span class="p">;</span>
-</span><span class='line'>  <span class="n">myArray</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSMutableArray</span> <span class="nl">arrayWithObjects:</span>
-</span><span class='line'>             <span class="s">@&quot;Apple&quot;</span><span class="p">,</span> <span class="s">@&quot;Banana&quot;</span><span class="p">,</span> <span class="s">@&quot;Orange&quot;</span><span class="p">,</span> <span class="nb">nil</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="c1">//順序付けされたセットを生成する</span>
-</span><span class='line'>  <span class="n">NSMutableOrderedSet</span> <span class="o">*</span><span class="n">orderedSet</span><span class="p">;</span>
-</span><span class='line'>  <span class="n">orderedSet</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSMutableOrderedSet</span> <span class="nl">orderedSetWithArray:</span><span class="n">myArray</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="c1">//オブジェクトを指定して削除する</span>
-</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;myArray: %@&quot;</span><span class="p">,</span> <span class="n">myArray</span><span class="p">);</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">myArray</span> <span class="nl">removeObject:</span><span class="s">@&quot;Apple&quot;</span><span class="p">];</span>
-</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;myArray: %@&quot;</span><span class="p">,</span> <span class="n">myArray</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;orderedSet: %@&quot;</span><span class="p">,</span> <span class="n">orderedSet</span><span class="p">);</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">orderedSet</span> <span class="nl">removeObject:</span><span class="s">@&quot;Apple&quot;</span><span class="p">];</span>
-</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;orderedSet: %@&quot;</span><span class="p">,</span> <span class="n">orderedSet</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>出力結果</h2>
-
-<blockquote><p>Apple, Banana, Orange<br />
-Banana, Orange</p></blockquote>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-03-31T07:20:00+09:00" pubdate data-updated="true">Mar 31<span>st</span>, 2013</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>
-
-
-</div>
-	
-</div>
-</article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/03/31/objc-add-set-add-objects-from-array/">
-		
-			順序付けされたセットに複数のオブジェクトを挿入する</a>
-	</h2>
-	<div class="entry-content">
-		<p>順序付けされたセットに、重複しない複数のオブジェクトを挿入する方法を以下に記載します。</p>
-
-<h2>サンプルダウンロード</h2>
-
-<ul>
-<li><a href="https://github.com/masakihirokawa/objc-set-add-objects-from-array">https://github.com/masakihirokawa/objc-set-add-objects-from-array</a></li>
-</ul>
-
-
-<h2>ソースコード</h2>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">main</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="c1">//順序付けされたセットを生成する</span>
-</span><span class='line'>  <span class="n">NSMutableOrderedSet</span> <span class="o">*</span><span class="n">orderedSet</span><span class="p">;</span>
-</span><span class='line'>  <span class="n">orderedSet</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSMutableOrderedSet</span> <span class="n">orderedSet</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="c1">//追加するオブジェクトの配列を生成する</span>
-</span><span class='line'>  <span class="n">NSArray</span> <span class="o">*</span><span class="n">myArray</span><span class="p">;</span>
-</span><span class='line'>  <span class="n">myArray</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSArray</span> <span class="nl">arrayWithObjects:</span>
-</span><span class='line'>             <span class="s">@&quot;Apple&quot;</span><span class="p">,</span> <span class="s">@&quot;Banana&quot;</span><span class="p">,</span> <span class="s">@&quot;Apple&quot;</span><span class="p">,</span> <span class="nb">nil</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="c1">//順序付けされたセットに追加する</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">orderedSet</span> <span class="nl">addObjectsFromArray:</span><span class="n">myArray</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;%@&quot;</span><span class="p">,</span> <span class="n">orderedSet</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>出力結果</h2>
-
-<blockquote><p>Apple, Banana</p></blockquote>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-03-31T07:15:00+09:00" pubdate data-updated="true">Mar 31<span>st</span>, 2013</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>
-
-
-</div>
-	
-</div>
-</article>
-
 <nav id="pagenavi">
     
         <a href="/blog/page/32/" class="prev">Prev</a>
@@ -393,7 +488,7 @@ Banana, Orange</p></blockquote>
   <div id="category" class="information-box">
 <section>
   <h1>Categories</h1>
-  <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (46)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (159)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (36)</a></li></ul>
+  <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (48)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (161)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (36)</a></li></ul>
 </section>
 
 
@@ -402,6 +497,14 @@ Banana, Orange</p></blockquote>
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/07/01/download-objc-classes-2013-jul/">Objective-Cクラスのまとめ</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/07/01/download-objc-classes-dc-activity-indicator/">アクティビティインジケーターを制御する「DCActivityIndicator」クラス</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2013/06/30/download-objc-classes-dc-social/">Facebook/Twitter/LINEへ投稿する「DCSocial」クラス</a>
@@ -433,14 +536,6 @@ Banana, Orange</p></blockquote>
     
       <li class="post">
         <a href="/blog/2013/06/17/objc-label-for-motion/">シェイクモーションの検知</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/06/16/objc-pinch-in-pinch-out/">ピンチイン/ピンチアウトの検知</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/06/14/objc-double-slide/">ダブルスライドの検知</a>
       </li>
     
   </ul>
@@ -502,6 +597,22 @@ Banana, Orange</p></blockquote>
   </header>
   <article id="recommended-inner">
     <div id="recommended-wrapper">
+      <div class="recommended-container" class="clear-left">
+        <dl class="recommended-product">
+          <dt class="recommended-product-image"><a href="http://www.amazon.co.jp/gp/product/4844333852/ref=as_li_qf_sp_asin_il?ie=UTF8&camp=247&creative=1211&creativeASIN=4844333852&linkCode=as2&tag=pinocchio-22"><img border="0" src="http://ws-fe.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=4844333852&Format=_SL110_&ID=AsinImage&MarketPlace=JP&ServiceVersion=20070822&WS=1&tag=pinocchio-22" ></a><img src="http://ir-jp.amazon-adsystem.com/e/ir?t=pinocchio-22&l=as2&o=9&a=4844333852" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" /></dt>
+          <dd class="recommended-product-detail">
+            <p class="recommended-product-name"><b><a href="http://www.amazon.co.jp/gp/product/4844333852/ref=as_li_qf_sp_asin_tl?ie=UTF8&camp=247&creative=1211&creativeASIN=4844333852&linkCode=as2&tag=pinocchio-22">iPhoneアプリ開発エキスパートガイド iOS 6対応</a><img src="http://ir-jp.amazon-adsystem.com/e/ir?t=pinocchio-22&l=as2&o=9&a=4844333852" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" /></b></p>
+            <p class="recommended-product-caption">iOS6に完全対応した内容で、これからモダンスタイルで開発したい方に必携の1冊です。他の参考書では動作しないコードがよくありますが、この参考書のコードは全て動作しました。初心者の方のみではなく、中級者の方にもお薦めできる内容です。</p></dd>
+        </dl>
+      </div>
+      <div class="recommended-container">
+        <dl class="recommended-product">
+          <dt class="recommended-product-image"><a href="http://www.amazon.co.jp/gp/product/477751711X/ref=as_li_qf_sp_asin_il?ie=UTF8&camp=247&creative=1211&creativeASIN=477751711X&linkCode=as2&tag=pinocchio-22"><img border="0" src="http://ws-fe.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=477751711X&Format=_SL110_&ID=AsinImage&MarketPlace=JP&ServiceVersion=20070822&WS=1&tag=pinocchio-22" ></a><img src="http://ir-jp.amazon-adsystem.com/e/ir?t=pinocchio-22&l=as2&o=9&a=477751711X" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" /></dt>
+          <dd class="recommended-product-detail">
+            <p class="recommended-product-name"><b><a href="http://www.amazon.co.jp/gp/product/477751711X/ref=as_li_qf_sp_asin_tl?ie=UTF8&camp=247&creative=1211&creativeASIN=477751711X&linkCode=as2&tag=pinocchio-22">cocos2dでつくるiPhoneゲーム―自由で速い、ゲーム用フレームワークを使う! (I・O BOOKS)</a><img src="http://ir-jp.amazon-adsystem.com/e/ir?t=pinocchio-22&l=as2&o=9&a=477751711X" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" /></b></p>
+            <p class="recommended-product-caption">cocos2dでゲームを開発したいという方に必携の1冊です。実際にゲームを作りながら学習して行く内容で、とても身に付き易い構成になっています。バージョン2.0以降に対応した日本語のリファレンスは、2013年7月現在でこの1冊のみです。</p></dd>
+        </dl>
+      </div>
       <div class="recommended-container" class="clear-left">
         <dl class="recommended-product">
           <dt class="recommended-product-image"><a href="http://www.amazon.co.jp/gp/product/4797369434/ref=as_li_qf_sp_asin_il?ie=UTF8&camp=247&creative=1211&creativeASIN=4797369434&linkCode=as2&tag=pinocchio-22"><img border="0" src="http://ws.assoc-amazon.jp/widgets/q?_encoding=UTF8&ASIN=4797369434&Format=_SL110_&ID=AsinImage&MarketPlace=JP&ServiceVersion=20070822&WS=1&tag=pinocchio-22" ></a><img src="http://www.assoc-amazon.jp/e/ir?t=pinocchio-22&l=as2&o=9&a=4797369434" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" /></dt>

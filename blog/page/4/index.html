@@ -6,11 +6,11 @@
 	<title>Dolice Lab</title>
 	
 	
-	<meta name="description" content="2本指での画面スライドで動作するサンプルを以下に作成しました。画面を2本指でスライドするとラベルが上下に動きます。 下記よりサンプルのダウンロードが行えます。 ダウンロード https://github.com/masakihirokawa/objc-double-slide ソースコード 1 &hellip;">
+	<meta name="description" content="iPhone本体のシェイクモーションを検知し、本体を振るとアラートを表示するサンプルを以下に作成しました。 レスポンダに登録する事で、モーション開始時、モーション終了時、モーションキャンセル時のイベントを定義する事ができます。今回のサンプルでは、モーション(シェイク) &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	<meta property="og:title" content="Dolice Lab" />
-<meta property="og:description" content="2本指での画面スライドで動作するサンプルを以下に作成しました。画面を2本指でスライドするとラベルが上下に動きます。 下記よりサンプルのダウンロードが行えます。 ダウンロード https://github.com/masakihirokawa/objc-double-slide ソースコード 1 &hellip;" />
+<meta property="og:description" content="iPhone本体のシェイクモーションを検知し、本体を振るとアラートを表示するサンプルを以下に作成しました。 レスポンダに登録する事で、モーション開始時、モーション終了時、モーションキャンセル時のイベントを定義する事ができます。今回のサンプルでは、モーション(シェイク) &hellip;" />
 <meta property="og:url" content="http://lab.dolice.net/blog/page/4/" />
 <meta property="og:image" content="http://lab.dolice.net/images/facebook-icon.jpg" />
 <meta property="og:author" content="Masaki Hirokawa" />
@@ -84,6 +84,372 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/06/17/objc-label-for-motion/">
+		
+			シェイクモーションの検知</a>
+	</h2>
+	<div class="entry-content">
+		<p>iPhone本体のシェイクモーションを検知し、本体を振るとアラートを表示するサンプルを以下に作成しました。</p>
+
+<p>レスポンダに登録する事で、モーション開始時、モーション終了時、モーションキャンセル時のイベントを定義する事ができます。今回のサンプルでは、モーション(シェイク)終了時にアラートを表示しています。</p>
+
+<p>下記よりサンプルのダウンロードが行えます。</p>
+
+<h2>ダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-label-for-motion">https://github.com/masakihirokawa/objc-label-for-motion</a></li>
+</ul>
+
+
+<h2>ソースコード</h2>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//ラベル初期化</span>
+</span><span class='line'>    <span class="n">UILabel</span> <span class="o">*</span><span class="n">label</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UILabel</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">label</span><span class="p">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">bounds</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">label</span><span class="p">.</span><span class="n">autoresizingMask</span> <span class="o">=</span>
+</span><span class='line'>        <span class="n">UIViewAutoresizingFlexibleWidth</span> <span class="o">|</span>
+</span><span class='line'>        <span class="n">UIViewAutoresizingFlexibleHeight</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">label</span><span class="p">.</span><span class="n">textAlignment</span> <span class="o">=</span> <span class="n">NSTextAlignmentCenter</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">label</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="s">@&quot;シェイクしてください&quot;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//ラベルを画面に追加</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">label</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//レスポンダ登録</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">label</span> <span class="n">becomeFirstResponder</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//モーション開始時のイベント</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">motionBegan:</span><span class="p">(</span><span class="n">UIEventSubtype</span><span class="p">)</span><span class="nv">motion</span> <span class="nf">withEvent:</span><span class="p">(</span><span class="n">UIEvent</span> <span class="o">*</span><span class="p">)</span><span class="nv">event</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;motionBegan&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//モーション終了時のイベント</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">motionEnded:</span><span class="p">(</span><span class="n">UIEventSubtype</span><span class="p">)</span><span class="nv">motion</span> <span class="nf">withEvent:</span><span class="p">(</span><span class="n">UIEvent</span> <span class="o">*</span><span class="p">)</span><span class="nv">event</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;motionEnded&quot;</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">UIAlertView</span> <span class="o">*</span><span class="n">alert</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIAlertView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithTitle:</span><span class="nb">nil</span>
+</span><span class='line'>                                                    <span class="nl">message:</span><span class="s">@&quot;シェイクされました&quot;</span>
+</span><span class='line'>                                                   <span class="nl">delegate:</span><span class="nb">nil</span>
+</span><span class='line'>                                          <span class="nl">cancelButtonTitle:</span><span class="nb">nil</span>
+</span><span class='line'>                                          <span class="nl">otherButtonTitles:</span><span class="s">@&quot;OK&quot;</span><span class="p">,</span> <span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">alert</span> <span class="n">show</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//モーションキャンセル時のイベント</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">motionCancelled:</span><span class="p">(</span><span class="n">UIEventSubtype</span><span class="p">)</span><span class="nv">motion</span> <span class="nf">withEvent:</span><span class="p">(</span><span class="n">UIEvent</span> <span class="o">*</span><span class="p">)</span><span class="nv">event</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;motionCancelled&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">canBecomeFirstResponder</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">YES</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-06-17T11:12:00+09:00" pubdate data-updated="true">Jun 17<span>th</span>, 2013</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>
+
+
+</div>
+	
+</div>
+</article>
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/06/16/objc-pinch-in-pinch-out/">
+		
+			ピンチイン/ピンチアウトの検知</a>
+	</h2>
+	<div class="entry-content">
+		<p>2本指でのピンチイン/ピンチアウトで画像を拡大縮小するサンプルを以下に作成しました。</p>
+
+<p>下記よりサンプルのダウンロードが行えます。</p>
+
+<h2>ダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-pinch-in-pinch-out">https://github.com/masakihirokawa/objc-pinch-in-pinch-out</a></li>
+</ul>
+
+
+<h2>ソースコード</h2>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;ViewController.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> <span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="n">CGFloat</span><span class="p">)</span><span class="nl">distanceWithPointA:</span><span class="p">(</span><span class="n">CGPoint</span><span class="p">)</span><span class="n">pointA</span> <span class="nl">pointB:</span><span class="p">(</span><span class="n">CGPoint</span><span class="p">)</span><span class="n">pointB</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@property</span> <span class="n">UIImageView</span> <span class="o">*</span><span class="n">imageView</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">ViewController</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//背景色を黒に設定</span>
+</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIColor</span> <span class="n">blackColor</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//マルチタッチの有効化</span>
+</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">multipleTouchEnabled</span> <span class="o">=</span> <span class="n">YES</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//イメージの読み込み</span>
+</span><span class='line'>    <span class="n">UIImage</span> <span class="o">*</span><span class="n">image</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIImage</span> <span class="nl">imageNamed:</span><span class="s">@&quot;Pandora_640_1136.jpg&quot;</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">_imageView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIImageView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">320</span><span class="p">,</span> <span class="mi">578</span><span class="p">)];</span>
+</span><span class='line'>    <span class="n">_imageView</span><span class="p">.</span><span class="n">image</span> <span class="o">=</span> <span class="n">image</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">_imageView</span><span class="p">.</span><span class="n">center</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">center</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">_imageView</span><span class="p">.</span><span class="n">contentMode</span> <span class="o">=</span> <span class="n">UIViewContentModeScaleAspectFill</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">_imageView</span><span class="p">.</span><span class="n">autoresizingMask</span> <span class="o">=</span>
+</span><span class='line'>        <span class="n">UIViewAutoresizingFlexibleLeftMargin</span> <span class="o">|</span>
+</span><span class='line'>        <span class="n">UIViewAutoresizingFlexibleRightMargin</span> <span class="o">|</span>
+</span><span class='line'>        <span class="n">UIViewAutoresizingFlexibleTopMargin</span> <span class="o">|</span>
+</span><span class='line'>        <span class="n">UIViewAutoresizingFlexibleBottomMargin</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//イメージを画面に追加</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">_imageView</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">touchesMoved:</span><span class="p">(</span><span class="n">NSSet</span> <span class="o">*</span><span class="p">)</span><span class="nv">touches</span> <span class="nf">withEvent:</span><span class="p">(</span><span class="n">UIEvent</span> <span class="o">*</span><span class="p">)</span><span class="nv">event</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">([</span><span class="n">touches</span> <span class="n">count</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="c1">//2本指でタッチしている場合は、２点間の距離を計算</span>
+</span><span class='line'>        <span class="n">NSArray</span> <span class="o">*</span><span class="n">twoFingers</span> <span class="o">=</span> <span class="p">[</span><span class="n">touches</span> <span class="n">allObjects</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">UITouch</span> <span class="o">*</span><span class="n">touch1</span> <span class="o">=</span> <span class="p">[</span><span class="n">twoFingers</span> <span class="nl">objectAtIndex:</span><span class="mi">0</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">UITouch</span> <span class="o">*</span><span class="n">touch2</span> <span class="o">=</span> <span class="p">[</span><span class="n">twoFingers</span> <span class="nl">objectAtIndex:</span><span class="mi">1</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">CGPoint</span> <span class="n">previous1</span> <span class="o">=</span> <span class="p">[</span><span class="n">touch1</span> <span class="nl">previousLocationInView:</span><span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">CGPoint</span> <span class="n">previous2</span> <span class="o">=</span> <span class="p">[</span><span class="n">touch2</span> <span class="nl">previousLocationInView:</span><span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">CGPoint</span> <span class="n">now1</span> <span class="o">=</span> <span class="p">[</span><span class="n">touch1</span> <span class="nl">locationInView:</span><span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">CGPoint</span> <span class="n">now2</span> <span class="o">=</span> <span class="p">[</span><span class="n">touch2</span> <span class="nl">locationInView:</span><span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">//現状の距離と、前回の距離を比較して距離が縮まったか離れたかを判別</span>
+</span><span class='line'>        <span class="n">CGFloat</span> <span class="n">previousDistance</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="nl">distanceWithPointA:</span><span class="n">previous1</span> <span class="nl">pointB:</span><span class="n">previous2</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">CGFloat</span> <span class="n">distance</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="nl">distanceWithPointA:</span><span class="n">now1</span> <span class="nl">pointB:</span><span class="n">now2</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">CGFloat</span> <span class="n">scale</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">;</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">previousDistance</span> <span class="o">&gt;</span> <span class="n">distance</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="c1">//距離が縮まったらならピンチイン</span>
+</span><span class='line'>            <span class="n">scale</span> <span class="o">-=</span> <span class="p">(</span> <span class="n">previousDistance</span> <span class="o">-</span> <span class="n">distance</span> <span class="p">)</span> <span class="o">/</span> <span class="mf">300.0</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">distance</span> <span class="o">&gt;</span> <span class="n">previousDistance</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="c1">// 距離が広がったならピンチアウト</span>
+</span><span class='line'>            <span class="n">scale</span> <span class="o">+=</span> <span class="p">(</span> <span class="n">distance</span> <span class="o">-</span> <span class="n">previousDistance</span> <span class="p">)</span> <span class="o">/</span> <span class="mf">300.0</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="n">CGAffineTransform</span> <span class="n">newTransform</span> <span class="o">=</span>
+</span><span class='line'>            <span class="n">CGAffineTransformScale</span><span class="p">(</span><span class="n">_imageView</span><span class="p">.</span><span class="n">transform</span><span class="p">,</span> <span class="n">scale</span><span class="p">,</span> <span class="n">scale</span><span class="p">);</span>
+</span><span class='line'>        <span class="n">_imageView</span><span class="p">.</span><span class="n">transform</span> <span class="o">=</span> <span class="n">newTransform</span><span class="p">;</span>
+</span><span class='line'>        <span class="n">_imageView</span><span class="p">.</span><span class="n">center</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">center</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">CGFloat</span><span class="p">)</span><span class="nf">distanceWithPointA:</span><span class="p">(</span><span class="n">CGPoint</span><span class="p">)</span><span class="nv">pointA</span> <span class="nf">pointB:</span><span class="p">(</span><span class="n">CGPoint</span><span class="p">)</span><span class="nv">pointB</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">CGFloat</span> <span class="n">dx</span> <span class="o">=</span> <span class="n">fabs</span><span class="p">(</span> <span class="n">pointB</span><span class="p">.</span><span class="n">x</span> <span class="o">-</span> <span class="n">pointA</span><span class="p">.</span><span class="n">x</span> <span class="p">);</span>
+</span><span class='line'>    <span class="n">CGFloat</span> <span class="n">dy</span> <span class="o">=</span> <span class="n">fabs</span><span class="p">(</span> <span class="n">pointB</span><span class="p">.</span><span class="n">y</span> <span class="o">-</span> <span class="n">pointA</span><span class="p">.</span><span class="n">y</span> <span class="p">);</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">dx</span> <span class="o">*</span> <span class="n">dx</span> <span class="o">+</span> <span class="n">dy</span> <span class="o">*</span> <span class="n">dy</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-06-16T10:31:00+09:00" pubdate data-updated="true">Jun 16<span>th</span>, 2013</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>
+
+
+</div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -250,473 +616,6 @@
 </div>
 </article>
 
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/06/13/objc-ui-web-view-html/">
-		
-			UIWebViewに HTMLタグを挿入する</a>
-	</h2>
-	<div class="entry-content">
-		<p>UIWebViewに HTMLタグを挿入し、画面に表示するサンプルを以下に作成しました。</p>
-
-<p>下記よりサンプルのダウンロードが行えます。</p>
-
-<h2>ダウンロード</h2>
-
-<ul>
-<li><a href="https://github.com/masakihirokawa/objc-ui-webview-html">https://github.com/masakihirokawa/objc-ui-webview-html</a></li>
-</ul>
-
-
-<h2>ソースコード</h2>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;ViewController.h&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> <span class="p">()</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@property</span> <span class="n">UIWebView</span> <span class="o">*</span><span class="n">webView</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@implementation</span> <span class="nc">ViewController</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span> <span class="p">{</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//UIWebView初期化</span>
-</span><span class='line'>    <span class="n">_webView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIWebView</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//UIWebViewの設定</span>
-</span><span class='line'>    <span class="n">_webView</span><span class="p">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">bounds</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">_webView</span><span class="p">.</span><span class="n">autoresizingMask</span> <span class="o">=</span>
-</span><span class='line'>        <span class="n">UIViewAutoresizingFlexibleWidth</span> <span class="o">|</span> <span class="n">UIViewAutoresizingFlexibleHeight</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">_webView</span><span class="p">.</span><span class="n">dataDetectorTypes</span> <span class="o">=</span> <span class="n">UIDataDetectorTypeAll</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//UIWebViewを画面に追加</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">_webView</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidAppear:</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nv">animated</span> <span class="p">{</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">super</span> <span class="nl">viewDidAppear:</span><span class="n">animated</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//HTMLタグの指定</span>
-</span><span class='line'>    <span class="n">NSString</span> <span class="o">*</span><span class="n">html</span> <span class="o">=</span> <span class="s">@&quot;&lt;p&gt;&lt;b&gt;電話番号&lt;/b&gt; 090-1111-1111&lt;/p&gt;&lt;p&gt;&lt;b&gt;ホームページ&lt;/b&gt; http://exsample.com/&lt;/p&gt;&quot;</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//UIWebViewに HTML追加</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">_webView</span> <span class="nl">loadHTMLString:</span><span class="n">html</span> <span class="nl">baseURL:</span><span class="nb">nil</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-06-13T11:24:00+09:00" pubdate data-updated="true">Jun 13<span>th</span>, 2013</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>
-
-
-</div>
-	
-</div>
-</article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/06/12/download-objc-classes-dc-label/">
-		
-			2種類のラベルを生成する「DCLabel」クラス</a>
-	</h2>
-	<div class="entry-content">
-		<p>四角のラベルと角丸のラベルを生成する「DCLabel」クラスを作成しました。</p>
-
-<p>ラベルを角丸にするため、「QuartzCore」フレームワークを使用しています。</p>
-
-<p>下記よりサンプルとソースコードのダウンロードが行えます。</p>
-
-<h2>ダウンロード</h2>
-
-<ul>
-<li><a href="https://github.com/masakihirokawa/objc-classes-dc-label">https://github.com/masakihirokawa/objc-classes-dc-label</a></li>
-</ul>
-
-
-<h2>使用方法</h2>
-
-<h3>通常ラベルの生成</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">UILabel</span> <span class="o">*</span><span class="n">planeLabel</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCLabel</span> <span class="nl">planeLabel:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">center</span><span class="p">.</span><span class="n">x</span> <span class="o">-</span> <span class="p">(</span><span class="n">LABEL_WIDTH</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span>
-</span><span class='line'>                                                     <span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">center</span><span class="p">.</span><span class="n">y</span> <span class="o">-</span> <span class="n">LABEL_HEIGHT</span> <span class="o">-</span> <span class="n">LABEL_MARGIN_Y</span><span class="p">,</span>
-</span><span class='line'>                                                     <span class="n">LABEL_WIDTH</span><span class="p">,</span>
-</span><span class='line'>                                                     <span class="n">LABEL_HEIGHT</span><span class="p">)</span>
-</span><span class='line'>                                     <span class="nl">text:</span><span class="s">@&quot;Plane Label&quot;</span>
-</span><span class='line'>                                     <span class="nl">font:</span><span class="n">LABEL_FONT</span>
-</span><span class='line'>                                <span class="nl">textColor:</span><span class="p">[</span><span class="n">UIColor</span> <span class="n">whiteColor</span><span class="p">]</span>
-</span><span class='line'>                            <span class="nl">textAlignment:</span><span class="n">NSTextAlignmentCenter</span>
-</span><span class='line'>                          <span class="nl">backgroundColor:</span><span class="p">[</span><span class="n">UIColor</span> <span class="n">blackColor</span><span class="p">]];</span>
-</span><span class='line'><span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">planeLabel</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>角丸ラベルの生成</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">UILabel</span> <span class="o">*</span><span class="n">roundRectLabel</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCLabel</span> <span class="nl">roundRectLabel:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">center</span><span class="p">.</span><span class="n">x</span> <span class="o">-</span> <span class="p">(</span><span class="n">LABEL_WIDTH</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span>
-</span><span class='line'>                                                             <span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">center</span><span class="p">.</span><span class="n">y</span> <span class="o">-</span> <span class="n">LABEL_HEIGHT</span> <span class="o">+</span> <span class="n">LABEL_MARGIN_Y</span><span class="p">,</span>
-</span><span class='line'>                                                             <span class="n">LABEL_WIDTH</span><span class="p">,</span>
-</span><span class='line'>                                                             <span class="n">LABEL_HEIGHT</span><span class="p">)</span>
-</span><span class='line'>                                             <span class="nl">text:</span><span class="s">@&quot;Round Rect Label&quot;</span>
-</span><span class='line'>                                             <span class="nl">font:</span><span class="n">LABEL_FONT</span>
-</span><span class='line'>                                        <span class="nl">textColor:</span><span class="p">[</span><span class="n">UIColor</span> <span class="n">whiteColor</span><span class="p">]</span>
-</span><span class='line'>                                    <span class="nl">textAlignment:</span><span class="n">NSTextAlignmentCenter</span>
-</span><span class='line'>                                  <span class="nl">backgroundColor:</span><span class="p">[</span><span class="n">UIColor</span> <span class="n">blackColor</span><span class="p">]</span>
-</span><span class='line'>                                    <span class="nl">cornerRadious:</span><span class="mf">8.0f</span><span class="p">];</span>
-</span><span class='line'><span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">roundRectLabel</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>サンプルソースコード</h2>
-
-<h3>ViewController.h</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;DCLabel.h&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#define LABEL_WIDTH    128</span>
-</span><span class='line'><span class="cp">#define LABEL_HEIGHT   30</span>
-</span><span class='line'><span class="cp">#define LABEL_FONT     [UIFont fontWithName:@&quot;Helvetica&quot; size:12]</span>
-</span><span class='line'><span class="cp">#define LABEL_MARGIN_Y 32</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>ViewController.m</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//通常ラベルの作成</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">makePlaneLabel</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">UILabel</span> <span class="o">*</span><span class="n">planeLabel</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCLabel</span> <span class="nl">planeLabel:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">center</span><span class="p">.</span><span class="n">x</span> <span class="o">-</span> <span class="p">(</span><span class="n">LABEL_WIDTH</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span>
-</span><span class='line'>                                                         <span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">center</span><span class="p">.</span><span class="n">y</span> <span class="o">-</span> <span class="n">LABEL_HEIGHT</span> <span class="o">-</span> <span class="n">LABEL_MARGIN_Y</span><span class="p">,</span>
-</span><span class='line'>                                                         <span class="n">LABEL_WIDTH</span><span class="p">,</span>
-</span><span class='line'>                                                         <span class="n">LABEL_HEIGHT</span><span class="p">)</span>
-</span><span class='line'>                                         <span class="nl">text:</span><span class="s">@&quot;Plane Label&quot;</span>
-</span><span class='line'>                                         <span class="nl">font:</span><span class="n">LABEL_FONT</span>
-</span><span class='line'>                                    <span class="nl">textColor:</span><span class="p">[</span><span class="n">UIColor</span> <span class="n">whiteColor</span><span class="p">]</span>
-</span><span class='line'>                                <span class="nl">textAlignment:</span><span class="n">NSTextAlignmentCenter</span>
-</span><span class='line'>                              <span class="nl">backgroundColor:</span><span class="p">[</span><span class="n">UIColor</span> <span class="n">blackColor</span><span class="p">]];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">planeLabel</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//角丸ラベルの作成</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">makeRoundRectLabel</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">UILabel</span> <span class="o">*</span><span class="n">roundRectLabel</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCLabel</span> <span class="nl">roundRectLabel:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">center</span><span class="p">.</span><span class="n">x</span> <span class="o">-</span> <span class="p">(</span><span class="n">LABEL_WIDTH</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span>
-</span><span class='line'>                                                                 <span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">center</span><span class="p">.</span><span class="n">y</span> <span class="o">-</span> <span class="n">LABEL_HEIGHT</span> <span class="o">+</span> <span class="n">LABEL_MARGIN_Y</span><span class="p">,</span>
-</span><span class='line'>                                                                 <span class="n">LABEL_WIDTH</span><span class="p">,</span>
-</span><span class='line'>                                                                 <span class="n">LABEL_HEIGHT</span><span class="p">)</span>
-</span><span class='line'>                                                 <span class="nl">text:</span><span class="s">@&quot;Round Rect Label&quot;</span>
-</span><span class='line'>                                                 <span class="nl">font:</span><span class="n">LABEL_FONT</span>
-</span><span class='line'>                                            <span class="nl">textColor:</span><span class="p">[</span><span class="n">UIColor</span> <span class="n">whiteColor</span><span class="p">]</span>
-</span><span class='line'>                                        <span class="nl">textAlignment:</span><span class="n">NSTextAlignmentCenter</span>
-</span><span class='line'>                                      <span class="nl">backgroundColor:</span><span class="p">[</span><span class="n">UIColor</span> <span class="n">blackColor</span><span class="p">]</span>
-</span><span class='line'>                                        <span class="nl">cornerRadious:</span><span class="mf">8.0f</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">roundRectLabel</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>ソースコード</h2>
-
-<h3>DCLabel.h</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;UIKit/UIKit.h&gt;</span>
-</span><span class='line'><span class="cp">#import &lt;QuartzCore/QuartzCore.h&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@interface</span> <span class="nc">DCLabel</span> : <span class="nc">UILabel</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">UILabel</span> <span class="o">*</span><span class="p">)</span><span class="nf">planeLabel:</span><span class="p">(</span><span class="n">CGRect</span><span class="p">)</span><span class="nv">rect</span> <span class="nf">text:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">text</span> <span class="nf">font:</span><span class="p">(</span><span class="n">UIFont</span> <span class="o">*</span><span class="p">)</span><span class="nv">font</span> <span class="nf">textColor:</span><span class="p">(</span><span class="n">UIColor</span> <span class="o">*</span><span class="p">)</span><span class="nv">textColor</span> <span class="nf">textAlignment:</span><span class="p">(</span><span class="n">NSTextAlignment</span><span class="p">)</span><span class="nv">textAlignment</span> <span class="nf">backgroundColor:</span><span class="p">(</span><span class="n">UIColor</span> <span class="o">*</span><span class="p">)</span><span class="nv">backgroundColor</span><span class="p">;</span>
-</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">UILabel</span> <span class="o">*</span><span class="p">)</span><span class="nf">roundRectLabel:</span><span class="p">(</span><span class="n">CGRect</span><span class="p">)</span><span class="nv">rect</span> <span class="nf">text:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">text</span> <span class="nf">font:</span><span class="p">(</span><span class="n">UIFont</span> <span class="o">*</span><span class="p">)</span><span class="nv">font</span> <span class="nf">textColor:</span><span class="p">(</span><span class="n">UIColor</span> <span class="o">*</span><span class="p">)</span><span class="nv">textColor</span> <span class="nf">textAlignment:</span><span class="p">(</span><span class="n">NSTextAlignment</span><span class="p">)</span><span class="nv">textAlignment</span> <span class="nf">backgroundColor:</span><span class="p">(</span><span class="n">UIColor</span> <span class="o">*</span><span class="p">)</span><span class="nv">backgroundColor</span> <span class="nf">cornerRadious:</span><span class="p">(</span><span class="n">CGFloat</span><span class="p">)</span><span class="nv">cornerRadius</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>DCLabel.m</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;DCLabel.h&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@implementation</span> <span class="nc">DCLabel</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">UILabel</span> <span class="o">*</span><span class="p">)</span><span class="nf">planeLabel:</span><span class="p">(</span><span class="n">CGRect</span><span class="p">)</span><span class="nv">rect</span>
-</span><span class='line'>                   <span class="nf">text:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">text</span>
-</span><span class='line'>                   <span class="nf">font:</span><span class="p">(</span><span class="n">UIFont</span> <span class="o">*</span><span class="p">)</span><span class="nv">font</span>
-</span><span class='line'>              <span class="nf">textColor:</span><span class="p">(</span><span class="n">UIColor</span> <span class="o">*</span><span class="p">)</span><span class="nv">textColor</span>
-</span><span class='line'>          <span class="nf">textAlignment:</span><span class="p">(</span><span class="n">NSTextAlignment</span><span class="p">)</span><span class="nv">textAlignment</span>
-</span><span class='line'>        <span class="nf">backgroundColor:</span><span class="p">(</span><span class="n">UIColor</span> <span class="o">*</span><span class="p">)</span><span class="nv">backgroundColor</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">UILabel</span> <span class="o">*</span><span class="n">label</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCLabel</span> <span class="nl">label:</span><span class="n">rect</span>
-</span><span class='line'>                               <span class="nl">text:</span><span class="n">text</span>
-</span><span class='line'>                               <span class="nl">font:</span><span class="n">font</span>
-</span><span class='line'>                          <span class="nl">textColor:</span><span class="n">textColor</span>
-</span><span class='line'>                      <span class="nl">textAlignment:</span><span class="n">textAlignment</span>
-</span><span class='line'>                    <span class="nl">backgroundColor:</span><span class="n">backgroundColor</span><span class="p">];</span>
-</span><span class='line'>    <span class="k">return</span> <span class="p">(</span><span class="n">label</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">UILabel</span> <span class="o">*</span><span class="p">)</span><span class="nf">roundRectLabel:</span><span class="p">(</span><span class="n">CGRect</span><span class="p">)</span><span class="nv">rect</span>
-</span><span class='line'>                       <span class="nf">text:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">text</span>
-</span><span class='line'>                       <span class="nf">font:</span><span class="p">(</span><span class="n">UIFont</span> <span class="o">*</span><span class="p">)</span><span class="nv">font</span>
-</span><span class='line'>                  <span class="nf">textColor:</span><span class="p">(</span><span class="n">UIColor</span> <span class="o">*</span><span class="p">)</span><span class="nv">textColor</span>
-</span><span class='line'>              <span class="nf">textAlignment:</span><span class="p">(</span><span class="n">NSTextAlignment</span><span class="p">)</span><span class="nv">textAlignment</span>
-</span><span class='line'>            <span class="nf">backgroundColor:</span><span class="p">(</span><span class="n">UIColor</span> <span class="o">*</span><span class="p">)</span><span class="nv">backgroundColor</span>
-</span><span class='line'>              <span class="nf">cornerRadious:</span><span class="p">(</span><span class="n">CGFloat</span><span class="p">)</span><span class="nv">cornerRadius</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">UILabel</span> <span class="o">*</span><span class="n">label</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCLabel</span> <span class="nl">label:</span><span class="n">rect</span>
-</span><span class='line'>                               <span class="nl">text:</span><span class="n">text</span>
-</span><span class='line'>                               <span class="nl">font:</span><span class="n">font</span>
-</span><span class='line'>                          <span class="nl">textColor:</span><span class="n">textColor</span>
-</span><span class='line'>                      <span class="nl">textAlignment:</span><span class="n">textAlignment</span>
-</span><span class='line'>                    <span class="nl">backgroundColor:</span><span class="n">backgroundColor</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[[</span><span class="n">label</span> <span class="n">layer</span><span class="p">]</span> <span class="nl">setCornerRadius:</span><span class="n">cornerRadius</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">label</span> <span class="nl">setClipsToBounds:</span><span class="n">YES</span><span class="p">];</span>
-</span><span class='line'>    <span class="k">return</span> <span class="p">(</span><span class="n">label</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">UILabel</span> <span class="o">*</span><span class="p">)</span><span class="nf">label:</span><span class="p">(</span><span class="n">CGRect</span><span class="p">)</span><span class="nv">rect</span>
-</span><span class='line'>              <span class="nf">text:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">text</span>
-</span><span class='line'>              <span class="nf">font:</span><span class="p">(</span><span class="n">UIFont</span> <span class="o">*</span><span class="p">)</span><span class="nv">font</span>
-</span><span class='line'>         <span class="nf">textColor:</span><span class="p">(</span><span class="n">UIColor</span> <span class="o">*</span><span class="p">)</span><span class="nv">textColor</span>
-</span><span class='line'>     <span class="nf">textAlignment:</span><span class="p">(</span><span class="n">NSTextAlignment</span><span class="p">)</span><span class="nv">textAlignment</span>
-</span><span class='line'>   <span class="nf">backgroundColor:</span><span class="p">(</span><span class="n">UIColor</span> <span class="o">*</span><span class="p">)</span><span class="nv">backgroundColor</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">UILabel</span> <span class="o">*</span><span class="n">label</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UILabel</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame:</span><span class="n">rect</span><span class="p">];</span>
-</span><span class='line'>    <span class="n">label</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">label</span><span class="p">.</span><span class="n">font</span> <span class="o">=</span> <span class="n">font</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">label</span><span class="p">.</span><span class="n">textColor</span> <span class="o">=</span> <span class="n">textColor</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">label</span><span class="p">.</span><span class="n">textAlignment</span> <span class="o">=</span> <span class="n">textAlignment</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">label</span><span class="p">.</span><span class="n">numberOfLines</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">label</span><span class="p">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="n">backgroundColor</span><span class="p">;</span>
-</span><span class='line'>    <span class="k">return</span> <span class="p">(</span><span class="n">label</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-06-12T23:15:00+09:00" pubdate data-updated="true">Jun 12<span>th</span>, 2013</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/download/'>download</a>, <a class='category' href='/blog/categories/objective-c/'>objective-c</a>, <a class='category' href='/blog/categories/xcode/'>xcode</a>
-
-
-</div>
-	
-</div>
-</article>
-
 <nav id="pagenavi">
     
         <a href="/blog/page/3/" class="prev">Prev</a>
@@ -754,7 +653,7 @@
   <div id="category" class="information-box">
 <section>
   <h1>Categories</h1>
-  <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (46)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (159)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (36)</a></li></ul>
+  <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (48)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (161)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (36)</a></li></ul>
 </section>
 
 
@@ -763,6 +662,14 @@
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/07/01/download-objc-classes-2013-jul/">Objective-Cクラスのまとめ</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/07/01/download-objc-classes-dc-activity-indicator/">アクティビティインジケーターを制御する「DCActivityIndicator」クラス</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2013/06/30/download-objc-classes-dc-social/">Facebook/Twitter/LINEへ投稿する「DCSocial」クラス</a>
@@ -794,14 +701,6 @@
     
       <li class="post">
         <a href="/blog/2013/06/17/objc-label-for-motion/">シェイクモーションの検知</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/06/16/objc-pinch-in-pinch-out/">ピンチイン/ピンチアウトの検知</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/06/14/objc-double-slide/">ダブルスライドの検知</a>
       </li>
     
   </ul>
@@ -863,6 +762,22 @@
   </header>
   <article id="recommended-inner">
     <div id="recommended-wrapper">
+      <div class="recommended-container" class="clear-left">
+        <dl class="recommended-product">
+          <dt class="recommended-product-image"><a href="http://www.amazon.co.jp/gp/product/4844333852/ref=as_li_qf_sp_asin_il?ie=UTF8&camp=247&creative=1211&creativeASIN=4844333852&linkCode=as2&tag=pinocchio-22"><img border="0" src="http://ws-fe.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=4844333852&Format=_SL110_&ID=AsinImage&MarketPlace=JP&ServiceVersion=20070822&WS=1&tag=pinocchio-22" ></a><img src="http://ir-jp.amazon-adsystem.com/e/ir?t=pinocchio-22&l=as2&o=9&a=4844333852" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" /></dt>
+          <dd class="recommended-product-detail">
+            <p class="recommended-product-name"><b><a href="http://www.amazon.co.jp/gp/product/4844333852/ref=as_li_qf_sp_asin_tl?ie=UTF8&camp=247&creative=1211&creativeASIN=4844333852&linkCode=as2&tag=pinocchio-22">iPhoneアプリ開発エキスパートガイド iOS 6対応</a><img src="http://ir-jp.amazon-adsystem.com/e/ir?t=pinocchio-22&l=as2&o=9&a=4844333852" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" /></b></p>
+            <p class="recommended-product-caption">iOS6に完全対応した内容で、これからモダンスタイルで開発したい方に必携の1冊です。他の参考書では動作しないコードがよくありますが、この参考書のコードは全て動作しました。初心者の方のみではなく、中級者の方にもお薦めできる内容です。</p></dd>
+        </dl>
+      </div>
+      <div class="recommended-container">
+        <dl class="recommended-product">
+          <dt class="recommended-product-image"><a href="http://www.amazon.co.jp/gp/product/477751711X/ref=as_li_qf_sp_asin_il?ie=UTF8&camp=247&creative=1211&creativeASIN=477751711X&linkCode=as2&tag=pinocchio-22"><img border="0" src="http://ws-fe.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=477751711X&Format=_SL110_&ID=AsinImage&MarketPlace=JP&ServiceVersion=20070822&WS=1&tag=pinocchio-22" ></a><img src="http://ir-jp.amazon-adsystem.com/e/ir?t=pinocchio-22&l=as2&o=9&a=477751711X" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" /></dt>
+          <dd class="recommended-product-detail">
+            <p class="recommended-product-name"><b><a href="http://www.amazon.co.jp/gp/product/477751711X/ref=as_li_qf_sp_asin_tl?ie=UTF8&camp=247&creative=1211&creativeASIN=477751711X&linkCode=as2&tag=pinocchio-22">cocos2dでつくるiPhoneゲーム―自由で速い、ゲーム用フレームワークを使う! (I・O BOOKS)</a><img src="http://ir-jp.amazon-adsystem.com/e/ir?t=pinocchio-22&l=as2&o=9&a=477751711X" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" /></b></p>
+            <p class="recommended-product-caption">cocos2dでゲームを開発したいという方に必携の1冊です。実際にゲームを作りながら学習して行く内容で、とても身に付き易い構成になっています。バージョン2.0以降に対応した日本語のリファレンスは、2013年7月現在でこの1冊のみです。</p></dd>
+        </dl>
+      </div>
       <div class="recommended-container" class="clear-left">
         <dl class="recommended-product">
           <dt class="recommended-product-image"><a href="http://www.amazon.co.jp/gp/product/4797369434/ref=as_li_qf_sp_asin_il?ie=UTF8&camp=247&creative=1211&creativeASIN=4797369434&linkCode=as2&tag=pinocchio-22"><img border="0" src="http://ws.assoc-amazon.jp/widgets/q?_encoding=UTF8&ASIN=4797369434&Format=_SL110_&ID=AsinImage&MarketPlace=JP&ServiceVersion=20070822&WS=1&tag=pinocchio-22" ></a><img src="http://www.assoc-amazon.jp/e/ir?t=pinocchio-22&l=as2&o=9&a=4797369434" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" /></dt>
