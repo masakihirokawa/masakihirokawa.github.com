@@ -6,11 +6,11 @@
 	<title>Dolice Lab</title>
 	
 	
-	<meta name="description" content="iPhone/iPadのデバイス情報を判別する「DCDevice」クラスを作成しました。 これまでこのブログで公開してきた「Device」クラスを改良したもので、主に8個の機能を搭載しています。 下記よりサンプルコードを含めたソースファイルをダウンロードできます。 ダウンロード https:// &hellip;">
+	<meta name="description" content="加速度センサーを使用し、本体の傾きに応じてボールを動かすサンプルを作成しました。iPhoneの本体を傾けると、上下左右にボールが転がります。 下記よりサンプルのダウンロードが行えます。 ダウンロード https://github.com/masakihirokawa/objc-ui- &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	<meta property="og:title" content="Dolice Lab" />
-<meta property="og:description" content="iPhone/iPadのデバイス情報を判別する「DCDevice」クラスを作成しました。 これまでこのブログで公開してきた「Device」クラスを改良したもので、主に8個の機能を搭載しています。 下記よりサンプルコードを含めたソースファイルをダウンロードできます。 ダウンロード https:// &hellip;" />
+<meta property="og:description" content="加速度センサーを使用し、本体の傾きに応じてボールを動かすサンプルを作成しました。iPhoneの本体を傾けると、上下左右にボールが転がります。 下記よりサンプルのダウンロードが行えます。 ダウンロード https://github.com/masakihirokawa/objc-ui- &hellip;" />
 <meta property="og:url" content="http://lab.dolice.net/blog/page/4/" />
 <meta property="og:image" content="http://lab.dolice.net/images/facebook-icon.jpg" />
 <meta property="og:author" content="Masaki Hirokawa" />
@@ -84,6 +84,1114 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/06/21/objc-ui-accelerometer-ball-sample/">
+		
+			加速度センサーを使用した動くボールのサンプル</a>
+	</h2>
+	<div class="entry-content">
+		<p><img src="/images/article/ball.png" alt="" /></p>
+
+<p>加速度センサーを使用し、本体の傾きに応じてボールを動かすサンプルを作成しました。iPhoneの本体を傾けると、上下左右にボールが転がります。</p>
+
+<p>下記よりサンプルのダウンロードが行えます。</p>
+
+<h2>ダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-ui-accelerometer-ball-sample">https://github.com/masakihirokawa/objc-ui-accelerometer-ball-sample</a></li>
+</ul>
+
+
+<h2>ソースコード</h2>
+
+<h3>ViewController.h</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;UIKit/UIKit.h&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//UIAccelerometerからの通知を受けるため UIAccelerometerDelegateプロトコルを実装</span>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> : <span class="nc">UIViewController</span> <span class="o">&lt;</span><span class="n">UIAccelerometerDelegate</span><span class="o">&gt;</span> <span class="p">{</span>
+</span><span class='line'><span class="k">@private</span>
+</span><span class='line'>    <span class="n">UIImageView</span><span class="o">*</span> <span class="n">imageView_</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">UIAccelerationValue</span> <span class="n">speedX_</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">UIAccelerationValue</span> <span class="n">speedY_</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>ViewController.m</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;ViewController.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark private methods definition</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> <span class="p">()</span>
+</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="n">CGFloat</span><span class="p">)</span><span class="nl">lowpassFilter:</span><span class="p">(</span><span class="n">CGFloat</span><span class="p">)</span><span class="n">accel</span> <span class="nl">before:</span><span class="p">(</span><span class="n">CGFloat</span><span class="p">)</span><span class="n">before</span><span class="p">;</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">CGFloat</span><span class="p">)</span><span class="nf">highpassFilter:</span><span class="p">(</span><span class="n">CGFloat</span><span class="p">)</span><span class="nv">accel</span> <span class="nf">before:</span><span class="p">(</span><span class="n">CGFloat</span><span class="p">)</span><span class="nv">before</span><span class="p">;</span>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark start implementation for methods</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">ViewController</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//背景色を白に指定</span>
+</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIColor</span> <span class="n">whiteColor</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//UIImageView追加</span>
+</span><span class='line'>    <span class="n">UIImage</span><span class="o">*</span> <span class="n">image</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIImage</span> <span class="nl">imageNamed:</span><span class="s">@&quot;ball.png&quot;</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">imageView_</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIImageView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithImage:</span><span class="n">image</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">imageView_</span><span class="p">.</span><span class="n">center</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">center</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">imageView_</span><span class="p">.</span><span class="n">autoresizingMask</span> <span class="o">=</span> <span class="n">UIViewAutoresizingFlexibleLeftMargin</span> <span class="o">|</span>
+</span><span class='line'>    <span class="n">UIViewAutoresizingFlexibleRightMargin</span> <span class="o">|</span>
+</span><span class='line'>    <span class="n">UIViewAutoresizingFlexibleTopMargin</span> <span class="o">|</span>
+</span><span class='line'>    <span class="n">UIViewAutoresizingFlexibleBottomMargin</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">imageView_</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewWillAppear:</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nv">animated</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">super</span> <span class="nl">viewWillAppear:</span><span class="n">animated</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//加速度センサーからの値取得開始</span>
+</span><span class='line'>    <span class="n">UIAccelerometer</span> <span class="o">*</span><span class="n">accelerometer</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIAccelerometer</span> <span class="n">sharedAccelerometer</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">accelerometer</span><span class="p">.</span><span class="n">updateInterval</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="mf">60.0</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">accelerometer</span><span class="p">.</span><span class="n">delegate</span> <span class="o">=</span> <span class="n">self</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewWillDisappear:</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nv">animated</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">super</span> <span class="nl">viewWillDisappear:</span><span class="n">animated</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">speedX_</span> <span class="o">=</span> <span class="n">speedY_</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//加速度センサーからの値取得終了</span>
+</span><span class='line'>    <span class="n">UIAccelerometer</span> <span class="o">*</span><span class="n">accelerometer</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIAccelerometer</span> <span class="n">sharedAccelerometer</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">accelerometer</span><span class="p">.</span><span class="n">delegate</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//加速度センサーからの通知</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">accelerometer:</span><span class="p">(</span><span class="n">UIAccelerometer</span> <span class="o">*</span><span class="p">)</span><span class="nv">accelerometer</span>
+</span><span class='line'>        <span class="nf">didAccelerate:</span><span class="p">(</span><span class="n">UIAcceleration</span> <span class="o">*</span><span class="p">)</span><span class="nv">acceleration</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">speedX_</span> <span class="o">+=</span> <span class="n">acceleration</span><span class="p">.</span><span class="n">x</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">speedY_</span> <span class="o">+=</span> <span class="n">acceleration</span><span class="p">.</span><span class="n">y</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">CGFloat</span> <span class="n">posX</span> <span class="o">=</span> <span class="n">imageView_</span><span class="p">.</span><span class="n">center</span><span class="p">.</span><span class="n">x</span> <span class="o">+</span> <span class="n">speedX_</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">CGFloat</span> <span class="n">posY</span> <span class="o">=</span> <span class="n">imageView_</span><span class="p">.</span><span class="n">center</span><span class="p">.</span><span class="n">y</span> <span class="o">-</span> <span class="n">speedY_</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//端にあたったら跳ね返る処理</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">posX</span> <span class="o">&lt;</span> <span class="mf">0.0</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">posX</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">//左の壁にあたったら0.4倍の力で跳ね返る</span>
+</span><span class='line'>        <span class="n">speedX_</span> <span class="o">*=</span> <span class="o">-</span><span class="mf">0.4</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">posX</span> <span class="o">&gt;</span> <span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">bounds</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">posX</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">bounds</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">//右の壁にあたったら0.4倍の力で跳ね返る</span>
+</span><span class='line'>        <span class="n">speedX_</span> <span class="o">*=</span> <span class="o">-</span><span class="mf">0.4</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">posY</span> <span class="o">&lt;</span> <span class="mf">0.0</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">posY</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">//上の壁にあたっても跳ね返らない</span>
+</span><span class='line'>        <span class="n">speedY_</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">posY</span> <span class="o">&gt;</span> <span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">bounds</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">height</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">posY</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">bounds</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">height</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">//下の壁にあたったら1.5倍の力で跳ね返る</span>
+</span><span class='line'>        <span class="n">speedY_</span> <span class="o">*=</span> <span class="o">-</span><span class="mf">1.5</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="n">imageView_</span><span class="p">.</span><span class="n">center</span> <span class="o">=</span> <span class="n">CGPointMake</span><span class="p">(</span><span class="n">posX</span><span class="p">,</span> <span class="n">posY</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//ローパスフィルタ</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">CGFloat</span><span class="p">)</span><span class="nf">lowpassFilter:</span><span class="p">(</span><span class="n">CGFloat</span><span class="p">)</span><span class="nv">accel</span> <span class="nf">before:</span><span class="p">(</span><span class="n">CGFloat</span><span class="p">)</span><span class="nv">before</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">static</span> <span class="k">const</span> <span class="n">CGFloat</span> <span class="n">kFilteringFactor</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">(</span><span class="n">accel</span> <span class="o">*</span> <span class="n">kFilteringFactor</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">before</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">kFilteringFactor</span><span class="p">));</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//ハイパスフィルタ</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">CGFloat</span><span class="p">)</span><span class="nf">highpassFilter:</span><span class="p">(</span><span class="n">CGFloat</span><span class="p">)</span><span class="nv">accel</span> <span class="nf">before:</span><span class="p">(</span><span class="n">CGFloat</span><span class="p">)</span><span class="nv">before</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">(</span><span class="n">accel</span> <span class="o">-</span> <span class="p">[</span><span class="n">self</span> <span class="nl">lowpassFilter:</span><span class="n">accel</span> <span class="nl">before:</span><span class="n">before</span><span class="p">]);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-06-21T20:33:00+09:00" pubdate data-updated="true">Jun 21<span>st</span>, 2013</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>
+
+
+</div>
+	
+</div>
+</article>
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/06/17/download-objc-classes-dc-image/">
+		
+			4種類の機能を搭載する「DCImage」クラス</a>
+	</h2>
+	<div class="entry-content">
+		<p>「イメージビューの生成」や「全画面画像の取得」、「マスク適用」に「リサイズ処理」など4種類の機能を実装する「DCImage」クラスを作成しました。</p>
+
+<p>全画面画像を取得する部分では、「DCDevice」クラスを使用しています。デバイス情報を判別し、解像度別に用意した画像を読み込む機能ですので、画像ファイルを適切な名称にリネームし、リソースに追加しておく必要があります。</p>
+
+<p>下記よりサンプルとソースコードのダウンロードが行えます。</p>
+
+<h2>ダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-classes-dc-image">https://github.com/masakihirokawa/objc-classes-dc-image</a></li>
+</ul>
+
+
+<h2>主な機能</h2>
+
+<ol>
+<li>イメージビューの取得</li>
+<li>全画面画像の取得 (デバイス判別機能を使用)</li>
+<li>画像にマスク適用</li>
+<li>画像のリサイズ</li>
+</ol>
+
+
+<h2>使用方法</h2>
+
+<h3>画像(UIImageView) の取得</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//画像を取得</span>
+</span><span class='line'><span class="n">UIImageView</span> <span class="o">*</span><span class="n">imageView</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCImage</span> <span class="nl">imageView:</span><span class="s">@&quot;Pandora_640_1136&quot;</span>
+</span><span class='line'>                                   <span class="nl">imageExt:</span><span class="s">@&quot;jpg&quot;</span>
+</span><span class='line'>                                       <span class="nl">rect:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">IMG_WIDTH_IPHONE5</span><span class="p">,</span> <span class="n">IMG_HEIGHT_IPHONE5</span><span class="p">)];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>全画面背景画像の取得</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//クラス初期化</span>
+</span><span class='line'><span class="n">DCImage</span> <span class="o">*</span><span class="n">dcImage</span> <span class="o">=</span> <span class="p">[[</span><span class="n">DCImage</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//全画面の背景画像を取得</span>
+</span><span class='line'><span class="n">UIImageView</span> <span class="o">*</span><span class="n">imageView</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCImage</span> <span class="nl">imageView:</span><span class="p">[</span><span class="n">dcImage</span> <span class="nl">backgroundImageName:</span><span class="s">@&quot;Pandora&quot;</span><span class="p">]</span>
+</span><span class='line'>                                   <span class="nl">imageExt:</span><span class="s">@&quot;jpg&quot;</span>
+</span><span class='line'>                                       <span class="nl">rect:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">IMG_WIDTH_IPHONE5</span><span class="p">,</span> <span class="n">IMG_HEIGHT_IPHONE5</span><span class="p">)];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>画像にマスク適用</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//マスクを適用する画像</span>
+</span><span class='line'><span class="n">UIImage</span> <span class="o">*</span><span class="n">image</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCImage</span> <span class="nl">getUIImageFromResources:</span><span class="s">@&quot;Pandora_640_1136&quot;</span> <span class="nl">ext:</span><span class="s">@&quot;jpg&quot;</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//マスク画像</span>
+</span><span class='line'><span class="n">UIImage</span> <span class="o">*</span><span class="n">imageMask</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCImage</span> <span class="nl">getUIImageFromResources:</span><span class="s">@&quot;image_mask&quot;</span> <span class="nl">ext:</span><span class="s">@&quot;png&quot;</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//マスク適用</span>
+</span><span class='line'><span class="n">UIImage</span> <span class="o">*</span><span class="n">maskedImage</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCImage</span> <span class="nl">mask:</span><span class="n">image</span> <span class="nl">withMask:</span><span class="n">imageMask</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>画像のリサイズ</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//画像取得</span>
+</span><span class='line'><span class="n">UIImage</span> <span class="o">*</span><span class="n">image</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCImage</span> <span class="nl">getUIImageFromResources:</span><span class="s">@&quot;Pandora_640_1136&quot;</span> <span class="nl">ext:</span><span class="s">@&quot;jpg&quot;</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//画像リサイズ適用</span>
+</span><span class='line'><span class="n">image</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCImage</span> <span class="nl">resize:</span><span class="n">image</span> <span class="nl">rect:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">160</span><span class="p">,</span> <span class="mi">283</span><span class="p">)];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>サンプルソースコード</h2>
+
+<h3>ViewController.h</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;UIKit/UIKit.h&gt;</span>
+</span><span class='line'><span class="cp">#import &quot;DCImage.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//サンプルの処理振り分け (1〜4)</span>
+</span><span class='line'><span class="cp">#define MODE               1</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#define IMG_WIDTH_IPHONE5  320</span>
+</span><span class='line'><span class="cp">#define IMG_HEIGHT_IPHONE5 568</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> : <span class="nc">UIViewController</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>ViewController.m</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+<span class='line-number'>102</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;ViewController.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> <span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">ViewController</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">typedef</span> <span class="k">enum</span> <span class="n">sample</span> <span class="o">:</span> <span class="n">NSInteger</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">MODE_IMAGE_VIEW</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+</span><span class='line'>    <span class="n">MODE_BG_IMAGE</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+</span><span class='line'>    <span class="n">MODE_MASK_IMAGE</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
+</span><span class='line'>    <span class="n">MODE_RESIZE_IMAGE</span> <span class="o">=</span> <span class="mi">4</span>
+</span><span class='line'><span class="p">}</span> <span class="n">sample</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
+</span><span class='line'>  
+</span><span class='line'>    <span class="k">switch</span> <span class="p">(</span><span class="n">MODE</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">case</span> <span class="nl">MODE_IMAGE_VIEW:</span>
+</span><span class='line'>            <span class="c1">//イメージを表示</span>
+</span><span class='line'>            <span class="p">[</span><span class="n">self</span> <span class="n">setImageView</span><span class="p">];</span>
+</span><span class='line'>            <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>        <span class="k">case</span> <span class="nl">MODE_BG_IMAGE:</span>
+</span><span class='line'>            <span class="c1">//全画面の背景画像を表示</span>
+</span><span class='line'>            <span class="p">[</span><span class="n">self</span> <span class="n">setBackgroundImage</span><span class="p">];</span>
+</span><span class='line'>            <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>        <span class="k">case</span> <span class="nl">MODE_MASK_IMAGE:</span>
+</span><span class='line'>            <span class="c1">//画像にマスクを適用</span>
+</span><span class='line'>            <span class="p">[</span><span class="n">self</span> <span class="n">setImageMask</span><span class="p">];</span>
+</span><span class='line'>            <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>        <span class="k">case</span> <span class="nl">MODE_RESIZE_IMAGE:</span>
+</span><span class='line'>            <span class="c1">//画像のリサイズ適用</span>
+</span><span class='line'>            <span class="p">[</span><span class="n">self</span> <span class="n">resizeImage</span><span class="p">];</span>
+</span><span class='line'>            <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//イメージを表示</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setImageView</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">//画像を取得</span>
+</span><span class='line'>    <span class="n">UIImageView</span> <span class="o">*</span><span class="n">imageView</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCImage</span> <span class="nl">imageView:</span><span class="s">@&quot;Pandora_640_1136&quot;</span>
+</span><span class='line'>                                       <span class="nl">imageExt:</span><span class="s">@&quot;jpg&quot;</span>
+</span><span class='line'>                                           <span class="nl">rect:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">IMG_WIDTH_IPHONE5</span><span class="p">,</span> <span class="n">IMG_HEIGHT_IPHONE5</span><span class="p">)];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//画面に追加</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">imageView</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//全画面の背景画像を表示</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setBackgroundImage</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">//クラス初期化</span>
+</span><span class='line'>    <span class="n">DCImage</span> <span class="o">*</span><span class="n">dcImage</span> <span class="o">=</span> <span class="p">[[</span><span class="n">DCImage</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//全画面の背景画像を取得</span>
+</span><span class='line'>    <span class="n">UIImageView</span> <span class="o">*</span><span class="n">imageView</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCImage</span> <span class="nl">imageView:</span><span class="p">[</span><span class="n">dcImage</span> <span class="nl">backgroundImageName:</span><span class="s">@&quot;Pandora&quot;</span><span class="p">]</span>
+</span><span class='line'>                                       <span class="nl">imageExt:</span><span class="s">@&quot;jpg&quot;</span>
+</span><span class='line'>                                           <span class="nl">rect:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">IMG_WIDTH_IPHONE5</span><span class="p">,</span> <span class="n">IMG_HEIGHT_IPHONE5</span><span class="p">)];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//画面に追加</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">imageView</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//画像にマスクを適用</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setImageMask</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">//マスクを適用する画像</span>
+</span><span class='line'>    <span class="n">UIImage</span> <span class="o">*</span><span class="n">image</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCImage</span> <span class="nl">getUIImageFromResources:</span><span class="s">@&quot;Pandora_640_1136&quot;</span> <span class="nl">ext:</span><span class="s">@&quot;jpg&quot;</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//マスク画像</span>
+</span><span class='line'>    <span class="n">UIImage</span> <span class="o">*</span><span class="n">imageMask</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCImage</span> <span class="nl">getUIImageFromResources:</span><span class="s">@&quot;image_mask&quot;</span> <span class="nl">ext:</span><span class="s">@&quot;png&quot;</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//マスク適用</span>
+</span><span class='line'>    <span class="n">UIImage</span> <span class="o">*</span><span class="n">maskedImage</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCImage</span> <span class="nl">mask:</span><span class="n">image</span> <span class="nl">withMask:</span><span class="n">imageMask</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//画面に追加</span>
+</span><span class='line'>    <span class="n">UIImageView</span> <span class="o">*</span><span class="n">imageView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIImageView</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">imageView</span><span class="p">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">IMG_WIDTH_IPHONE5</span><span class="p">,</span> <span class="n">IMG_HEIGHT_IPHONE5</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">imageView</span><span class="p">.</span><span class="n">image</span> <span class="o">=</span> <span class="n">maskedImage</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">imageView</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//画像のリサイズ適用</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">resizeImage</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">//画像取得</span>
+</span><span class='line'>    <span class="n">UIImage</span> <span class="o">*</span><span class="n">image</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCImage</span> <span class="nl">getUIImageFromResources:</span><span class="s">@&quot;Pandora_640_1136&quot;</span> <span class="nl">ext:</span><span class="s">@&quot;jpg&quot;</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//画像リサイズ適用</span>
+</span><span class='line'>    <span class="n">image</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCImage</span> <span class="nl">resize:</span><span class="n">image</span> <span class="nl">rect:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">160</span><span class="p">,</span> <span class="mi">283</span><span class="p">)];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//画面に追加</span>
+</span><span class='line'>    <span class="n">UIImageView</span> <span class="o">*</span><span class="n">imageView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIImageView</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">imageView</span><span class="p">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">IMG_WIDTH_IPHONE5</span><span class="p">,</span> <span class="n">IMG_HEIGHT_IPHONE5</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">imageView</span><span class="p">.</span><span class="n">image</span> <span class="o">=</span> <span class="n">image</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">imageView</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>ソースコード</h2>
+
+<h3>DCImage.h</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;UIKit/UIKit.h&gt;</span>
+</span><span class='line'><span class="cp">#import &quot;DCDevice.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#define BG_IMG_EXT                @&quot;.jpg&quot;</span>
+</span><span class='line'><span class="cp">#define BG_IMG_TYPE_IPHONE5       @&quot;_640_1136&quot;</span>
+</span><span class='line'><span class="cp">#define BG_IMG_TYPE_IPHONE4       @&quot;_640_960&quot;</span>
+</span><span class='line'><span class="cp">#define BG_IMG_TYPE_IPAD          @&quot;_1024_1024&quot;</span>
+</span><span class='line'><span class="cp">#define BG_IMG_TYPE_IPAD_RETINA   @&quot;_2048_2048&quot;</span>
+</span><span class='line'><span class="cp">#define BG_IMG_WIDTH_IPHONE5      320</span>
+</span><span class='line'><span class="cp">#define BG_IMG_HEIGHT_IPHONE5     568</span>
+</span><span class='line'><span class="cp">#define BG_IMG_WIDTH_IPHONE4      320</span>
+</span><span class='line'><span class="cp">#define BG_IMG_HEIGHT_IPHONE4     480</span>
+</span><span class='line'><span class="cp">#define BG_IMG_WIDTH_IPAD         512</span>
+</span><span class='line'><span class="cp">#define BG_IMG_HEIGHT_IPAD        512</span>
+</span><span class='line'><span class="cp">#define BG_IMG_WIDTH_IPAD_RETINA  1024</span>
+</span><span class='line'><span class="cp">#define BG_IMG_HEIGHT_IPAD_RETINA 1024</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">DCImage</span> : <span class="nc">UIImage</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">NSInteger</span>        <span class="n">backgroundImageX</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">NSInteger</span>        <span class="n">backgroundImageY</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">NSInteger</span>        <span class="n">backgroundImageWidth</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">NSInteger</span>        <span class="n">backgroundImageHeight</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">NSMutableArray</span> <span class="o">*</span><span class="n">_backgroundImageType</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">NSString</span>       <span class="o">*</span><span class="n">backgroundImageExt</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">)</span> <span class="n">NSInteger</span> <span class="n">backgroundImageX</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">)</span> <span class="n">NSInteger</span> <span class="n">backgroundImageY</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">)</span> <span class="n">NSInteger</span> <span class="n">backgroundImageWidth</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">)</span> <span class="n">NSInteger</span> <span class="n">backgroundImageHeight</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">)</span> <span class="n">NSString</span> <span class="o">*</span><span class="n">backgroundImageExt</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">UIImageView</span> <span class="o">*</span><span class="p">)</span><span class="nf">imageView:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">imageName</span> <span class="nf">imageExt:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">ext</span> <span class="nf">rect:</span><span class="p">(</span><span class="n">CGRect</span><span class="p">)</span><span class="nv">rect</span><span class="p">;</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setBackgroundImageRectangle</span><span class="p">;</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setBackgroundImageType</span><span class="p">;</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setBackgroundImageExt:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">ext</span><span class="p">;</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nf">backgroundImageFile:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">imageTitle</span><span class="p">;</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nf">backgroundImageName:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">imageTitle</span><span class="p">;</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nf">backgroundImageType</span><span class="p">;</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="nf">backgroundImageWidth</span><span class="p">;</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="nf">backgroundImageHeight</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nf">mask:</span><span class="p">(</span><span class="n">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nv">image</span> <span class="nf">withMask:</span><span class="p">(</span><span class="n">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nv">maskImage</span><span class="p">;</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nf">resize:</span><span class="p">(</span><span class="n">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nv">image</span> <span class="nf">rect:</span><span class="p">(</span><span class="n">CGRect</span><span class="p">)</span><span class="nv">rect</span><span class="p">;</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nf">getUIImageFromResources:</span><span class="p">(</span><span class="n">NSString</span><span class="o">*</span><span class="p">)</span><span class="nv">fileName</span> <span class="nf">ext:</span><span class="p">(</span><span class="n">NSString</span><span class="o">*</span><span class="p">)</span><span class="nv">ext</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>DCImage.m</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+<span class='line-number'>102</span>
+<span class='line-number'>103</span>
+<span class='line-number'>104</span>
+<span class='line-number'>105</span>
+<span class='line-number'>106</span>
+<span class='line-number'>107</span>
+<span class='line-number'>108</span>
+<span class='line-number'>109</span>
+<span class='line-number'>110</span>
+<span class='line-number'>111</span>
+<span class='line-number'>112</span>
+<span class='line-number'>113</span>
+<span class='line-number'>114</span>
+<span class='line-number'>115</span>
+<span class='line-number'>116</span>
+<span class='line-number'>117</span>
+<span class='line-number'>118</span>
+<span class='line-number'>119</span>
+<span class='line-number'>120</span>
+<span class='line-number'>121</span>
+<span class='line-number'>122</span>
+<span class='line-number'>123</span>
+<span class='line-number'>124</span>
+<span class='line-number'>125</span>
+<span class='line-number'>126</span>
+<span class='line-number'>127</span>
+<span class='line-number'>128</span>
+<span class='line-number'>129</span>
+<span class='line-number'>130</span>
+<span class='line-number'>131</span>
+<span class='line-number'>132</span>
+<span class='line-number'>133</span>
+<span class='line-number'>134</span>
+<span class='line-number'>135</span>
+<span class='line-number'>136</span>
+<span class='line-number'>137</span>
+<span class='line-number'>138</span>
+<span class='line-number'>139</span>
+<span class='line-number'>140</span>
+<span class='line-number'>141</span>
+<span class='line-number'>142</span>
+<span class='line-number'>143</span>
+<span class='line-number'>144</span>
+<span class='line-number'>145</span>
+<span class='line-number'>146</span>
+<span class='line-number'>147</span>
+<span class='line-number'>148</span>
+<span class='line-number'>149</span>
+<span class='line-number'>150</span>
+<span class='line-number'>151</span>
+<span class='line-number'>152</span>
+<span class='line-number'>153</span>
+<span class='line-number'>154</span>
+<span class='line-number'>155</span>
+<span class='line-number'>156</span>
+<span class='line-number'>157</span>
+<span class='line-number'>158</span>
+<span class='line-number'>159</span>
+<span class='line-number'>160</span>
+<span class='line-number'>161</span>
+<span class='line-number'>162</span>
+<span class='line-number'>163</span>
+<span class='line-number'>164</span>
+<span class='line-number'>165</span>
+<span class='line-number'>166</span>
+<span class='line-number'>167</span>
+<span class='line-number'>168</span>
+<span class='line-number'>169</span>
+<span class='line-number'>170</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;DCImage.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">DCImage</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@synthesize</span> <span class="n">backgroundImageX</span>      <span class="o">=</span> <span class="n">_backgroundImageX</span><span class="p">;</span>
+</span><span class='line'><span class="k">@synthesize</span> <span class="n">backgroundImageY</span>      <span class="o">=</span> <span class="n">_backgroundImageY</span><span class="p">;</span>
+</span><span class='line'><span class="k">@synthesize</span> <span class="n">backgroundImageWidth</span>  <span class="o">=</span> <span class="n">_backgroundImageWidth</span><span class="p">;</span>
+</span><span class='line'><span class="k">@synthesize</span> <span class="n">backgroundImageHeight</span> <span class="o">=</span> <span class="n">_backgroundImageHeight</span><span class="p">;</span>
+</span><span class='line'><span class="k">@synthesize</span> <span class="n">backgroundImageExt</span>    <span class="o">=</span> <span class="n">_backgroundImageExt</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark init</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">init</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">self</span> <span class="o">=</span> <span class="p">[</span><span class="n">super</span> <span class="n">init</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">self</span> <span class="n">setBackgroundImageRectangle</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">self</span> <span class="n">setBackgroundImageType</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">self</span> <span class="nl">setBackgroundImageExt:</span><span class="n">BG_IMG_EXT</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">self</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark image</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//画像の取得</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">UIImageView</span> <span class="o">*</span><span class="p">)</span><span class="nf">imageView:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">imageName</span> <span class="nf">imageExt:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">imageExt</span> <span class="nf">rect:</span><span class="p">(</span><span class="n">CGRect</span><span class="p">)</span><span class="nv">rect</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">UIImage</span> <span class="o">*</span><span class="n">image</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCImage</span> <span class="nl">getUIImageFromResources:</span><span class="n">imageName</span> <span class="nl">ext:</span><span class="n">imageExt</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">UIImageView</span> <span class="o">*</span><span class="n">imageView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIImageView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame:</span><span class="n">rect</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">imageView</span><span class="p">.</span><span class="n">image</span> <span class="o">=</span> <span class="n">image</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">imageView</span><span class="p">.</span><span class="n">contentMode</span> <span class="o">=</span> <span class="n">UIViewContentModeScaleAspectFill</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">imageView</span><span class="p">.</span><span class="n">autoresizingMask</span> <span class="o">=</span>
+</span><span class='line'>        <span class="n">UIViewAutoresizingFlexibleLeftMargin</span> <span class="o">|</span>
+</span><span class='line'>        <span class="n">UIViewAutoresizingFlexibleRightMargin</span> <span class="o">|</span>
+</span><span class='line'>        <span class="n">UIViewAutoresizingFlexibleTopMargin</span> <span class="o">|</span>
+</span><span class='line'>        <span class="n">UIViewAutoresizingFlexibleBottomMargin</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">(</span><span class="n">imageView</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark background image</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//背景画像のレクタングル定義</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setBackgroundImageRectangle</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">_backgroundImageX</span>      <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">_backgroundImageY</span>      <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">_backgroundImageWidth</span>  <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="n">backgroundImageWidth</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">_backgroundImageHeight</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="n">backgroundImageHeight</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//背景画像のファイル名接尾詞定義</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setBackgroundImageType</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">_backgroundImageType</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSArray</span> <span class="nl">arrayWithObjects:</span>
+</span><span class='line'>                            <span class="n">BG_IMG_TYPE_IPHONE5</span><span class="p">,</span>
+</span><span class='line'>                            <span class="n">BG_IMG_TYPE_IPHONE4</span><span class="p">,</span>
+</span><span class='line'>                            <span class="n">BG_IMG_TYPE_IPAD</span><span class="p">,</span>
+</span><span class='line'>                            <span class="n">BG_IMG_TYPE_IPAD_RETINA</span><span class="p">,</span>
+</span><span class='line'>                            <span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//背景画像の拡張子定義</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setBackgroundImageExt:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">ext</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">_backgroundImageExt</span> <span class="o">=</span> <span class="n">ext</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//背景画像のファイル名取得</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nf">backgroundImageFile:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">imageTitle</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">([</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">@&quot;%@%@%@&quot;</span><span class="p">,</span>
+</span><span class='line'>             <span class="n">imageTitle</span><span class="p">,</span> <span class="p">[</span><span class="n">self</span> <span class="n">backgroundImageType</span><span class="p">],</span> <span class="n">_backgroundImageExt</span><span class="p">]);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//背景画像の名前を取得 (拡張子を含まない)</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nf">backgroundImageName:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">imageTitle</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">([</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">@&quot;%@%@&quot;</span><span class="p">,</span>
+</span><span class='line'>             <span class="n">imageTitle</span><span class="p">,</span> <span class="p">[</span><span class="n">self</span> <span class="n">backgroundImageType</span><span class="p">]]);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//背景画像のファイル名接尾詞取得</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nf">backgroundImageType</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">([</span><span class="n">DCDevice</span> <span class="n">isIphone5</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="p">([</span><span class="n">_backgroundImageType</span> <span class="nl">objectAtIndex:</span><span class="mi">0</span><span class="p">]);</span>
+</span><span class='line'>    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">([</span><span class="n">DCDevice</span> <span class="n">isIphone4</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="p">([</span><span class="n">_backgroundImageType</span> <span class="nl">objectAtIndex:</span><span class="mi">1</span><span class="p">]);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">else</span> <span class="k">if</span> <span class="p">([</span><span class="n">DCDevice</span> <span class="n">isIpad</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="p">([</span><span class="n">_backgroundImageType</span> <span class="nl">objectAtIndex:</span><span class="mi">2</span><span class="p">]);</span>
+</span><span class='line'>    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">([</span><span class="n">DCDevice</span> <span class="n">isIpadRetina</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="p">([</span><span class="n">_backgroundImageType</span> <span class="nl">objectAtIndex:</span><span class="mi">3</span><span class="p">]);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">([</span><span class="n">_backgroundImageType</span> <span class="nl">objectAtIndex:</span><span class="mi">0</span><span class="p">]);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//背景画像の横幅取得</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="nf">backgroundImageWidth</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">([</span><span class="n">DCDevice</span> <span class="n">isIphone5</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="p">(</span><span class="n">BG_IMG_WIDTH_IPHONE5</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">([</span><span class="n">DCDevice</span> <span class="n">isIphone4</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="p">(</span><span class="n">BG_IMG_WIDTH_IPHONE4</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">else</span> <span class="k">if</span> <span class="p">([</span><span class="n">DCDevice</span> <span class="n">isIpad</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="p">(</span><span class="n">BG_IMG_WIDTH_IPAD</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">([</span><span class="n">DCDevice</span> <span class="n">isIpadRetina</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="p">(</span><span class="n">BG_IMG_WIDTH_IPAD_RETINA</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">(</span><span class="n">BG_IMG_WIDTH_IPHONE5</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//背景画像の縦幅取得</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="nf">backgroundImageHeight</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">([</span><span class="n">DCDevice</span> <span class="n">isIphone5</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="p">(</span><span class="n">BG_IMG_HEIGHT_IPHONE5</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">([</span><span class="n">DCDevice</span> <span class="n">isIphone4</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="p">(</span><span class="n">BG_IMG_HEIGHT_IPHONE4</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">else</span> <span class="k">if</span> <span class="p">([</span><span class="n">DCDevice</span> <span class="n">isIpad</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="p">(</span><span class="n">BG_IMG_HEIGHT_IPAD</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">([</span><span class="n">DCDevice</span> <span class="n">isIpadRetina</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="p">(</span><span class="n">BG_IMG_HEIGHT_IPAD_RETINA</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">(</span><span class="n">BG_IMG_HEIGHT_IPHONE5</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark mask image</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//画像にマスク適用</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nf">mask:</span><span class="p">(</span><span class="n">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nv">image</span> <span class="nf">withMask:</span><span class="p">(</span><span class="n">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nv">maskImage</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">CGImageRef</span> <span class="n">maskRef</span> <span class="o">=</span> <span class="n">maskImage</span><span class="p">.</span><span class="n">CGImage</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">CGImageRef</span> <span class="n">mask</span> <span class="o">=</span> <span class="n">CGImageMaskCreate</span><span class="p">(</span><span class="n">CGImageGetWidth</span><span class="p">(</span><span class="n">maskRef</span><span class="p">),</span>
+</span><span class='line'>                                        <span class="n">CGImageGetHeight</span><span class="p">(</span><span class="n">maskRef</span><span class="p">),</span>
+</span><span class='line'>                                        <span class="n">CGImageGetBitsPerComponent</span><span class="p">(</span><span class="n">maskRef</span><span class="p">),</span>
+</span><span class='line'>                                        <span class="n">CGImageGetBitsPerPixel</span><span class="p">(</span><span class="n">maskRef</span><span class="p">),</span>
+</span><span class='line'>                                        <span class="n">CGImageGetBytesPerRow</span><span class="p">(</span><span class="n">maskRef</span><span class="p">),</span>
+</span><span class='line'>                                        <span class="n">CGImageGetDataProvider</span><span class="p">(</span><span class="n">maskRef</span><span class="p">),</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">false</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">CGImageRef</span> <span class="n">masked</span> <span class="o">=</span> <span class="n">CGImageCreateWithMask</span><span class="p">([</span><span class="n">image</span> <span class="n">CGImage</span><span class="p">],</span> <span class="n">mask</span><span class="p">);</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">([</span><span class="n">UIImage</span> <span class="nl">imageWithCGImage:</span><span class="n">masked</span><span class="p">]);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark resize image</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//画像のリサイズ</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nf">resize:</span><span class="p">(</span><span class="n">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nv">image</span> <span class="nf">rect:</span><span class="p">(</span><span class="n">CGRect</span><span class="p">)</span><span class="nv">rect</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">UIGraphicsBeginImageContext</span><span class="p">(</span><span class="n">rect</span><span class="p">.</span><span class="n">size</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">image</span> <span class="nl">drawInRect:</span><span class="n">rect</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">UIImage</span><span class="o">*</span> <span class="n">resizedImage</span> <span class="o">=</span> <span class="n">UIGraphicsGetImageFromCurrentImageContext</span><span class="p">();</span>
+</span><span class='line'>    <span class="n">CGContextRef</span> <span class="n">context</span> <span class="o">=</span> <span class="n">UIGraphicsGetCurrentContext</span><span class="p">();</span>
+</span><span class='line'>    <span class="n">CGContextSetInterpolationQuality</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">kCGInterpolationHigh</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">UIGraphicsEndImageContext</span><span class="p">();</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">(</span><span class="n">resizedImage</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark getter/setter</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//画像ファイル取得</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nf">getUIImageFromResources:</span><span class="p">(</span><span class="n">NSString</span><span class="o">*</span><span class="p">)</span><span class="nv">fileName</span> <span class="nf">ext:</span><span class="p">(</span><span class="n">NSString</span><span class="o">*</span><span class="p">)</span><span class="nv">ext</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">NSString</span> <span class="o">*</span><span class="n">path</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSBundle</span> <span class="n">mainBundle</span><span class="p">]</span> <span class="nl">pathForResource:</span><span class="n">fileName</span> <span class="nl">ofType:</span><span class="n">ext</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">UIImage</span> <span class="o">*</span><span class="n">img</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIImage</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithContentsOfFile:</span><span class="n">path</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">(</span><span class="n">img</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-06-17T23:54:00+09:00" pubdate data-updated="true">Jun 17<span>th</span>, 2013</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/download/'>download</a>, <a class='category' href='/blog/categories/objective-c/'>objective-c</a>
+
+
+</div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -426,372 +1534,6 @@
 </div>
 </article>
 
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/06/17/objc-label-for-motion/">
-		
-			シェイクモーションの検知</a>
-	</h2>
-	<div class="entry-content">
-		<p>iPhone本体のシェイクモーションを検知し、本体を振るとアラートを表示するサンプルを以下に作成しました。</p>
-
-<p>レスポンダに登録する事で、モーション開始時、モーション終了時、モーションキャンセル時のイベントを定義する事ができます。今回のサンプルでは、モーション(シェイク)終了時にアラートを表示しています。</p>
-
-<p>下記よりサンプルのダウンロードが行えます。</p>
-
-<h2>ダウンロード</h2>
-
-<ul>
-<li><a href="https://github.com/masakihirokawa/objc-label-for-motion">https://github.com/masakihirokawa/objc-label-for-motion</a></li>
-</ul>
-
-
-<h2>ソースコード</h2>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//ラベル初期化</span>
-</span><span class='line'>    <span class="n">UILabel</span> <span class="o">*</span><span class="n">label</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UILabel</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'>    <span class="n">label</span><span class="p">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">bounds</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">label</span><span class="p">.</span><span class="n">autoresizingMask</span> <span class="o">=</span>
-</span><span class='line'>        <span class="n">UIViewAutoresizingFlexibleWidth</span> <span class="o">|</span>
-</span><span class='line'>        <span class="n">UIViewAutoresizingFlexibleHeight</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">label</span><span class="p">.</span><span class="n">textAlignment</span> <span class="o">=</span> <span class="n">NSTextAlignmentCenter</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">label</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="s">@&quot;シェイクしてください&quot;</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//ラベルを画面に追加</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">label</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//レスポンダ登録</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">label</span> <span class="n">becomeFirstResponder</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//モーション開始時のイベント</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">motionBegan:</span><span class="p">(</span><span class="n">UIEventSubtype</span><span class="p">)</span><span class="nv">motion</span> <span class="nf">withEvent:</span><span class="p">(</span><span class="n">UIEvent</span> <span class="o">*</span><span class="p">)</span><span class="nv">event</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;motionBegan&quot;</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//モーション終了時のイベント</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">motionEnded:</span><span class="p">(</span><span class="n">UIEventSubtype</span><span class="p">)</span><span class="nv">motion</span> <span class="nf">withEvent:</span><span class="p">(</span><span class="n">UIEvent</span> <span class="o">*</span><span class="p">)</span><span class="nv">event</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;motionEnded&quot;</span><span class="p">);</span>
-</span><span class='line'>    <span class="n">UIAlertView</span> <span class="o">*</span><span class="n">alert</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIAlertView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithTitle:</span><span class="nb">nil</span>
-</span><span class='line'>                                                    <span class="nl">message:</span><span class="s">@&quot;シェイクされました&quot;</span>
-</span><span class='line'>                                                   <span class="nl">delegate:</span><span class="nb">nil</span>
-</span><span class='line'>                                          <span class="nl">cancelButtonTitle:</span><span class="nb">nil</span>
-</span><span class='line'>                                          <span class="nl">otherButtonTitles:</span><span class="s">@&quot;OK&quot;</span><span class="p">,</span> <span class="nb">nil</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">alert</span> <span class="n">show</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//モーションキャンセル時のイベント</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">motionCancelled:</span><span class="p">(</span><span class="n">UIEventSubtype</span><span class="p">)</span><span class="nv">motion</span> <span class="nf">withEvent:</span><span class="p">(</span><span class="n">UIEvent</span> <span class="o">*</span><span class="p">)</span><span class="nv">event</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;motionCancelled&quot;</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">canBecomeFirstResponder</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">YES</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-06-17T11:12:00+09:00" pubdate data-updated="true">Jun 17<span>th</span>, 2013</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>
-
-
-</div>
-	
-</div>
-</article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/06/16/objc-pinch-in-pinch-out/">
-		
-			ピンチイン/ピンチアウトの検知</a>
-	</h2>
-	<div class="entry-content">
-		<p>2本指でのピンチイン/ピンチアウトで画像を拡大縮小するサンプルを以下に作成しました。</p>
-
-<p>下記よりサンプルのダウンロードが行えます。</p>
-
-<h2>ダウンロード</h2>
-
-<ul>
-<li><a href="https://github.com/masakihirokawa/objc-pinch-in-pinch-out">https://github.com/masakihirokawa/objc-pinch-in-pinch-out</a></li>
-</ul>
-
-
-<h2>ソースコード</h2>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-<span class='line-number'>65</span>
-<span class='line-number'>66</span>
-<span class='line-number'>67</span>
-<span class='line-number'>68</span>
-<span class='line-number'>69</span>
-<span class='line-number'>70</span>
-<span class='line-number'>71</span>
-<span class='line-number'>72</span>
-<span class='line-number'>73</span>
-<span class='line-number'>74</span>
-<span class='line-number'>75</span>
-<span class='line-number'>76</span>
-<span class='line-number'>77</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;ViewController.h&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> <span class="p">()</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="n">CGFloat</span><span class="p">)</span><span class="nl">distanceWithPointA:</span><span class="p">(</span><span class="n">CGPoint</span><span class="p">)</span><span class="n">pointA</span> <span class="nl">pointB:</span><span class="p">(</span><span class="n">CGPoint</span><span class="p">)</span><span class="n">pointB</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@property</span> <span class="n">UIImageView</span> <span class="o">*</span><span class="n">imageView</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@implementation</span> <span class="nc">ViewController</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//背景色を黒に設定</span>
-</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIColor</span> <span class="n">blackColor</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//マルチタッチの有効化</span>
-</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">multipleTouchEnabled</span> <span class="o">=</span> <span class="n">YES</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//イメージの読み込み</span>
-</span><span class='line'>    <span class="n">UIImage</span> <span class="o">*</span><span class="n">image</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIImage</span> <span class="nl">imageNamed:</span><span class="s">@&quot;Pandora_640_1136.jpg&quot;</span><span class="p">];</span>
-</span><span class='line'>    <span class="n">_imageView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIImageView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">320</span><span class="p">,</span> <span class="mi">578</span><span class="p">)];</span>
-</span><span class='line'>    <span class="n">_imageView</span><span class="p">.</span><span class="n">image</span> <span class="o">=</span> <span class="n">image</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">_imageView</span><span class="p">.</span><span class="n">center</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">center</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">_imageView</span><span class="p">.</span><span class="n">contentMode</span> <span class="o">=</span> <span class="n">UIViewContentModeScaleAspectFill</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">_imageView</span><span class="p">.</span><span class="n">autoresizingMask</span> <span class="o">=</span>
-</span><span class='line'>        <span class="n">UIViewAutoresizingFlexibleLeftMargin</span> <span class="o">|</span>
-</span><span class='line'>        <span class="n">UIViewAutoresizingFlexibleRightMargin</span> <span class="o">|</span>
-</span><span class='line'>        <span class="n">UIViewAutoresizingFlexibleTopMargin</span> <span class="o">|</span>
-</span><span class='line'>        <span class="n">UIViewAutoresizingFlexibleBottomMargin</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//イメージを画面に追加</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">_imageView</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">touchesMoved:</span><span class="p">(</span><span class="n">NSSet</span> <span class="o">*</span><span class="p">)</span><span class="nv">touches</span> <span class="nf">withEvent:</span><span class="p">(</span><span class="n">UIEvent</span> <span class="o">*</span><span class="p">)</span><span class="nv">event</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">([</span><span class="n">touches</span> <span class="n">count</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="c1">//2本指でタッチしている場合は、２点間の距離を計算</span>
-</span><span class='line'>        <span class="n">NSArray</span> <span class="o">*</span><span class="n">twoFingers</span> <span class="o">=</span> <span class="p">[</span><span class="n">touches</span> <span class="n">allObjects</span><span class="p">];</span>
-</span><span class='line'>        <span class="n">UITouch</span> <span class="o">*</span><span class="n">touch1</span> <span class="o">=</span> <span class="p">[</span><span class="n">twoFingers</span> <span class="nl">objectAtIndex:</span><span class="mi">0</span><span class="p">];</span>
-</span><span class='line'>        <span class="n">UITouch</span> <span class="o">*</span><span class="n">touch2</span> <span class="o">=</span> <span class="p">[</span><span class="n">twoFingers</span> <span class="nl">objectAtIndex:</span><span class="mi">1</span><span class="p">];</span>
-</span><span class='line'>        <span class="n">CGPoint</span> <span class="n">previous1</span> <span class="o">=</span> <span class="p">[</span><span class="n">touch1</span> <span class="nl">previousLocationInView:</span><span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">];</span>
-</span><span class='line'>        <span class="n">CGPoint</span> <span class="n">previous2</span> <span class="o">=</span> <span class="p">[</span><span class="n">touch2</span> <span class="nl">previousLocationInView:</span><span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">];</span>
-</span><span class='line'>        <span class="n">CGPoint</span> <span class="n">now1</span> <span class="o">=</span> <span class="p">[</span><span class="n">touch1</span> <span class="nl">locationInView:</span><span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">];</span>
-</span><span class='line'>        <span class="n">CGPoint</span> <span class="n">now2</span> <span class="o">=</span> <span class="p">[</span><span class="n">touch2</span> <span class="nl">locationInView:</span><span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="c1">//現状の距離と、前回の距離を比較して距離が縮まったか離れたかを判別</span>
-</span><span class='line'>        <span class="n">CGFloat</span> <span class="n">previousDistance</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="nl">distanceWithPointA:</span><span class="n">previous1</span> <span class="nl">pointB:</span><span class="n">previous2</span><span class="p">];</span>
-</span><span class='line'>        <span class="n">CGFloat</span> <span class="n">distance</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="nl">distanceWithPointA:</span><span class="n">now1</span> <span class="nl">pointB:</span><span class="n">now2</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="n">CGFloat</span> <span class="n">scale</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">;</span>
-</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">previousDistance</span> <span class="o">&gt;</span> <span class="n">distance</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>            <span class="c1">//距離が縮まったらならピンチイン</span>
-</span><span class='line'>            <span class="n">scale</span> <span class="o">-=</span> <span class="p">(</span> <span class="n">previousDistance</span> <span class="o">-</span> <span class="n">distance</span> <span class="p">)</span> <span class="o">/</span> <span class="mf">300.0</span><span class="p">;</span>
-</span><span class='line'>        <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">distance</span> <span class="o">&gt;</span> <span class="n">previousDistance</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>            <span class="c1">// 距離が広がったならピンチアウト</span>
-</span><span class='line'>            <span class="n">scale</span> <span class="o">+=</span> <span class="p">(</span> <span class="n">distance</span> <span class="o">-</span> <span class="n">previousDistance</span> <span class="p">)</span> <span class="o">/</span> <span class="mf">300.0</span><span class="p">;</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>        <span class="n">CGAffineTransform</span> <span class="n">newTransform</span> <span class="o">=</span>
-</span><span class='line'>            <span class="n">CGAffineTransformScale</span><span class="p">(</span><span class="n">_imageView</span><span class="p">.</span><span class="n">transform</span><span class="p">,</span> <span class="n">scale</span><span class="p">,</span> <span class="n">scale</span><span class="p">);</span>
-</span><span class='line'>        <span class="n">_imageView</span><span class="p">.</span><span class="n">transform</span> <span class="o">=</span> <span class="n">newTransform</span><span class="p">;</span>
-</span><span class='line'>        <span class="n">_imageView</span><span class="p">.</span><span class="n">center</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">center</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">CGFloat</span><span class="p">)</span><span class="nf">distanceWithPointA:</span><span class="p">(</span><span class="n">CGPoint</span><span class="p">)</span><span class="nv">pointA</span> <span class="nf">pointB:</span><span class="p">(</span><span class="n">CGPoint</span><span class="p">)</span><span class="nv">pointB</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">CGFloat</span> <span class="n">dx</span> <span class="o">=</span> <span class="n">fabs</span><span class="p">(</span> <span class="n">pointB</span><span class="p">.</span><span class="n">x</span> <span class="o">-</span> <span class="n">pointA</span><span class="p">.</span><span class="n">x</span> <span class="p">);</span>
-</span><span class='line'>    <span class="n">CGFloat</span> <span class="n">dy</span> <span class="o">=</span> <span class="n">fabs</span><span class="p">(</span> <span class="n">pointB</span><span class="p">.</span><span class="n">y</span> <span class="o">-</span> <span class="n">pointA</span><span class="p">.</span><span class="n">y</span> <span class="p">);</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">dx</span> <span class="o">*</span> <span class="n">dx</span> <span class="o">+</span> <span class="n">dy</span> <span class="o">*</span> <span class="n">dy</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-06-16T10:31:00+09:00" pubdate data-updated="true">Jun 16<span>th</span>, 2013</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>
-
-
-</div>
-	
-</div>
-</article>
-
 <nav id="pagenavi">
     
         <a href="/blog/page/3/" class="prev">Prev</a>
@@ -829,7 +1571,7 @@
   <div id="category" class="information-box">
 <section>
   <h1>Categories</h1>
-  <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (48)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (162)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (36)</a></li></ul>
+  <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (48)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (164)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (36)</a></li></ul>
 </section>
 
 
@@ -838,6 +1580,14 @@
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/07/06/objc-ui-slider-thumb-image/">スライダーのデザインをカスタマイズする方法</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/07/06/objc-ui-scroll-view-zooming/">スクロールビューの中を拡大縮小する方法</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2013/07/03/objc-application-icon-badge-number/">アプリケーションバッジを表示する</a>
@@ -869,14 +1619,6 @@
     
       <li class="post">
         <a href="/blog/2013/06/21/objc-ui-accelerometer-ball-sample/">加速度センサーを使用した動くボールのサンプル</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/06/17/download-objc-classes-dc-image/">4種類の機能を搭載する「DCImage」クラス</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/06/17/download-objc-classes-dc-device/">iOS端末情報を取得する「DCDevice」クラス</a>
       </li>
     
   </ul>
