@@ -6,7 +6,7 @@
 	<title>Dolice Lab</title>
 	
 	
-	<meta name="description" content="文字列を整数や実数、真偽値にキャストするには以下のようにコードを記述します。 サンプルダウンロード https://github.com/masakihirokawa/objc-cast ソースコード 1
+	<meta name="description" content="クラスはオブジェクトの設計図にあたるもので、属性とメソッドで構成されています。 Objective-Cのクラスは以下のように宣言と実装が分かれています。 クラス 1
 2
 3
 4
@@ -24,11 +24,17 @@
 16
 17
 18
-19 &hellip;">
+19
+20
+21
+22
+23
+24
+25 &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	<meta property="og:title" content="Dolice Lab" />
-<meta property="og:description" content="文字列を整数や実数、真偽値にキャストするには以下のようにコードを記述します。 サンプルダウンロード https://github.com/masakihirokawa/objc-cast ソースコード 1
+<meta property="og:description" content="クラスはオブジェクトの設計図にあたるもので、属性とメソッドで構成されています。 Objective-Cのクラスは以下のように宣言と実装が分かれています。 クラス 1
 2
 3
 4
@@ -46,7 +52,13 @@
 16
 17
 18
-19 &hellip;" />
+19
+20
+21
+22
+23
+24
+25 &hellip;" />
 <meta property="og:url" content="http://lab.dolice.net/blog/page/48/" />
 <meta property="og:image" content="http://lab.dolice.net/images/facebook-icon.jpg" />
 <meta property="og:author" content="Masaki Hirokawa" />
@@ -120,6 +132,271 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/03/23/objc-class-protocol/">
+		
+			Objective-Cのクラスとプロトコルについて</a>
+	</h2>
+	<div class="entry-content">
+		<p>クラスはオブジェクトの設計図にあたるもので、属性とメソッドで構成されています。</p>
+
+<p>Objective-Cのクラスは以下のように宣言と実装が分かれています。</p>
+
+<h2>クラス</h2>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//クラスの宣言</span>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">Hoge</span> : <span class="nc">NSObject</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//プロパティ</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">strong</span><span class="p">)</span> <span class="n">NSString</span> <span class="o">*</span><span class="n">str</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//メソッド定義</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">foo</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//クラスの実装</span>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">Hoge</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">@private</span>
+</span><span class='line'>    <span class="c1">//インスタンス変数</span>
+</span><span class='line'>    <span class="kt">int</span> <span class="o">*</span><span class="n">_number</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//メソッドの実装</span>
+</span><span class='line'><span class="o">-</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">foo</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="c1">//処理</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>クラスからオブジェクトを生成して処理を実行</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//Hogeクラスから hogeオブジェクトを生成する</span>
+</span><span class='line'><span class="n">Hoge</span> <span class="o">*</span><span class="n">hoge</span> <span class="p">[[</span><span class="n">Hoge</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'><span class="c1">//メソッドの実行</span>
+</span><span class='line'><span class="p">[</span><span class="n">hoge</span> <span class="n">foo</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>クラスの継承</h2>
+
+<p>継承を使うと継承元の情報を引き継いで新しいクラスを作成することができます。</p>
+
+<p>クラスを継承するには、ヘッダファイルに親クラスの指定を追加します。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//Hogeクラスを使用して Piyoクラスを作成</span>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">Piyo</span> : <span class="nc">Hoge</span>
+</span><span class='line'><span class="c1">//新たにメソッドを追加する</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">bar</span><span class="p">;</span>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//クラスの実装</span>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">Piyo</span>
+</span><span class='line'><span class="c1">//メソッドの実装</span>
+</span><span class='line'><span class="k">-</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">bar</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="c1">//処理</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>継承したメソッドの実行</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//Piyoクラスから piyoオブジェクトを生成する</span>
+</span><span class='line'><span class="n">Piyo</span> <span class="o">*</span><span class="n">piyo</span> <span class="o">=</span> <span class="p">[[</span><span class="n">Piyo</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'><span class="c1">//継承した strプロパティに値をセットする</span>
+</span><span class='line'><span class="n">piyo</span><span class="p">.</span><span class="n">str</span> <span class="o">=</span> <span class="s">@&quot;test&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="c1">//継承したメソッドの実行</span>
+</span><span class='line'><span class="p">[</span><span class="n">piyo</span> <span class="n">foo</span><span class="p">];</span>
+</span><span class='line'><span class="c1">//Piyoクラス独自のメソッドを実行</span>
+</span><span class='line'><span class="p">[</span><span class="n">piyo</span> <span class="n">bar</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>メソッドのオーバーライド</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">@interface</span> <span class="nc">Piyo</span> : <span class="nc">Hoge</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">Piyo</span>
+</span><span class='line'><span class="c1">//親クラスのメソッドをオーバーライドする</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">foo</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="c1">//親クラスのメソッド呼び出し</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">super</span> <span class="n">foo</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//処理</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>プロトコル</h2>
+
+<p>プロトコルはオブジェクトの振る舞いを表すメソッド群を宣言したものです。</p>
+
+<p>プロトコルは以下のように「@protocol」指示子を使って宣言します。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//インターフェースの宣言</span>
+</span><span class='line'><span class="k">@protocol</span> <span class="nc">Hoge</span>
+</span><span class='line'><span class="c1">//メソッドの定義</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">foo</span><span class="p">;</span>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>プロトコルの適合</h3>
+
+<p>プロトコルで宣言されているメソッドはクラスが実装します。</p>
+
+<p>ヘッダファイルにプロトコルの指定を追加します。プロトコルを使用してプロトコルで宣言されているメソッドをクラスに実装することを、プロトコルの適合と呼びます。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//プロトコルの適合</span>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">Piyo</span> : <span class="nc">NSObject</span> <span class="o">&lt;</span><span class="n">Hoge</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span>
+</span><span class='line'><span class="err">//プロトコルで宣言されているメソッドを実装する</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">foo</span> <span class="p">{</span>
+</span><span class='line'>  <span class="c1">//処理</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>親クラスの指定の後に「&lt;>」で囲んで、適合するプロトコルを指定します。プロトコルが複数ある場合は「,」で区切ります。</p>
+
+<p>Piyoクラスは Hogeプロトコルに適合しているため、以下のように Hogeプロトコルで宣言されている fooメソッドを呼び出すことができます。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//Piyoクラスから piyoオブジェクトを生成する</span>
+</span><span class='line'><span class="n">Piyo</span> <span class="o">*</span><span class="n">piyo</span> <span class="p">[[</span><span class="n">Piyo</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'><span class="c1">//Hogeプロトコルで宣言されているメソッドを呼び出す</span>
+</span><span class='line'><span class="p">[</span><span class="n">piyo</span> <span class="n">foo</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Objective-Cのクラスとプロトコルについての解説は以上になります。</p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-23T11:36:00+09:00" pubdate data-updated="true">Mar 23<span>rd</span>, 2013</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>
+
+
+</div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -272,56 +549,6 @@ boolValue = 1<br /></p></blockquote>
 </div>
 </article>
 
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/03/22/objc-scroll-view/">
-		
-			UIScrollBarのスクロール可能領域を指定する</a>
-	</h2>
-	<div class="entry-content">
-		<p>UIScrollBarのスクロール可能領域を指定するには、以下のように contentSizeプロパティを指定します。</p>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//CGSizeMakeで横幅, 縦幅を指定する</span>
-</span><span class='line'><span class="n">self</span><span class="p">.</span><span class="n">scrollView</span><span class="p">.</span><span class="n">contentSize</span> <span class="o">=</span> <span class="n">CGSizeMake</span><span class="p">(</span><span class="mi">320</span><span class="p">,</span> <span class="mi">568</span><span class="p">);</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-03-22T17:35:00+09:00" pubdate data-updated="true">Mar 22<span>nd</span>, 2013</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>
-
-
-</div>
-	
-</div>
-</article>
-
 <nav id="pagenavi">
     
         <a href="/blog/page/47/" class="prev">Prev</a>
@@ -359,7 +586,7 @@ boolValue = 1<br /></p></blockquote>
   <div id="category" class="information-box">
 <section>
   <h1>Categories</h1>
-  <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (48)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (165)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (36)</a></li></ul>
+  <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (48)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (166)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (36)</a></li></ul>
 </section>
 
 
@@ -368,6 +595,10 @@ boolValue = 1<br /></p></blockquote>
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/07/14/objc-av-audio-player/">AVAudioPlayerを使用した曲の再生/停止/ボリューム調節サンプル</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2013/07/07/objc-ui-image-picker-control-camera-overlay/">カメラで撮った写真に画像をオーバーレイする方法</a>
@@ -403,10 +634,6 @@ boolValue = 1<br /></p></blockquote>
     
       <li class="post">
         <a href="/blog/2013/06/28/objc-ui-activity-indicator/">ローディング中に表示するアクティビティーインジケーターのサンプル</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/06/24/objc-ui-button-shows-touch-when-highlighted/">タップ時に背景が光るボタンのサンプル</a>
       </li>
     
   </ul>

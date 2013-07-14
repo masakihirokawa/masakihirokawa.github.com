@@ -6,11 +6,31 @@
 	<title>Dolice Lab</title>
 	
 	
-	<meta name="description" content="Objective-Cでナビゲーションバーに背景画像を指定するサンプルを以下に作成しました。iOSのバージョンを判別し、iOS5.0以上とそれ以外でリソースの取得方法を分けています。 ナビゲーションバーの背景画像の寸法は、縦幅320×横幅44ピクセルで作成しています。サンプルには &hellip;">
+	<meta name="description" content="特定の日時のオブジェクトを取得するには、NSCalendarクラスを使用します。以下にサンプルを作成しました。 サンプルダウンロード https://github.com/masakihirokawa/objc-ns-calendar ソースコード 1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11 &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	<meta property="og:title" content="Dolice Lab" />
-<meta property="og:description" content="Objective-Cでナビゲーションバーに背景画像を指定するサンプルを以下に作成しました。iOSのバージョンを判別し、iOS5.0以上とそれ以外でリソースの取得方法を分けています。 ナビゲーションバーの背景画像の寸法は、縦幅320×横幅44ピクセルで作成しています。サンプルには &hellip;" />
+<meta property="og:description" content="特定の日時のオブジェクトを取得するには、NSCalendarクラスを使用します。以下にサンプルを作成しました。 サンプルダウンロード https://github.com/masakihirokawa/objc-ns-calendar ソースコード 1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11 &hellip;" />
 <meta property="og:url" content="http://lab.dolice.net/blog/page/25/" />
 <meta property="og:image" content="http://lab.dolice.net/images/facebook-icon.jpg" />
 <meta property="og:author" content="Masaki Hirokawa" />
@@ -84,6 +104,109 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/04/14/objc-ns-calendar/">
+		
+			特定の日時のオブジェクトを取得する</a>
+	</h2>
+	<div class="entry-content">
+		<p>特定の日時のオブジェクトを取得するには、NSCalendarクラスを使用します。以下にサンプルを作成しました。</p>
+
+<h2>サンプルダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-ns-calendar">https://github.com/masakihirokawa/objc-ns-calendar</a></li>
+</ul>
+
+
+<h2>ソースコード</h2>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">main</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="c1">//現在のカレンダーを取得する</span>
+</span><span class='line'>  <span class="n">NSCalendar</span> <span class="o">*</span><span class="n">calendar</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSCalendar</span> <span class="n">currentCalendar</span><span class="p">];</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">[[</span><span class="n">calendar</span> <span class="n">calendarIdentifier</span><span class="p">]</span> <span class="nl">isEqualToString:</span><span class="n">NSGregorianCalendar</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">//グレゴリオ暦以外のカレンダーが使用されている</span>
+</span><span class='line'>    <span class="n">calendar</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSCalendar</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithCalendarIdentifier:</span><span class="n">NSGregorianCalendar</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">//取得する日時の情報を格納したインスタンスを生成する</span>
+</span><span class='line'>  <span class="n">NSDateComponents</span> <span class="o">*</span><span class="n">components</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSDateComponents</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="p">[</span><span class="n">components</span> <span class="nl">setYear:</span><span class="mi">2013</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">components</span> <span class="nl">setMonth:</span><span class="mi">4</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">components</span> <span class="nl">setDay:</span><span class="mi">14</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">components</span> <span class="nl">setHour:</span><span class="mi">9</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">components</span> <span class="nl">setMinute:</span><span class="mi">0</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">components</span> <span class="nl">setSecond:</span><span class="mi">55</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">//日時のオブジェクトを取得する</span>
+</span><span class='line'>  <span class="n">NSDate</span> <span class="o">*</span><span class="n">date</span> <span class="o">=</span> <span class="p">[</span><span class="n">calendar</span> <span class="nl">dateFromComponents:</span><span class="n">components</span><span class="p">];</span>
+</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;%@&quot;</span><span class="p">,</span> <span class="n">date</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>出力結果</h2>
+
+<blockquote><p>2013-04-14 00:00:55 +0000</p></blockquote>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-04-14T09:02:00+09:00" pubdate data-updated="true">Apr 14<span>th</span>, 2013</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>
+
+
+</div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -289,256 +412,6 @@ dic : {<br />
 </div>
 </article>
 
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/04/11/objc-ns-timer-animation/">
-		
-			NSTimerを使用したアニメーション</a>
-	</h2>
-	<div class="entry-content">
-		<p>Objective-Cのタイマーを使用してラベルをアニメーションさせるサンプルを以下に作成しました。</p>
-
-<p>サンプルでは、一定間隔でラベルの座標を更新する事でアニメーションを実装しています。</p>
-
-<h2>サンプルダウンロード</h2>
-
-<ul>
-<li><a href="https://github.com/masakihirokawa/objc-ns-timer-animation">https://github.com/masakihirokawa/objc-ns-timer-animation</a></li>
-</ul>
-
-
-<h2>ソースコード</h2>
-
-<h3>ViewController.h</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;UIKit/UIKit.h&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> : <span class="nc">UIViewController</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">)</span> <span class="kt">int</span> <span class="n">labelWidth</span><span class="p">;</span>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">)</span> <span class="kt">int</span> <span class="n">labelHeight</span><span class="p">;</span>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">)</span> <span class="kt">int</span> <span class="n">animationSpeedX</span><span class="p">;</span>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">)</span> <span class="kt">int</span> <span class="n">animationSpeedY</span><span class="p">;</span>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">strong</span><span class="p">,</span> <span class="n">nonatomic</span><span class="p">)</span> <span class="n">UILabel</span><span class="o">*</span> <span class="n">myLabel</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>ViewController.m</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-<span class='line-number'>65</span>
-<span class='line-number'>66</span>
-<span class='line-number'>67</span>
-<span class='line-number'>68</span>
-<span class='line-number'>69</span>
-<span class='line-number'>70</span>
-<span class='line-number'>71</span>
-<span class='line-number'>72</span>
-<span class='line-number'>73</span>
-<span class='line-number'>74</span>
-<span class='line-number'>75</span>
-<span class='line-number'>76</span>
-<span class='line-number'>77</span>
-<span class='line-number'>78</span>
-<span class='line-number'>79</span>
-<span class='line-number'>80</span>
-<span class='line-number'>81</span>
-<span class='line-number'>82</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;ViewController.h&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> <span class="p">()</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@implementation</span> <span class="nc">ViewController</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
-</span><span class='line'>  <span class="c1">//アニメーションさせるラベル初期化</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">self</span> <span class="n">initLabel</span><span class="p">];</span>
-</span><span class='line'>  <span class="c1">//アニメーション設定</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">self</span> <span class="n">setAnimationSettings</span><span class="p">];</span>
-</span><span class='line'>  <span class="c1">//タイマー定義</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">self</span> <span class="n">setTimer</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">didReceiveMemoryWarning</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">super</span> <span class="n">didReceiveMemoryWarning</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//ラベル初期化</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">initLabel</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="c1">//ラベルを生成</span>
-</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">labelWidth</span> <span class="o">=</span> <span class="mi">128</span><span class="p">;</span>
-</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">labelHeight</span> <span class="o">=</span> <span class="mi">32</span><span class="p">;</span>
-</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">myLabel</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UILabel</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">self</span><span class="p">.</span><span class="n">labelWidth</span><span class="p">,</span> <span class="n">self</span><span class="p">.</span><span class="n">labelHeight</span><span class="p">)];</span>
-</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">myLabel</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="s">@&quot;Animation&quot;</span><span class="p">;</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">self</span><span class="p">.</span><span class="n">myLabel</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//アニメーション設定</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setAnimationSettings</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="c1">//ラベルのアニメーションスピード</span>
-</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">animationSpeedX</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
-</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">animationSpeedY</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//タイマー定義</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setTimer</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="c1">//0.01秒毎に moveLabelセレクタを呼ぶ</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">NSTimer</span>
-</span><span class='line'>   <span class="nl">scheduledTimerWithTimeInterval:</span><span class="mf">0.01</span>
-</span><span class='line'>   <span class="nl">target:</span><span class="n">self</span>
-</span><span class='line'>   <span class="nl">selector:</span><span class="k">@selector</span><span class="p">(</span><span class="nl">moveLabel:</span><span class="p">)</span>
-</span><span class='line'>   <span class="nl">userInfo:</span><span class="nb">nil</span>
-</span><span class='line'>   <span class="nl">repeats:</span><span class="n">YES</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//ラベルをアニメーションさせるセレクタ</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">moveLabel:</span><span class="p">(</span><span class="n">NSTimer</span> <span class="o">*</span><span class="p">)</span><span class="nv">timer</span> <span class="p">{</span>
-</span><span class='line'>  <span class="kt">float</span> <span class="n">posX</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">myLabel</span><span class="p">.</span><span class="n">center</span><span class="p">.</span><span class="n">x</span><span class="p">;</span>
-</span><span class='line'>  <span class="kt">float</span> <span class="n">posY</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">myLabel</span><span class="p">.</span><span class="n">center</span><span class="p">.</span><span class="n">y</span><span class="p">;</span>
-</span><span class='line'>  <span class="c1">//ラベルを移動させる</span>
-</span><span class='line'>  <span class="n">posX</span> <span class="o">+=</span> <span class="n">self</span><span class="p">.</span><span class="n">animationSpeedX</span><span class="p">;</span>
-</span><span class='line'>  <span class="n">posY</span> <span class="o">+=</span> <span class="n">self</span><span class="p">.</span><span class="n">animationSpeedY</span><span class="p">;</span>
-</span><span class='line'>  <span class="c1">//端までアニメーションしたか判定</span>
-</span><span class='line'>  <span class="k">if</span> <span class="p">([</span><span class="n">self</span> <span class="nl">isLimitLabelX:</span><span class="n">posX</span><span class="p">])</span> <span class="n">posX</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'>  <span class="k">if</span> <span class="p">([</span><span class="n">self</span> <span class="nl">isLimitLabelY:</span><span class="n">posY</span><span class="p">])</span> <span class="n">posY</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'>  <span class="c1">//座標反映</span>
-</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">myLabel</span><span class="p">.</span><span class="n">center</span> <span class="o">=</span> <span class="n">CGPointMake</span><span class="p">(</span><span class="n">posX</span><span class="p">,</span> <span class="n">posY</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//横方向の端まで行ったか判定</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">isLimitLabelX:</span><span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="nv">posX</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="k">return</span> <span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">frame</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span> <span class="o">+</span> <span class="n">self</span><span class="p">.</span><span class="n">labelWidth</span> <span class="o">&lt;</span> <span class="n">posX</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//縦方向の端まで行ったか判定</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">isLimitLabelY:</span><span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="nv">posY</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="k">return</span> <span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">frame</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">height</span> <span class="o">+</span> <span class="n">self</span><span class="p">.</span><span class="n">labelHeight</span> <span class="o">&lt;</span> <span class="n">posY</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-04-11T23:50:00+09:00" pubdate data-updated="true">Apr 11<span>th</span>, 2013</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>
-
-
-</div>
-	
-</div>
-</article>
-
 <nav id="pagenavi">
     
         <a href="/blog/page/24/" class="prev">Prev</a>
@@ -576,7 +449,7 @@ dic : {<br />
   <div id="category" class="information-box">
 <section>
   <h1>Categories</h1>
-  <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (48)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (165)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (36)</a></li></ul>
+  <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (48)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (166)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (36)</a></li></ul>
 </section>
 
 
@@ -585,6 +458,10 @@ dic : {<br />
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/07/14/objc-av-audio-player/">AVAudioPlayerを使用した曲の再生/停止/ボリューム調節サンプル</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2013/07/07/objc-ui-image-picker-control-camera-overlay/">カメラで撮った写真に画像をオーバーレイする方法</a>
@@ -620,10 +497,6 @@ dic : {<br />
     
       <li class="post">
         <a href="/blog/2013/06/28/objc-ui-activity-indicator/">ローディング中に表示するアクティビティーインジケーターのサンプル</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/06/24/objc-ui-button-shows-touch-when-highlighted/">タップ時に背景が光るボタンのサンプル</a>
       </li>
     
   </ul>
