@@ -6,11 +6,11 @@
 	<title>Dolice Lab</title>
 	
 	
-	<meta name="description" content="ユーザーデフォルトの初期値を設定するには、「registerDefaults」メソッドを使用します。下記にサンプルを作成しました。 サンプルダウンロード https://github.com/masakihirokawa/objc-ns-user-default-register- &hellip;">
+	<meta name="description" content="ユーザーデフォルトに保存した全ての設定値を取得するには、「dictionaryRepresentation」メソッドを使用します。下記にサンプルを作成しました。 サンプルダウンロード https://github.com/masakihirokawa/objc-user-defaults- &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	<meta property="og:title" content="Dolice Lab" />
-<meta property="og:description" content="ユーザーデフォルトの初期値を設定するには、「registerDefaults」メソッドを使用します。下記にサンプルを作成しました。 サンプルダウンロード https://github.com/masakihirokawa/objc-ns-user-default-register- &hellip;" />
+<meta property="og:description" content="ユーザーデフォルトに保存した全ての設定値を取得するには、「dictionaryRepresentation」メソッドを使用します。下記にサンプルを作成しました。 サンプルダウンロード https://github.com/masakihirokawa/objc-user-defaults- &hellip;" />
 <meta property="og:url" content="http://lab.dolice.net/blog/page/19/" />
 <meta property="og:image" content="http://lab.dolice.net/images/facebook-icon.jpg" />
 <meta property="og:author" content="Masaki Hirokawa" />
@@ -84,6 +84,101 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/04/25/objc-ns-user-defaults-dictionary-representation/">
+		
+			ユーザーデフォルトから全ての設定値を取得する</a>
+	</h2>
+	<div class="entry-content">
+		<p>ユーザーデフォルトに保存した全ての設定値を取得するには、「dictionaryRepresentation」メソッドを使用します。下記にサンプルを作成しました。</p>
+
+<h2>サンプルダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-user-defaults-dictionary-representation">https://github.com/masakihirokawa/objc-user-defaults-dictionary-representation</a></li>
+</ul>
+
+
+<h2>ソースコード</h2>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">main</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="c1">//ユーザーデフォルトを取得する</span>
+</span><span class='line'>  <span class="n">NSUserDefaults</span> <span class="o">*</span><span class="n">userDefaults</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">userDefaults</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSUserDefaults</span> <span class="n">standardUserDefaults</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">//設定値を保存する</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">userDefaults</span> <span class="nl">setInteger:</span><span class="mi">6</span>
+</span><span class='line'>                    <span class="nl">forKey:</span><span class="s">@&quot;myValue&quot;</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">//全設定値を取得する</span>
+</span><span class='line'>  <span class="n">NSDictionary</span> <span class="o">*</span><span class="n">dictionary</span> <span class="o">=</span> <span class="p">[</span><span class="n">userDefaults</span> <span class="n">dictionaryRepresentation</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">//ファイルに書き込む</span>
+</span><span class='line'>  <span class="n">NSString</span> <span class="o">*</span><span class="n">path</span> <span class="o">=</span> <span class="s">@&quot;~/Documents/setting.plist&quot;</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">path</span> <span class="o">=</span> <span class="p">[</span><span class="n">path</span> <span class="n">stringByExpandingTildeInPath</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="p">[</span><span class="n">dictionary</span> <span class="nl">writeToFile:</span><span class="n">path</span>
+</span><span class='line'>               <span class="nl">atomically:</span><span class="n">YES</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-04-25T07:45:00+09:00" pubdate data-updated="true">Apr 25<span>th</span>, 2013</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>
+
+
+</div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -342,95 +437,6 @@
 </div>
 </article>
 
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/04/24/objc-ns-user-defaults-object-for-key/">
-		
-			ユーザーデフォルトから設定値を読み込む</a>
-	</h2>
-	<div class="entry-content">
-		<p>ユーザーデフォルトに保存した設定値を取得するには、「objectForKey」メソッドを使用して、取得したい設定値のキーを指定します。下記にサンプルを作成しました。</p>
-
-<h2>サンプルダウンロード</h2>
-
-<ul>
-<li><a href="https://github.com/masakihirokawa/objc-ns-user-defaults-object-for-key">https://github.com/masakihirokawa/objc-ns-user-defaults-object-for-key</a></li>
-</ul>
-
-
-<h2>ソースコード</h2>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">main</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="c1">//ユーザーデフォルトを取得する</span>
-</span><span class='line'>  <span class="n">NSUserDefaults</span> <span class="o">*</span><span class="n">userDefaults</span><span class="p">;</span>
-</span><span class='line'>  <span class="n">userDefaults</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSUserDefaults</span> <span class="n">standardUserDefaults</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="c1">//設定値を保存する</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">userDefaults</span> <span class="nl">setInteger:</span><span class="mi">6</span>
-</span><span class='line'>                    <span class="nl">forKey:</span><span class="s">@&quot;myValue&quot;</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="c1">//設定値を取得する</span>
-</span><span class='line'>  <span class="n">NSNumber</span> <span class="o">*</span><span class="n">value</span><span class="p">;</span>
-</span><span class='line'>  <span class="n">value</span> <span class="o">=</span> <span class="p">[</span><span class="n">userDefaults</span> <span class="nl">objectForKey:</span><span class="s">@&quot;myValue&quot;</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;%@&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>出力結果</h2>
-
-<blockquote><p>6</p></blockquote>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-04-24T10:40:00+09:00" pubdate data-updated="true">Apr 24<span>th</span>, 2013</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>
-
-
-</div>
-	
-</div>
-</article>
-
 <nav id="pagenavi">
     
         <a href="/blog/page/18/" class="prev">Prev</a>
@@ -468,7 +474,7 @@
   <div id="category" class="information-box">
 <section>
   <h1>Categories</h1>
-  <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (48)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (168)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (36)</a></li></ul>
+  <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (48)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (169)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (36)</a></li></ul>
 </section>
 
 
@@ -477,6 +483,10 @@
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/07/25/objc-ui-image-blend-mode/">UIImageにブレンドモードを指定して加工する方法</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2013/07/25/objc-ui-image-draw-in-rect/">UIImageを画面に直接描画する方法</a>
@@ -512,10 +522,6 @@
     
       <li class="post">
         <a href="/blog/2013/07/01/download-objc-classes-dc-activity-indicator/">アクティビティインジケーターを制御する「DCActivityIndicator」クラス</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/06/30/download-objc-classes-dc-social/">Facebook/Twitter/LINEへ投稿する「DCSocial」クラス</a>
       </li>
     
   </ul>
