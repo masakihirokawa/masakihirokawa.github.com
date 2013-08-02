@@ -6,41 +6,17 @@
 	<title>Dolice Lab</title>
 	
 	
-	<meta name="description" content="逆順に格納された順序付けされたセットを作成するには、「reversedOrderedSet」メソッドを使用します。 以下にそれらの逆順に順序付けされたオブジェクトを高速列挙で取得する方法を記載します。 ソースコード 1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16 &hellip;">
+	<meta name="description" content="iPhone/iPadのデバイス名を判別する Deviceクラスを作成しました。 このクラスでは以下の事が可能になります。 使用しているデバイス名・バージョンの取得
+（iPhone5/iPhone4/iPad等）
+指定したデバイスであるか(真偽値)の取得
+（iPhone5であれば、 &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	<meta property="og:title" content="Dolice Lab" />
-<meta property="og:description" content="逆順に格納された順序付けされたセットを作成するには、「reversedOrderedSet」メソッドを使用します。 以下にそれらの逆順に順序付けされたオブジェクトを高速列挙で取得する方法を記載します。 ソースコード 1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16 &hellip;" />
+<meta property="og:description" content="iPhone/iPadのデバイス名を判別する Deviceクラスを作成しました。 このクラスでは以下の事が可能になります。 使用しているデバイス名・バージョンの取得
+（iPhone5/iPhone4/iPad等）
+指定したデバイスであるか(真偽値)の取得
+（iPhone5であれば、 &hellip;" />
 <meta property="og:url" content="http://lab.dolice.net/blog/page/43/" />
 <meta property="og:image" content="http://lab.dolice.net/images/facebook-icon.jpg" />
 <meta property="og:author" content="Masaki Hirokawa" />
@@ -114,6 +90,255 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/03/25/download-xcode-objc-device/">
+		
+			iOSデバイスを判別する Deviceクラスを作成しました</a>
+	</h2>
+	<div class="entry-content">
+		<p>iPhone/iPadのデバイス名を判別する <a href="https://github.com/masakihirokawa/objc-classes-device" title="Deviceクラス">Deviceクラス</a>を作成しました。</p>
+
+<p>このクラスでは以下の事が可能になります。</p>
+
+<ol>
+<li>使用しているデバイス名・バージョンの取得
+（<em>iPhone5/iPhone4/iPad等</em>）</li>
+<li>指定したデバイスであるか(真偽値)の取得
+（<em>iPhone5であれば、isIphone5メソッドの呼び出しで 1が返ります</em>）</li>
+</ol>
+
+
+<p>以下のリンクからダウンロード出来ます。GitHubにサンプルコードを含めたソースファイルを公開しています。</p>
+
+<h2>ダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-classes-device">https://github.com/masakihirokawa/objc-classes-device</a></li>
+</ul>
+
+
+<h2>ソースコード</h2>
+
+<h3>Device.h</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;Foundation/Foundation.h&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">Device</span> : <span class="nc">NSString</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nf">iOSDevice</span><span class="p">;</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span> <span class="nf">isIphone5</span><span class="p">;</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span> <span class="nf">isIphone4</span><span class="p">;</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span> <span class="nf">isIphone3</span><span class="p">;</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span> <span class="nf">isIpad</span><span class="p">;</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span> <span class="nf">isIpadRetina</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Device.m</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;Device.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">Device</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nf">iOSDevice</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="k">if</span><span class="p">(</span><span class="n">UI_USER_INTERFACE_IDIOM</span><span class="p">()</span> <span class="o">==</span> <span class="n">UIUserInterfaceIdiomPhone</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">([[</span><span class="n">UIScreen</span> <span class="n">mainScreen</span><span class="p">]</span> <span class="nl">respondsToSelector:</span> <span class="k">@selector</span><span class="p">(</span><span class="n">scale</span><span class="p">)])</span> <span class="p">{</span>
+</span><span class='line'>      <span class="n">CGSize</span> <span class="n">result</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIScreen</span> <span class="n">mainScreen</span><span class="p">]</span> <span class="n">bounds</span><span class="p">].</span><span class="n">size</span><span class="p">;</span>
+</span><span class='line'>      <span class="n">CGFloat</span> <span class="n">scale</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIScreen</span> <span class="n">mainScreen</span><span class="p">].</span><span class="n">scale</span><span class="p">;</span>
+</span><span class='line'>      <span class="n">result</span> <span class="o">=</span> <span class="n">CGSizeMake</span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">width</span> <span class="o">*</span> <span class="n">scale</span><span class="p">,</span> <span class="n">result</span><span class="p">.</span><span class="n">height</span> <span class="o">*</span> <span class="n">scale</span><span class="p">);</span>
+</span><span class='line'>      <span class="k">if</span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">height</span> <span class="o">==</span> <span class="mi">960</span><span class="p">){</span>
+</span><span class='line'>        <span class="k">return</span> <span class="p">(</span><span class="s">@&quot;iPhone4&quot;</span><span class="p">);</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>      <span class="k">if</span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">height</span> <span class="o">==</span> <span class="mi">1136</span><span class="p">){</span>
+</span><span class='line'>        <span class="k">return</span> <span class="p">(</span><span class="s">@&quot;iPhone5&quot;</span><span class="p">);</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">return</span> <span class="p">(</span><span class="s">@&quot;iPhone3&quot;</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">([[</span><span class="n">UIScreen</span> <span class="n">mainScreen</span><span class="p">]</span> <span class="nl">respondsToSelector:</span> <span class="k">@selector</span><span class="p">(</span><span class="n">scale</span><span class="p">)])</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">return</span> <span class="p">(</span><span class="s">@&quot;iPad Retina&quot;</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">return</span> <span class="p">(</span><span class="s">@&quot;iPad&quot;</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="k">return</span> <span class="p">(</span><span class="s">@&quot;unknown&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span> <span class="nf">isIphone5</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="k">return</span> <span class="p">([[</span><span class="n">self</span> <span class="n">iOSDevice</span><span class="p">]</span> <span class="nl">isEqualToString:</span><span class="s">@&quot;iPhone5&quot;</span><span class="p">]);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span> <span class="nf">isIphone4</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="k">return</span> <span class="p">([[</span><span class="n">self</span> <span class="n">iOSDevice</span><span class="p">]</span> <span class="nl">isEqualToString:</span><span class="s">@&quot;iPhone4&quot;</span><span class="p">]);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span> <span class="nf">isIphone3</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="k">return</span> <span class="p">([[</span><span class="n">self</span> <span class="n">iOSDevice</span><span class="p">]</span> <span class="nl">isEqualToString:</span><span class="s">@&quot;iPhone3&quot;</span><span class="p">]);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span> <span class="nf">isIpad</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="k">return</span> <span class="p">([[</span><span class="n">self</span> <span class="n">iOSDevice</span><span class="p">]</span> <span class="nl">isEqualToString:</span><span class="s">@&quot;iPad&quot;</span><span class="p">]);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span> <span class="nf">isIpadRetina</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="k">return</span> <span class="p">([[</span><span class="n">self</span> <span class="n">iOSDevice</span><span class="p">]</span> <span class="nl">isEqualToString:</span><span class="s">@&quot;iPad Retina&quot;</span><span class="p">]);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>サンプルソースコード</h2>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setDeviceInformation</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="c1">//初期化</span>
+</span><span class='line'>  <span class="n">Device</span> <span class="o">*</span><span class="n">device</span> <span class="o">=</span> <span class="p">[[</span><span class="n">Device</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//デバイス名称</span>
+</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">labelIOSDevice</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">device</span><span class="p">.</span><span class="n">iOSDevice</span><span class="p">;</span>
+</span><span class='line'>  <span class="c1">//iPhone5であれば1が返る</span>
+</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">labelIphone5</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">@&quot;%@%d&quot;</span><span class="p">,</span> <span class="s">@&quot;isIphone5: &quot;</span><span class="p">,</span> <span class="n">device</span><span class="p">.</span><span class="n">isIphone5</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//iPhone4/4Sであれば1が返る</span>
+</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">labelIphone4</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">@&quot;%@%d&quot;</span><span class="p">,</span> <span class="s">@&quot;isIphone4: &quot;</span><span class="p">,</span> <span class="n">device</span><span class="p">.</span><span class="n">isIphone4</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//iPhone3G/3GSであれば1が返る</span>
+</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">labelIphone3</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">@&quot;%@%d&quot;</span><span class="p">,</span> <span class="s">@&quot;isIphone3: &quot;</span><span class="p">,</span> <span class="n">device</span><span class="p">.</span><span class="n">isIphone3</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//iPad/iPad2/iPad miniであれば1が返る</span>
+</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">labelIpad</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">@&quot;%@%d&quot;</span><span class="p">,</span> <span class="s">@&quot;isIpad: &quot;</span><span class="p">,</span> <span class="n">device</span><span class="p">.</span><span class="n">isIpad</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//新しい iPad以降であれば1が返る</span>
+</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">labelIpadRetina</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">@&quot;%@%d&quot;</span><span class="p">,</span> <span class="s">@&quot;isIpadRetina: &quot;</span><span class="p">,</span> <span class="n">device</span><span class="p">.</span><span class="n">isIpadRetina</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-25T12:51:00+09:00" pubdate data-updated="true">Mar 25<span>th</span>, 2013</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/download/'>download</a>, <a class='category' href='/blog/categories/objective-c/'>objective-c</a>, <a class='category' href='/blog/categories/xcode/'>xcode</a>
+
+
+</div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -330,144 +555,6 @@ Value1<br /></p></blockquote>
 </div>
 </article>
 
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/03/25/objc-in-the-array-reverse-block/">
-		
-			ブロック構文を使用して配列やセットから逆順に取得する</a>
-	</h2>
-	<div class="entry-content">
-		<p>ブロック構文を使用して、配列や順序付けされたセットからオブジェクトを逆順に取得する方法を以下に記載します。</p>
-
-<h2>サンプルダウンロード</h2>
-
-<ul>
-<li><a href="https://github.com/masakihirokawa/objc-ns-enumeration-reverse-using-block">https://github.com/masakihirokawa/objc-ns-enumeration-reverse-using-block</a></li>
-</ul>
-
-
-<h2>ソースコード</h2>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">main</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="c1">//配列を生成する</span>
-</span><span class='line'>  <span class="n">NSArray</span> <span class="o">*</span><span class="n">myArray</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSArray</span> <span class="nl">arrayWithObjects:</span>
-</span><span class='line'>                      <span class="s">@&quot;Apple&quot;</span><span class="p">,</span>
-</span><span class='line'>                      <span class="s">@&quot;Banana&quot;</span><span class="p">,</span>
-</span><span class='line'>                      <span class="s">@&quot;Orange&quot;</span><span class="p">,</span>
-</span><span class='line'>                      <span class="nb">nil</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="c1">//順序付けされたセットを取得する</span>
-</span><span class='line'>  <span class="n">NSOrderedSet</span> <span class="o">*</span><span class="n">orderdSet</span><span class="p">;</span>
-</span><span class='line'>  <span class="n">orderdSet</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSOrderedSet</span> <span class="nl">orderedSetWithArray:</span><span class="n">myArray</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="c1">//オブジェクトを順番に取得する</span>
-</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;From myArray&quot;</span><span class="p">);</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">myArray</span> <span class="nl">enumeratorObjectsWithOptions:</span><span class="n">NSEnumerationReverse</span>
-</span><span class='line'>                             <span class="nl">usingBlock:</span>
-</span><span class='line'>   <span class="o">^</span><span class="p">(</span><span class="kt">id</span> <span class="n">obj</span><span class="p">,</span> <span class="n">NSInteger</span> <span class="n">idx</span><span class="p">,</span> <span class="kt">BOOL</span> <span class="o">*</span><span class="n">stop</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>     <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;%@&quot;</span><span class="p">,</span> <span class="n">obj</span><span class="p">);</span>
-</span><span class='line'>   <span class="p">}];</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="c1">//各オブジェクトを取得する</span>
-</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;From orderdSet&quot;</span><span class="p">);</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">orderedSet</span> <span class="nl">enumeratorObjectsWithOptions:</span><span class="n">NSEnumerationReverse</span>
-</span><span class='line'>                               <span class="nl">usingBlock:</span>
-</span><span class='line'>   <span class="o">^</span><span class="p">(</span><span class="kt">id</span> <span class="n">obj</span><span class="p">,</span> <span class="n">NSInteger</span> <span class="n">idx</span><span class="p">,</span> <span class="kt">BOOL</span> <span class="o">*</span><span class="n">stop</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>     <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;%@&quot;</span><span class="p">,</span> <span class="n">obj</span><span class="p">);</span>
-</span><span class='line'>   <span class="p">}];</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>実行結果</h2>
-
-<blockquote><p>From myArray<br />
-Orange<br />
-Banana<br />
-Aopple<br />
-<br />
-From orderdSet<br />
-Orange<br />
-Banana<br />
-Aopple<br /></p></blockquote>
-
-<h2>メソッドの定義</h2>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSEnumerator</span> <span class="o">*</span><span class="p">)</span><span class="nf">reverseObjectEnumerator</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">enumeratorObjectsWithOptions:</span><span class="p">(</span><span class="n">NSEnumerationOptions</span><span class="p">)</span><span class="nv">opts</span>
-</span><span class='line'>  <span class="nf">usingBlock:</span><span class="p">(</span><span class="kt">void</span> <span class="p">(</span><span class="o">^</span><span class="p">)(</span><span class="kt">id</span> <span class="n">obj</span><span class="p">,</span> <span class="n">NSINteger</span> <span class="n">idx</span><span class="p">,</span> <span class="kt">BOOL</span> <span class="o">*</span><span class="n">stop</span><span class="p">))</span><span class="nv">block</span><span class="p">;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-03-25T09:00:00+09:00" pubdate data-updated="true">Mar 25<span>th</span>, 2013</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>
-
-
-</div>
-	
-</div>
-</article>
-
 <nav id="pagenavi">
     
         <a href="/blog/page/42/" class="prev">Prev</a>
@@ -505,7 +592,7 @@ Aopple<br /></p></blockquote>
   <div id="category" class="information-box">
 <section>
   <h1>Categories</h1>
-  <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (48)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (170)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (36)</a></li></ul>
+  <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (49)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (171)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (36)</a></li></ul>
 </section>
 
 
@@ -514,6 +601,10 @@ Aopple<br /></p></blockquote>
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/08/02/download-objc-classes-dc-audio-player/">音楽ファイルの再生停止などの制御をする「DCAudioPlayer」クラス</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2013/07/30/objc-ui-view-animation-transition/">UIViewにアニメーションを適用する方法</a>
@@ -549,10 +640,6 @@ Aopple<br /></p></blockquote>
     
       <li class="post">
         <a href="/blog/2013/07/03/objc-application-icon-badge-number/">アプリケーションバッジを表示する</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/07/01/download-objc-classes-2013-jul/">Objective-Cクラスのまとめ</a>
       </li>
     
   </ul>
