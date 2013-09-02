@@ -6,7 +6,7 @@
 	<title>Dolice Lab</title>
 	
 	
-	<meta name="description" content="辞書からオブジェクトを取得する方法を以下に記載します。 サンプルダウンロード https://github.com/masakihirokawa/objc-object-for-key ソースコード 1
+	<meta name="description" content="配列や順序付けされたセットからオブジェクトを逆順に取得する方法を以下に記載します。 1
 2
 3
 4
@@ -20,11 +20,30 @@
 12
 13
 14
-- (void)main &hellip;">
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+- (void)main
+{ // &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	<meta property="og:title" content="Dolice Lab" />
-<meta property="og:description" content="辞書からオブジェクトを取得する方法を以下に記載します。 サンプルダウンロード https://github.com/masakihirokawa/objc-object-for-key ソースコード 1
+<meta property="og:description" content="配列や順序付けされたセットからオブジェクトを逆順に取得する方法を以下に記載します。 1
 2
 3
 4
@@ -38,7 +57,26 @@
 12
 13
 14
-- (void)main &hellip;" />
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+- (void)main
+{ // &hellip;" />
 <meta property="og:url" content="http://lab.dolice.net/blog/page/47/" />
 <meta property="og:image" content="http://lab.dolice.net/images/facebook-icon.jpg" />
 <meta property="og:author" content="Masaki Hirokawa" />
@@ -117,21 +155,12 @@
     <article class="post">
 	<h2 class="title">
 		
-		<a href="/blog/2013/03/24/objc-get-dictionary/">
+		<a href="/blog/2013/03/25/objc-in-the-array-reverse/">
 		
-			辞書からオブジェクトを取得する</a>
+			配列やセットからオブジェクトを逆順に取得する</a>
 	</h2>
 	<div class="entry-content">
-		<p>辞書からオブジェクトを取得する方法を以下に記載します。</p>
-
-<h2>サンプルダウンロード</h2>
-
-<ul>
-<li><a href="https://github.com/masakihirokawa/objc-object-for-key">https://github.com/masakihirokawa/objc-object-for-key</a></li>
-</ul>
-
-
-<h2>ソースコード</h2>
+		<p>配列や順序付けされたセットからオブジェクトを逆順に取得する方法を以下に記載します。</p>
 
 <figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -147,33 +176,84 @@
 <span class='line-number'>12</span>
 <span class='line-number'>13</span>
 <span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
 </pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">main</span>
 </span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="c1">//辞書を生成する</span>
-</span><span class='line'>  <span class="n">NSDictionary</span> <span class="o">*</span><span class="n">myDictionary</span><span class="p">;</span>
-</span><span class='line'>  <span class="n">myDictionary</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSDictionary</span> <span class="nl">dictionaryWithObjectsAndKeys:</span>
-</span><span class='line'>                  <span class="s">@&quot;Apple&quot;</span><span class="p">,</span> <span class="s">@&quot;Key1&quot;</span><span class="p">,</span>
-</span><span class='line'>                  <span class="s">@&quot;Banana&quot;</span><span class="p">,</span> <span class="s">@&quot;Key2&quot;</span><span class="p">,</span>
-</span><span class='line'>                  <span class="s">@&quot;Orange&quot;</span><span class="p">,</span> <span class="s">@&quot;Key3&quot;</span><span class="p">,</span>
-</span><span class='line'>                  <span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//配列を生成する</span>
+</span><span class='line'>  <span class="n">NSArray</span> <span class="o">*</span><span class="n">myArray</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSArray</span> <span class="nl">arrayWithObjects:</span>
+</span><span class='line'>                      <span class="s">@&quot;Apple&quot;</span><span class="p">,</span>
+</span><span class='line'>                      <span class="s">@&quot;Banana&quot;</span><span class="p">,</span>
+</span><span class='line'>                      <span class="s">@&quot;Orange&quot;</span><span class="p">,</span>
+</span><span class='line'>                      <span class="nb">nil</span><span class="p">];</span>
 </span><span class='line'>
-</span><span class='line'>  <span class="c1">//キーを指定してオブジェクトを取得する</span>
-</span><span class='line'>  <span class="kt">id</span> <span class="n">myObject</span> <span class="o">=</span> <span class="p">[</span><span class="n">myDictionary</span> <span class="nl">objectForKey:</span><span class="s">@&quot;Key1&quot;</span><span class="p">];</span>
-</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;Key1 = %@&quot;</span><span class="p">,</span> <span class="n">myObject</span><span class="p">);</span>
+</span><span class='line'>  <span class="c1">//順序付けされたセットを取得する</span>
+</span><span class='line'>  <span class="n">NSOrderedSet</span> <span class="o">*</span><span class="n">orderdSet</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">orderdSet</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSOrderedSet</span> <span class="nl">orderedSetWithArray:</span><span class="n">myArray</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">//配列の後ろから順番に取得する列挙子を取得する</span>
+</span><span class='line'>  <span class="n">NSEnumerator</span> <span class="o">*</span><span class="n">enumerator</span> <span class="o">=</span> <span class="p">[</span><span class="n">myArray</span> <span class="n">reserseObjectEnumerator</span><span class="p">];</span>
+</span><span class='line'>  <span class="kt">id</span> <span class="n">value</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">//オブジェクトを順番に取得する</span>
+</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;From myArray&quot;</span><span class="p">);</span>
+</span><span class='line'>  <span class="k">while</span> <span class="p">(</span><span class="n">value</span> <span class="o">=</span> <span class="p">[</span><span class="n">enumerator</span> <span class="n">nextObject</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;%@&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">//順序付けされたセットの後ろから順番に取得する列挙子を取得する</span>
+</span><span class='line'>  <span class="n">enumerator</span> <span class="o">=</span> <span class="p">[</span><span class="n">orderedSet</span> <span class="n">reverseObjectsEnumerator</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">//各オブジェクトを取得する</span>
+</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;From orderdSet&quot;</span><span class="p">);</span>
+</span><span class='line'>  <span class="k">while</span> <span class="p">(</span><span class="n">value</span> <span class="o">=</span> <span class="p">[</span><span class="n">enumerator</span> <span class="n">nextObject</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;%@&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
 </span><span class='line'><span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
 <h2>実行結果</h2>
 
-<blockquote><p>Key1 = Apple</p></blockquote>
+<blockquote><p>From myArray<br />
+Orange<br />
+Banana<br />
+Aopple<br />
+<br />
+From orderdSet<br />
+Orange<br />
+Banana<br />
+Aopple<br /></p></blockquote>
 
-<h2>補足</h2>
+<h2>メソッドの定義</h2>
 
-<ol>
-<li>キーに対応するオブジェクトが存在しない場合は nilが返ります</li>
-<li>キーは大文字・小文字も区別されます</li>
-</ol>
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSEnumerator</span> <span class="o">*</span><span class="p">)</span><span class="nf">reverseObjectEnumerator</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">enumeratorObjectsWithOptions:</span><span class="p">(</span><span class="n">NSEnumerationOptions</span><span class="p">)</span><span class="nv">opts</span>
+</span><span class='line'>  <span class="nf">usingBlock:</span><span class="p">(</span><span class="kt">void</span> <span class="p">(</span><span class="o">^</span><span class="p">)(</span><span class="kt">id</span> <span class="n">obj</span><span class="p">,</span> <span class="n">NSINteger</span> <span class="n">idx</span><span class="p">,</span> <span class="kt">BOOL</span> <span class="o">*</span><span class="n">stop</span><span class="p">))</span><span class="nv">block</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
 
 
 		
@@ -194,7 +274,7 @@
   
 
 
-<time datetime="2013-03-24T21:58:00+09:00" pubdate data-updated="true">Mar 24<span>th</span>, 2013</time></div>
+<time datetime="2013-03-25T08:49:00+09:00" pubdate data-updated="true">Mar 25<span>th</span>, 2013</time></div>
 	<div class="tags">
 
 
@@ -210,17 +290,17 @@
     <article class="post">
 	<h2 class="title">
 		
-		<a href="/blog/2013/03/24/objc-numeric-objects/">
+		<a href="/blog/2013/03/25/objc-in-the-array/">
 		
-			数値オブジェクト</a>
+			高速列挙を使用してオブジェクトを取得する</a>
 	</h2>
 	<div class="entry-content">
-		<p>Objective-Cでは、NSNumberクラスを使用し数値をオブジェクトとして扱うことができます。数値の前に「@」を付与することで、オブジェクトとして扱えます。以下にその例を記述します。</p>
+		<p>高速列挙を使用して配列やセットからオブジェクトを順番に取得する方法を以下に記載します。</p>
 
 <h2>サンプルダウンロード</h2>
 
 <ul>
-<li><a href="https://github.com/masakihirokawa/objc-ns-number">https://github.com/masakihirokawa/objc-ns-number</a></li>
+<li><a href="https://github.com/masakihirokawa/objc-in-array-or-set-original">https://github.com/masakihirokawa/objc-in-array-or-set-original</a></li>
 </ul>
 
 
@@ -247,105 +327,48 @@
 <span class='line-number'>19</span>
 <span class='line-number'>20</span>
 <span class='line-number'>21</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//整数</span>
-</span><span class='line'><span class="n">NSNumber</span> <span class="o">*</span><span class="n">num</span> <span class="o">=</span> <span class="err">@</span><span class="mi">9</span><span class="p">;</span> <span class="c1">//[NSNumber numberWithInt:9] と同じ</span>
-</span><span class='line'><span class="n">NSNumber</span> <span class="o">*</span><span class="n">numUnsigned</span> <span class="o">=</span> <span class="err">@</span><span class="mi">9</span><span class="n">U</span><span class="p">;</span> <span class="c1">//[NSNumber numberWithUnsignedInt:9U]</span>
-</span><span class='line'><span class="n">NSNumber</span> <span class="o">*</span><span class="n">numLong</span> <span class="o">=</span> <span class="err">@</span><span class="mi">9L</span><span class="p">;</span> <span class="c1">//[NSNumber numberWithLong:9L]</span>
-</span><span class='line'><span class="n">NSNumber</span> <span class="o">*</span><span class="n">numLongLong</span> <span class="o">=</span> <span class="err">@</span><span class="mi">9L</span><span class="n">L</span><span class="p">;</span> <span class="c1">//[NSNumber numberWithLongLong:9LL]</span>
-</span><span class='line'><span class="c1">//少数</span>
-</span><span class='line'><span class="n">NSNumber</span> <span class="o">*</span><span class="n">numFloat</span> <span class="o">=</span> <span class="err">@</span><span class="mf">9.123456789F</span><span class="p">;</span> <span class="c1">//[NSNumber numberWithFloat:9.123456789F]</span>
-</span><span class='line'><span class="n">NSNumber</span> <span class="o">*</span><span class="n">numDouble</span> <span class="o">=</span> <span class="err">@</span><span class="mf">9.1234567891</span><span class="p">;</span> <span class="c1">//[NSNumber numberWithDouble:9.1234567891]</span>
-</span><span class='line'><span class="c1">//BOOL型</span>
-</span><span class='line'><span class="n">NSNumber</span> <span class="o">*</span><span class="n">numYes</span> <span class="o">=</span> <span class="err">@</span><span class="n">YES</span><span class="p">;</span> <span class="c1">//[NSNumber numberWithBool:YES]</span>
-</span><span class='line'><span class="n">NSNumber</span> <span class="o">*</span><span class="n">numNo</span> <span class="o">=</span> <span class="err">@</span><span class="n">NO</span><span class="p">;</span> <span class="c1">//[NSNumber numberWithBool:NO]</span>
-</span><span class='line'><span class="c1">//計算式</span>
-</span><span class='line'><span class="n">NSNumber</span> <span class="o">*</span><span class="n">answer</span> <span class="o">=</span> <span class="err">@</span><span class="p">(</span><span class="mi">100</span> <span class="o">+</span> <span class="mi">300</span><span class="p">);</span>
-</span><span class='line'><span class="kt">int</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">100</span><span class="p">;</span>
-</span><span class='line'><span class="kt">int</span> <span class="n">b</span> <span class="o">=</span> <span class="mi">300</span><span class="p">;</span>
-</span><span class='line'><span class="n">NSNumber</span> <span class="o">*</span><span class="n">answer</span> <span class="o">=</span> <span class="err">@</span><span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">);</span>
-</span><span class='line'><span class="c1">//メソッド呼び出し</span>
-</span><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="n">str</span> <span class="o">=</span> <span class="p">[</span><span class="err">@</span><span class="mi">9</span> <span class="n">stringValue</span><span class="p">];</span>
-</span><span class='line'><span class="c1">//コレクション要素に数値オブジェクトを設定する</span>
-</span><span class='line'><span class="n">NSArray</span> <span class="o">*</span><span class="n">array</span> <span class="o">=</span> <span class="err">@</span><span class="p">[</span><span class="err">@</span><span class="mi">100</span><span class="p">,</span> <span class="err">@</span><span class="mi">200</span><span class="p">,</span> <span class="err">@</span><span class="mi">300</span><span class="p">];</span>
-</span><span class='line'><span class="n">NSDictionary</span> <span class="o">*</span><span class="n">dictionary</span> <span class="o">=</span> <span class="err">@</span><span class="p">{</span><span class="s">@&quot;Key1&quot;</span> <span class="o">:</span> <span class="err">@</span><span class="mi">3</span><span class="p">,</span> <span class="s">@&quot;Key2&quot;</span> <span class="o">:</span> <span class="err">@</span><span class="mi">5</span><span class="p">,</span> <span class="s">@&quot;Key3&quot;</span> <span class="o">:</span> <span class="err">@</span><span class="mi">8</span><span class="p">};</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-03-24T17:10:00+09:00" pubdate data-updated="true">Mar 24<span>th</span>, 2013</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>
-
-
-</div>
-	
-</div>
-</article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/03/24/objc-duplicate-set/">
-		
-			セットを複製する</a>
-	</h2>
-	<div class="entry-content">
-		<p>Objective-Cでセットを複製する方法を以下に記載します。</p>
-
-<h2>サンプルダウンロード</h2>
-
-<ul>
-<li><a href="https://github.com/masakihirokawa/objc-set-with-set">https://github.com/masakihirokawa/objc-set-with-set</a></li>
-</ul>
-
-
-<h2>ソースコード</h2>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
 </pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">main</span>
 </span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="c1">//複製元のセットを生成する</span>
-</span><span class='line'>  <span class="n">NSSet</span> <span class="o">*</span><span class="n">originalSet</span><span class="p">;</span>
-</span><span class='line'>  <span class="n">originalSet</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSSet</span> <span class="nl">setWithObjects:</span>
-</span><span class='line'>                 <span class="s">@&quot;Apple&quot;</span><span class="p">,</span> <span class="s">@&quot;Banana&quot;</span><span class="p">,</span> <span class="s">@&quot;Orange&quot;</span><span class="p">,</span> <span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//配列を生成する</span>
+</span><span class='line'>  <span class="n">NSArray</span> <span class="o">*</span><span class="n">myArray</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSArray</span> <span class="nl">arrayWithObjects:</span>
+</span><span class='line'>                      <span class="s">@&quot;Apple&quot;</span><span class="p">,</span>
+</span><span class='line'>                      <span class="s">@&quot;Banana&quot;</span><span class="p">,</span>
+</span><span class='line'>                      <span class="s">@&quot;Orange&quot;</span><span class="p">,</span>
+</span><span class='line'>                      <span class="nb">nil</span><span class="p">];</span>
 </span><span class='line'>
-</span><span class='line'>  <span class="c1">//セットを複製する</span>
-</span><span class='line'>  <span class="n">NSSet</span> <span class="o">*</span><span class="n">set</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSSet</span> <span class="nl">setWithSet:</span><span class="n">originalSet</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//セットを生成する</span>
+</span><span class='line'>  <span class="n">NSSet</span> <span class="o">*</span><span class="n">mySet</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSSet</span> <span class="nl">setWithArray:</span><span class="n">myArray</span><span class="p">];</span>
 </span><span class='line'>
-</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;%@&quot;</span><span class="p">,</span> <span class="n">set</span><span class="p">);</span>
+</span><span class='line'>  <span class="c1">//順序付けされたセットを生成する</span>
+</span><span class='line'>  <span class="n">NSOrderedSet</span> <span class="o">*</span><span class="n">orderdSet</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">orderdSet</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSOrderedSet</span> <span class="nl">orderedSetWithArray:</span><span class="n">myArray</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">//高速列挙を使用して配列からオブジェクトを取得する</span>
+</span><span class='line'>  <span class="kt">id</span> <span class="n">value</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">for</span> <span class="p">(</span><span class="n">value</span> <span class="k">in</span> <span class="n">myArray</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;%@&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">//高速列挙を使用してセットからオブジェクトを取得する</span>
+</span><span class='line'>  <span class="k">for</span> <span class="p">(</span><span class="n">value</span> <span class="k">in</span> <span class="n">mySet</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;%@&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">//高速列挙を使用して順序付けされたセットからオブジェクトを取得する</span>
+</span><span class='line'>  <span class="k">for</span> <span class="p">(</span><span class="n">value</span> <span class="k">in</span> <span class="n">orderdSet</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;%@&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
 </span><span class='line'><span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
@@ -370,7 +393,99 @@
   
 
 
-<time datetime="2013-03-24T15:31:00+09:00" pubdate data-updated="true">Mar 24<span>th</span>, 2013</time></div>
+<time datetime="2013-03-25T08:45:00+09:00" pubdate data-updated="true">Mar 25<span>th</span>, 2013</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>
+
+
+</div>
+	
+</div>
+</article>
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/03/25/objc-no-overlap-array/">
+		
+			重複していない配列を作成する</a>
+	</h2>
+	<div class="entry-content">
+		<p>セットには、重複したオブジェクトは登録されないという特徴があります。そのため、重複しているオブジェクトが存在する可能性がある配列からセットを作成してオブジェクトを取得することで、重複していない配列を簡単に作成することができます。</p>
+
+<h2>サンプルダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-not-overlap-array">https://github.com/masakihirokawa/objc-not-overlap-array</a></li>
+</ul>
+
+
+<h2>ソースコード</h2>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">main</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="c1">//重複している可能性がある配列</span>
+</span><span class='line'>  <span class="n">NSArray</span> <span class="o">*</span><span class="n">myArray</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">myArray</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSArray</span> <span class="nl">arrayWithObjects:</span>
+</span><span class='line'>             <span class="s">@&quot;Apple&quot;</span><span class="p">,</span> <span class="s">@&quot;Banana&quot;</span><span class="p">,</span> <span class="s">@&quot;Apple&quot;</span><span class="p">,</span> <span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;originalArray = %@&quot;</span><span class="p">,</span> <span class="n">myArray</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">//配列からセットを作成する</span>
+</span><span class='line'>  <span class="n">NSSet</span> <span class="o">*</span><span class="n">mySet</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">mySet</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSSet</span> <span class="nl">setWithArray:</span><span class="n">myArray</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">//セットからオブジェクトを作成する</span>
+</span><span class='line'>  <span class="n">myArray</span> <span class="o">=</span> <span class="p">[</span><span class="n">mySet</span> <span class="n">allObjects</span><span class="p">];</span>
+</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;newArray = &quot;</span><span class="p">,</span> <span class="n">myArray</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>実行結果</h2>
+
+<blockquote><p>originalArray = (Apple, Banana, Apple)<br />
+newArray = (Apple, Banana)</p></blockquote>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-25T08:39:00+09:00" pubdate data-updated="true">Mar 25<span>th</span>, 2013</time></div>
 	<div class="tags">
 
 
@@ -411,23 +526,30 @@
 </section>
 <section class="mt12">
   <h1>Contact at</h1>
-  <p><a href="mailto:masakihirokawa@gmail.com">masakihirokawa@gmail.com</a></p>
+  <p><a href="mailto:info@dolice.net">info@dolice.net</a></p>
 </section>
 
 
   </div>
   <div id="category" class="information-box">
-<section>
-  <h1>Categories</h1>
-  <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (50)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (175)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (36)</a></li></ul>
-</section>
-
-
+<a href='/blog/categories/actionscript' style='font-size: 103.01675977653632%'>actionscript(9)</a> <a href='/blog/categories/actionscript3' style='font-size: 102.3463687150838%'>actionscript3(7)</a> <a href='/blog/categories/download' style='font-size: 117.43016759776536%'>download(52)</a> <a href='/blog/categories/javascript' style='font-size: 100.67039106145252%'>javascript(2)</a> <a href='/blog/categories/objective-c' style='font-size: 160.0%'>objective-c(179)</a> <a href='/blog/categories/screensaver' style='font-size: 103.01675977653632%'>screensaver(9)</a> <a href='/blog/categories/xcode' style='font-size: 112.40223463687151%'>xcode(37)</a> 
   </div>
   <div id="recent-posts" class="information-box">
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/09/02/download-objc-classes-dc-app-purchase/">アプリ内課金をする「DCAppPurchase」クラス</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/09/02/xcode-objc-required-background-modes/">iOSアプリで音楽のバックグラウンド再生を許可する方法</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/09/02/objc-set-idle-timer-disabled/">iOSのロック／スリープを禁止する方法</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2013/08/23/objc-background-texture/">Objective-Cで iOSデフォルトの背景画像を敷く方法</a>
@@ -455,18 +577,6 @@
     
       <li class="post">
         <a href="/blog/2013/07/25/objc-ui-image-blend-mode/">UIImageにブレンドモードを指定して加工する方法</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/07/25/objc-ui-image-draw-in-rect/">UIImageを画面に直接描画する方法</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/07/24/objc-property-option/">Objective-Cのプロパティで指定可能なオプション</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/07/14/objc-av-audio-player/">AVAudioPlayerを使用した曲の再生/停止/ボリューム調節サンプル</a>
       </li>
     
   </ul>
@@ -614,7 +724,7 @@
 </div>
 	<footer id="footer" class="inner">Copyright &copy; 2013
 
-    <a href="mailto:masakihirokawa@gmail.com">Masaki Hirokawa</a>. All Rights Reserved.
+    <a href="mailto:infp@dolice.net">Masaki Hirokawa</a>. All Rights Reserved.
 </footer>
 	<script src="/javascripts/slash.js"></script>
 <script src="/javascripts/jquery.fancybox.pack.js"></script>
