@@ -6,11 +6,11 @@
 	<title>Dolice Lab</title>
 	
 	
-	<meta name="description" content="Objective-Cの @property宣言で指定可能なオプションを以下に列記します。 オプション一覧 タイプ オプション 説明 メソッド名 getter=ゲッタ名 ゲッタメソッドの名前を明示的に指定する setter=セッタ名 セッタメソッドの名前を明示的に指定する 読み書き属性 &hellip;">
+	<meta name="description" content="Objective-Cで UIImageにブレンドモードを指定し表示するサンプルを以下に作成しました。 カメラアプリの実験用に Photoshopのように画像を重ねてブレンド表示する方法を色々試しましたので、以下に詳細を記載します。 サンプルダウンロード https://github.com/ &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	<meta property="og:title" content="Dolice Lab" />
-<meta property="og:description" content="Objective-Cの @property宣言で指定可能なオプションを以下に列記します。 オプション一覧 タイプ オプション 説明 メソッド名 getter=ゲッタ名 ゲッタメソッドの名前を明示的に指定する setter=セッタ名 セッタメソッドの名前を明示的に指定する 読み書き属性 &hellip;" />
+<meta property="og:description" content="Objective-Cで UIImageにブレンドモードを指定し表示するサンプルを以下に作成しました。 カメラアプリの実験用に Photoshopのように画像を重ねてブレンド表示する方法を色々試しましたので、以下に詳細を記載します。 サンプルダウンロード https://github.com/ &hellip;" />
 <meta property="og:url" content="http://lab.dolice.net/blog/page/5/" />
 <meta property="og:image" content="http://lab.dolice.net/images/facebook-icon.jpg" />
 <meta property="og:author" content="Masaki Hirokawa" />
@@ -84,6 +84,676 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/07/25/objc-ui-image-blend-mode/">
+		
+			UIImageにブレンドモードを指定して加工する方法</a>
+	</h2>
+	<div class="entry-content">
+		<p>Objective-Cで UIImageにブレンドモードを指定し表示するサンプルを以下に作成しました。</p>
+
+<p>カメラアプリの実験用に Photoshopのように画像を重ねてブレンド表示する方法を色々試しましたので、以下に詳細を記載します。</p>
+
+<h2>サンプルダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-ui-image-blend-mode">https://github.com/masakihirokawa/objc-ui-image-blend-mode</a></li>
+</ul>
+
+
+<h2>使用する画像</h2>
+
+<p><img src="/images/article/blend_mode/Asymmetry_640_1136.jpg" title="元画像" alt="元画像" /></p>
+
+<p><img src="/images/article/blend_mode/blend_image.png" title="重ねて表示する画像" alt="重ねて表示する画像" /></p>
+
+<p><img src="/images/article/blend_mode/result.jpg" title="結果画像（ブレンドモード: スクリーン）" alt="結果画像（ブレンドモード: スクリーン）" /></p>
+
+<h2>ブレンドモードの種類</h2>
+
+<table>
+<thead>
+<tr>
+<th align="left"> CGBlendMode </th>
+<th align="left"> 説明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">kCGBlendModeMultiply</td>
+<td align="left">乗算</td>
+</tr>
+<tr>
+<td align="left">kCGBlendModeScreen</td>
+<td align="left">スクリーン</td>
+</tr>
+<tr>
+<td align="left">kCGBlendModeOverlay</td>
+<td align="left">オーバーレイ</td>
+</tr>
+<tr>
+<td align="left">kCGBlendModeDarken</td>
+<td align="left">比較（暗）</td>
+</tr>
+<tr>
+<td align="left">kCGBlendModeLighten</td>
+<td align="left">比較（明）</td>
+</tr>
+<tr>
+<td align="left">kCGBlendModeColorDodge</td>
+<td align="left">覆い焼きカラー</td>
+</tr>
+<tr>
+<td align="left">kCGBlendModeColorBurn</td>
+<td align="left">焼きこみカラー</td>
+</tr>
+<tr>
+<td align="left">kCGBlendModeSoftLight</td>
+<td align="left">ソフトライト</td>
+</tr>
+<tr>
+<td align="left">kCGBlendModeHardLight</td>
+<td align="left">ハードライト</td>
+</tr>
+<tr>
+<td align="left">kCGBlendModeDifference</td>
+<td align="left">差の絶対値</td>
+</tr>
+<tr>
+<td align="left">kCGBlendModeExclusion</td>
+<td align="left">除外</td>
+</tr>
+<tr>
+<td align="left">kCGBlendModeHue</td>
+<td align="left">色相</td>
+</tr>
+<tr>
+<td align="left">kCGBlendModeSaturation</td>
+<td align="left">彩度</td>
+</tr>
+<tr>
+<td align="left">kCGBlendModeColor</td>
+<td align="left">カラー</td>
+</tr>
+<tr>
+<td align="left">kCGBlendModeLuminosity</td>
+<td align="left">輝度</td>
+</tr>
+<tr>
+<td align="left">kCGBlendModeClear</td>
+<td align="left">透明色で描画</td>
+</tr>
+</tbody>
+</table>
+
+
+<h2>ソースコード</h2>
+
+<h3>ViewController.h</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;UIKit/UIKit.h&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#define BACK_IMAGE              @&quot;blend_image.png&quot;</span>
+</span><span class='line'><span class="cp">#define BACK_IMAGE_WIDTH        640</span>
+</span><span class='line'><span class="cp">#define BACK_IMAGE_HEIGHT       1136</span>
+</span><span class='line'><span class="cp">#define FRONT_IMAGE             @&quot;Asymmetry_640_1136.jpg&quot;</span>
+</span><span class='line'><span class="cp">#define FRONT_IMAGE_WIDTH       640</span>
+</span><span class='line'><span class="cp">#define FRONT_IMAGE_HEIGHT      1136</span>
+</span><span class='line'><span class="cp">#define FRONT_IMAGE_ALPHA       1.0f</span>
+</span><span class='line'><span class="cp">#define PREVIEW_IMAGE_WIDTH     80</span>
+</span><span class='line'><span class="cp">#define PREVIEW_IMAGE_HEIGHT    142</span>
+</span><span class='line'><span class="cp">#define BLEND_MODE_LABEL_HEIGHT 20</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">BlendMode</span> : <span class="nc">UIView</span> <span class="p">{</span>
+</span><span class='line'><span class="k">@private</span>
+</span><span class='line'>    <span class="n">UIImage</span>     <span class="o">*</span><span class="n">frontImage_</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">UIImage</span>     <span class="o">*</span><span class="n">backImage_</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">CGBlendMode</span> <span class="n">blendMode_</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">assign</span><span class="p">)</span> <span class="n">CGBlendMode</span> <span class="n">blendMode</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">changeMode</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> : <span class="nc">UIViewController</span> <span class="p">{</span>
+</span><span class='line'><span class="k">@private</span>
+</span><span class='line'>    <span class="n">BlendMode</span> <span class="o">*</span><span class="n">blendMode_</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">UILabel</span>   <span class="o">*</span><span class="n">blendModeLabel_</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>ViewController.m</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+<span class='line-number'>102</span>
+<span class='line-number'>103</span>
+<span class='line-number'>104</span>
+<span class='line-number'>105</span>
+<span class='line-number'>106</span>
+<span class='line-number'>107</span>
+<span class='line-number'>108</span>
+<span class='line-number'>109</span>
+<span class='line-number'>110</span>
+<span class='line-number'>111</span>
+<span class='line-number'>112</span>
+<span class='line-number'>113</span>
+<span class='line-number'>114</span>
+<span class='line-number'>115</span>
+<span class='line-number'>116</span>
+<span class='line-number'>117</span>
+<span class='line-number'>118</span>
+<span class='line-number'>119</span>
+<span class='line-number'>120</span>
+<span class='line-number'>121</span>
+<span class='line-number'>122</span>
+<span class='line-number'>123</span>
+<span class='line-number'>124</span>
+<span class='line-number'>125</span>
+<span class='line-number'>126</span>
+<span class='line-number'>127</span>
+<span class='line-number'>128</span>
+<span class='line-number'>129</span>
+<span class='line-number'>130</span>
+<span class='line-number'>131</span>
+<span class='line-number'>132</span>
+<span class='line-number'>133</span>
+<span class='line-number'>134</span>
+<span class='line-number'>135</span>
+<span class='line-number'>136</span>
+<span class='line-number'>137</span>
+<span class='line-number'>138</span>
+<span class='line-number'>139</span>
+<span class='line-number'>140</span>
+<span class='line-number'>141</span>
+<span class='line-number'>142</span>
+<span class='line-number'>143</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;ViewController.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">BlendMode</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@synthesize</span> <span class="n">blendMode</span> <span class="o">=</span> <span class="n">blendMode_</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">init</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">self</span> <span class="o">=</span> <span class="p">[</span><span class="n">super</span> <span class="n">init</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">backImage_</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIImage</span> <span class="nl">imageNamed:</span><span class="n">BACK_IMAGE</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">frontImage_</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIImage</span> <span class="nl">imageNamed:</span><span class="n">FRONT_IMAGE</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">CGRect</span> <span class="n">newFrame</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">frame</span><span class="p">;</span>
+</span><span class='line'>        <span class="n">newFrame</span><span class="p">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">frontImage_</span><span class="p">.</span><span class="n">size</span><span class="p">;</span>
+</span><span class='line'>        <span class="n">self</span><span class="p">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">newFrame</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">self</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">drawRect:</span><span class="p">(</span><span class="n">CGRect</span><span class="p">)</span><span class="nv">rect</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">backImage_</span> <span class="nl">drawInRect:</span><span class="n">rect</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">frontImage_</span> <span class="nl">drawInRect:</span><span class="n">rect</span> <span class="nl">blendMode:</span><span class="n">blendMode_</span> <span class="nl">alpha:</span><span class="n">FRONT_IMAGE_ALPHA</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">changeMode</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">kCGBlendModeLuminosity</span> <span class="o">&lt;</span> <span class="o">++</span><span class="n">blendMode_</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">blendMode_</span> <span class="o">=</span> <span class="n">kCGBlendModeNormal</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark private methods definition</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> <span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">changeLabel</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark start implementation for methods</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">ViewController</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span> <span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//初期化</span>
+</span><span class='line'>    <span class="n">blendMode_</span> <span class="o">=</span> <span class="p">[[</span><span class="n">BlendMode</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">blendMode_</span><span class="p">.</span><span class="n">center</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">center</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">blendMode_</span><span class="p">.</span><span class="n">autoresizingMask</span> <span class="o">=</span>
+</span><span class='line'>        <span class="n">UIViewAutoresizingFlexibleTopMargin</span> <span class="o">|</span>
+</span><span class='line'>        <span class="n">UIViewAutoresizingFlexibleBottomMargin</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">blendMode_</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//重ねて表示するイメージ表示</span>
+</span><span class='line'>    <span class="n">UIImage</span> <span class="o">*</span><span class="n">imageBack</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIImage</span> <span class="nl">imageNamed:</span><span class="n">BACK_IMAGE</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">UIImageView</span> <span class="o">*</span><span class="n">imageViewBack</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIImageView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithImage:</span><span class="n">imageBack</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">imageViewBack</span><span class="p">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">BACK_IMAGE_WIDTH</span><span class="p">,</span> <span class="n">BACK_IMAGE_HEIGHT</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">imageViewBack</span><span class="p">.</span><span class="n">autoresizingMask</span> <span class="o">=</span>
+</span><span class='line'>        <span class="n">UIViewAutoresizingFlexibleLeftMargin</span> <span class="o">|</span>
+</span><span class='line'>        <span class="n">UIViewAutoresizingFlexibleRightMargin</span> <span class="o">|</span>
+</span><span class='line'>        <span class="n">UIViewAutoresizingFlexibleTopMargin</span> <span class="o">|</span>
+</span><span class='line'>        <span class="n">UIViewAutoresizingFlexibleBottomMargin</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">imageViewBack</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//プレビューイメージ表示</span>
+</span><span class='line'>    <span class="n">UIImage</span> <span class="o">*</span><span class="n">imageFront</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIImage</span> <span class="nl">imageNamed:</span><span class="n">FRONT_IMAGE</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">UIImageView</span> <span class="o">*</span><span class="n">imageViewFront</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIImageView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithImage:</span><span class="n">imageFront</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">imageViewFront</span><span class="p">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">CGRectMake</span><span class="p">(</span><span class="mi">320</span> <span class="o">-</span> <span class="n">PREVIEW_IMAGE_WIDTH</span><span class="p">,</span>
+</span><span class='line'>                                      <span class="mi">0</span><span class="p">,</span>
+</span><span class='line'>                                      <span class="n">PREVIEW_IMAGE_WIDTH</span><span class="p">,</span>
+</span><span class='line'>                                      <span class="n">PREVIEW_IMAGE_HEIGHT</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">imageViewFront</span><span class="p">.</span><span class="n">autoresizingMask</span> <span class="o">=</span> <span class="n">imageViewFront</span><span class="p">.</span><span class="n">autoresizingMask</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">imageViewFront</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//ブレンドモードを変更するラベル表示</span>
+</span><span class='line'>    <span class="n">blendModeLabel_</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UILabel</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">blendModeLabel_</span><span class="p">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span>
+</span><span class='line'>                                       <span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">bounds</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">height</span> <span class="o">-</span> <span class="n">BLEND_MODE_LABEL_HEIGHT</span><span class="p">,</span>
+</span><span class='line'>                                       <span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">bounds</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span><span class="p">,</span>
+</span><span class='line'>                                       <span class="n">BLEND_MODE_LABEL_HEIGHT</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">blendModeLabel_</span><span class="p">.</span><span class="n">autoresizingMask</span> <span class="o">=</span>
+</span><span class='line'>        <span class="n">UIViewAutoresizingFlexibleTopMargin</span> <span class="o">|</span>
+</span><span class='line'>        <span class="n">UIViewAutoresizingFlexibleBottomMargin</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">blendModeLabel_</span><span class="p">.</span><span class="n">textAlignment</span> <span class="o">=</span> <span class="n">NSTextAlignmentCenter</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">blendModeLabel_</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//ラベル変更</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="n">changeLabel</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark private methods</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">changeLabel</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">switch</span> <span class="p">(</span><span class="n">blendMode_</span><span class="p">.</span><span class="n">blendMode</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">case</span> <span class="nl">kCGBlendModeMultiply:</span>        <span class="n">blendModeLabel_</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="s">@&quot;kCGBlendModeMultiply&quot;</span><span class="p">;</span> <span class="k">break</span><span class="p">;</span>        <span class="cm">/* 乗算 */</span>
+</span><span class='line'>        <span class="k">case</span> <span class="nl">kCGBlendModeScreen:</span>          <span class="n">blendModeLabel_</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="s">@&quot;kCGBlendModeScreen&quot;</span><span class="p">;</span> <span class="k">break</span><span class="p">;</span>          <span class="cm">/* スクリーン */</span>
+</span><span class='line'>        <span class="k">case</span> <span class="nl">kCGBlendModeOverlay:</span>         <span class="n">blendModeLabel_</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="s">@&quot;kCGBlendModeOverlay&quot;</span><span class="p">;</span> <span class="k">break</span><span class="p">;</span>         <span class="cm">/* オーバーレイ */</span>
+</span><span class='line'>        <span class="k">case</span> <span class="nl">kCGBlendModeDarken:</span>          <span class="n">blendModeLabel_</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="s">@&quot;kCGBlendModeDarken&quot;</span><span class="p">;</span> <span class="k">break</span><span class="p">;</span>          <span class="cm">/* 比較（暗） */</span>
+</span><span class='line'>        <span class="k">case</span> <span class="nl">kCGBlendModeLighten:</span>         <span class="n">blendModeLabel_</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="s">@&quot;kCGBlendModeLighten&quot;</span><span class="p">;</span> <span class="k">break</span><span class="p">;</span>         <span class="cm">/* 比較（明） */</span>
+</span><span class='line'>        <span class="k">case</span> <span class="nl">kCGBlendModeColorDodge:</span>      <span class="n">blendModeLabel_</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="s">@&quot;kCGBlendModeColorDodge&quot;</span><span class="p">;</span> <span class="k">break</span><span class="p">;</span>      <span class="cm">/* 覆い焼きカラー */</span>
+</span><span class='line'>        <span class="k">case</span> <span class="nl">kCGBlendModeColorBurn:</span>       <span class="n">blendModeLabel_</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="s">@&quot;kCGBlendModeColorBurn&quot;</span><span class="p">;</span> <span class="k">break</span><span class="p">;</span>       <span class="cm">/* 焼きこみカラー */</span>
+</span><span class='line'>        <span class="k">case</span> <span class="nl">kCGBlendModeSoftLight:</span>       <span class="n">blendModeLabel_</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="s">@&quot;kCGBlendModeSoftLight&quot;</span><span class="p">;</span> <span class="k">break</span><span class="p">;</span>       <span class="cm">/* ソフトライト */</span>
+</span><span class='line'>        <span class="k">case</span> <span class="nl">kCGBlendModeHardLight:</span>       <span class="n">blendModeLabel_</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="s">@&quot;kCGBlendModeHardLight&quot;</span><span class="p">;</span> <span class="k">break</span><span class="p">;</span>       <span class="cm">/* ハードライト */</span>
+</span><span class='line'>        <span class="k">case</span> <span class="nl">kCGBlendModeDifference:</span>      <span class="n">blendModeLabel_</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="s">@&quot;kCGBlendModeDifference&quot;</span><span class="p">;</span> <span class="k">break</span><span class="p">;</span>      <span class="cm">/* 差の絶対値 */</span>
+</span><span class='line'>        <span class="k">case</span> <span class="nl">kCGBlendModeExclusion:</span>       <span class="n">blendModeLabel_</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="s">@&quot;kCGBlendModeExclusion&quot;</span><span class="p">;</span> <span class="k">break</span><span class="p">;</span>       <span class="cm">/* 除外 */</span>
+</span><span class='line'>        <span class="k">case</span> <span class="nl">kCGBlendModeHue:</span>             <span class="n">blendModeLabel_</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="s">@&quot;kCGBlendModeHue&quot;</span><span class="p">;</span> <span class="k">break</span><span class="p">;</span>             <span class="cm">/* 色相 */</span>
+</span><span class='line'>        <span class="k">case</span> <span class="nl">kCGBlendModeSaturation:</span>      <span class="n">blendModeLabel_</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="s">@&quot;kCGBlendModeSaturation&quot;</span><span class="p">;</span> <span class="k">break</span><span class="p">;</span>      <span class="cm">/* 彩度 */</span>
+</span><span class='line'>        <span class="k">case</span> <span class="nl">kCGBlendModeColor:</span>           <span class="n">blendModeLabel_</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="s">@&quot;kCGBlendModeColor&quot;</span><span class="p">;</span> <span class="k">break</span><span class="p">;</span>           <span class="cm">/* カラー */</span>
+</span><span class='line'>        <span class="k">case</span> <span class="nl">kCGBlendModeLuminosity:</span>      <span class="n">blendModeLabel_</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="s">@&quot;kCGBlendModeLuminosity&quot;</span><span class="p">;</span> <span class="k">break</span><span class="p">;</span>      <span class="cm">/* 輝度 */</span>
+</span><span class='line'>        <span class="k">case</span> <span class="nl">kCGBlendModeClear:</span>           <span class="n">blendModeLabel_</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="s">@&quot;kCGBlendModeClear&quot;</span><span class="p">;</span> <span class="k">break</span><span class="p">;</span>           <span class="cm">/* 透明色で描画 */</span>
+</span><span class='line'>        <span class="k">case</span> <span class="nl">kCGBlendModeCopy:</span>            <span class="n">blendModeLabel_</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="s">@&quot;kCGBlendModeCopy&quot;</span><span class="p">;</span> <span class="k">break</span><span class="p">;</span>            <span class="cm">/* コピー */</span>
+</span><span class='line'>        <span class="k">case</span> <span class="nl">kCGBlendModeSourceIn:</span>        <span class="n">blendModeLabel_</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="s">@&quot;kCGBlendModeSourceIn&quot;</span><span class="p">;</span> <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>        <span class="k">case</span> <span class="nl">kCGBlendModeSourceOut:</span>       <span class="n">blendModeLabel_</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="s">@&quot;kCGBlendModeSourceOut&quot;</span><span class="p">;</span> <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>        <span class="k">case</span> <span class="nl">kCGBlendModeSourceAtop:</span>      <span class="n">blendModeLabel_</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="s">@&quot;kCGBlendModeSourceAtop&quot;</span><span class="p">;</span> <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>        <span class="k">case</span> <span class="nl">kCGBlendModeDestinationOver:</span> <span class="n">blendModeLabel_</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="s">@&quot;kCGBlendModeDestinationOver&quot;</span><span class="p">;</span> <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>        <span class="k">case</span> <span class="nl">kCGBlendModeDestinationIn:</span>   <span class="n">blendModeLabel_</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="s">@&quot;kCGBlendModeDestinationIn&quot;</span><span class="p">;</span> <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>        <span class="k">case</span> <span class="nl">kCGBlendModeDestinationOut:</span>  <span class="n">blendModeLabel_</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="s">@&quot;kCGBlendModeDestinationOut&quot;</span><span class="p">;</span> <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>        <span class="k">case</span> <span class="nl">kCGBlendModeDestinationAtop:</span> <span class="n">blendModeLabel_</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="s">@&quot;kCGBlendModeDestinationAtop&quot;</span><span class="p">;</span> <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>        <span class="k">case</span> <span class="nl">kCGBlendModeXOR:</span>             <span class="n">blendModeLabel_</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="s">@&quot;kCGBlendModeXOR&quot;</span><span class="p">;</span> <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>        <span class="k">case</span> <span class="nl">kCGBlendModePlusDarker:</span>      <span class="n">blendModeLabel_</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="s">@&quot;kCGBlendModePlusDarker&quot;</span><span class="p">;</span> <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>        <span class="k">case</span> <span class="nl">kCGBlendModePlusLighter:</span>     <span class="n">blendModeLabel_</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="s">@&quot;kCGBlendModePlusLighter&quot;</span><span class="p">;</span> <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>        <span class="k">default</span><span class="o">:</span>                          <span class="n">blendModeLabel_</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="s">@&quot;kCGBlendModeNormal&quot;</span><span class="p">;</span> <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark responder</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">touchesEnded:</span><span class="p">(</span><span class="n">NSSet</span> <span class="o">*</span><span class="p">)</span><span class="nv">touches</span> <span class="nf">withEvent:</span><span class="p">(</span><span class="n">UIEvent</span> <span class="o">*</span><span class="p">)</span><span class="nv">event</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">//ブレンドモード変更</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">blendMode_</span> <span class="n">changeMode</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//ラベルの変更</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="n">changeLabel</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//ブレンド実行</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">blendMode_</span> <span class="n">setNeedsDisplay</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-07-25T12:09:00+09:00" pubdate data-updated="true">Jul 25<span>th</span>, 2013</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>
+
+
+</div>
+	
+</div>
+</article>
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/07/25/objc-ui-image-draw-in-rect/">
+		
+			UIImageを画面に直接描画する方法</a>
+	</h2>
+	<div class="entry-content">
+		<p>Objective-Cで UIImageに画像を読み込み、UIImageViewを通さずに画面に直接描画するサンプルを以下に作成しました。</p>
+
+<p>サンプルでは、DrawImageというカスタムクラスを使用し画像を描画しています。</p>
+
+<p>下記よりサンプルのダウンロードが行えます。</p>
+
+<h2>ダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-ui-image-draw-in-rect">https://github.com/masakihirokawa/objc-ui-image-draw-in-rect</a></li>
+</ul>
+
+
+<h2>ソースコード</h2>
+
+<h3>ViewController.h</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;UIKit/UIKit.h&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">DrawImage</span> : <span class="nc">UIView</span> <span class="p">{</span>
+</span><span class='line'><span class="k">@private</span>
+</span><span class='line'>    <span class="n">UIImage</span> <span class="o">*</span><span class="n">image_</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nl">initWithImage:</span><span class="p">(</span><span class="n">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="n">image</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> : <span class="nc">UIViewController</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>ViewController.m</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;ViewController.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">DrawImage</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">initWithImage:</span><span class="p">(</span><span class="n">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nv">image</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">((</span><span class="n">self</span> <span class="o">=</span> <span class="p">[</span><span class="n">super</span> <span class="n">init</span><span class="p">]))</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">image_</span> <span class="o">=</span> <span class="n">image</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">self</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">drawRect:</span><span class="p">(</span><span class="n">CGRect</span><span class="p">)</span><span class="nv">rect</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">image_</span> <span class="nl">drawInRect:</span><span class="n">rect</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">ViewController</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//画像ファイルの読み込み</span>
+</span><span class='line'>    <span class="n">UIImage</span> <span class="o">*</span><span class="n">image</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIImage</span> <span class="nl">imageNamed:</span><span class="s">@&quot;Frigg_640_1136.jpg&quot;</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//画像ファイルの表示</span>
+</span><span class='line'>    <span class="n">DrawImage</span> <span class="o">*</span><span class="n">myImage</span> <span class="o">=</span> <span class="p">[[</span><span class="n">DrawImage</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithImage:</span><span class="n">image</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">myImage</span><span class="p">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">bounds</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">myImage</span><span class="p">.</span><span class="n">autoresizingMask</span> <span class="o">=</span>
+</span><span class='line'>        <span class="n">UIViewAutoresizingFlexibleWidth</span> <span class="o">|</span> <span class="n">UIViewAutoresizingFlexibleHeight</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">myImage</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-07-25T00:19:00+09:00" pubdate data-updated="true">Jul 25<span>th</span>, 2013</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>
+
+
+</div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -233,582 +903,6 @@
 </div>
 </article>
 
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/07/14/objc-av-audio-player/">
-		
-			AVAudioPlayerを使用した曲の再生/停止/ボリューム調節サンプル</a>
-	</h2>
-	<div class="entry-content">
-		<p><img src="/images/article/av-audio-player.png" alt="" /></p>
-
-<p>AVAudioPlayerを使用しオーディオの再生/停止/ボリューム調節を行うサンプルを以下に作成しました。</p>
-
-<p>AVFoundationフレームワークが必要になります。</p>
-
-<h2>ダウンロード</h2>
-
-<ul>
-<li><a href="https://github.com/masakihirokawa/objc-av-audio-player">https://github.com/masakihirokawa/objc-av-audio-player</a></li>
-</ul>
-
-
-<h2>使用方法</h2>
-
-<h3>初期化</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">NSBundle</span> <span class="o">*</span><span class="n">mainBundle</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSBundle</span> <span class="n">mainBundle</span><span class="p">];</span>
-</span><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="n">filePath</span> <span class="o">=</span> <span class="p">[</span><span class="n">mainBundle</span> <span class="nl">pathForResource:</span><span class="n">AUDIO_RESOURCE_FILE_NAME</span>
-</span><span class='line'>                                          <span class="nl">ofType:</span><span class="n">AUDIO_RESOURCE_FILE_EXT</span><span class="p">];</span>
-</span><span class='line'><span class="n">NSURL</span> <span class="o">*</span><span class="n">fileUrl</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSURL</span> <span class="nl">fileURLWithPath:</span><span class="n">filePath</span><span class="p">];</span>
-</span><span class='line'><span class="n">NSError</span> <span class="o">*</span><span class="n">error</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
-</span><span class='line'><span class="n">AVAudioPlayer</span> <span class="o">*</span><span class="n">audioPlayer</span> <span class="o">=</span> <span class="p">[[</span><span class="n">AVAudioPlayer</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithContentsOfURL:</span><span class="n">fileUrl</span>
-</span><span class='line'>                                                                    <span class="nl">error:</span><span class="o">&amp;</span><span class="n">error</span><span class="p">];</span>
-</span><span class='line'><span class="p">[</span><span class="n">audioPlayer</span> <span class="n">prepareToPlay</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>再生</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">[</span><span class="n">audioPlayer</span> <span class="n">prepareToPlay</span><span class="p">];</span>
-</span><span class='line'><span class="p">[</span><span class="n">_audioPlayer</span> <span class="n">play</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>一時停止</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">[</span><span class="n">_audioPlayer</span> <span class="n">pause</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>停止</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">[</span><span class="n">_audioPlayer</span> <span class="n">stop</span><span class="p">];</span>
-</span><span class='line'><span class="p">[</span><span class="n">audioPlayer</span> <span class="n">prepareToPlay</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>ソースコード</h2>
-
-<h3>ViewController.h</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;UIKit/UIKit.h&gt;</span>
-</span><span class='line'><span class="cp">#import &lt;AVFoundation/AVFoundation.h&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#define AUDIO_RESOURCE_FILE_NAME @&quot;o-magne&quot;</span>
-</span><span class='line'><span class="cp">#define AUDIO_RESOURCE_FILE_EXT  @&quot;mp3&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> : <span class="nc">UIViewController</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>ViewController.m</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-<span class='line-number'>65</span>
-<span class='line-number'>66</span>
-<span class='line-number'>67</span>
-<span class='line-number'>68</span>
-<span class='line-number'>69</span>
-<span class='line-number'>70</span>
-<span class='line-number'>71</span>
-<span class='line-number'>72</span>
-<span class='line-number'>73</span>
-<span class='line-number'>74</span>
-<span class='line-number'>75</span>
-<span class='line-number'>76</span>
-<span class='line-number'>77</span>
-<span class='line-number'>78</span>
-<span class='line-number'>79</span>
-<span class='line-number'>80</span>
-<span class='line-number'>81</span>
-<span class='line-number'>82</span>
-<span class='line-number'>83</span>
-<span class='line-number'>84</span>
-<span class='line-number'>85</span>
-<span class='line-number'>86</span>
-<span class='line-number'>87</span>
-<span class='line-number'>88</span>
-<span class='line-number'>89</span>
-<span class='line-number'>90</span>
-<span class='line-number'>91</span>
-<span class='line-number'>92</span>
-<span class='line-number'>93</span>
-<span class='line-number'>94</span>
-<span class='line-number'>95</span>
-<span class='line-number'>96</span>
-<span class='line-number'>97</span>
-<span class='line-number'>98</span>
-<span class='line-number'>99</span>
-<span class='line-number'>100</span>
-<span class='line-number'>101</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;ViewController.h&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> <span class="p">()</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@property</span> <span class="n">AVAudioPlayer</span> <span class="o">*</span><span class="n">audioPlayer</span><span class="p">;</span>
-</span><span class='line'><span class="k">@property</span> <span class="n">UISlider</span>      <span class="o">*</span><span class="n">audioVolumeSlider</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@implementation</span> <span class="nc">ViewController</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">typedef</span> <span class="k">enum</span> <span class="n">audioPlayButtonEvent</span> <span class="o">:</span> <span class="n">NSInteger</span> <span class="p">{</span>
-</span><span class='line'>    <span class="n">AUDIO_PLAY</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-</span><span class='line'>    <span class="n">AUDIO_STOP</span> <span class="o">=</span> <span class="mi">2</span>
-</span><span class='line'><span class="p">}</span> <span class="n">audioPlayButtonEvent</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//オーディオプレイヤー初期化</span>
-</span><span class='line'>    <span class="n">NSBundle</span> <span class="o">*</span><span class="n">mainBundle</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSBundle</span> <span class="n">mainBundle</span><span class="p">];</span>
-</span><span class='line'>    <span class="n">NSString</span> <span class="o">*</span><span class="n">filePath</span> <span class="o">=</span> <span class="p">[</span><span class="n">mainBundle</span> <span class="nl">pathForResource:</span><span class="n">AUDIO_RESOURCE_FILE_NAME</span>
-</span><span class='line'>                                              <span class="nl">ofType:</span><span class="n">AUDIO_RESOURCE_FILE_EXT</span><span class="p">];</span>
-</span><span class='line'>    <span class="n">NSURL</span> <span class="o">*</span><span class="n">fileUrl</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSURL</span> <span class="nl">fileURLWithPath:</span><span class="n">filePath</span><span class="p">];</span>
-</span><span class='line'>    <span class="n">NSError</span> <span class="o">*</span><span class="n">error</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">AVAudioPlayer</span> <span class="o">*</span><span class="n">audioPlayer</span> <span class="o">=</span> <span class="p">[[</span><span class="n">AVAudioPlayer</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithContentsOfURL:</span><span class="n">fileUrl</span>
-</span><span class='line'>                                                                        <span class="nl">error:</span><span class="o">&amp;</span><span class="n">error</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//エラーであれば処理しない</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">error</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="k">return</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//バッファを保持</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">audioPlayer</span> <span class="n">prepareToPlay</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//ボタンとスライダーをセット</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="n">setButtonsAndSlider</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//オーディオプレイヤー保持</span>
-</span><span class='line'>    <span class="n">_audioPlayer</span> <span class="o">=</span> <span class="n">audioPlayer</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//再生/停止ボタンイベント</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">buttonTapped:</span><span class="p">(</span><span class="n">UIButton</span> <span class="o">*</span><span class="p">)</span><span class="nv">button</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">button</span><span class="p">.</span><span class="n">tag</span> <span class="o">==</span> <span class="n">AUDIO_PLAY</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="kt">float</span> <span class="n">volume</span> <span class="o">=</span> <span class="n">_audioVolumeSlider</span><span class="p">.</span><span class="n">value</span><span class="p">;</span>
-</span><span class='line'>        <span class="n">_audioPlayer</span><span class="p">.</span><span class="n">volume</span> <span class="o">=</span> <span class="n">volume</span><span class="p">;</span>
-</span><span class='line'>        <span class="n">_audioPlayer</span><span class="p">.</span><span class="n">currentTime</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">_audioPlayer</span> <span class="n">play</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">button</span><span class="p">.</span><span class="n">tag</span> <span class="o">==</span> <span class="n">AUDIO_STOP</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">_audioPlayer</span> <span class="n">pause</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//オーディオボリューム変更</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">sliderValueChanged:</span><span class="p">(</span><span class="n">UISlider</span> <span class="o">*</span><span class="p">)</span><span class="nv">slider</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">_audioPlayer</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="n">_audioPlayer</span><span class="p">.</span><span class="n">volume</span> <span class="o">=</span> <span class="n">slider</span><span class="p">.</span><span class="n">value</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//ボタンとスライダーの表示</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setButtonsAndSlider</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="c1">//再生ボタン</span>
-</span><span class='line'>    <span class="n">UIButton</span> <span class="o">*</span><span class="n">buttonPlay</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIButton</span> <span class="nl">buttonWithType:</span><span class="n">UIButtonTypeRoundedRect</span><span class="p">];</span>
-</span><span class='line'>    <span class="n">buttonPlay</span><span class="p">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">CGRectMake</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">50</span><span class="p">);</span>
-</span><span class='line'>    <span class="n">buttonPlay</span><span class="p">.</span><span class="n">tag</span> <span class="o">=</span> <span class="n">AUDIO_PLAY</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">buttonPlay</span> <span class="nl">setTitle:</span><span class="s">@&quot;Play&quot;</span> <span class="nl">forState:</span><span class="n">UIControlStateNormal</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">buttonPlay</span> <span class="nl">addTarget:</span><span class="n">self</span>
-</span><span class='line'>                   <span class="nl">action:</span><span class="k">@selector</span><span class="p">(</span><span class="nl">buttonTapped:</span><span class="p">)</span>
-</span><span class='line'>         <span class="nl">forControlEvents:</span><span class="n">UIControlEventTouchUpInside</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">buttonPlay</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//停止ボタン</span>
-</span><span class='line'>    <span class="n">UIButton</span> <span class="o">*</span><span class="n">buttonStop</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIButton</span> <span class="nl">buttonWithType:</span><span class="n">UIButtonTypeRoundedRect</span><span class="p">];</span>
-</span><span class='line'>    <span class="n">buttonStop</span><span class="p">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">CGRectMake</span><span class="p">(</span><span class="mi">170</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">50</span><span class="p">);</span>
-</span><span class='line'>    <span class="n">buttonStop</span><span class="p">.</span><span class="n">tag</span> <span class="o">=</span> <span class="n">AUDIO_STOP</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">buttonStop</span> <span class="nl">setTitle:</span><span class="s">@&quot;Stop&quot;</span> <span class="nl">forState:</span><span class="n">UIControlStateNormal</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">buttonStop</span> <span class="nl">addTarget:</span><span class="n">self</span>
-</span><span class='line'>                   <span class="nl">action:</span><span class="k">@selector</span><span class="p">(</span><span class="nl">buttonTapped:</span><span class="p">)</span>
-</span><span class='line'>         <span class="nl">forControlEvents:</span><span class="n">UIControlEventTouchUpInside</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">buttonStop</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//ボリュームスライダー</span>
-</span><span class='line'>    <span class="n">UISlider</span> <span class="o">*</span><span class="n">audioVolumeSlider</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UISlider</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="mi">220</span><span class="p">,</span> <span class="mi">0</span><span class="p">)];</span>
-</span><span class='line'>    <span class="n">audioVolumeSlider</span><span class="p">.</span><span class="n">minimumValue</span> <span class="o">=</span> <span class="mf">0.0f</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">audioVolumeSlider</span><span class="p">.</span><span class="n">maximumValue</span> <span class="o">=</span> <span class="mf">1.0f</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">audioVolumeSlider</span><span class="p">.</span><span class="n">value</span> <span class="o">=</span> <span class="mf">0.5f</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">_audioVolumeSlider</span> <span class="o">=</span> <span class="n">audioVolumeSlider</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">_audioVolumeSlider</span> <span class="nl">addTarget:</span><span class="n">self</span>
-</span><span class='line'>                           <span class="nl">action:</span><span class="k">@selector</span><span class="p">(</span><span class="nl">sliderValueChanged:</span><span class="p">)</span>
-</span><span class='line'>                 <span class="nl">forControlEvents:</span><span class="n">UIControlEventValueChanged</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">_audioVolumeSlider</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-07-14T21:03:00+09:00" pubdate data-updated="true">Jul 14<span>th</span>, 2013</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>
-
-
-</div>
-	
-</div>
-</article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/07/07/objc-ui-image-picker-control-camera-overlay/">
-		
-			カメラで撮った写真に画像をオーバーレイする方法</a>
-	</h2>
-	<div class="entry-content">
-		<p><img src="/images/article/ui-image-picker-control-camera-overlay.jpg" alt="" /></p>
-
-<p>カメラで撮った写真に画像をオーバーレイするサンプルを以下に作成しました。</p>
-
-<h2>ダウンロード</h2>
-
-<ul>
-<li><a href="https://github.com/masakihirokawa/objc-ui-image-picker-control-camera-overlay">https://github.com/masakihirokawa/objc-ui-image-picker-control-camera-overlay</a></li>
-</ul>
-
-
-<h2>ソースコード</h2>
-
-<h3>ViewController.h</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;UIKit/UIKit.h&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@interface</span> <span class="nc">CameraOverlayView</span> : <span class="nc">UIImageView</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@property</span> <span class="n">UIImagePickerController</span> <span class="o">*</span><span class="n">pickerController</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> : <span class="nc">UIViewController</span> <span class="o">&lt;</span><span class="n">UIActionSheetDelegate</span><span class="p">,</span> <span class="n">UINavigationControllerDelegate</span><span class="p">,</span> <span class="n">UIImagePickerControllerDelegate</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nl">cameraButtonEvent:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="n">sender</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>ViewController.m</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-<span class='line-number'>65</span>
-<span class='line-number'>66</span>
-<span class='line-number'>67</span>
-<span class='line-number'>68</span>
-<span class='line-number'>69</span>
-<span class='line-number'>70</span>
-<span class='line-number'>71</span>
-<span class='line-number'>72</span>
-<span class='line-number'>73</span>
-<span class='line-number'>74</span>
-<span class='line-number'>75</span>
-<span class='line-number'>76</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;ViewController.h&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#pragma mark CameraOverlayView</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@implementation</span> <span class="nc">CameraOverlayView</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">touchesEnded:</span><span class="p">(</span><span class="n">NSSet</span> <span class="o">*</span><span class="p">)</span><span class="nv">touches</span> <span class="nf">withEvent:</span><span class="p">(</span><span class="n">UIEvent</span> <span class="o">*</span><span class="p">)</span><span class="nv">event</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">pickerController</span> <span class="n">takePicture</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#pragma mark ViewController</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> <span class="p">()</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@property</span> <span class="n">UIImagePickerController</span> <span class="o">*</span><span class="n">pickerController</span><span class="p">;</span>
-</span><span class='line'><span class="k">@property</span> <span class="n">UIImageView</span> <span class="o">*</span><span class="n">imageView</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@implementation</span> <span class="nc">ViewController</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//撮影画像を表示するイメージビュー配置</span>
-</span><span class='line'>    <span class="n">_imageView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIImageView</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'>    <span class="n">_imageView</span><span class="p">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">bounds</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">_imageView</span><span class="p">.</span><span class="n">contentMode</span> <span class="o">=</span> <span class="n">UIViewContentModeScaleAspectFit</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">_imageView</span><span class="p">.</span><span class="n">autoresizingMask</span> <span class="o">=</span>
-</span><span class='line'>    <span class="n">UIViewAutoresizingFlexibleWidth</span> <span class="o">|</span> <span class="n">UIViewAutoresizingFlexibleHeight</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">_imageView</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//カメラボタンを押した時のイベント</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">cameraButtonEvent:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">([</span><span class="n">UIImagePickerController</span> <span class="nl">isSourceTypeAvailable:</span><span class="n">UIImagePickerControllerSourceTypeCamera</span><span class="p">])</span> <span class="p">{</span>
-</span><span class='line'>        <span class="c1">//カメラが有効であれば撮影モードに入る</span>
-</span><span class='line'>        <span class="n">UIImagePickerController</span> <span class="o">*</span><span class="n">picker</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIImagePickerController</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'>        <span class="n">picker</span><span class="p">.</span><span class="n">delegate</span> <span class="o">=</span> <span class="n">self</span><span class="p">;</span>
-</span><span class='line'>        <span class="n">picker</span><span class="p">.</span><span class="n">sourceType</span> <span class="o">=</span> <span class="n">UIImagePickerControllerSourceTypeCamera</span><span class="p">;</span>
-</span><span class='line'>        <span class="n">picker</span><span class="p">.</span><span class="n">showsCameraControls</span> <span class="o">=</span> <span class="n">NO</span><span class="p">;</span>
-</span><span class='line'>        <span class="n">UIImage</span> <span class="o">*</span><span class="n">image</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIImage</span> <span class="nl">imageNamed:</span><span class="s">@&quot;scope.png&quot;</span><span class="p">];</span>
-</span><span class='line'>        <span class="n">CameraOverlayView</span> <span class="o">*</span><span class="n">overlayView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">CameraOverlayView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithImage:</span><span class="n">image</span><span class="p">];</span>
-</span><span class='line'>        <span class="n">overlayView</span><span class="p">.</span><span class="n">pickerController</span> <span class="o">=</span> <span class="n">picker</span><span class="p">;</span>
-</span><span class='line'>        <span class="n">overlayView</span><span class="p">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">picker</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">bounds</span><span class="p">;</span>
-</span><span class='line'>        <span class="n">overlayView</span><span class="p">.</span><span class="n">contentMode</span> <span class="o">=</span> <span class="n">UIViewContentModeScaleAspectFill</span><span class="p">;</span>
-</span><span class='line'>        <span class="n">overlayView</span><span class="p">.</span><span class="n">autoresizingMask</span> <span class="o">=</span>
-</span><span class='line'>        <span class="n">UIViewAutoresizingFlexibleWidth</span> <span class="o">|</span> <span class="n">UIViewAutoresizingFlexibleHeight</span><span class="p">;</span>
-</span><span class='line'>        <span class="n">overlayView</span><span class="p">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">;</span>
-</span><span class='line'>        <span class="n">overlayView</span><span class="p">.</span><span class="n">userInteractionEnabled</span> <span class="o">=</span> <span class="n">YES</span><span class="p">;</span>
-</span><span class='line'>        <span class="n">picker</span><span class="p">.</span><span class="n">cameraOverlayView</span> <span class="o">=</span> <span class="n">overlayView</span><span class="p">;</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">self</span> <span class="nl">presentViewController:</span><span class="n">picker</span> <span class="nl">animated:</span><span class="n">YES</span> <span class="nl">completion:</span><span class="nb">nil</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-</span><span class='line'>        <span class="c1">//カメラが無効であればエラーログを出力する</span>
-</span><span class='line'>        <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;UIImagePickerController is not available.&quot;</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//選択/撮影した写真を取得</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">imagePickerController:</span><span class="p">(</span><span class="n">UIImagePickerController</span><span class="o">*</span><span class="p">)</span><span class="nv">picker</span>
-</span><span class='line'><span class="nf">didFinishPickingMediaWithInfo:</span><span class="p">(</span><span class="n">NSDictionary</span><span class="o">*</span><span class="p">)</span><span class="nv">info</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">UIImage</span> <span class="o">*</span><span class="n">image</span> <span class="o">=</span> <span class="p">[</span><span class="n">info</span> <span class="nl">objectForKey:</span><span class="n">UIImagePickerControllerEditedImage</span><span class="p">];</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">image</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="n">image</span> <span class="o">=</span> <span class="p">[</span><span class="n">info</span> <span class="nl">objectForKey:</span><span class="n">UIImagePickerControllerOriginalImage</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>    <span class="n">_imageView</span><span class="p">.</span><span class="n">image</span> <span class="o">=</span> <span class="n">image</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="nl">dismissViewControllerAnimated:</span><span class="n">YES</span> <span class="nl">completion:</span><span class="nb">NULL</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-07-07T10:56:00+09:00" pubdate data-updated="true">Jul 7<span>th</span>, 2013</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>
-
-
-</div>
-	
-</div>
-</article>
-
 <nav id="pagenavi">
     
         <a href="/blog/page/4/" class="prev">Prev</a>
@@ -846,12 +940,12 @@
   <div id="category" class="information-box">
 <section>
   <h1>Tag Cloud</h1>
-    <span id="tag-cloud"><a href='/blog/categories/actionscript' style='font-size: 103.01675977653632%'>actionscript(9)</a> <a href='/blog/categories/actionscript3' style='font-size: 102.3463687150838%'>actionscript3(7)</a> <a href='/blog/categories/download' style='font-size: 117.43016759776536%'>download(52)</a> <a href='/blog/categories/javascript' style='font-size: 100.67039106145252%'>javascript(2)</a> <a href='/blog/categories/objective-c' style='font-size: 160.0%'>objective-c(179)</a> <a href='/blog/categories/screensaver' style='font-size: 103.01675977653632%'>screensaver(9)</a> <a href='/blog/categories/xcode' style='font-size: 112.40223463687151%'>xcode(37)</a> </span>
+    <span id="tag-cloud"><a href='/blog/categories/actionscript' style='font-size: 102.98342541436465%'>actionscript(9)</a> <a href='/blog/categories/actionscript3' style='font-size: 102.32044198895028%'>actionscript3(7)</a> <a href='/blog/categories/download' style='font-size: 117.56906077348066%'>download(53)</a> <a href='/blog/categories/javascript' style='font-size: 100.66298342541437%'>javascript(2)</a> <a href='/blog/categories/objective-c' style='font-size: 160.0%'>objective-c(181)</a> <a href='/blog/categories/screensaver' style='font-size: 102.98342541436465%'>screensaver(9)</a> <a href='/blog/categories/xcode' style='font-size: 112.26519337016575%'>xcode(37)</a> </span>
 </section>
 
 <section class="mt12">
   <h1>Categories</h1>
-    <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (52)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (179)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (37)</a></li></ul>
+    <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (53)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (181)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (37)</a></li></ul>
 </section>
 
   </div>
@@ -859,6 +953,14 @@
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/09/03/download-objc-classes-dc-util/">ユーティリティ機能をまとめた「DCUtil」クラス</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/09/03/objc-copy-to-paste-board/">Objective-Cで指定した文字列をペーストボードにコピーする</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2013/09/02/download-objc-classes-dc-app-purchase/">アプリ内課金をする「DCAppPurchase」クラス</a>
@@ -890,14 +992,6 @@
     
       <li class="post">
         <a href="/blog/2013/08/22/objc-compare/">「compare」を使用した Objective-Cの文字列比較</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/08/02/download-objc-classes-dc-audio-player/">音楽ファイルの再生停止などの制御をする「DCAudioPlayer」クラス</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/07/30/objc-ui-view-animation-transition/">UIViewにアニメーションを適用する方法</a>
       </li>
     
   </ul>

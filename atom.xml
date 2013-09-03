@@ -4,7 +4,7 @@
   <title><![CDATA[Dolice Lab]]></title>
   <link href="http://lab.dolice.net/atom.xml" rel="self"/>
   <link href="http://lab.dolice.net/"/>
-  <updated>2013-09-02T22:45:02+09:00</updated>
+  <updated>2013-09-03T21:29:27+09:00</updated>
   <id>http://lab.dolice.net/</id>
   <author>
     <name><![CDATA[Masaki Hirokawa]]></name>
@@ -12,6 +12,237 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[ユーティリティ機能をまとめた「DCUtil」クラス]]></title>
+    <link href="http://lab.dolice.net/blog/2013/09/03/download-objc-classes-dc-util/"/>
+    <updated>2013-09-03T14:39:00+09:00</updated>
+    <id>http://lab.dolice.net/blog/2013/09/03/download-objc-classes-dc-util</id>
+    <content type="html"><![CDATA[<p>Objective-Cのユーティリティ系機能をまとめた「DCUtil」クラスを作成しました。まだ機能も少ないので、今後随時更新して行きます。</p>
+
+<h2>主な機能</h2>
+
+<ol>
+<li>スリープ禁止モードの切り替え機能</li>
+<li>テキストと画像のソーシャルシェア機能</li>
+<li>ペーストボードへのテキストコピー機能</li>
+<li>指定した URLを開く機能</li>
+<li>アラート表示機能</li>
+</ol>
+
+
+<p>下記よりソースコードのダウンロードが行えます。</p>
+
+<h2>ダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-classes-dc-util">https://github.com/masakihirokawa/objc-classes-dc-util</a></li>
+</ul>
+
+
+<h2>ソースコード</h2>
+
+<h3>DCUtil.h</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;Foundation/Foundation.h&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">DCUtil</span> : <span class="nc">NSObject</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark public method</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setIdleTimerDisabled:</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nv">isDisabled</span><span class="p">;</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">socialShare:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">delegate</span> <span class="nf">shareText:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">shareText</span> <span class="nf">shareImage:</span><span class="p">(</span><span class="n">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nv">shareImage</span><span class="p">;</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">copyToPasteBoard:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">copyText</span><span class="p">;</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">openUrl:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">url</span><span class="p">;</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">showAlert:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">title</span> <span class="nf">message:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">message</span> <span class="nf">cancelButtonTitle:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">cancelButtonTitle</span> <span class="nf">otherButtonTitles:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">otherButtonTitles</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>DCUtil.m</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;DCUtil.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">DCUtil</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark social share</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//スリープ禁止の切り替え</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setIdleTimerDisabled:</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nv">isDisabled</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="p">[[</span><span class="n">UIApplication</span> <span class="n">sharedApplication</span><span class="p">]</span> <span class="nl">setIdleTimerDisabled:</span><span class="n">isDisabled</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//シェアする</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">socialShare:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">delegate</span> <span class="nf">shareText:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">shareText</span> <span class="nf">shareImage:</span><span class="p">(</span><span class="n">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nv">shareImage</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span><span class="p">([</span><span class="n">UIActivityViewController</span> <span class="n">class</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">NSString</span> <span class="o">*</span><span class="n">textToShare</span> <span class="o">=</span> <span class="n">shareText</span><span class="p">;</span>
+</span><span class='line'>        <span class="n">UIImage</span> <span class="o">*</span><span class="n">imageToShare</span> <span class="o">=</span> <span class="n">shareImage</span><span class="p">;</span>
+</span><span class='line'>        <span class="n">NSArray</span> <span class="o">*</span><span class="n">itemsToShare</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSArray</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithObjects:</span><span class="n">textToShare</span><span class="p">,</span> <span class="n">imageToShare</span><span class="p">,</span> <span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">UIActivityViewController</span> <span class="o">*</span><span class="n">activityVC</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIActivityViewController</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithActivityItems:</span><span class="n">itemsToShare</span> <span class="nl">applicationActivities:</span><span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">activityVC</span><span class="p">.</span><span class="n">excludedActivityTypes</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSArray</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithObjects:</span> <span class="n">UIActivityTypePrint</span><span class="p">,</span> <span class="n">UIActivityTypeCopyToPasteboard</span><span class="p">,</span> <span class="n">UIActivityTypeAssignToContact</span><span class="p">,</span> <span class="n">UIActivityTypeSaveToCameraRoll</span><span class="p">,</span> <span class="n">UIActivityTypeMessage</span><span class="p">,</span> <span class="n">UIActivityTypePostToWeibo</span><span class="p">,</span> <span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">delegate</span> <span class="nl">presentViewController:</span><span class="n">activityVC</span> <span class="nl">animated:</span><span class="n">YES</span> <span class="nl">completion:</span><span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark copy to paste board</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//ペーストボードにコピー</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">copyToPasteBoard:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">copyText</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">//ペーストボードにコピー</span>
+</span><span class='line'>    <span class="n">UIPasteboard</span> <span class="o">*</span><span class="n">board</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIPasteboard</span> <span class="n">generalPasteboard</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">board</span> <span class="nl">setValue:</span><span class="n">copyText</span> <span class="nl">forPasteboardType:</span><span class="s">@&quot;public.utf8-plain-text&quot;</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//コピー完了アラート表示</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">DCUtil</span> <span class="nl">showAlert:</span><span class="nb">nil</span> <span class="nl">message:</span><span class="s">@&quot;クリップボードにコピーしました&quot;</span> <span class="nl">cancelButtonTitle:</span><span class="nb">nil</span> <span class="nl">otherButtonTitles:</span><span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark open url</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//URLを開く</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">openUrl:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">url</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="p">[[</span><span class="n">UIApplication</span> <span class="n">sharedApplication</span><span class="p">]</span> <span class="nl">openURL:</span><span class="p">[</span><span class="n">NSURL</span> <span class="nl">URLWithString:</span><span class="n">url</span><span class="p">]];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark show alert</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//アラート表示</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">showAlert:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">title</span> <span class="nf">message:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">message</span> <span class="nf">cancelButtonTitle:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">cancelButtonTitle</span> <span class="nf">otherButtonTitles:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">otherButtonTitles</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">otherButtonTitles</span> <span class="o">==</span> <span class="nb">nil</span><span class="p">)</span> <span class="n">otherButtonTitles</span> <span class="o">=</span> <span class="s">@&quot;OK&quot;</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">UIAlertView</span> <span class="o">*</span><span class="n">alert</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIAlertView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithTitle:</span><span class="n">title</span>
+</span><span class='line'>                                                    <span class="nl">message:</span><span class="n">message</span>
+</span><span class='line'>                                                   <span class="nl">delegate:</span><span class="n">self</span>
+</span><span class='line'>                                          <span class="nl">cancelButtonTitle:</span><span class="n">cancelButtonTitle</span>
+</span><span class='line'>                                          <span class="nl">otherButtonTitles:</span><span class="n">otherButtonTitles</span><span class="p">,</span> <span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">alert</span> <span class="n">show</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Objective-Cで指定した文字列をペーストボードにコピーする]]></title>
+    <link href="http://lab.dolice.net/blog/2013/09/03/objc-copy-to-paste-board/"/>
+    <updated>2013-09-03T12:15:00+09:00</updated>
+    <id>http://lab.dolice.net/blog/2013/09/03/objc-copy-to-paste-board</id>
+    <content type="html"><![CDATA[<p>Objective-Cで URL等の指定した文字列をペーストボードにコピーする方法を以下に記載します。</p>
+
+<p>UIPasteboardの値にコピーさせたい文字列と文字コードを指定して使用します。</p>
+
+<h2>ソースコード</h2>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//ペーストボードにコピー</span>
+</span><span class='line'><span class="n">UIPasteboard</span> <span class="o">*</span><span class="n">board</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIPasteboard</span> <span class="n">generalPasteboard</span><span class="p">];</span>
+</span><span class='line'><span class="p">[</span><span class="n">board</span> <span class="nl">setValue:</span><span class="s">@&quot;コピーさせたい文字列&quot;</span> <span class="nl">forPasteboardType:</span><span class="s">@&quot;public.utf8-plain-text&quot;</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//アラート表示</span>
+</span><span class='line'><span class="n">UIAlertView</span> <span class="o">*</span><span class="n">alert</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIAlertView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithTitle:</span><span class="nb">nil</span>
+</span><span class='line'>                                                <span class="nl">message:</span><span class="s">@&quot;クリップボードにコピーしました&quot;</span>
+</span><span class='line'>                                               <span class="nl">delegate:</span><span class="n">self</span>
+</span><span class='line'>                                      <span class="nl">cancelButtonTitle:</span><span class="nb">nil</span>
+</span><span class='line'>                                      <span class="nl">otherButtonTitles:</span><span class="s">@&quot;OK&quot;</span><span class="p">,</span> <span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'><span class="p">[</span><span class="n">alert</span> <span class="n">show</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[アプリ内課金をする「DCAppPurchase」クラス]]></title>
@@ -3843,416 +4074,6 @@
 </span><span class='line'><span class="p">{</span>
 </span><span class='line'>    <span class="n">_applicationBadgeNum</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
 </span><span class='line'>    <span class="p">[</span><span class="n">UIApplication</span> <span class="n">sharedApplication</span><span class="p">].</span><span class="n">applicationIconBadgeNumber</span> <span class="o">=</span> <span class="n">_applicationBadgeNum</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Objective-Cクラスのまとめ]]></title>
-    <link href="http://lab.dolice.net/blog/2013/07/01/download-objc-classes-2013-jul/"/>
-    <updated>2013-07-01T23:20:00+09:00</updated>
-    <id>http://lab.dolice.net/blog/2013/07/01/download-objc-classes-2013-jul</id>
-    <content type="html"><![CDATA[<p><img src="http://lab.dolice.net/images/article/objc-classes-2013-jul.png" title="Objective-C Classes - DC Seriese" alt="Objective-C Classes - DC Seriese" /></p>
-
-<p>これまでに作成した Objective-Cのクラスが少し増えてきましたので、以下にまとめました。全10種類あります。どれかお役に立つものがあれば幸いです。</p>
-
-<h2>ダウンロード</h2>
-
-<h3>DCAnimationクラス</h3>
-
-<p><a href="http://lab.dolice.net/blog/2013/05/30/download-objc-classes-dc-animation2/" title="7種類のアニメーションを実行する「DCAnimation」クラス">7種類のアニメーションを実行する「DCAnimation」クラス</a><br />
-7種類のアニメーションをシンプルな記述で実行する「DCAnimation」クラスです。アニメーション終了時のメソッドやデリゲートメソッドを指定できます。</p>
-
-<h3>DCAnimationクラス (ライト版)</h3>
-
-<p><a href="http://lab.dolice.net/blog/2013/05/14/download-objc-classes-dc-animation/" title="5種類のアニメーションを実行する「DCAnimation」クラス">5種類のアニメーションを実行する「DCAnimation」クラス</a><br />
-5種類のアニメーションをシンプルな記述で実行する「DCAnimation」クラスのライト版です。こちらはクラスメソッドを呼び出す形になりますので、記述はシンプルになります。</p>
-
-<h3>DCButtonクラス</h3>
-
-<p><a href="http://lab.dolice.net/blog/2013/06/04/download-objc-classes-dc-button/" title="2種類のボタンを生成する「DCButton」クラス">2種類のボタンを生成する「DCButton」クラス</a><br />
-テキストボタンと画像ボタンをシンプルな記述で生成する「DCButton」クラスです。</p>
-
-<h3>DCImageAnimationクラス</h3>
-
-<p><a href="http://lab.dolice.net/blog/2013/06/05/download-objc-classes-dc-image-animation/" title="2種類の画像アニメーションを実行する「DCImageAnimation」クラス">2種類の画像アニメーションを実行する「DCImageAnimation」クラス</a><br />
-画像のタイマーアニメーションとコマ送りアニメーションを実行する「DCImageAnimation」クラスです。パラパラアニメを実行するために作成しました。</p>
-
-<h3>DCTimerクラス</h3>
-
-<p><a href="http://lab.dolice.net/blog/2013/06/06/download-objc-classes-dc-timer/" title="シンプルな記述でタイマーイベントを呼び出す「DCTimer」クラス">シンプルな記述でタイマーイベントを呼び出す「DCTimer」クラス</a><br />
-2種類のタイマーイベントをクラスメソッドで呼び出す「DCTimer」クラスです。パラメータを渡す事も可能です。</p>
-
-<h3>DCLabelクラス</h3>
-
-<p><a href="http://lab.dolice.net/blog/2013/06/12/download-objc-classes-dc-label/" title="2種類のラベルを生成する「DCLabel」クラス">2種類のラベルを生成する「DCLabel」クラス</a><br />
-四角のラベルと角丸のラベルを生成する「DCLabel」クラスです。</p>
-
-<h3>DCDeviceクラス</h3>
-
-<p><a href="http://lab.dolice.net/blog/2013/06/17/download-objc-classes-dc-device/" title="iOS端末情報を取得する「DCDevice」クラス">iOS端末情報を取得する「DCDevice」クラス</a><br />
-iPhone/iPadのデバイス情報を判別する「DCDevice」クラスです。主に8個の機能を搭載しています。</p>
-
-<h3>DCImageクラス</h3>
-
-<p><a href="http://lab.dolice.net/blog/2013/06/17/download-objc-classes-dc-image/" title="4種類の機能を搭載する「DCImage」クラス">4種類の機能を搭載する「DCImage」クラス</a><br />
-「イメージビューの生成」や「全画面画像の取得」、「マスク適用」に「リサイズ処理」など 4種類の機能を実装する「DCImage」クラスです。</p>
-
-<h3>DCSocialクラス</h3>
-
-<p><a href="http://lab.dolice.net/blog/2013/06/30/download-objc-classes-dc-social/" title="Facebook/Twitter/LINEへ投稿する「DCSocial」クラス">Facebook/Twitter/LINEへ投稿する「DCSocial」クラス</a><br />
-Facebook/Twitter/LINEへの画像/テキスト/URLの投稿をシンプルな記述で実行する「DCSocial」クラスです。</p>
-
-<h3>DCActivityIndicatorクラス</h3>
-
-<p><a href="http://lab.dolice.net/blog/2013/07/01/download-objc-classes-dc-activity-indicator/" title="アクティビティインジケーターを制御する「DCActivityIndicator」クラス">アクティビティインジケーターを制御する「DCActivityIndicator」クラス</a><br />
-アクティビティインジケーターを制御する「DCActivityIndicator」クラスです。アクティビティインジケーターのアニメーション再生／停止／再生状況の取得を行えます。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[アクティビティインジケーターを制御する「DCActivityIndicator」クラス]]></title>
-    <link href="http://lab.dolice.net/blog/2013/07/01/download-objc-classes-dc-activity-indicator/"/>
-    <updated>2013-07-01T22:37:00+09:00</updated>
-    <id>http://lab.dolice.net/blog/2013/07/01/download-objc-classes-dc-activity-indicator</id>
-    <content type="html"><![CDATA[<p>アクティビティインジケーターを制御する「DCActivityIndicator」クラスを作成しました。アクティビティインジケーターのアニメーション再生／停止／再生状況の取得を行えます。</p>
-
-<p>下記よりサンプルとソースコードのダウンロードが行えます。</p>
-
-<h2>ダウンロード</h2>
-
-<ul>
-<li><a href="https://github.com/masakihirokawa/objc-classes-dc-activity-indicator">https://github.com/masakihirokawa/objc-classes-dc-activity-indicator</a></li>
-</ul>
-
-
-<h2>使用方法</h2>
-
-<h3>アクティビティインジケーターのアニメーション再生</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">[</span><span class="n">DCActivityIndicator</span> <span class="nl">start:</span><span class="n">self</span><span class="p">.</span><span class="n">view</span>
-</span><span class='line'>                    <span class="nl">center:</span><span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">center</span>
-</span><span class='line'>                   <span class="nl">styleId:</span><span class="mi">1</span>
-</span><span class='line'>          <span class="nl">hidesWhenStopped:</span><span class="n">YES</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>アクティビティインジケーターのアニメーション停止</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">[</span><span class="n">DCActivityIndicator</span> <span class="n">stop</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>アクティビティインジケーターのアニメーション再生状況取得</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">if</span> <span class="p">([</span><span class="n">DCActivityIndicator</span> <span class="n">isAnimating</span><span class="p">])</span> <span class="p">{</span>
-</span><span class='line'>    <span class="c1">//アニメーション再生中の処理</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>ソースコード</h2>
-
-<h3>DCActivityIndicator.h</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;UIKit/UIKit.h&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#define INDICATOR_LARGE_SIZE 50</span>
-</span><span class='line'><span class="cp">#define INDICATOR_SMALL_SIZE 20</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@interface</span> <span class="nc">DCActivityIndicator</span> : <span class="nc">UIActivityIndicatorView</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">start:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">view</span> <span class="nf">center:</span><span class="p">(</span><span class="n">CGPoint</span><span class="p">)</span><span class="nv">center</span> <span class="nf">styleId:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">styleId</span> <span class="nf">hidesWhenStopped:</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nv">hidesWhenStopped</span><span class="p">;</span>
-</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">stop</span><span class="p">;</span>
-</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">isAnimating</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>DCActivityIndicator.m</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-<span class='line-number'>65</span>
-<span class='line-number'>66</span>
-<span class='line-number'>67</span>
-<span class='line-number'>68</span>
-<span class='line-number'>69</span>
-<span class='line-number'>70</span>
-<span class='line-number'>71</span>
-<span class='line-number'>72</span>
-<span class='line-number'>73</span>
-<span class='line-number'>74</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;DCActivityIndicator.h&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@implementation</span> <span class="nc">DCActivityIndicator</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">static</span> <span class="n">UIActivityIndicatorView</span> <span class="o">*</span><span class="n">indicator_</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">typedef</span> <span class="k">enum</span> <span class="n">styles</span> <span class="o">:</span> <span class="n">NSInteger</span> <span class="p">{</span>
-</span><span class='line'>    <span class="n">GRAY</span>        <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-</span><span class='line'>    <span class="n">WHITE</span>       <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
-</span><span class='line'>    <span class="n">WHITE_LARGE</span> <span class="o">=</span> <span class="mi">3</span>
-</span><span class='line'><span class="p">}</span> <span class="n">styles</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//アニメーション開始</span>
-</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">start:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">view</span> <span class="nf">center:</span><span class="p">(</span><span class="n">CGPoint</span><span class="p">)</span><span class="nv">center</span> <span class="nf">styleId:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">styleId</span> <span class="nf">hidesWhenStopped:</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nv">hidesWhenStopped</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="c1">//インジケーター初期化</span>
-</span><span class='line'>    <span class="n">DCActivityIndicator</span><span class="p">.</span><span class="n">indicator</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIActivityIndicatorView</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//スタイルを設定</span>
-</span><span class='line'>    <span class="k">switch</span> <span class="p">(</span><span class="n">styleId</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="k">case</span> <span class="nl">GRAY:</span>
-</span><span class='line'>            <span class="n">DCActivityIndicator</span><span class="p">.</span><span class="n">indicator</span><span class="p">.</span><span class="n">activityIndicatorViewStyle</span> <span class="o">=</span> <span class="n">UIActivityIndicatorViewStyleGray</span><span class="p">;</span>
-</span><span class='line'>            <span class="k">break</span><span class="p">;</span>
-</span><span class='line'>        <span class="k">case</span> <span class="nl">WHITE:</span>
-</span><span class='line'>            <span class="n">DCActivityIndicator</span><span class="p">.</span><span class="n">indicator</span><span class="p">.</span><span class="n">activityIndicatorViewStyle</span> <span class="o">=</span> <span class="n">UIActivityIndicatorViewStyleWhite</span><span class="p">;</span>
-</span><span class='line'>            <span class="k">break</span><span class="p">;</span>
-</span><span class='line'>        <span class="k">case</span> <span class="nl">WHITE_LARGE:</span>
-</span><span class='line'>            <span class="n">DCActivityIndicator</span><span class="p">.</span><span class="n">indicator</span><span class="p">.</span><span class="n">activityIndicatorViewStyle</span> <span class="o">=</span> <span class="n">UIActivityIndicatorViewStyleWhiteLarge</span><span class="p">;</span>
-</span><span class='line'>            <span class="k">break</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//スタイルに応じて寸法変更</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">DCActivityIndicator</span><span class="p">.</span><span class="n">indicator</span><span class="p">.</span><span class="n">activityIndicatorViewStyle</span> <span class="o">==</span> <span class="n">UIActivityIndicatorViewStyleWhiteLarge</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="n">DCActivityIndicator</span><span class="p">.</span><span class="n">indicator</span><span class="p">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">INDICATOR_LARGE_SIZE</span><span class="p">,</span> <span class="n">INDICATOR_LARGE_SIZE</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-</span><span class='line'>        <span class="n">DCActivityIndicator</span><span class="p">.</span><span class="n">indicator</span><span class="p">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">INDICATOR_SMALL_SIZE</span><span class="p">,</span> <span class="n">INDICATOR_SMALL_SIZE</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//座標をセンターに指定</span>
-</span><span class='line'>    <span class="n">DCActivityIndicator</span><span class="p">.</span><span class="n">indicator</span><span class="p">.</span><span class="n">center</span> <span class="o">=</span> <span class="n">center</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//停止した時に隠れるよう設定</span>
-</span><span class='line'>    <span class="n">DCActivityIndicator</span><span class="p">.</span><span class="n">indicator</span><span class="p">.</span><span class="n">hidesWhenStopped</span> <span class="o">=</span> <span class="n">hidesWhenStopped</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//インジケーターアニメーション開始</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">DCActivityIndicator</span><span class="p">.</span><span class="n">indicator</span> <span class="n">startAnimating</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//画面に追加</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">DCActivityIndicator</span><span class="p">.</span><span class="n">indicator</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//アニメーション停止</span>
-</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">stop</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">DCActivityIndicator</span><span class="p">.</span><span class="n">indicator</span> <span class="n">stopAnimating</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//アニメーション中であるか</span>
-</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">isAnimating</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="p">[</span><span class="n">DCActivityIndicator</span><span class="p">.</span><span class="n">indicator</span> <span class="n">isAnimating</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setIndicator:</span><span class="p">(</span><span class="n">UIActivityIndicatorView</span> <span class="o">*</span><span class="p">)</span><span class="nv">indicator</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">indicator_</span> <span class="o">=</span> <span class="n">indicator</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">UIActivityIndicatorView</span> <span class="o">*</span><span class="p">)</span><span class="nf">indicator</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">indicator_</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>サンプルソースコード</h2>
-
-<h3>ViewController.h</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;UIKit/UIKit.h&gt;</span>
-</span><span class='line'><span class="cp">#import &quot;DCActivityIndicator.h&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> : <span class="nc">UIViewController</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">startEvent:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span><span class="p">;</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">stopEvent:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>ViewController.m</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;ViewController.h&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> <span class="p">()</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@implementation</span> <span class="nc">ViewController</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">typedef</span> <span class="k">enum</span> <span class="n">styles</span> <span class="o">:</span> <span class="n">NSInteger</span> <span class="p">{</span>
-</span><span class='line'>    <span class="n">GRAY</span>        <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-</span><span class='line'>    <span class="n">WHITE</span>       <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
-</span><span class='line'>    <span class="n">WHITE_LARGE</span> <span class="o">=</span> <span class="mi">3</span>
-</span><span class='line'><span class="p">}</span> <span class="n">styles</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">startEvent:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">([</span><span class="n">DCActivityIndicator</span> <span class="n">isAnimating</span><span class="p">])</span> <span class="p">{</span>
-</span><span class='line'>        <span class="k">return</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">DCActivityIndicator</span> <span class="nl">start:</span><span class="n">self</span><span class="p">.</span><span class="n">view</span>
-</span><span class='line'>                        <span class="nl">center:</span><span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">center</span>
-</span><span class='line'>                       <span class="nl">styleId:</span><span class="n">GRAY</span>
-</span><span class='line'>              <span class="nl">hidesWhenStopped:</span><span class="n">YES</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">stopEvent:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">[</span><span class="n">DCActivityIndicator</span> <span class="n">isAnimating</span><span class="p">])</span> <span class="p">{</span>
-</span><span class='line'>        <span class="k">return</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">DCActivityIndicator</span> <span class="n">stop</span><span class="p">];</span>
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'>
 </span><span class='line'><span class="k">@end</span>

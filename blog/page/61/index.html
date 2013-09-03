@@ -6,7 +6,7 @@
 	<title>Dolice Lab</title>
 	
 	
-	<meta name="description" content="配列をシャッフルし取得するには、以下のようにコードを記述します。 1
+	<meta name="description" content="ナビゲーションバーを使用すると、左側にボタンが表示されます。 この左側のボタンを消したい時は、以下のようにダミーボタンを挿入すると解決します。 1
 2
 3
 4
@@ -16,12 +16,19 @@
 8
 9
 10
-- (NSMutableArray *)shuffledList:(NSMutableArray *)tmpArray
-{ NSMutableArray *results = &hellip;">
+11
+12
+13
+14
+15
+16
+17
+- (void)initNavigationBar
+{ &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	<meta property="og:title" content="Dolice Lab" />
-<meta property="og:description" content="配列をシャッフルし取得するには、以下のようにコードを記述します。 1
+<meta property="og:description" content="ナビゲーションバーを使用すると、左側にボタンが表示されます。 この左側のボタンを消したい時は、以下のようにダミーボタンを挿入すると解決します。 1
 2
 3
 4
@@ -31,8 +38,15 @@
 8
 9
 10
-- (NSMutableArray *)shuffledList:(NSMutableArray *)tmpArray
-{ NSMutableArray *results = &hellip;" />
+11
+12
+13
+14
+15
+16
+17
+- (void)initNavigationBar
+{ &hellip;" />
 <meta property="og:url" content="http://lab.dolice.net/blog/page/61/" />
 <meta property="og:image" content="http://lab.dolice.net/images/facebook-icon.jpg" />
 <meta property="og:author" content="Masaki Hirokawa" />
@@ -106,6 +120,180 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/03/15/hide-navigationbar-button/">
+		
+			UINavigationBarの左ボタンを消す方法</a>
+	</h2>
+	<div class="entry-content">
+		<p>ナビゲーションバーを使用すると、左側にボタンが表示されます。</p>
+
+<p>この左側のボタンを消したい時は、以下のようにダミーボタンを挿入すると解決します。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">initNavigationBar</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="n">UINavigationItem</span> <span class="o">*</span><span class="n">navigation</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UINavigationItem</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithTitle:</span><span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">self</span> <span class="nl">initNavigationLeftButton:</span><span class="n">navigation</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">navigationBar</span> <span class="nl">pushNavigationItem:</span><span class="n">navigation</span> <span class="nl">animated:</span><span class="n">YES</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">insertSubview:</span><span class="n">self</span><span class="p">.</span><span class="n">navigationBar</span> <span class="nl">atIndex:</span><span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">subviews</span> <span class="n">count</span><span class="p">]];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">initNavigationLeftButton:</span><span class="p">(</span><span class="n">UINavigationItem</span> <span class="o">*</span><span class="p">)</span><span class="nv">navigation</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="n">UIView</span><span class="o">*</span> <span class="n">dummyView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">navigationItem</span> <span class="nl">setHidesBackButton:</span><span class="n">YES</span><span class="p">];</span>
+</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">navigationItem</span><span class="p">.</span><span class="n">hidesBackButton</span> <span class="o">=</span> <span class="n">YES</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">UIBarButtonItem</span><span class="o">*</span> <span class="n">dummyButton</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIBarButtonItem</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithCustomView:</span><span class="n">dummyView</span><span class="p">];</span>
+</span><span class='line'>  <span class="n">dummyButton</span><span class="p">.</span><span class="n">enabled</span> <span class="o">=</span> <span class="n">NO</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">navigation</span><span class="p">.</span><span class="n">leftBarButtonItem</span> <span class="o">=</span> <span class="n">dummyButton</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-15T11:41:00+09:00" pubdate data-updated="true">Mar 15<span>th</span>, 2013</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>, <a class='category' href='/blog/categories/xcode/'>xcode</a>
+
+
+</div>
+	
+</div>
+</article>
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/03/14/determining-the-device/">
+		
+			iOSデバイスの判別法</a>
+	</h2>
+	<div class="entry-content">
+		<p>iOSデバイスを判別するには、以下のようにスクリーンサイズを基準に判別する方法があります。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nf">iOSDevice</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="k">if</span><span class="p">(</span><span class="n">UI_USER_INTERFACE_IDIOM</span><span class="p">()</span> <span class="o">==</span> <span class="n">UIUserInterfaceIdiomPhone</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">([[</span><span class="n">UIScreen</span> <span class="n">mainScreen</span><span class="p">]</span> <span class="nl">respondsToSelector:</span> <span class="k">@selector</span><span class="p">(</span><span class="n">scale</span><span class="p">)])</span> <span class="p">{</span>
+</span><span class='line'>      <span class="n">CGSize</span> <span class="n">result</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIScreen</span> <span class="n">mainScreen</span><span class="p">]</span> <span class="n">bounds</span><span class="p">].</span><span class="n">size</span><span class="p">;</span>
+</span><span class='line'>      <span class="n">CGFloat</span> <span class="n">scale</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIScreen</span> <span class="n">mainScreen</span><span class="p">].</span><span class="n">scale</span><span class="p">;</span>
+</span><span class='line'>      <span class="n">result</span> <span class="o">=</span> <span class="n">CGSizeMake</span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">width</span> <span class="o">*</span> <span class="n">scale</span><span class="p">,</span> <span class="n">result</span><span class="p">.</span><span class="n">height</span> <span class="o">*</span> <span class="n">scale</span><span class="p">);</span>
+</span><span class='line'>      <span class="k">if</span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">height</span> <span class="o">==</span> <span class="mi">960</span><span class="p">){</span>
+</span><span class='line'>        <span class="k">return</span> <span class="p">(</span><span class="s">@&quot;iPhone4&quot;</span><span class="p">);</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>      <span class="k">if</span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">height</span> <span class="o">==</span> <span class="mi">1136</span><span class="p">){</span>
+</span><span class='line'>        <span class="k">return</span> <span class="p">(</span><span class="s">@&quot;iPhone5&quot;</span><span class="p">);</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">return</span> <span class="p">(</span><span class="s">@&quot;iPhone3&quot;</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">([[</span><span class="n">UIScreen</span> <span class="n">mainScreen</span><span class="p">]</span> <span class="nl">respondsToSelector:</span> <span class="k">@selector</span><span class="p">(</span><span class="n">scale</span><span class="p">)])</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">return</span> <span class="p">(</span><span class="s">@&quot;iPad Retina&quot;</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">return</span> <span class="p">(</span><span class="s">@&quot;iPad&quot;</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="k">return</span> <span class="p">(</span><span class="s">@&quot;unknown&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-14T10:48:00+09:00" pubdate data-updated="true">Mar 14<span>th</span>, 2013</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>
+
+
+</div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -206,175 +394,6 @@
 </div>
 </article>
 
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/03/14/shuffle-the-array-in-objective-c/">
-		
-			Objective-Cでの配列シャッフル</a>
-	</h2>
-	<div class="entry-content">
-		<p>配列をシャッフルし取得するには、以下のようにコードを記述します。</p>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">_myArray</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSMutableArray</span> <span class="n">array</span><span class="p">];</span>
-</span><span class='line'><span class="k">for</span> <span class="p">(</span><span class="n">uint</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="p">[</span><span class="n">_myArray</span> <span class="n">count</span><span class="p">];</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>  <span class="kt">int</span> <span class="n">m</span> <span class="o">=</span> <span class="p">[</span><span class="n">_myArray</span> <span class="n">count</span><span class="p">]</span> <span class="o">-</span> <span class="n">i</span><span class="p">;</span>
-</span><span class='line'>  <span class="kt">int</span> <span class="n">n</span> <span class="o">=</span> <span class="n">arc4random_uniform</span><span class="p">(</span><span class="n">m</span><span class="p">)</span> <span class="o">+</span> <span class="n">i</span><span class="p">;</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">_myArray</span> <span class="nl">exchangeObjectAtIndex:</span><span class="n">i</span> <span class="nl">withObjectAtIndex:</span><span class="n">n</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="n">_shuffledArray</span> <span class="o">=</span> <span class="n">_myArray</span><span class="p">;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-03-14T10:35:00+09:00" pubdate data-updated="true">Mar 14<span>th</span>, 2013</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>
-
-
-</div>
-	
-</div>
-</article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/03/14/save-images-in-objective-c/">
-		
-			Objective-Cで画像をカメラロールに保存する方法</a>
-	</h2>
-	<div class="entry-content">
-		<p>画像をカメラロールに保存するサンプルを以下に作成しました。</p>
-
-<h2>サンプルダウンロード</h2>
-
-<ul>
-<li><a href="https://github.com/masakihirokawa/objc-ui-image-write-to-saved-photos-album">https://github.com/masakihirokawa/objc-ui-image-write-to-saved-photos-album</a></li>
-</ul>
-
-
-<h2>ソースコード</h2>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//保存する画像ファイル</span>
-</span><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="n">_imageName</span> <span class="o">=</span> <span class="s">@&quot;Pandora_640_1136.jpg&quot;</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//画像を保存する</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">saveButtonEvent</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="c1">//保存する画像を指定</span>
-</span><span class='line'>  <span class="n">UIImage</span> <span class="o">*</span><span class="n">image</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIImage</span> <span class="nl">imageNamed:</span><span class="n">_imageName</span><span class="p">];</span>
-</span><span class='line'>  <span class="c1">//画像保存完了時のセレクタ指定</span>
-</span><span class='line'>  <span class="kt">SEL</span> <span class="n">selector</span> <span class="o">=</span> <span class="k">@selector</span><span class="p">(</span><span class="nl">onCompleteCapture:didFinishSavingWithError:contextInfo:</span><span class="p">);</span>
-</span><span class='line'>  <span class="c1">//画像を保存する</span>
-</span><span class='line'>  <span class="n">UIImageWriteToSavedPhotosAlbum</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">self</span><span class="p">,</span> <span class="n">selector</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//画像保存完了時のセレクタ</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">onCompleteCapture:</span><span class="p">(</span><span class="n">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nv">screenImage</span>
-</span><span class='line'> <span class="nf">didFinishSavingWithError:</span><span class="p">(</span><span class="n">NSError</span> <span class="o">*</span><span class="p">)</span><span class="nv">error</span> <span class="nf">contextInfo:</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="nv">contextInfo</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="n">NSString</span> <span class="o">*</span><span class="n">message</span> <span class="o">=</span> <span class="s">@&quot;画像を保存しました&quot;</span><span class="p">;</span>
-</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="n">error</span><span class="p">)</span> <span class="n">message</span> <span class="o">=</span> <span class="s">@&quot;画像の保存に失敗しました&quot;</span><span class="p">;</span>
-</span><span class='line'>  <span class="n">UIAlertView</span> <span class="o">*</span><span class="n">alert</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIAlertView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithTitle:</span> <span class="s">@&quot;&quot;</span>
-</span><span class='line'>                                                  <span class="nl">message:</span> <span class="n">message</span>
-</span><span class='line'>                                                 <span class="nl">delegate:</span> <span class="nb">nil</span>
-</span><span class='line'>                                        <span class="nl">cancelButtonTitle:</span> <span class="s">@&quot;OK&quot;</span>
-</span><span class='line'>                                        <span class="nl">otherButtonTitles:</span> <span class="nb">nil</span><span class="p">];</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">alert</span> <span class="n">show</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-03-14T10:11:00+09:00" pubdate data-updated="true">Mar 14<span>th</span>, 2013</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>
-
-
-</div>
-	
-</div>
-</article>
-
 <nav id="pagenavi">
     
         <a href="/blog/page/60/" class="prev">Prev</a>
@@ -412,12 +431,12 @@
   <div id="category" class="information-box">
 <section>
   <h1>Tag Cloud</h1>
-    <span id="tag-cloud"><a href='/blog/categories/actionscript' style='font-size: 103.01675977653632%'>actionscript(9)</a> <a href='/blog/categories/actionscript3' style='font-size: 102.3463687150838%'>actionscript3(7)</a> <a href='/blog/categories/download' style='font-size: 117.43016759776536%'>download(52)</a> <a href='/blog/categories/javascript' style='font-size: 100.67039106145252%'>javascript(2)</a> <a href='/blog/categories/objective-c' style='font-size: 160.0%'>objective-c(179)</a> <a href='/blog/categories/screensaver' style='font-size: 103.01675977653632%'>screensaver(9)</a> <a href='/blog/categories/xcode' style='font-size: 112.40223463687151%'>xcode(37)</a> </span>
+    <span id="tag-cloud"><a href='/blog/categories/actionscript' style='font-size: 102.98342541436465%'>actionscript(9)</a> <a href='/blog/categories/actionscript3' style='font-size: 102.32044198895028%'>actionscript3(7)</a> <a href='/blog/categories/download' style='font-size: 117.56906077348066%'>download(53)</a> <a href='/blog/categories/javascript' style='font-size: 100.66298342541437%'>javascript(2)</a> <a href='/blog/categories/objective-c' style='font-size: 160.0%'>objective-c(181)</a> <a href='/blog/categories/screensaver' style='font-size: 102.98342541436465%'>screensaver(9)</a> <a href='/blog/categories/xcode' style='font-size: 112.26519337016575%'>xcode(37)</a> </span>
 </section>
 
 <section class="mt12">
   <h1>Categories</h1>
-    <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (52)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (179)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (37)</a></li></ul>
+    <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (53)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (181)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (37)</a></li></ul>
 </section>
 
   </div>
@@ -425,6 +444,14 @@
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/09/03/download-objc-classes-dc-util/">ユーティリティ機能をまとめた「DCUtil」クラス</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/09/03/objc-copy-to-paste-board/">Objective-Cで指定した文字列をペーストボードにコピーする</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2013/09/02/download-objc-classes-dc-app-purchase/">アプリ内課金をする「DCAppPurchase」クラス</a>
@@ -456,14 +483,6 @@
     
       <li class="post">
         <a href="/blog/2013/08/22/objc-compare/">「compare」を使用した Objective-Cの文字列比較</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/08/02/download-objc-classes-dc-audio-player/">音楽ファイルの再生停止などの制御をする「DCAudioPlayer」クラス</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/07/30/objc-ui-view-animation-transition/">UIViewにアニメーションを適用する方法</a>
       </li>
     
   </ul>
