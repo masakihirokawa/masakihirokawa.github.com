@@ -6,11 +6,11 @@
 	<title>Dolice Lab</title>
 	
 	
-	<meta name="description" content="AVAudioPlayerを使用しオーディオの再生/停止/ボリューム調節を行うサンプルを以下に作成しました。 AVFoundationフレームワークが必要になります。 ダウンロード https://github.com/masakihirokawa/objc-av-audio-player &hellip;">
+	<meta name="description" content="Objective-Cで UIImageに画像を読み込み、UIImageViewを通さずに画面に直接描画するサンプルを以下に作成しました。 サンプルでは、DrawImageというカスタムクラスを使用し画像を描画しています。 下記よりサンプルのダウンロードが行えます。 ダウンロード https &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	<meta property="og:title" content="Dolice Lab" />
-<meta property="og:description" content="AVAudioPlayerを使用しオーディオの再生/停止/ボリューム調節を行うサンプルを以下に作成しました。 AVFoundationフレームワークが必要になります。 ダウンロード https://github.com/masakihirokawa/objc-av-audio-player &hellip;" />
+<meta property="og:description" content="Objective-Cで UIImageに画像を読み込み、UIImageViewを通さずに画面に直接描画するサンプルを以下に作成しました。 サンプルでは、DrawImageというカスタムクラスを使用し画像を描画しています。 下記よりサンプルのダウンロードが行えます。 ダウンロード https &hellip;" />
 <meta property="og:url" content="http://lab.dolice.net/blog/page/8/" />
 <meta property="og:image" content="http://lab.dolice.net/images/facebook-icon.jpg" />
 <meta property="og:author" content="Masaki Hirokawa" />
@@ -84,6 +84,322 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/07/25/objc-ui-image-draw-in-rect/">
+		
+			UIImageを画面に直接描画する方法</a>
+	</h2>
+	<div class="entry-content">
+		<p>Objective-Cで UIImageに画像を読み込み、UIImageViewを通さずに画面に直接描画するサンプルを以下に作成しました。</p>
+
+<p>サンプルでは、DrawImageというカスタムクラスを使用し画像を描画しています。</p>
+
+<p>下記よりサンプルのダウンロードが行えます。</p>
+
+<h2>ダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-ui-image-draw-in-rect">https://github.com/masakihirokawa/objc-ui-image-draw-in-rect</a></li>
+</ul>
+
+
+<h2>ソースコード</h2>
+
+<h3>ViewController.h</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;UIKit/UIKit.h&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">DrawImage</span> : <span class="nc">UIView</span> <span class="p">{</span>
+</span><span class='line'><span class="k">@private</span>
+</span><span class='line'>    <span class="n">UIImage</span> <span class="o">*</span><span class="n">image_</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nl">initWithImage:</span><span class="p">(</span><span class="n">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="n">image</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> : <span class="nc">UIViewController</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>ViewController.m</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;ViewController.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">DrawImage</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">initWithImage:</span><span class="p">(</span><span class="n">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nv">image</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">((</span><span class="n">self</span> <span class="o">=</span> <span class="p">[</span><span class="n">super</span> <span class="n">init</span><span class="p">]))</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">image_</span> <span class="o">=</span> <span class="n">image</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">self</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">drawRect:</span><span class="p">(</span><span class="n">CGRect</span><span class="p">)</span><span class="nv">rect</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">image_</span> <span class="nl">drawInRect:</span><span class="n">rect</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">ViewController</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//画像ファイルの読み込み</span>
+</span><span class='line'>    <span class="n">UIImage</span> <span class="o">*</span><span class="n">image</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIImage</span> <span class="nl">imageNamed:</span><span class="s">@&quot;Frigg_640_1136.jpg&quot;</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//画像ファイルの表示</span>
+</span><span class='line'>    <span class="n">DrawImage</span> <span class="o">*</span><span class="n">myImage</span> <span class="o">=</span> <span class="p">[[</span><span class="n">DrawImage</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithImage:</span><span class="n">image</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">myImage</span><span class="p">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">bounds</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">myImage</span><span class="p">.</span><span class="n">autoresizingMask</span> <span class="o">=</span>
+</span><span class='line'>        <span class="n">UIViewAutoresizingFlexibleWidth</span> <span class="o">|</span> <span class="n">UIViewAutoresizingFlexibleHeight</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">myImage</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-07-25T00:19:00+09:00" pubdate data-updated="true">Jul 25<span>th</span>, 2013</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>
+
+
+</div>
+	
+</div>
+</article>
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/07/24/objc-property-option/">
+		
+			Objective-Cのプロパティで指定可能なオプション</a>
+	</h2>
+	<div class="entry-content">
+		<p>Objective-Cの @property宣言で指定可能なオプションを以下に列記します。</p>
+
+<h2>オプション一覧</h2>
+
+<table>
+<thead>
+<tr>
+<th align="left"></th>
+<th align="left"> タイプ </th>
+<th align="left"> オプション </th>
+<th> 説明 </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"></td>
+<td align="left"> メソッド名       </td>
+<td align="left"> getter=ゲッタ名 </td>
+<td>     ゲッタメソッドの名前を明示的に指定する</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"> setter=セッタ名 </td>
+<td> セッタメソッドの名前を明示的に指定する</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"> 読み書き属性 </td>
+<td align="left"> readonly </td>
+<td> 読み取りのみ</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"> readwrite </td>
+<td> 読み書き可能</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"> 値の設定方法 </td>
+<td align="left"> assign </td>
+<td> 代入によって値を設定（規定値）</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"> retain </td>
+<td> オブジェクトを保持するよう設定</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"> unsafe_unretained </td>
+<td> assignと同じ（ARC用）</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"> strong </td>
+<td> retainと同じ（ARC用）</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"> weak </td>
+<td> 弱い参照</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"> copy </td>
+<td> オブジェクトをコピーするよう設定</td>
+</tr>
+<tr>
+<td align="left"></td>
+<td align="left"> アトミック性 </td>
+<td align="left"> nonatomic </td>
+<td> 排他的に実行されないメソッド</td>
+</tr>
+</tbody>
+</table>
+
+
+<h2>使用例</h2>
+
+<p>例えばセッタメソッドを宣言する場合は下記のように指定します。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">setter</span><span class="o">=</span><span class="nl">setValue:</span><span class="p">)</span> <span class="kt">int</span> <span class="n">myValue</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>オブジェクトを保持するよう設定する場合は下記のように指定します。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">strong</span><span class="p">)</span> <span class="kt">int</span> <span class="n">myValue</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>2つの属性を指定する場合はカンマで区切って列挙します。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">assign</span><span class="p">)</span> <span class="kt">int</span> <span class="n">myValue</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-07-24T23:49:00+09:00" pubdate data-updated="true">Jul 24<span>th</span>, 2013</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>
+
+
+</div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -419,355 +735,6 @@
 </div>
 </article>
 
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/07/07/objc-ui-image-picker-control-camera-overlay/">
-		
-			カメラで撮った写真に画像をオーバーレイする方法</a>
-	</h2>
-	<div class="entry-content">
-		<p><img src="/images/article/ui-image-picker-control-camera-overlay.jpg" alt="" /></p>
-
-<p>カメラで撮った写真に画像をオーバーレイするサンプルを以下に作成しました。</p>
-
-<h2>ダウンロード</h2>
-
-<ul>
-<li><a href="https://github.com/masakihirokawa/objc-ui-image-picker-control-camera-overlay">https://github.com/masakihirokawa/objc-ui-image-picker-control-camera-overlay</a></li>
-</ul>
-
-
-<h2>ソースコード</h2>
-
-<h3>ViewController.h</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;UIKit/UIKit.h&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@interface</span> <span class="nc">CameraOverlayView</span> : <span class="nc">UIImageView</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@property</span> <span class="n">UIImagePickerController</span> <span class="o">*</span><span class="n">pickerController</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> : <span class="nc">UIViewController</span> <span class="o">&lt;</span><span class="n">UIActionSheetDelegate</span><span class="p">,</span> <span class="n">UINavigationControllerDelegate</span><span class="p">,</span> <span class="n">UIImagePickerControllerDelegate</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nl">cameraButtonEvent:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="n">sender</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>ViewController.m</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-<span class='line-number'>65</span>
-<span class='line-number'>66</span>
-<span class='line-number'>67</span>
-<span class='line-number'>68</span>
-<span class='line-number'>69</span>
-<span class='line-number'>70</span>
-<span class='line-number'>71</span>
-<span class='line-number'>72</span>
-<span class='line-number'>73</span>
-<span class='line-number'>74</span>
-<span class='line-number'>75</span>
-<span class='line-number'>76</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;ViewController.h&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#pragma mark CameraOverlayView</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@implementation</span> <span class="nc">CameraOverlayView</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">touchesEnded:</span><span class="p">(</span><span class="n">NSSet</span> <span class="o">*</span><span class="p">)</span><span class="nv">touches</span> <span class="nf">withEvent:</span><span class="p">(</span><span class="n">UIEvent</span> <span class="o">*</span><span class="p">)</span><span class="nv">event</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">pickerController</span> <span class="n">takePicture</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#pragma mark ViewController</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> <span class="p">()</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@property</span> <span class="n">UIImagePickerController</span> <span class="o">*</span><span class="n">pickerController</span><span class="p">;</span>
-</span><span class='line'><span class="k">@property</span> <span class="n">UIImageView</span> <span class="o">*</span><span class="n">imageView</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@implementation</span> <span class="nc">ViewController</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//撮影画像を表示するイメージビュー配置</span>
-</span><span class='line'>    <span class="n">_imageView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIImageView</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'>    <span class="n">_imageView</span><span class="p">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">bounds</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">_imageView</span><span class="p">.</span><span class="n">contentMode</span> <span class="o">=</span> <span class="n">UIViewContentModeScaleAspectFit</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">_imageView</span><span class="p">.</span><span class="n">autoresizingMask</span> <span class="o">=</span>
-</span><span class='line'>    <span class="n">UIViewAutoresizingFlexibleWidth</span> <span class="o">|</span> <span class="n">UIViewAutoresizingFlexibleHeight</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">_imageView</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//カメラボタンを押した時のイベント</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">cameraButtonEvent:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">([</span><span class="n">UIImagePickerController</span> <span class="nl">isSourceTypeAvailable:</span><span class="n">UIImagePickerControllerSourceTypeCamera</span><span class="p">])</span> <span class="p">{</span>
-</span><span class='line'>        <span class="c1">//カメラが有効であれば撮影モードに入る</span>
-</span><span class='line'>        <span class="n">UIImagePickerController</span> <span class="o">*</span><span class="n">picker</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIImagePickerController</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'>        <span class="n">picker</span><span class="p">.</span><span class="n">delegate</span> <span class="o">=</span> <span class="n">self</span><span class="p">;</span>
-</span><span class='line'>        <span class="n">picker</span><span class="p">.</span><span class="n">sourceType</span> <span class="o">=</span> <span class="n">UIImagePickerControllerSourceTypeCamera</span><span class="p">;</span>
-</span><span class='line'>        <span class="n">picker</span><span class="p">.</span><span class="n">showsCameraControls</span> <span class="o">=</span> <span class="n">NO</span><span class="p">;</span>
-</span><span class='line'>        <span class="n">UIImage</span> <span class="o">*</span><span class="n">image</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIImage</span> <span class="nl">imageNamed:</span><span class="s">@&quot;scope.png&quot;</span><span class="p">];</span>
-</span><span class='line'>        <span class="n">CameraOverlayView</span> <span class="o">*</span><span class="n">overlayView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">CameraOverlayView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithImage:</span><span class="n">image</span><span class="p">];</span>
-</span><span class='line'>        <span class="n">overlayView</span><span class="p">.</span><span class="n">pickerController</span> <span class="o">=</span> <span class="n">picker</span><span class="p">;</span>
-</span><span class='line'>        <span class="n">overlayView</span><span class="p">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">picker</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">bounds</span><span class="p">;</span>
-</span><span class='line'>        <span class="n">overlayView</span><span class="p">.</span><span class="n">contentMode</span> <span class="o">=</span> <span class="n">UIViewContentModeScaleAspectFill</span><span class="p">;</span>
-</span><span class='line'>        <span class="n">overlayView</span><span class="p">.</span><span class="n">autoresizingMask</span> <span class="o">=</span>
-</span><span class='line'>        <span class="n">UIViewAutoresizingFlexibleWidth</span> <span class="o">|</span> <span class="n">UIViewAutoresizingFlexibleHeight</span><span class="p">;</span>
-</span><span class='line'>        <span class="n">overlayView</span><span class="p">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">;</span>
-</span><span class='line'>        <span class="n">overlayView</span><span class="p">.</span><span class="n">userInteractionEnabled</span> <span class="o">=</span> <span class="n">YES</span><span class="p">;</span>
-</span><span class='line'>        <span class="n">picker</span><span class="p">.</span><span class="n">cameraOverlayView</span> <span class="o">=</span> <span class="n">overlayView</span><span class="p">;</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">self</span> <span class="nl">presentViewController:</span><span class="n">picker</span> <span class="nl">animated:</span><span class="n">YES</span> <span class="nl">completion:</span><span class="nb">nil</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-</span><span class='line'>        <span class="c1">//カメラが無効であればエラーログを出力する</span>
-</span><span class='line'>        <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;UIImagePickerController is not available.&quot;</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//選択/撮影した写真を取得</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">imagePickerController:</span><span class="p">(</span><span class="n">UIImagePickerController</span><span class="o">*</span><span class="p">)</span><span class="nv">picker</span>
-</span><span class='line'><span class="nf">didFinishPickingMediaWithInfo:</span><span class="p">(</span><span class="n">NSDictionary</span><span class="o">*</span><span class="p">)</span><span class="nv">info</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">UIImage</span> <span class="o">*</span><span class="n">image</span> <span class="o">=</span> <span class="p">[</span><span class="n">info</span> <span class="nl">objectForKey:</span><span class="n">UIImagePickerControllerEditedImage</span><span class="p">];</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">image</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="n">image</span> <span class="o">=</span> <span class="p">[</span><span class="n">info</span> <span class="nl">objectForKey:</span><span class="n">UIImagePickerControllerOriginalImage</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>    <span class="n">_imageView</span><span class="p">.</span><span class="n">image</span> <span class="o">=</span> <span class="n">image</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="nl">dismissViewControllerAnimated:</span><span class="n">YES</span> <span class="nl">completion:</span><span class="nb">NULL</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-07-07T10:56:00+09:00" pubdate data-updated="true">Jul 7<span>th</span>, 2013</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>
-
-
-</div>
-	
-</div>
-</article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/07/06/objc-ui-slider-thumb-image/">
-		
-			スライダーのデザインをカスタマイズする方法</a>
-	</h2>
-	<div class="entry-content">
-		<p><img src="/images/article/custom_slider.png" title="UISliderのデザインカスタマイズサンプル" alt="UISliderのデザインカスタマイズサンプル" /></p>
-
-<p>UISliderのデザインをカスタマイズするサンプルを以下に作成しました。</p>
-
-<p>サンプルでは、スライダーの掴み部分、左側部分、右側部分の画像を指定しています。</p>
-
-<h2>ダウンロード</h2>
-
-<ul>
-<li><a href="https://github.com/masakihirokawa/objc-slider-thumb-image">https://github.com/masakihirokawa/objc-slider-thumb-image</a></li>
-</ul>
-
-
-<h2>ソースコード</h2>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setCustomSlider</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="c1">//スライダー初期化</span>
-</span><span class='line'>    <span class="n">UISlider</span> <span class="o">*</span><span class="n">slider</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UISlider</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'>    <span class="n">slider</span><span class="p">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">250</span><span class="p">,</span> <span class="mi">50</span><span class="p">);</span>
-</span><span class='line'>    <span class="n">slider</span><span class="p">.</span><span class="n">minimumValue</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">slider</span><span class="p">.</span><span class="n">maximumValue</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">slider</span><span class="p">.</span><span class="n">value</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">slider</span><span class="p">.</span><span class="n">center</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">center</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//スライダーのデザインをカスタマイズ</span>
-</span><span class='line'>    <span class="n">UIImage</span> <span class="o">*</span><span class="n">imageForThumb</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIImage</span> <span class="nl">imageNamed:</span><span class="s">@&quot;slider_thumb.png&quot;</span><span class="p">];</span>
-</span><span class='line'>    <span class="n">UIImage</span> <span class="o">*</span><span class="n">imageMinBase</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIImage</span> <span class="nl">imageNamed:</span><span class="s">@&quot;slider_left.png&quot;</span><span class="p">];</span>
-</span><span class='line'>    <span class="n">UIImage</span> <span class="o">*</span><span class="n">imageForMin</span> <span class="o">=</span> <span class="p">[</span><span class="n">imageMinBase</span> <span class="nl">stretchableImageWithLeftCapWidth:</span><span class="mi">4</span> <span class="nl">topCapHeight:</span><span class="mi">0</span><span class="p">];</span>
-</span><span class='line'>    <span class="n">UIImage</span> <span class="o">*</span><span class="n">imageMaxBase</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIImage</span> <span class="nl">imageNamed:</span><span class="s">@&quot;slider_right.png&quot;</span><span class="p">];</span>
-</span><span class='line'>    <span class="n">UIImage</span> <span class="o">*</span><span class="n">imageForMax</span> <span class="o">=</span> <span class="p">[</span><span class="n">imageMaxBase</span> <span class="nl">stretchableImageWithLeftCapWidth:</span><span class="mi">4</span> <span class="nl">topCapHeight:</span><span class="mi">0</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">slider</span> <span class="nl">setThumbImage:</span><span class="n">imageForThumb</span> <span class="nl">forState:</span><span class="n">UIControlStateNormal</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">slider</span> <span class="nl">setThumbImage:</span><span class="n">imageForThumb</span> <span class="nl">forState:</span><span class="n">UIControlStateHighlighted</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">slider</span> <span class="nl">setMinimumTrackImage:</span><span class="n">imageForMin</span> <span class="nl">forState:</span><span class="n">UIControlStateNormal</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">slider</span> <span class="nl">setMaximumTrackImage:</span><span class="n">imageForMax</span> <span class="nl">forState:</span><span class="n">UIControlStateNormal</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//スライダーを画面に追加</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">slider</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-07-06T11:46:00+09:00" pubdate data-updated="true">Jul 6<span>th</span>, 2013</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>
-
-
-</div>
-	
-</div>
-</article>
-
 <nav id="pagenavi">
     
         <a href="/blog/page/7/" class="prev">Prev</a>
@@ -805,12 +772,12 @@
   <div id="category" class="information-box">
 <section>
   <h1>Tag Cloud</h1>
-    <span id="tag-cloud"><a href='/blog/categories/actionscript' style='font-size: 102.88770053475936%'>actionscript(9)</a> <a href='/blog/categories/actionscript3' style='font-size: 102.24598930481284%'>actionscript3(7)</a> <a href='/blog/categories/download' style='font-size: 117.96791443850267%'>download(56)</a> <a href='/blog/categories/javascript' style='font-size: 100.64171122994652%'>javascript(2)</a> <a href='/blog/categories/objective-c' style='font-size: 160.0%'>objective-c(187)</a> <a href='/blog/categories/screensaver' style='font-size: 102.88770053475936%'>screensaver(9)</a> <a href='/blog/categories/xcode' style='font-size: 112.19251336898395%'>xcode(38)</a> </span>
+    <span id="tag-cloud"><a href='/blog/categories/actionscript' style='font-size: 102.85714285714286%'>actionscript(9)</a> <a href='/blog/categories/actionscript3' style='font-size: 102.22222222222223%'>actionscript3(7)</a> <a href='/blog/categories/download' style='font-size: 118.4126984126984%'>download(58)</a> <a href='/blog/categories/javascript' style='font-size: 100.63492063492063%'>javascript(2)</a> <a href='/blog/categories/objective-c' style='font-size: 160.0%'>objective-c(189)</a> <a href='/blog/categories/screensaver' style='font-size: 102.85714285714286%'>screensaver(9)</a> <a href='/blog/categories/xcode' style='font-size: 112.06349206349206%'>xcode(38)</a> </span>
 </section>
 
 <section class="mt12">
   <h1>Categories</h1>
-    <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (56)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (187)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (38)</a></li></ul>
+    <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (58)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (189)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (38)</a></li></ul>
 </section>
 
   </div>
@@ -818,6 +785,14 @@
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/09/09/objc-classes-dc-blend-image/">画像をブレンド加工する「DCBlendImage」クラス</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/09/09/download-objc-classes-dc-randomize/">乱数の生成や配列のシャッフルを行う「DCRandomize」クラス</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2013/09/06/objc-ui-tab-bar-controller/">UITabBarを使用した画面で外から画面遷移を呼ぶ方法</a>
@@ -849,14 +824,6 @@
     
       <li class="post">
         <a href="/blog/2013/09/03/objc-copy-to-paste-board/">Objective-Cで指定した文字列をペーストボードにコピーする</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/09/02/download-objc-classes-dc-app-purchase/">アプリ内課金をする「DCAppPurchase」クラス</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/09/02/download-objc-classes-dc-activity-indicator2/">インジケーターを表示する「DCActivityIndicator」クラス改訂版</a>
       </li>
     
   </ul>
