@@ -6,11 +6,11 @@
 	<title>Dolice Lab</title>
 	
 	
-	<meta name="description" content="Objective-Cで AppDelegateに定義された変数やメソッドをどこからでも呼べるようグローバル化するサンプルを以下に作成しました。 *.pchファイルに一度 AppDelegateを定数として定義しておけば、以降どこからでも AppDelegateを初期化せずに呼ぶ事ができます。 &hellip;">
+	<meta name="description" content="iOSアプリで音声のバックグラウンド再生を許可する方法を以下に記載します。 下記よりサンプルのダウンロードが行えます。 ダウンロード https://github.com/masakihirokawa/xcode-objc-required-background-modes 手順 1. info &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	<meta property="og:title" content="Dolice Lab" />
-<meta property="og:description" content="Objective-Cで AppDelegateに定義された変数やメソッドをどこからでも呼べるようグローバル化するサンプルを以下に作成しました。 *.pchファイルに一度 AppDelegateを定数として定義しておけば、以降どこからでも AppDelegateを初期化せずに呼ぶ事ができます。 &hellip;" />
+<meta property="og:description" content="iOSアプリで音声のバックグラウンド再生を許可する方法を以下に記載します。 下記よりサンプルのダウンロードが行えます。 ダウンロード https://github.com/masakihirokawa/xcode-objc-required-background-modes 手順 1. info &hellip;" />
 <meta property="og:url" content="http://lab.dolice.net/blog/page/6/" />
 <meta property="og:image" content="http://lab.dolice.net/images/facebook-icon.jpg" />
 <meta property="og:author" content="Masaki Hirokawa" />
@@ -89,86 +89,46 @@
     <article class="post">
 	<h2 class="title">
 		
-		<a href="/blog/2013/08/22/objc-app-delegate-global/">
+		<a href="/blog/2013/09/02/xcode-objc-required-background-modes/">
 		
-			Objective-Cで AppDelegateをグローバル化する方法</a>
+			iOSアプリで音楽のバックグラウンド再生を許可する方法</a>
 	</h2>
 	<div class="entry-content">
-		<p>Objective-Cで AppDelegateに定義された変数やメソッドをどこからでも呼べるようグローバル化するサンプルを以下に作成しました。</p>
+		<p><img src="/images/article/required_background_modes.png" alt="" /></p>
 
-<p>*.pchファイルに一度 AppDelegateを定数として定義しておけば、以降どこからでも AppDelegateを初期化せずに呼ぶ事ができます。</p>
+<p>iOSアプリで音声のバックグラウンド再生を許可する方法を以下に記載します。</p>
 
-<p>以下よりサンプルのダウンロードが行えます。</p>
+<p>下記よりサンプルのダウンロードが行えます。</p>
 
 <h2>ダウンロード</h2>
 
 <ul>
-<li><a href="https://github.com/masakihirokawa/objc-app-delegate-global">https://github.com/masakihirokawa/objc-app-delegate-global</a></li>
+<li><a href="https://github.com/masakihirokawa/xcode-objc-required-background-modes">https://github.com/masakihirokawa/xcode-objc-required-background-modes</a></li>
 </ul>
 
 
-<h2>使用方法</h2>
+<h2>手順</h2>
 
-<h3>1. *.pchファイルに AppDelegateのヘッダファイルを読み込む</h3>
+<h3>1. info.plistファイルを編集</h3>
 
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;AppDelegate.h&quot;</span>
-</span></code></pre></td></tr></table></div></figure>
+<p>info.plistファイルを Xcode左側のプロジェクトメニューから開き、Keyに [Required background modes]を追加し、[Item 0] の Valueを [App plays audio]にします</p>
 
-
-<h3>2. *.pchファイルの定数に AppDelegateを代入する</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#define APP_DELEGATE (AppDelegate*)[[UIApplication sharedApplication] delegate]</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>3. 2の手順で生成した定数経由でメソッドや変数を取得する</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="n">globalStrings</span> <span class="o">=</span> <span class="p">[</span><span class="n">APP_DELEGATE</span> <span class="n">globalStrings</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>ソースコード</h2>
-
-<h3>*.pch</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;AppDelegate.h&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#define APP_DELEGATE (AppDelegate*)[[UIApplication sharedApplication] delegate]</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>AppDelegate.h</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nf">globalStrings</span><span class="p">;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>AppDelegate.m</h3>
+<h3>2. アプリ起動時のコードに以下の記述を追加 (AVFoundationフレームワークの読み込みが前提)</h3>
 
 <figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nf">globalStrings</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">application:</span><span class="p">(</span><span class="n">UIApplication</span> <span class="o">*</span><span class="p">)</span><span class="nv">application</span> <span class="nf">didFinishLaunchingWithOptions:</span><span class="p">(</span><span class="n">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nv">launchOptions</span>
 </span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="s">@&quot;AppDelegate Global Strings&quot;</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">AVAudioSession</span> <span class="o">*</span><span class="n">audioSession</span> <span class="o">=</span> <span class="p">[</span><span class="n">AVAudioSession</span> <span class="n">sharedInstance</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">audioSession</span> <span class="nl">setCategory:</span><span class="n">AVAudioSessionCategoryPlayback</span> <span class="nl">error:</span><span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="n">YES</span><span class="p">;</span>
 </span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>ViewController.m</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//AppDelegate内のメソッドから変数を取得</span>
-</span><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="n">globalStrings</span> <span class="o">=</span> <span class="p">[</span><span class="n">APP_DELEGATE</span> <span class="n">globalStrings</span><span class="p">];</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
@@ -192,7 +152,82 @@
   
 
 
-<time datetime="2013-08-22T23:35:00+09:00" pubdate data-updated="true">Aug 22<span>nd</span>, 2013</time></div>
+<time datetime="2013-09-02T17:06:00+09:00" pubdate data-updated="true">Sep 2<span>nd</span>, 2013</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>, <a class='category' href='/blog/categories/xcode/'>xcode</a>
+
+
+</div>
+	
+</div>
+</article>
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/09/02/objc-set-idle-timer-disabled/">
+		
+			iOSの自動スリープを禁止する方法</a>
+	</h2>
+	<div class="entry-content">
+		<p>Objective-Cでアプリの起動中に自動スリープを禁止するサンプルを以下に作成しました。</p>
+
+<p>AppDelegateの didFinishLaunchingWithOptionsメソッド内に、[[UIApplication sharedApplication] setIdleTimerDisabled:YES]; と指定すると自動スリープを禁止できます。</p>
+
+<p>下記よりサンプルのダウンロードが行えます。</p>
+
+<h2>ダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-set-idle-timer-disabled">https://github.com/masakihirokawa/objc-set-idle-timer-disabled</a></li>
+</ul>
+
+
+<h2>ソースコード</h2>
+
+<h3>AppDelegate.m</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">application:</span><span class="p">(</span><span class="n">UIApplication</span> <span class="o">*</span><span class="p">)</span><span class="nv">application</span> <span class="nf">didFinishLaunchingWithOptions:</span><span class="p">(</span><span class="n">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nv">launchOptions</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">//ロック／スリープの禁止</span>
+</span><span class='line'>    <span class="p">[[</span><span class="n">UIApplication</span> <span class="n">sharedApplication</span><span class="p">]</span> <span class="nl">setIdleTimerDisabled:</span><span class="n">YES</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="n">YES</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-09-02T14:21:00+09:00" pubdate data-updated="true">Sep 2<span>nd</span>, 2013</time></div>
 	<div class="tags">
 
 
@@ -208,113 +243,23 @@
     <article class="post">
 	<h2 class="title">
 		
-		<a href="/blog/2013/08/22/download-objc-classes-dc-device2/">
+		<a href="/blog/2013/08/23/objc-background-texture/">
 		
-			iOS端末情報を取得する「DCDevice」クラスに言語取得機能を追加しました</a>
+			Objective-Cで iOSデフォルトの背景画像を敷く方法</a>
 	</h2>
 	<div class="entry-content">
-		<p>iPhone/iPadのデバイス情報を判別する「DCDevice」クラスに、iOSの設定言語が日本語か否かを判別する機能を追加しました。</p>
+		<p><img src="/images/article/background_texture.png" alt="" /></p>
 
-<p>以下よりサンプルコードを含めたソースファイルをダウンロードできます。</p>
+<p>Objective-Cで iOSにデフォルトで用意されている背景画像2種を敷くサンプルを以下に作成しました。</p>
 
-<h2>ダウンロード</h2>
-
-<ul>
-<li><a href="https://github.com/masakihirokawa/objc-classes-dc-device2">https://github.com/masakihirokawa/objc-classes-dc-device2</a></li>
-</ul>
-
-
-<h2>サンプルソースコード</h2>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//言語設定が日本語であれば1が返る</span>
-</span><span class='line'><span class="kt">BOOL</span> <span class="n">isJapaniese</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCDevice</span> <span class="n">isJapaneseLanguage</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>ソースコード</h2>
-
-<h3>DCDevice.m</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//言語設定取得</span>
-</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">isJapaneseLanguage</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">static</span> <span class="kt">BOOL</span> <span class="n">isJapanese</span><span class="p">;</span>
-</span><span class='line'>    <span class="k">static</span> <span class="n">dispatch_once_t</span> <span class="n">onceToken</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">dispatch_once</span><span class="p">(</span><span class="o">&amp;</span><span class="n">onceToken</span><span class="p">,</span> <span class="o">^</span><span class="p">{</span>
-</span><span class='line'>        <span class="n">NSArray</span> <span class="o">*</span><span class="n">languages</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSLocale</span> <span class="n">preferredLanguages</span><span class="p">];</span>
-</span><span class='line'>        <span class="n">NSString</span> <span class="o">*</span><span class="n">currentLanguage</span> <span class="o">=</span> <span class="p">[</span><span class="n">languages</span> <span class="nl">objectAtIndex:</span><span class="mi">0</span><span class="p">];</span>
-</span><span class='line'>        <span class="n">isJapanese</span> <span class="o">=</span> <span class="p">[</span><span class="n">currentLanguage</span> <span class="nl">compare:</span><span class="s">@&quot;ja&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">NSOrderedSame</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">});</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">isJapanese</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-08-22T23:20:00+09:00" pubdate data-updated="true">Aug 22<span>nd</span>, 2013</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/download/'>download</a>, <a class='category' href='/blog/categories/objective-c/'>objective-c</a>
-
-
-</div>
-	
-</div>
-</article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/08/22/objc-compare/">
-		
-			「compare」を使用した Objective-Cの文字列比較</a>
-	</h2>
-	<div class="entry-content">
-		<p>Objective-Cの文字列比較は「isEqualToString」を使用するのが主流ですが、「compare」メソッドを使用した文字列の比較方法を以下に記載します。</p>
-
-<p>こちらの記述方法の方がシンプルで良いかもしれません。</p>
+<p>UIColorの colorWithPatternImageメソッドを使用して背景にパターンテクスチャを敷くより、こちらの手法の方がメモリ消費量を抑えられます。</p>
 
 <p>下記よりサンプルのダウンロードが行えます。</p>
 
 <h2>ダウンロード</h2>
 
 <ul>
-<li><a href="https://github.com/masakihirokawa/objc-compare">https://github.com/masakihirokawa/objc-compare</a></li>
+<li><a href="https://github.com/masakihirokawa/objc-background-texture">https://github.com/masakihirokawa/objc-background-texture</a></li>
 </ul>
 
 
@@ -322,14 +267,8 @@
 
 <figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="n">comparisonStr</span> <span class="o">=</span> <span class="s">@&quot;abc&quot;</span><span class="p">;</span>
-</span><span class='line'><span class="k">if</span> <span class="p">([</span><span class="n">comparisonStr</span> <span class="nl">compare:</span><span class="s">@&quot;abc&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">NSOrderedSame</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>  <span class="c1">//文字列が同一である場合の処理</span>
-</span><span class='line'>  
-</span><span class='line'><span class="p">}</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">underPageBackgroundView</span><span class="p">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIColor</span> <span class="n">underPageBackgroundColor</span><span class="p">];</span>
+</span><span class='line'><span class="n">scrollViewTextureBackgroundView</span><span class="p">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIColor</span> <span class="n">scrollViewTexturedBackgroundColor</span><span class="p">];</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
@@ -347,17 +286,71 @@
 <span class='line-number'>10</span>
 <span class='line-number'>11</span>
 <span class='line-number'>12</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="n">comparisonStr</span> <span class="o">=</span> <span class="s">@&quot;abc&quot;</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setUnderPageBackgroundColor</span>
 </span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">UIView</span> <span class="o">*</span><span class="n">underPageBackgroundView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">VIEW_WIDTH</span><span class="p">,</span> <span class="n">VIEW_HEIGHT</span><span class="p">)];</span>
 </span><span class='line'>
-</span><span class='line'>    <span class="c1">//文字列が同一であるか</span>
-</span><span class='line'>    <span class="kt">BOOL</span> <span class="n">isSameStrings</span> <span class="o">=</span> <span class="p">[</span><span class="n">comparisonStr</span> <span class="nl">compare:</span><span class="s">@&quot;abc&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">NSOrderedSame</span><span class="p">;</span>
+</span><span class='line'>    <span class="c1">//背景指定</span>
+</span><span class='line'>    <span class="n">underPageBackgroundView</span><span class="p">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIColor</span> <span class="n">underPageBackgroundColor</span><span class="p">];</span>
 </span><span class='line'>
-</span><span class='line'>    <span class="c1">//コンソール出力</span>
-</span><span class='line'>    <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;%d&quot;</span><span class="p">,</span> <span class="n">isSameStrings</span><span class="p">);</span>
+</span><span class='line'>    <span class="c1">//ラベル配置</span>
+</span><span class='line'>    <span class="n">UILabel</span> <span class="o">*</span><span class="n">backgroundCaption</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCLabel</span> <span class="nl">roundRectLabel:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="n">underPageBackgroundView</span><span class="p">.</span><span class="n">center</span><span class="p">.</span><span class="n">x</span> <span class="o">-</span> <span class="p">(</span><span class="n">LABEL_WIDTH</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span>
+</span><span class='line'>                                                                    <span class="n">underPageBackgroundView</span><span class="p">.</span><span class="n">center</span><span class="p">.</span><span class="n">y</span> <span class="o">-</span> <span class="p">(</span><span class="n">LABEL_HEIGHT</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span>
+</span><span class='line'>                                                                    <span class="n">LABEL_WIDTH</span><span class="p">,</span> <span class="n">LABEL_HEIGHT</span><span class="p">)</span>
+</span><span class='line'>                                                    <span class="nl">text:</span><span class="s">@&quot;[UIColor underPageBackgroundColor]&quot;</span>
+</span><span class='line'>                                                    <span class="nl">font:</span><span class="p">[</span><span class="n">UIFont</span> <span class="nl">systemFontOfSize:</span><span class="mi">12</span><span class="p">]</span>
+</span><span class='line'>                                               <span class="nl">textColor:</span><span class="p">[</span><span class="n">UIColor</span> <span class="n">whiteColor</span><span class="p">]</span> <span class="nl">textAlignment:</span><span class="n">NSTextAlignmentCenter</span>
+</span><span class='line'>                                         <span class="nl">backgroundColor:</span><span class="p">[</span><span class="n">UIColor</span> <span class="n">blackColor</span><span class="p">]</span> <span class="nl">cornerRadious:</span><span class="mi">6</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">underPageBackgroundView</span> <span class="nl">addSubview:</span><span class="n">backgroundCaption</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">underPageBackgroundView</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setScrollViewTexturedBackgroundColor</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">UIView</span> <span class="o">*</span><span class="n">scrollViewTextureBackgroundView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">240</span><span class="p">,</span> <span class="mi">320</span><span class="p">,</span> <span class="mi">240</span><span class="p">)];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//背景指定</span>
+</span><span class='line'>    <span class="n">scrollViewTextureBackgroundView</span><span class="p">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIColor</span> <span class="n">scrollViewTexturedBackgroundColor</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//ラベル配置</span>
+</span><span class='line'>    <span class="n">UILabel</span> <span class="o">*</span><span class="n">backgroundCaption</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCLabel</span> <span class="nl">roundRectLabel:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="n">scrollViewTextureBackgroundView</span><span class="p">.</span><span class="n">center</span><span class="p">.</span><span class="n">x</span> <span class="o">-</span> <span class="p">(</span><span class="n">LABEL_WIDTH</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span>
+</span><span class='line'>                                                                    <span class="n">scrollViewTextureBackgroundView</span><span class="p">.</span><span class="n">center</span><span class="p">.</span><span class="n">y</span> <span class="o">-</span> <span class="p">(</span><span class="n">LABEL_HEIGHT</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">-</span> <span class="n">VIEW_HEIGHT</span><span class="p">,</span>
+</span><span class='line'>                                                                    <span class="n">LABEL_WIDTH</span><span class="p">,</span> <span class="n">LABEL_HEIGHT</span><span class="p">)</span>
+</span><span class='line'>                                                    <span class="nl">text:</span><span class="s">@&quot;[UIColor scrollViewTexturedBackgroundColor]&quot;</span>
+</span><span class='line'>                                                    <span class="nl">font:</span><span class="p">[</span><span class="n">UIFont</span> <span class="nl">systemFontOfSize:</span><span class="mi">12</span><span class="p">]</span>
+</span><span class='line'>                                               <span class="nl">textColor:</span><span class="p">[</span><span class="n">UIColor</span> <span class="n">whiteColor</span><span class="p">]</span> <span class="nl">textAlignment:</span><span class="n">NSTextAlignmentCenter</span>
+</span><span class='line'>                                         <span class="nl">backgroundColor:</span><span class="p">[</span><span class="n">UIColor</span> <span class="n">blackColor</span><span class="p">]</span> <span class="nl">cornerRadious:</span><span class="mi">6</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">scrollViewTextureBackgroundView</span> <span class="nl">addSubview:</span><span class="n">backgroundCaption</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">scrollViewTextureBackgroundView</span><span class="p">];</span>
 </span><span class='line'><span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
@@ -382,7 +375,7 @@
   
 
 
-<time datetime="2013-08-22T23:05:00+09:00" pubdate data-updated="true">Aug 22<span>nd</span>, 2013</time></div>
+<time datetime="2013-08-23T22:36:00+09:00" pubdate data-updated="true">Aug 23<span>rd</span>, 2013</time></div>
 	<div class="tags">
 
 
@@ -431,12 +424,12 @@
   <div id="category" class="information-box">
 <section>
   <h1>Tag Cloud</h1>
-    <span id="tag-cloud"><a href='/blog/categories/actionscript' style='font-size: 102.85714285714286%'>actionscript(9)</a> <a href='/blog/categories/actionscript3' style='font-size: 102.22222222222223%'>actionscript3(7)</a> <a href='/blog/categories/download' style='font-size: 118.4126984126984%'>download(58)</a> <a href='/blog/categories/javascript' style='font-size: 100.63492063492063%'>javascript(2)</a> <a href='/blog/categories/objective-c' style='font-size: 160.0%'>objective-c(189)</a> <a href='/blog/categories/screensaver' style='font-size: 102.85714285714286%'>screensaver(9)</a> <a href='/blog/categories/xcode' style='font-size: 112.06349206349206%'>xcode(38)</a> </span>
+    <span id="tag-cloud"><a href='/blog/categories/actionscript' style='font-size: 102.8125%'>actionscript(9)</a> <a href='/blog/categories/actionscript3' style='font-size: 102.1875%'>actionscript3(7)</a> <a href='/blog/categories/download' style='font-size: 119.0625%'>download(61)</a> <a href='/blog/categories/javascript' style='font-size: 100.625%'>javascript(2)</a> <a href='/blog/categories/objective-c' style='font-size: 160.0%'>objective-c(192)</a> <a href='/blog/categories/screensaver' style='font-size: 102.8125%'>screensaver(9)</a> <a href='/blog/categories/xcode' style='font-size: 111.875%'>xcode(38)</a> </span>
 </section>
 
 <section class="mt12">
   <h1>Categories</h1>
-    <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (58)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (189)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (38)</a></li></ul>
+    <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (61)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (192)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (38)</a></li></ul>
 </section>
 
   </div>
@@ -444,6 +437,18 @@
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/09/10/download-objc-classes-2013-sep/">Objective-Cのクラスライブラリ「DCLibrary」を公開しました</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/09/10/objc-classes-dc-date/">日付時刻の情報や UIDatePickerを取得する「DCDate」クラス</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/09/10/objc-classes-dc-slider/">2種類のスライダーを取得する「DCSlider」クラス</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2013/09/09/objc-classes-dc-blend-image/">画像をブレンド加工する「DCBlendImage」クラス</a>
@@ -471,18 +476,6 @@
     
       <li class="post">
         <a href="/blog/2013/09/04/objc-modal-transition-style/">Objective-Cのみで4種類の画面遷移アニメーションを実行する方法</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/09/04/download-objc-classes-dc-audio-player2/">音楽ファイルの再生停止などの制御をする「DCAudioPlayer」クラス改訂版</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/09/03/download-objc-classes-dc-util/">ユーティリティ機能をまとめた「DCUtil」クラス</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/09/03/objc-copy-to-paste-board/">Objective-Cで指定した文字列をペーストボードにコピーする</a>
       </li>
     
   </ul>
