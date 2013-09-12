@@ -93,7 +93,7 @@
 <h2>主な機能</h2>
 
 <ol>
-<li>スリープ禁止モードの切り替え機能</li>
+<li>自動スリープ禁止モードの切り替え機能</li>
 <li>テキストと画像のソーシャルシェア機能</li>
 <li>ペーストボードへのテキストコピー機能</li>
 <li>指定した URLを開く機能</li>
@@ -128,16 +128,14 @@
 <span class='line-number'>11</span>
 <span class='line-number'>12</span>
 <span class='line-number'>13</span>
-<span class='line-number'>14</span>
 </pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;Foundation/Foundation.h&gt;</span>
 </span><span class='line'>
 </span><span class='line'><span class="k">@interface</span> <span class="nc">DCUtil</span> : <span class="nc">NSObject</span>
 </span><span class='line'>
-</span><span class='line'><span class="cp">#pragma mark public method</span>
-</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark - public method</span>
 </span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setIdleTimerDisabled:</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nv">isDisabled</span><span class="p">;</span>
 </span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">socialShare:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">delegate</span> <span class="nf">shareText:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">shareText</span> <span class="nf">shareImage:</span><span class="p">(</span><span class="n">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nv">shareImage</span><span class="p">;</span>
-</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">copyToPasteBoard:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">copyText</span><span class="p">;</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">copyToPasteBoard:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">copyText</span> <span class="nf">completeAlertMessage:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">completeAlertMessage</span><span class="p">;</span>
 </span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">openUrl:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">url</span><span class="p">;</span>
 </span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">showAlert:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">title</span> <span class="nf">message:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">message</span> <span class="nf">cancelButtonTitle:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">cancelButtonTitle</span> <span class="nf">otherButtonTitles:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">otherButtonTitles</span><span class="p">;</span>
 </span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nf">getStrFromPlist:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">key</span><span class="p">;</span>
@@ -220,19 +218,23 @@
 <span class='line-number'>70</span>
 <span class='line-number'>71</span>
 <span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
 </pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;DCUtil.h&quot;</span>
 </span><span class='line'>
 </span><span class='line'><span class="k">@implementation</span> <span class="nc">DCUtil</span>
 </span><span class='line'>
-</span><span class='line'><span class="cp">#pragma mark social share</span>
+</span><span class='line'><span class="cp">#pragma mark - Idle Timer</span>
 </span><span class='line'>
-</span><span class='line'><span class="c1">//スリープ禁止の切り替え</span>
+</span><span class='line'><span class="c1">// 自動スリープ禁止の切り替え</span>
 </span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setIdleTimerDisabled:</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nv">isDisabled</span>
 </span><span class='line'><span class="p">{</span>
 </span><span class='line'>    <span class="p">[[</span><span class="n">UIApplication</span> <span class="n">sharedApplication</span><span class="p">]</span> <span class="nl">setIdleTimerDisabled:</span><span class="n">isDisabled</span><span class="p">];</span>
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'>
-</span><span class='line'><span class="c1">//シェアする</span>
+</span><span class='line'><span class="cp">#pragma mark - Social Share</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// シェアする</span>
 </span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">socialShare:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">delegate</span> <span class="nf">shareText:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">shareText</span> <span class="nf">shareImage:</span><span class="p">(</span><span class="n">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nv">shareImage</span>
 </span><span class='line'><span class="p">{</span>
 </span><span class='line'>    <span class="k">if</span><span class="p">([</span><span class="n">UIActivityViewController</span> <span class="n">class</span><span class="p">])</span> <span class="p">{</span>
@@ -245,30 +247,30 @@
 </span><span class='line'>    <span class="p">}</span>
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'>
-</span><span class='line'><span class="cp">#pragma mark copy to paste board</span>
+</span><span class='line'><span class="cp">#pragma mark - Copy to Paste Board</span>
 </span><span class='line'>
-</span><span class='line'><span class="c1">//ペーストボードにコピー</span>
-</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">copyToPasteBoard:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">copyText</span>
+</span><span class='line'><span class="c1">// ペーストボードにコピー</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">copyToPasteBoard:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">copyText</span> <span class="nf">completeAlertMessage:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">completeAlertMessage</span>
 </span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="c1">//ペーストボードにコピー</span>
+</span><span class='line'>    <span class="c1">// ペーストボードにコピー</span>
 </span><span class='line'>    <span class="n">UIPasteboard</span> <span class="o">*</span><span class="n">board</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIPasteboard</span> <span class="n">generalPasteboard</span><span class="p">];</span>
 </span><span class='line'>    <span class="p">[</span><span class="n">board</span> <span class="nl">setValue:</span><span class="n">copyText</span> <span class="nl">forPasteboardType:</span><span class="s">@&quot;public.utf8-plain-text&quot;</span><span class="p">];</span>
 </span><span class='line'>
-</span><span class='line'>    <span class="c1">//コピー完了アラート表示</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">DCUtil</span> <span class="nl">showAlert:</span><span class="nb">nil</span> <span class="nl">message:</span><span class="s">@&quot;クリップボードにコピーしました&quot;</span> <span class="nl">cancelButtonTitle:</span><span class="nb">nil</span> <span class="nl">otherButtonTitles:</span><span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>    <span class="c1">// コピー完了アラート表示</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">DCUtil</span> <span class="nl">showAlert:</span><span class="nb">nil</span> <span class="nl">message:</span><span class="n">completeAlertMessage</span> <span class="nl">cancelButtonTitle:</span><span class="nb">nil</span> <span class="nl">otherButtonTitles:</span><span class="nb">nil</span><span class="p">];</span>
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'>
-</span><span class='line'><span class="cp">#pragma mark open url</span>
+</span><span class='line'><span class="cp">#pragma mark - Open Url</span>
 </span><span class='line'>
-</span><span class='line'><span class="c1">//URLを開く</span>
+</span><span class='line'><span class="c1">// URLを開く</span>
 </span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">openUrl:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">url</span>
 </span><span class='line'><span class="p">{</span>
 </span><span class='line'>    <span class="p">[[</span><span class="n">UIApplication</span> <span class="n">sharedApplication</span><span class="p">]</span> <span class="nl">openURL:</span><span class="p">[</span><span class="n">NSURL</span> <span class="nl">URLWithString:</span><span class="n">url</span><span class="p">]];</span>
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'>
-</span><span class='line'><span class="cp">#pragma mark show alert</span>
+</span><span class='line'><span class="cp">#pragma mark - Show Alert</span>
 </span><span class='line'>
-</span><span class='line'><span class="c1">//アラート表示</span>
+</span><span class='line'><span class="c1">// アラート表示</span>
 </span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">showAlert:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">title</span> <span class="nf">message:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">message</span> <span class="nf">cancelButtonTitle:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">cancelButtonTitle</span> <span class="nf">otherButtonTitles:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">otherButtonTitles</span>
 </span><span class='line'><span class="p">{</span>
 </span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">otherButtonTitles</span> <span class="o">==</span> <span class="nb">nil</span><span class="p">)</span> <span class="n">otherButtonTitles</span> <span class="o">=</span> <span class="s">@&quot;OK&quot;</span><span class="p">;</span>
@@ -280,9 +282,9 @@
 </span><span class='line'>    <span class="p">[</span><span class="n">alert</span> <span class="n">show</span><span class="p">];</span>
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'>
-</span><span class='line'><span class="cp">#pragma mark get str from plist</span>
+</span><span class='line'><span class="cp">#pragma mark - Get Str from info.plist</span>
 </span><span class='line'>
-</span><span class='line'><span class="c1">//info.plistから文字列取得</span>
+</span><span class='line'><span class="c1">// info.plistから文字列取得</span>
 </span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nf">getStrFromPlist:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">key</span>
 </span><span class='line'><span class="p">{</span>
 </span><span class='line'>    <span class="n">NSString</span> <span class="o">*</span><span class="n">path</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSBundle</span> <span class="n">mainBundle</span><span class="p">]</span> <span class="nl">pathForResource:</span><span class="s">@&quot;string&quot;</span> <span class="nl">ofType:</span><span class="s">@&quot;plist&quot;</span><span class="p">];</span>

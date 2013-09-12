@@ -222,10 +222,12 @@
 <span class='line-number'>8</span>
 <span class='line-number'>9</span>
 <span class='line-number'>10</span>
+<span class='line-number'>11</span>
 </pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;Foundation/Foundation.h&gt;</span>
 </span><span class='line'>
 </span><span class='line'><span class="k">@interface</span> <span class="nc">DCTimer</span> : <span class="nc">NSTimer</span>
 </span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark - public method</span>
 </span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setTimer:</span><span class="p">(</span><span class="n">CGFloat</span><span class="p">)</span><span class="nv">timeInterval</span> <span class="nf">delegate:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">delegate</span> <span class="nf">selector:</span><span class="p">(</span><span class="kt">SEL</span><span class="p">)</span><span class="nv">selector</span> <span class="nf">userInfo:</span><span class="p">(</span><span class="n">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nv">userInfo</span><span class="p">;</span>
 </span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">clearTimer</span><span class="p">;</span>
 </span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setDelayTimer:</span><span class="p">(</span><span class="n">CGFloat</span><span class="p">)</span><span class="nv">timeInterval</span> <span class="nf">delegate:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">delegate</span> <span class="nf">selector:</span><span class="p">(</span><span class="kt">SEL</span><span class="p">)</span><span class="nv">selector</span> <span class="nf">userInfo:</span><span class="p">(</span><span class="n">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nv">userInfo</span><span class="p">;</span>
@@ -274,27 +276,21 @@
 <span class='line-number'>35</span>
 <span class='line-number'>36</span>
 <span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
 </pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;DCTimer.h&quot;</span>
 </span><span class='line'>
 </span><span class='line'><span class="k">@implementation</span> <span class="nc">DCTimer</span>
 </span><span class='line'>
 </span><span class='line'><span class="k">static</span> <span class="n">NSTimer</span> <span class="o">*</span><span class="n">timer</span><span class="p">;</span>
 </span><span class='line'>
-</span><span class='line'><span class="c1">//タイマー定義</span>
+</span><span class='line'><span class="c1">// タイマー定義</span>
 </span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setTimer:</span><span class="p">(</span><span class="n">CGFloat</span><span class="p">)</span><span class="nv">timeInterval</span> <span class="nf">delegate:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">delegate</span> <span class="nf">selector:</span><span class="p">(</span><span class="kt">SEL</span><span class="p">)</span><span class="nv">selector</span> <span class="nf">userInfo:</span><span class="p">(</span><span class="n">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nv">userInfo</span>
 </span><span class='line'><span class="p">{</span>
 </span><span class='line'>    <span class="n">timer</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSTimer</span> <span class="nl">scheduledTimerWithTimeInterval:</span><span class="n">timeInterval</span>
-</span><span class='line'>                                             <span class="nl">target:</span><span class="n">delegate</span>
-</span><span class='line'>                                           <span class="nl">selector:</span><span class="n">selector</span>
-</span><span class='line'>                                           <span class="nl">userInfo:</span><span class="n">userInfo</span>
+</span><span class='line'>                                             <span class="nl">target:</span><span class="n">delegate</span> <span class="nl">selector:</span><span class="n">selector</span> <span class="nl">userInfo:</span><span class="n">userInfo</span>
 </span><span class='line'>                                            <span class="nl">repeats:</span><span class="n">YES</span><span class="p">];</span>
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'>
-</span><span class='line'><span class="c1">//タイマー削除</span>
+</span><span class='line'><span class="c1">// タイマー削除</span>
 </span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">clearTimer</span>
 </span><span class='line'><span class="p">{</span>
 </span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">timer</span> <span class="o">!=</span> <span class="nb">nil</span><span class="p">)</span> <span class="p">{</span>
@@ -302,20 +298,18 @@
 </span><span class='line'>    <span class="p">}</span>
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'>
-</span><span class='line'><span class="c1">//遅延実行タイマー定義</span>
+</span><span class='line'><span class="c1">// 遅延実行タイマー定義</span>
 </span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setDelayTimer:</span><span class="p">(</span><span class="n">CGFloat</span><span class="p">)</span><span class="nv">timeInterval</span> <span class="nf">delegate:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">delegate</span> <span class="nf">selector:</span><span class="p">(</span><span class="kt">SEL</span><span class="p">)</span><span class="nv">selector</span> <span class="nf">userInfo:</span><span class="p">(</span><span class="n">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nv">userInfo</span>
 </span><span class='line'><span class="p">{</span>
 </span><span class='line'>    <span class="p">[</span><span class="n">NSTimer</span> <span class="nl">scheduledTimerWithTimeInterval:</span><span class="n">timeInterval</span>
-</span><span class='line'>                                     <span class="nl">target:</span><span class="n">delegate</span>
-</span><span class='line'>                                   <span class="nl">selector:</span><span class="n">selector</span>
-</span><span class='line'>                                   <span class="nl">userInfo:</span><span class="n">userInfo</span>
+</span><span class='line'>                                     <span class="nl">target:</span><span class="n">delegate</span> <span class="nl">selector:</span><span class="n">selector</span> <span class="nl">userInfo:</span><span class="n">userInfo</span>
 </span><span class='line'>                                    <span class="nl">repeats:</span><span class="n">NO</span><span class="p">];</span>
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'>
-</span><span class='line'><span class="c1">//タイマー取得</span>
+</span><span class='line'><span class="c1">// タイマー取得</span>
 </span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSTimer</span> <span class="o">*</span><span class="p">)</span><span class="nf">timer</span>
 </span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="p">(</span><span class="n">timer</span><span class="p">);</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">timer</span><span class="p">;</span>
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'>
 </span><span class='line'><span class="k">@end</span>

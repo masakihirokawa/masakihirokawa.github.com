@@ -230,10 +230,12 @@
 <span class='line-number'>8</span>
 <span class='line-number'>9</span>
 <span class='line-number'>10</span>
+<span class='line-number'>11</span>
 </pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;Foundation/Foundation.h&gt;</span>
 </span><span class='line'>
 </span><span class='line'><span class="k">@interface</span> <span class="nc">DCTimer</span> : <span class="nc">NSTimer</span>
 </span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark - public method</span>
 </span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setTimer:</span><span class="p">(</span><span class="n">CGFloat</span><span class="p">)</span><span class="nv">timeInterval</span> <span class="nf">delegate:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">delegate</span> <span class="nf">selector:</span><span class="p">(</span><span class="kt">SEL</span><span class="p">)</span><span class="nv">selector</span> <span class="nf">userInfo:</span><span class="p">(</span><span class="n">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nv">userInfo</span><span class="p">;</span>
 </span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">clearTimer</span><span class="p">;</span>
 </span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setDelayTimer:</span><span class="p">(</span><span class="n">CGFloat</span><span class="p">)</span><span class="nv">timeInterval</span> <span class="nf">delegate:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">delegate</span> <span class="nf">selector:</span><span class="p">(</span><span class="kt">SEL</span><span class="p">)</span><span class="nv">selector</span> <span class="nf">userInfo:</span><span class="p">(</span><span class="n">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nv">userInfo</span><span class="p">;</span>
@@ -282,27 +284,21 @@
 <span class='line-number'>35</span>
 <span class='line-number'>36</span>
 <span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
 </pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;DCTimer.h&quot;</span>
 </span><span class='line'>
 </span><span class='line'><span class="k">@implementation</span> <span class="nc">DCTimer</span>
 </span><span class='line'>
 </span><span class='line'><span class="k">static</span> <span class="n">NSTimer</span> <span class="o">*</span><span class="n">timer</span><span class="p">;</span>
 </span><span class='line'>
-</span><span class='line'><span class="c1">//タイマー定義</span>
+</span><span class='line'><span class="c1">// タイマー定義</span>
 </span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setTimer:</span><span class="p">(</span><span class="n">CGFloat</span><span class="p">)</span><span class="nv">timeInterval</span> <span class="nf">delegate:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">delegate</span> <span class="nf">selector:</span><span class="p">(</span><span class="kt">SEL</span><span class="p">)</span><span class="nv">selector</span> <span class="nf">userInfo:</span><span class="p">(</span><span class="n">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nv">userInfo</span>
 </span><span class='line'><span class="p">{</span>
 </span><span class='line'>    <span class="n">timer</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSTimer</span> <span class="nl">scheduledTimerWithTimeInterval:</span><span class="n">timeInterval</span>
-</span><span class='line'>                                             <span class="nl">target:</span><span class="n">delegate</span>
-</span><span class='line'>                                           <span class="nl">selector:</span><span class="n">selector</span>
-</span><span class='line'>                                           <span class="nl">userInfo:</span><span class="n">userInfo</span>
+</span><span class='line'>                                             <span class="nl">target:</span><span class="n">delegate</span> <span class="nl">selector:</span><span class="n">selector</span> <span class="nl">userInfo:</span><span class="n">userInfo</span>
 </span><span class='line'>                                            <span class="nl">repeats:</span><span class="n">YES</span><span class="p">];</span>
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'>
-</span><span class='line'><span class="c1">//タイマー削除</span>
+</span><span class='line'><span class="c1">// タイマー削除</span>
 </span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">clearTimer</span>
 </span><span class='line'><span class="p">{</span>
 </span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">timer</span> <span class="o">!=</span> <span class="nb">nil</span><span class="p">)</span> <span class="p">{</span>
@@ -310,20 +306,18 @@
 </span><span class='line'>    <span class="p">}</span>
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'>
-</span><span class='line'><span class="c1">//遅延実行タイマー定義</span>
+</span><span class='line'><span class="c1">// 遅延実行タイマー定義</span>
 </span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setDelayTimer:</span><span class="p">(</span><span class="n">CGFloat</span><span class="p">)</span><span class="nv">timeInterval</span> <span class="nf">delegate:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">delegate</span> <span class="nf">selector:</span><span class="p">(</span><span class="kt">SEL</span><span class="p">)</span><span class="nv">selector</span> <span class="nf">userInfo:</span><span class="p">(</span><span class="n">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nv">userInfo</span>
 </span><span class='line'><span class="p">{</span>
 </span><span class='line'>    <span class="p">[</span><span class="n">NSTimer</span> <span class="nl">scheduledTimerWithTimeInterval:</span><span class="n">timeInterval</span>
-</span><span class='line'>                                     <span class="nl">target:</span><span class="n">delegate</span>
-</span><span class='line'>                                   <span class="nl">selector:</span><span class="n">selector</span>
-</span><span class='line'>                                   <span class="nl">userInfo:</span><span class="n">userInfo</span>
+</span><span class='line'>                                     <span class="nl">target:</span><span class="n">delegate</span> <span class="nl">selector:</span><span class="n">selector</span> <span class="nl">userInfo:</span><span class="n">userInfo</span>
 </span><span class='line'>                                    <span class="nl">repeats:</span><span class="n">NO</span><span class="p">];</span>
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'>
-</span><span class='line'><span class="c1">//タイマー取得</span>
+</span><span class='line'><span class="c1">// タイマー取得</span>
 </span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSTimer</span> <span class="o">*</span><span class="p">)</span><span class="nf">timer</span>
 </span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="p">(</span><span class="n">timer</span><span class="p">);</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">timer</span><span class="p">;</span>
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'>
 </span><span class='line'><span class="k">@end</span>
@@ -884,8 +878,8 @@
 <span class='line-number'>37</span>
 </pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;UIKit/UIKit.h&gt;</span>
 </span><span class='line'>
-</span><span class='line'><span class="cp">#define SECOND                  60.0f</span>
-</span><span class='line'><span class="cp">#define ANIM_FPS                24.0f</span>
+</span><span class='line'><span class="cp">#define SECOND                  60.0</span>
+</span><span class='line'><span class="cp">#define ANIM_FPS                24.0</span>
 </span><span class='line'><span class="cp">#define ANIM_IMAGE_X            0</span>
 </span><span class='line'><span class="cp">#define ANIM_IMAGE_Y            0</span>
 </span><span class='line'><span class="cp">#define ANIM_IMAGE_WIDTH        320</span>
@@ -899,25 +893,25 @@
 </span><span class='line'>    <span class="kt">id</span><span class="o">&lt;</span><span class="n">DCImageAnimationDelegate</span><span class="o">&gt;</span> <span class="n">_dc_delegate</span><span class="p">;</span>
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark - property</span>
 </span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">assign</span><span class="p">)</span> <span class="kt">id</span><span class="o">&lt;</span><span class="n">DCImageAnimationDelegate</span><span class="o">&gt;</span> <span class="n">dc_delegate</span><span class="p">;</span>
 </span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">retain</span><span class="p">)</span> <span class="n">UIImageView</span> <span class="o">*</span><span class="n">frameAnimationImageView</span><span class="p">;</span>
 </span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">retain</span><span class="p">)</span> <span class="n">UIImageView</span> <span class="o">*</span><span class="n">timerAnimationImageView</span><span class="p">;</span>
 </span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark - public method</span>
 </span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">init</span><span class="p">;</span>
 </span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">startFrameAnimating:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">animationType</span> <span class="o">:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="n">animationImageNum</span> <span class="o">:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="n">animationImagePrefix</span> <span class="o">:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="n">animationRepeatNum</span><span class="p">;</span>
 </span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">startTimerAnimating:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">animationType</span> <span class="o">:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="n">animationImageNum</span> <span class="o">:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="n">animationImagePrefix</span> <span class="o">:</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="n">isInfiniteLoopAnimation</span><span class="p">;</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setFps:</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="nv">fps</span><span class="p">;</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setFps:</span><span class="p">(</span><span class="n">CGFloat</span><span class="p">)</span><span class="nv">fps</span><span class="p">;</span>
 </span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">resetFps</span><span class="p">;</span>
 </span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setRectangle:</span><span class="p">(</span><span class="n">CGRect</span><span class="p">)</span><span class="nv">rect</span><span class="p">;</span>
 </span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">resetRectangle</span><span class="p">;</span>
 </span><span class='line'>
 </span><span class='line'><span class="k">@end</span>
 </span><span class='line'>
-</span><span class='line'><span class="cp">#pragma mark delegate prottype</span>
+</span><span class='line'><span class="cp">#pragma mark - delegate method</span>
 </span><span class='line'><span class="k">@protocol</span> <span class="nc">DCImageAnimationDelegate</span><span class="o">&lt;</span><span class="n">NSObject</span><span class="o">&gt;</span>
 </span><span class='line'><span class="k">@optional</span>
-</span><span class='line'><span class="c1">//ここにデリゲートメソッドを指定します</span>
-</span><span class='line'>
 </span><span class='line'><span class="k">@end</span>
 </span></code></pre></td></tr></table></div></figure>
 
@@ -1163,6 +1157,18 @@
 <span class='line-number'>237</span>
 <span class='line-number'>238</span>
 <span class='line-number'>239</span>
+<span class='line-number'>240</span>
+<span class='line-number'>241</span>
+<span class='line-number'>242</span>
+<span class='line-number'>243</span>
+<span class='line-number'>244</span>
+<span class='line-number'>245</span>
+<span class='line-number'>246</span>
+<span class='line-number'>247</span>
+<span class='line-number'>248</span>
+<span class='line-number'>249</span>
+<span class='line-number'>250</span>
+<span class='line-number'>251</span>
 </pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;DCImageAnimation.h&quot;</span>
 </span><span class='line'>
 </span><span class='line'><span class="k">@implementation</span> <span class="nc">DCImageAnimation</span>
@@ -1182,7 +1188,9 @@
 </span><span class='line'><span class="n">NSInteger</span> <span class="n">_animationTimerCount</span>      <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
 </span><span class='line'><span class="kt">BOOL</span>      <span class="n">_isLoopAnimation</span>          <span class="o">=</span> <span class="n">NO</span><span class="p">;</span>
 </span><span class='line'>
-</span><span class='line'><span class="c1">//初期化</span>
+</span><span class='line'><span class="cp">#pragma mark - Init</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 初期化</span>
 </span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">init</span>
 </span><span class='line'><span class="p">{</span>
 </span><span class='line'>    <span class="n">self</span> <span class="o">=</span> <span class="p">[</span><span class="n">super</span> <span class="n">init</span><span class="p">];</span>
@@ -1191,88 +1199,92 @@
 </span><span class='line'>    <span class="k">return</span> <span class="n">self</span><span class="p">;</span>
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'>
-</span><span class='line'><span class="c1">//アニメーション設定</span>
+</span><span class='line'><span class="cp">#pragma mark - Frame Animation</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// アニメーション設定</span>
 </span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">startFrameAnimating:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">animationType</span>
 </span><span class='line'>                           <span class="o">:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="n">animationImageNum</span>
 </span><span class='line'>                           <span class="o">:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="n">animationImagePrefix</span>
 </span><span class='line'>                           <span class="o">:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="n">animationRepeatNum</span>
 </span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="c1">//アニメーションの種類を保持</span>
+</span><span class='line'>    <span class="c1">// アニメーションの種類を保持</span>
 </span><span class='line'>    <span class="n">_animationType</span> <span class="o">=</span> <span class="n">animationType</span><span class="p">;</span>
 </span><span class='line'>
-</span><span class='line'>    <span class="c1">//イメージビュー初期化</span>
+</span><span class='line'>    <span class="c1">// イメージビュー初期化</span>
 </span><span class='line'>    <span class="n">_frameAnimationImageView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIImageView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="n">_animationImageX</span><span class="p">,</span>
 </span><span class='line'>                                                                             <span class="n">_animationImageY</span><span class="p">,</span>
 </span><span class='line'>                                                                             <span class="n">_animationImageWidth</span><span class="p">,</span>
 </span><span class='line'>                                                                             <span class="n">_animationImageHeight</span><span class="p">)];</span>
 </span><span class='line'>
-</span><span class='line'>    <span class="c1">//最後の画像が消えないようにする</span>
+</span><span class='line'>    <span class="c1">// 最後の画像が消えないようにする</span>
 </span><span class='line'>    <span class="n">_frameAnimationImageView</span><span class="p">.</span><span class="n">image</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="nl">getUIImageFromResources:</span><span class="p">[</span><span class="n">self</span> <span class="nl">animationImageName:animationImagePrefix:</span><span class="n">animationImageNum</span><span class="p">]</span>
 </span><span class='line'>                                                               <span class="nl">ext:</span><span class="n">_animationImageExt</span><span class="p">];</span>
 </span><span class='line'>
-</span><span class='line'>    <span class="c1">//画像をタップ可能にする</span>
+</span><span class='line'>    <span class="c1">// 画像をタップ可能にする</span>
 </span><span class='line'>    <span class="n">_frameAnimationImageView</span><span class="p">.</span><span class="n">userInteractionEnabled</span> <span class="o">=</span> <span class="n">YES</span><span class="p">;</span>
 </span><span class='line'>
-</span><span class='line'>    <span class="c1">//アニメーションフレームを配列に入れる</span>
+</span><span class='line'>    <span class="c1">// アニメーションフレームを配列に入れる</span>
 </span><span class='line'>    <span class="n">NSMutableArray</span> <span class="o">*</span><span class="n">animationImageArray</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSMutableArray</span> <span class="n">array</span><span class="p">];</span>
 </span><span class='line'>    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="n">animationImageNum</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>        <span class="p">[</span><span class="n">animationImageArray</span> <span class="nl">addObject:</span><span class="p">[</span><span class="n">self</span> <span class="nl">animationImageName:animationImagePrefix:</span><span class="n">i</span><span class="p">]];</span>
 </span><span class='line'>    <span class="p">}</span>
 </span><span class='line'>    <span class="n">_frameAnimationImageView</span><span class="p">.</span><span class="n">animationImages</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="nl">animationImages:</span><span class="n">animationImageArray</span><span class="p">];</span>
 </span><span class='line'>
-</span><span class='line'>    <span class="c1">//アニメーションの秒数を設定</span>
+</span><span class='line'>    <span class="c1">// アニメーションの秒数を設定</span>
 </span><span class='line'>    <span class="n">_frameAnimationImageView</span><span class="p">.</span><span class="n">animationDuration</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="nl">animationSeconds:</span><span class="n">animationImageNum</span><span class="p">];</span>
 </span><span class='line'>
-</span><span class='line'>    <span class="c1">//アニメーションのリピート回数を設定</span>
+</span><span class='line'>    <span class="c1">// アニメーションのリピート回数を設定</span>
 </span><span class='line'>    <span class="n">_frameAnimationImageView</span><span class="p">.</span><span class="n">animationRepeatCount</span> <span class="o">=</span> <span class="n">animationRepeatNum</span><span class="p">;</span>
 </span><span class='line'>
-</span><span class='line'>    <span class="c1">//アニメーション開始</span>
+</span><span class='line'>    <span class="c1">// アニメーション開始</span>
 </span><span class='line'>    <span class="p">[</span><span class="n">_frameAnimationImageView</span> <span class="n">startAnimating</span><span class="p">];</span>
 </span><span class='line'>
-</span><span class='line'>    <span class="c1">//アニメーション終了時のメソッド定義</span>
+</span><span class='line'>    <span class="c1">// アニメーション終了時のメソッド定義</span>
 </span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="nl">performSelector:</span><span class="k">@selector</span><span class="p">(</span><span class="nl">animationDidFinish:</span><span class="p">)</span>
 </span><span class='line'>               <span class="nl">withObject:</span><span class="nb">nil</span>
 </span><span class='line'>               <span class="nl">afterDelay:</span><span class="n">_frameAnimationImageView</span><span class="p">.</span><span class="n">animationDuration</span><span class="p">];</span>
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'>
-</span><span class='line'><span class="c1">//アニメーション設定</span>
+</span><span class='line'><span class="cp">#pragma mark - Timer Animation</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// アニメーション設定</span>
 </span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">startTimerAnimating:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="n">animationType</span>
 </span><span class='line'>                           <span class="o">:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="n">animationImageNum</span>
 </span><span class='line'>                           <span class="o">:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="n">animationImagePrefix</span>
 </span><span class='line'>                           <span class="o">:</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="n">isLoopAnimation</span>
 </span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="c1">//アニメーションの種類を保持</span>
+</span><span class='line'>    <span class="c1">// アニメーションの種類を保持</span>
 </span><span class='line'>    <span class="n">_animationType</span> <span class="o">=</span> <span class="n">animationType</span><span class="p">;</span>
 </span><span class='line'>
-</span><span class='line'>    <span class="c1">//イメージビュー初期化</span>
+</span><span class='line'>    <span class="c1">// イメージビュー初期化</span>
 </span><span class='line'>    <span class="n">_timerAnimationImageView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIImageView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="n">_animationImageX</span><span class="p">,</span>
 </span><span class='line'>                                                                             <span class="n">_animationImageY</span><span class="p">,</span>
 </span><span class='line'>                                                                             <span class="n">_animationImageWidth</span><span class="p">,</span>
 </span><span class='line'>                                                                             <span class="n">_animationImageHeight</span><span class="p">)];</span>
 </span><span class='line'>
-</span><span class='line'>    <span class="c1">//画像をタップ可能にする</span>
+</span><span class='line'>    <span class="c1">// 画像をタップ可能にする</span>
 </span><span class='line'>    <span class="n">_timerAnimationImageView</span><span class="p">.</span><span class="n">userInteractionEnabled</span> <span class="o">=</span> <span class="n">YES</span><span class="p">;</span>
 </span><span class='line'>
-</span><span class='line'>    <span class="c1">//アニメーションフレームを配列に入れる</span>
+</span><span class='line'>    <span class="c1">// アニメーションフレームを配列に入れる</span>
 </span><span class='line'>    <span class="n">NSMutableArray</span> <span class="o">*</span><span class="n">animationImageArray</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSMutableArray</span> <span class="n">array</span><span class="p">];</span>
 </span><span class='line'>    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="n">animationImageNum</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>        <span class="p">[</span><span class="n">animationImageArray</span> <span class="nl">addObject:</span><span class="p">[</span><span class="n">self</span> <span class="nl">animationImageName:animationImagePrefix:</span><span class="n">i</span><span class="p">]];</span>
 </span><span class='line'>    <span class="p">}</span>
 </span><span class='line'>
-</span><span class='line'>    <span class="c1">//リピートの有無を格納</span>
+</span><span class='line'>    <span class="c1">// リピートの有無を格納</span>
 </span><span class='line'>    <span class="n">_isLoopAnimation</span> <span class="o">=</span> <span class="n">isLoopAnimation</span><span class="p">;</span>
 </span><span class='line'>
-</span><span class='line'>    <span class="c1">//アニメーションタイマー開始</span>
+</span><span class='line'>    <span class="c1">// アニメーションタイマー開始</span>
 </span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="nl">setAnimationTimerEvent:</span><span class="p">[</span><span class="n">self</span> <span class="nl">animationImages:</span><span class="n">animationImageArray</span><span class="p">]];</span>
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'>
-</span><span class='line'><span class="c1">//アニメーションタイマーイベント発行</span>
+</span><span class='line'><span class="c1">// アニメーションタイマーイベント発行</span>
 </span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">setAnimationTimerEvent:</span><span class="p">(</span><span class="n">NSArray</span> <span class="o">*</span><span class="p">)</span><span class="n">animationImageList</span>
 </span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="c1">//タイマーに渡すパラメータ格納</span>
+</span><span class='line'>    <span class="c1">// タイマーに渡すパラメータ格納</span>
 </span><span class='line'>    <span class="n">NSDictionary</span> <span class="o">*</span><span class="n">userInfo</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSDictionary</span> <span class="nl">dictionaryWithObject:</span><span class="n">animationImageList</span> <span class="nl">forKey:</span><span class="s">@&quot;animationImageList&quot;</span><span class="p">];</span>
 </span><span class='line'>
-</span><span class='line'>    <span class="c1">//タイマー実行</span>
+</span><span class='line'>    <span class="c1">// タイマー実行</span>
 </span><span class='line'>    <span class="n">_animationTimer</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSTimer</span> <span class="nl">scheduledTimerWithTimeInterval:</span><span class="p">[</span><span class="n">self</span> <span class="n">animationTimerInterval</span><span class="p">]</span>
 </span><span class='line'>                                                       <span class="nl">target:</span><span class="n">self</span>
 </span><span class='line'>                                                     <span class="nl">selector:</span><span class="k">@selector</span><span class="p">(</span><span class="nl">startAnimation:</span><span class="p">)</span>
@@ -1280,28 +1292,28 @@
 </span><span class='line'>                                                      <span class="nl">repeats:</span><span class="n">YES</span><span class="p">];</span>
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'>
-</span><span class='line'><span class="c1">//タイマーアニメーション開始</span>
+</span><span class='line'><span class="c1">// タイマーアニメーション開始</span>
 </span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">startAnimation:</span><span class="p">(</span><span class="n">NSTimer</span> <span class="o">*</span><span class="p">)</span><span class="n">timer</span>
 </span><span class='line'><span class="p">{</span>
 </span><span class='line'>    <span class="n">NSArray</span> <span class="o">*</span><span class="n">animationImageList</span> <span class="o">=</span> <span class="p">[(</span><span class="n">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="n">timer</span><span class="p">.</span><span class="n">userInfo</span> <span class="nl">objectForKey:</span><span class="s">@&quot;animationImageList&quot;</span><span class="p">];</span>
 </span><span class='line'>    <span class="n">_timerAnimationImageView</span><span class="p">.</span><span class="n">image</span> <span class="o">=</span> <span class="p">[</span><span class="n">animationImageList</span> <span class="nl">objectAtIndex:</span><span class="n">_animationTimerCount</span><span class="p">];</span>
 </span><span class='line'>    <span class="n">_animationTimerCount</span><span class="o">++</span><span class="p">;</span>
 </span><span class='line'>    <span class="k">if</span> <span class="p">([</span><span class="n">animationImageList</span> <span class="n">count</span><span class="p">]</span> <span class="o">==</span> <span class="n">_animationTimerCount</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="c1">//タイマー削除</span>
+</span><span class='line'>        <span class="c1">// タイマー削除</span>
 </span><span class='line'>        <span class="p">[</span><span class="n">self</span> <span class="n">clearAnimationTimer</span><span class="p">];</span>
 </span><span class='line'>
-</span><span class='line'>        <span class="c1">//最終フレームの処理</span>
+</span><span class='line'>        <span class="c1">// 最終フレームの処理</span>
 </span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">_isLoopAnimation</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>            <span class="c1">//再起処理</span>
+</span><span class='line'>            <span class="c1">// 再起処理</span>
 </span><span class='line'>            <span class="p">[</span><span class="n">self</span> <span class="nl">setAnimationTimerEvent:</span><span class="n">animationImageList</span><span class="p">];</span>
 </span><span class='line'>        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-</span><span class='line'>            <span class="c1">//アニメーション終了時のメソッド呼び出し</span>
+</span><span class='line'>            <span class="c1">// アニメーション終了時のメソッド呼び出し</span>
 </span><span class='line'>            <span class="p">[</span><span class="n">self</span> <span class="n">animationDidStop</span><span class="p">];</span>
 </span><span class='line'>        <span class="p">}</span>
 </span><span class='line'>    <span class="p">}</span>
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'>
-</span><span class='line'><span class="c1">//アニメーションタイマー削除</span>
+</span><span class='line'><span class="c1">// アニメーションタイマー削除</span>
 </span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">clearAnimationTimer</span>
 </span><span class='line'><span class="p">{</span>
 </span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">_animationTimer</span> <span class="o">!=</span> <span class="nb">nil</span><span class="p">)</span> <span class="p">{</span>
@@ -1310,38 +1322,42 @@
 </span><span class='line'>    <span class="n">_animationTimerCount</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'>
-</span><span class='line'><span class="c1">//アニメーション終了時のメソッド</span>
+</span><span class='line'><span class="cp">#pragma mark - delegate method</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// アニメーション終了時のメソッド</span>
 </span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">animationDidFinish:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="n">selector</span>
 </span><span class='line'><span class="p">{</span>
 </span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="n">onEndAnimation</span><span class="p">];</span>
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'>
-</span><span class='line'><span class="c1">//アニメーション終了時のメソッド</span>
+</span><span class='line'><span class="c1">// アニメーション終了時のメソッド</span>
 </span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">animationDidStop</span>
 </span><span class='line'><span class="p">{</span>
 </span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="n">onEndAnimation</span><span class="p">];</span>
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'>
-</span><span class='line'><span class="c1">//アニメーション終了時の処理</span>
+</span><span class='line'><span class="c1">// アニメーション終了時の処理</span>
 </span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">onEndAnimation</span>
 </span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="c1">//ここでデリゲートメソッドを呼ぶ事ができます</span>
+</span><span class='line'>    <span class="c1">// ここでデリゲートメソッドを呼ぶ事ができます</span>
 </span><span class='line'>
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'>
-</span><span class='line'><span class="c1">//fps指定</span>
+</span><span class='line'><span class="cp">#pragma mark - setter method</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// fps指定</span>
 </span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">setFps:</span><span class="p">(</span><span class="n">CGFloat</span><span class="p">)</span><span class="n">fps</span>
 </span><span class='line'><span class="p">{</span>
 </span><span class='line'>    <span class="n">_animationFps</span> <span class="o">=</span> <span class="n">fps</span><span class="p">;</span>
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'>
-</span><span class='line'><span class="c1">//fpsリセット</span>
+</span><span class='line'><span class="c1">// fpsリセット</span>
 </span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">resetFps</span>
 </span><span class='line'><span class="p">{</span>
 </span><span class='line'>    <span class="n">_animationFps</span> <span class="o">=</span> <span class="n">ANIM_FPS</span><span class="p">;</span>
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'>
-</span><span class='line'><span class="c1">//レクタングル指定</span>
+</span><span class='line'><span class="c1">// レクタングル指定</span>
 </span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">setRectangle:</span><span class="p">(</span><span class="n">CGRect</span><span class="p">)</span><span class="n">rect</span>
 </span><span class='line'><span class="p">{</span>
 </span><span class='line'>    <span class="n">_animationImageX</span>      <span class="o">=</span> <span class="n">rect</span><span class="p">.</span><span class="n">origin</span><span class="p">.</span><span class="n">x</span><span class="p">;</span>
@@ -1350,7 +1366,7 @@
 </span><span class='line'>    <span class="n">_animationImageHeight</span> <span class="o">=</span> <span class="n">rect</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">height</span><span class="p">;</span>
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'>
-</span><span class='line'><span class="c1">//レクタングルリセット</span>
+</span><span class='line'><span class="c1">// レクタングルリセット</span>
 </span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">resetRectangle</span>
 </span><span class='line'><span class="p">{</span>
 </span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="nl">setRectangle:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="n">ANIM_IMAGE_X</span><span class="p">,</span>
@@ -1359,41 +1375,43 @@
 </span><span class='line'>                                  <span class="n">ANIM_IMAGE_HEIGHT</span><span class="p">)];</span>
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'>
-</span><span class='line'><span class="c1">//アニメーション秒数を取得</span>
+</span><span class='line'><span class="cp">#pragma mark - getter method</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// アニメーション秒数を取得</span>
 </span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="n">CGFloat</span><span class="p">)</span><span class="nl">animationSeconds:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="n">animationImageNum</span>
 </span><span class='line'><span class="p">{</span>
 </span><span class='line'>    <span class="k">return</span> <span class="p">(</span><span class="n">animationImageNum</span> <span class="o">/</span> <span class="n">_animationFps</span><span class="p">);</span>
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'>
-</span><span class='line'><span class="c1">//アニメーションタイマーのインターバル取得</span>
+</span><span class='line'><span class="c1">// アニメーションタイマーのインターバル取得</span>
 </span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="n">CGFloat</span><span class="p">)</span><span class="n">animationTimerInterval</span>
 </span><span class='line'><span class="p">{</span>
 </span><span class='line'>    <span class="k">return</span> <span class="p">(</span><span class="n">SECOND</span> <span class="o">/</span> <span class="n">_animationFps</span><span class="p">)</span> <span class="o">/</span> <span class="n">SECOND</span><span class="p">;</span>
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'>
-</span><span class='line'><span class="c1">//アニメーション画像を取得</span>
+</span><span class='line'><span class="c1">// アニメーション画像を取得</span>
 </span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nl">animationImageName:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="n">animationImageSuffix</span>
 </span><span class='line'>                                <span class="o">:</span><span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">animationFrame</span>
 </span><span class='line'><span class="p">{</span>
 </span><span class='line'>    <span class="k">return</span> <span class="p">([</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">@&quot;%@%@&quot;</span><span class="p">,</span> <span class="n">animationImageSuffix</span><span class="p">,</span> <span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">@&quot;%d&quot;</span><span class="p">,</span> <span class="n">animationFrame</span><span class="p">]]);</span>
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'>
-</span><span class='line'><span class="c1">//画像ファイル名を配列で取得する</span>
+</span><span class='line'><span class="c1">// 画像ファイル名を配列で取得する</span>
 </span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="n">NSArray</span> <span class="o">*</span><span class="p">)</span><span class="nl">animationImages:</span><span class="p">(</span><span class="n">NSMutableArray</span> <span class="o">*</span><span class="p">)</span><span class="n">animationImageNameList</span>
 </span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="c1">//画像の配列を作成</span>
+</span><span class='line'>    <span class="c1">// 画像の配列を作成</span>
 </span><span class='line'>    <span class="n">NSMutableArray</span> <span class="o">*</span><span class="n">imageArray</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSMutableArray</span> <span class="n">array</span><span class="p">];</span>
 </span><span class='line'>    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">animationImageNameList</span><span class="p">.</span><span class="n">count</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>        <span class="n">NSString</span> <span class="o">*</span><span class="n">imageTitle</span> <span class="o">=</span> <span class="p">[</span><span class="n">animationImageNameList</span> <span class="nl">objectAtIndex:</span><span class="n">i</span><span class="p">];</span>
 </span><span class='line'>
-</span><span class='line'>        <span class="c1">//画像の配列に画像ファイルを追加</span>
+</span><span class='line'>        <span class="c1">// 画像の配列に画像ファイルを追加</span>
 </span><span class='line'>        <span class="p">[</span><span class="n">imageArray</span> <span class="nl">addObject:</span><span class="p">[</span><span class="n">self</span> <span class="nl">getUIImageFromResources:</span><span class="n">imageTitle</span>
 </span><span class='line'>                                                        <span class="nl">ext:</span><span class="n">_animationImageExt</span><span class="p">]];</span>
 </span><span class='line'>    <span class="p">}</span>
 </span><span class='line'>    <span class="k">return</span> <span class="p">(</span><span class="n">imageArray</span><span class="p">);</span>
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'>
-</span><span class='line'><span class="c1">//画像リソースの取得</span>
+</span><span class='line'><span class="c1">// 画像リソースの取得</span>
 </span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="n">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nl">getUIImageFromResources:</span><span class="p">(</span><span class="n">NSString</span><span class="o">*</span><span class="p">)</span><span class="n">fileName</span> <span class="nl">ext:</span><span class="p">(</span><span class="n">NSString</span><span class="o">*</span><span class="p">)</span><span class="n">ext</span>
 </span><span class='line'><span class="p">{</span>
 </span><span class='line'>  <span class="n">NSString</span> <span class="o">*</span><span class="n">path</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSBundle</span> <span class="n">mainBundle</span><span class="p">]</span> <span class="nl">pathForResource:</span><span class="n">fileName</span> <span class="nl">ofType:</span><span class="n">ext</span><span class="p">];</span>

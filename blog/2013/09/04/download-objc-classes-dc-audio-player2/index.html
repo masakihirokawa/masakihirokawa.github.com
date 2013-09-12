@@ -264,7 +264,6 @@
 <span class='line-number'>42</span>
 <span class='line-number'>43</span>
 <span class='line-number'>44</span>
-<span class='line-number'>45</span>
 </pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;AVFoundation/AVFoundation.h&gt;</span>
 </span><span class='line'>
 </span><span class='line'><span class="cp">#define AUDIO_VOLUME_SLIDER_WIDTH  220</span>
@@ -278,9 +277,8 @@
 </span><span class='line'>    <span class="kt">id</span><span class="o">&lt;</span><span class="n">DCAudioPlayerDelegate</span><span class="o">&gt;</span> <span class="n">_ap_delegate</span><span class="p">;</span>
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'>
-</span><span class='line'><span class="cp">#pragma mark property prottype</span>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">assign</span><span class="p">)</span> <span class="kt">id</span><span class="o">&lt;</span><span class="n">DCAudioPlayerDelegate</span><span class="o">&gt;</span> <span class="n">ap_delegate</span><span class="p">;</span>
-</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark - property</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">assign</span><span class="p">)</span>                 <span class="kt">id</span><span class="o">&lt;</span><span class="n">DCAudioPlayerDelegate</span><span class="o">&gt;</span> <span class="n">ap_delegate</span><span class="p">;</span>
 </span><span class='line'><span class="k">@property</span> <span class="n">AVAudioPlayer</span>                       <span class="o">*</span><span class="n">audioPlayer</span><span class="p">;</span>
 </span><span class='line'><span class="k">@property</span> <span class="n">NSTimeInterval</span>                      <span class="n">currentTime</span><span class="p">;</span>
 </span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">readonly</span><span class="p">)</span> <span class="n">NSData</span>                   <span class="o">*</span><span class="n">data</span><span class="p">;</span>
@@ -293,6 +291,7 @@
 </span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">readonly</span><span class="p">)</span> <span class="n">NSURL</span>                    <span class="o">*</span><span class="n">url</span><span class="p">;</span>
 </span><span class='line'><span class="k">@property</span> <span class="kt">float</span>                               <span class="n">volume</span><span class="p">;</span>
 </span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark - public method</span>
 </span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">initWithAudio:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">fileName</span> <span class="nf">ext:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">ext</span> <span class="nf">isUseDelegate:</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nv">isUseDelegate</span><span class="p">;</span>
 </span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">play</span><span class="p">;</span>
 </span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">pause</span><span class="p">;</span>
@@ -305,10 +304,9 @@
 </span><span class='line'>
 </span><span class='line'><span class="k">@end</span>
 </span><span class='line'>
-</span><span class='line'><span class="cp">#pragma mark delegate prottype</span>
+</span><span class='line'><span class="cp">#pragma mark - delegate method</span>
 </span><span class='line'><span class="k">@protocol</span> <span class="nc">DCAudioPlayerDelegate</span> <span class="o">&lt;</span><span class="n">NSObject</span><span class="o">&gt;</span>
-</span><span class='line'><span class="c1">//ここに呼び出し元のデリゲートメソッドを指定</span>
-</span><span class='line'>
+</span><span class='line'><span class="k">@optional</span>
 </span><span class='line'><span class="k">@end</span>
 </span></code></pre></td></tr></table></div></figure>
 
@@ -453,11 +451,11 @@
 </span><span class='line'>
 </span><span class='line'><span class="k">@synthesize</span> <span class="n">ap_delegate</span><span class="p">;</span>
 </span><span class='line'>
-</span><span class='line'><span class="c1">//初期化</span>
+</span><span class='line'><span class="c1">// 初期化</span>
 </span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">initWithAudio:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">fileName</span> <span class="nf">ext:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">ext</span> <span class="nf">isUseDelegate:</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nv">isUseDelegate</span>
 </span><span class='line'><span class="p">{</span>
 </span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">self</span> <span class="o">=</span> <span class="p">[</span><span class="n">super</span> <span class="n">init</span><span class="p">])</span> <span class="p">{</span>
-</span><span class='line'>        <span class="c1">//オーディオプレイヤー初期化</span>
+</span><span class='line'>        <span class="c1">// オーディオプレイヤー初期化</span>
 </span><span class='line'>        <span class="n">NSBundle</span> <span class="o">*</span><span class="n">mainBundle</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSBundle</span> <span class="n">mainBundle</span><span class="p">];</span>
 </span><span class='line'>        <span class="n">NSString</span> <span class="o">*</span><span class="n">filePath</span> <span class="o">=</span> <span class="p">[</span><span class="n">mainBundle</span> <span class="nl">pathForResource:</span><span class="n">fileName</span>
 </span><span class='line'>                                                  <span class="nl">ofType:</span><span class="n">ext</span><span class="p">];</span>
@@ -465,29 +463,29 @@
 </span><span class='line'>        <span class="n">NSError</span> <span class="o">*</span><span class="n">error</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
 </span><span class='line'>        <span class="n">AVAudioPlayer</span> <span class="o">*</span><span class="n">audioPlayer</span> <span class="o">=</span> <span class="p">[[</span><span class="n">AVAudioPlayer</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithContentsOfURL:</span><span class="n">fileUrl</span> <span class="nl">error:</span><span class="o">&amp;</span><span class="n">error</span><span class="p">];</span>
 </span><span class='line'>
-</span><span class='line'>        <span class="c1">//バックグラウンド再生を許可</span>
+</span><span class='line'>        <span class="c1">// バックグラウンド再生を許可</span>
 </span><span class='line'>        <span class="n">AVAudioSession</span> <span class="o">*</span><span class="n">audioSession</span> <span class="o">=</span> <span class="p">[</span><span class="n">AVAudioSession</span> <span class="n">sharedInstance</span><span class="p">];</span>
 </span><span class='line'>        <span class="p">[</span><span class="n">audioSession</span> <span class="nl">setCategory:</span><span class="n">AVAudioSessionCategoryPlayback</span> <span class="nl">error:</span><span class="nb">nil</span><span class="p">];</span>
 </span><span class='line'>        <span class="p">[</span><span class="n">audioSession</span> <span class="nl">setActive:</span><span class="n">YES</span> <span class="nl">error:</span><span class="nb">nil</span><span class="p">];</span>
 </span><span class='line'>
-</span><span class='line'>        <span class="c1">//エラーであれば処理しない</span>
+</span><span class='line'>        <span class="c1">// エラーであれば処理しない</span>
 </span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">error</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>            <span class="c1">//オーディオプレイヤー保持</span>
+</span><span class='line'>            <span class="c1">// オーディオプレイヤー保持</span>
 </span><span class='line'>            <span class="n">_audioPlayer</span> <span class="o">=</span> <span class="n">audioPlayer</span><span class="p">;</span>
 </span><span class='line'>
-</span><span class='line'>            <span class="c1">//デリゲート指定</span>
+</span><span class='line'>            <span class="c1">// デリゲート指定</span>
 </span><span class='line'>            <span class="k">if</span> <span class="p">(</span><span class="n">isUseDelegate</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>                <span class="p">[</span><span class="n">_audioPlayer</span> <span class="nl">setDelegate:</span><span class="n">self</span><span class="p">];</span>
 </span><span class='line'>            <span class="p">}</span>
 </span><span class='line'>
-</span><span class='line'>            <span class="c1">//バッファを保持</span>
+</span><span class='line'>            <span class="c1">// バッファを保持</span>
 </span><span class='line'>            <span class="p">[</span><span class="n">_audioPlayer</span> <span class="n">prepareToPlay</span><span class="p">];</span>
 </span><span class='line'>        <span class="p">}</span>
 </span><span class='line'>    <span class="p">}</span>
 </span><span class='line'>    <span class="k">return</span> <span class="n">self</span><span class="p">;</span>
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'>
-</span><span class='line'><span class="c1">//再生</span>
+</span><span class='line'><span class="c1">// 再生</span>
 </span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">play</span>
 </span><span class='line'><span class="p">{</span>
 </span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">_audioPlayer</span><span class="p">)</span> <span class="p">{</span>
@@ -498,7 +496,7 @@
 </span><span class='line'>    <span class="p">}</span>
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'>
-</span><span class='line'><span class="c1">//一時停止</span>
+</span><span class='line'><span class="c1">// 一時停止</span>
 </span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">pause</span>
 </span><span class='line'><span class="p">{</span>
 </span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">_audioPlayer</span><span class="p">)</span> <span class="p">{</span>
@@ -508,7 +506,7 @@
 </span><span class='line'>    <span class="p">}</span>
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'>
-</span><span class='line'><span class="c1">//停止</span>
+</span><span class='line'><span class="c1">// 停止</span>
 </span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">stop</span>
 </span><span class='line'><span class="p">{</span>
 </span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">_audioPlayer</span><span class="p">)</span> <span class="p">{</span>
@@ -520,7 +518,7 @@
 </span><span class='line'>    <span class="p">}</span>
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'>
-</span><span class='line'><span class="c1">//ボリュームコントロールスライダー</span>
+</span><span class='line'><span class="c1">// ボリュームコントロールスライダー</span>
 </span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">UISlider</span> <span class="o">*</span><span class="p">)</span><span class="nf">volumeControlSlider:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">delegate</span> <span class="nf">point:</span><span class="p">(</span><span class="n">CGPoint</span><span class="p">)</span><span class="nv">point</span> <span class="nf">defaultValue:</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="nv">defaultValue</span> <span class="nf">selector:</span><span class="p">(</span><span class="kt">SEL</span><span class="p">)</span><span class="nv">selector</span>
 </span><span class='line'><span class="p">{</span>
 </span><span class='line'>    <span class="n">UISlider</span> <span class="o">*</span><span class="n">audioVolumeSlider</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UISlider</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="n">point</span><span class="p">.</span><span class="n">x</span><span class="p">,</span>
@@ -538,7 +536,7 @@
 </span><span class='line'>    <span class="k">return</span> <span class="n">audioVolumeSlider</span><span class="p">;</span>
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'>
-</span><span class='line'><span class="c1">//ボリューム指定</span>
+</span><span class='line'><span class="c1">// ボリューム指定</span>
 </span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setVolume:</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="nv">volume</span>
 </span><span class='line'><span class="p">{</span>
 </span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">_audioPlayer</span><span class="p">)</span> <span class="p">{</span>
@@ -546,7 +544,7 @@
 </span><span class='line'>    <span class="p">}</span>
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'>
-</span><span class='line'><span class="c1">//現在の再生フレーム指定</span>
+</span><span class='line'><span class="c1">// 現在の再生フレーム指定</span>
 </span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setCurrentTime:</span><span class="p">(</span><span class="n">NSTimeInterval</span><span class="p">)</span><span class="nv">currentTime</span>
 </span><span class='line'><span class="p">{</span>
 </span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">_audioPlayer</span><span class="p">)</span> <span class="p">{</span>
@@ -554,7 +552,7 @@
 </span><span class='line'>    <span class="p">}</span>
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'>
-</span><span class='line'><span class="c1">//ループ回数指定</span>
+</span><span class='line'><span class="c1">// ループ回数指定</span>
 </span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setNumberOfLoops:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">numberOfLoops</span>
 </span><span class='line'><span class="p">{</span>
 </span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">_audioPlayer</span><span class="p">)</span> <span class="p">{</span>
@@ -562,7 +560,7 @@
 </span><span class='line'>    <span class="p">}</span>
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'>
-</span><span class='line'><span class="c1">//再生状況の取得</span>
+</span><span class='line'><span class="c1">// 再生状況の取得</span>
 </span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">isPlaying</span>
 </span><span class='line'><span class="p">{</span>
 </span><span class='line'>    <span class="k">return</span> <span class="n">_audioPlayer</span><span class="p">.</span><span class="n">playing</span><span class="p">;</span>
@@ -570,10 +568,10 @@
 </span><span class='line'>
 </span><span class='line'><span class="cp">#pragma mark - AVAudioPlayerDelegate</span>
 </span><span class='line'>
-</span><span class='line'><span class="k">-</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">audioPlayerDidFinishPlaying:</span><span class="p">(</span><span class="n">AVAudioPlayer</span> <span class="o">*</span><span class="p">)</span><span class="nv">player</span> <span class="nf">successfully:</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nv">successfully</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">audioPlayerDidFinishPlaying:</span><span class="p">(</span><span class="n">AVAudioPlayer</span> <span class="o">*</span><span class="p">)</span><span class="nv">player</span> <span class="nf">successfully:</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nv">successfully</span>
 </span><span class='line'><span class="p">{</span>
 </span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">successfully</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="c1">//ここでデリゲートメソッド呼び出し</span>
+</span><span class='line'>        <span class="c1">// ここでデリゲートメソッドを指定する</span>
 </span><span class='line'>
 </span><span class='line'>    <span class="p">}</span>
 </span><span class='line'><span class="p">}</span>
