@@ -6,11 +6,11 @@
 	<title>Dolice Lab</title>
 	
 	
-	<meta name="description" content="Objective-Cの文字列比較は「isEqualToString」を使用するのが主流ですが、「compare」メソッドを使用した文字列の比較方法を以下に記載します。 こちらの記述方法の方がシンプルで良いかもしれません。 下記よりサンプルのダウンロードが行えます。 ダウンロード https &hellip;">
+	<meta name="description" content="iPhone/iPadのデバイス情報を判別する「DCDevice」クラスに、iOSの設定言語が日本語か否かを判別する機能を追加しました。 以下よりサンプルコードを含めたソースファイルをダウンロードできます。 ダウンロード https://github.com/masakihirokawa/ &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	<meta property="og:title" content="Dolice Lab" />
-<meta property="og:description" content="Objective-Cの文字列比較は「isEqualToString」を使用するのが主流ですが、「compare」メソッドを使用した文字列の比較方法を以下に記載します。 こちらの記述方法の方がシンプルで良いかもしれません。 下記よりサンプルのダウンロードが行えます。 ダウンロード https &hellip;" />
+<meta property="og:description" content="iPhone/iPadのデバイス情報を判別する「DCDevice」クラスに、iOSの設定言語が日本語か否かを判別する機能を追加しました。 以下よりサンプルコードを含めたソースファイルをダウンロードできます。 ダウンロード https://github.com/masakihirokawa/ &hellip;" />
 <meta property="og:url" content="http://lab.dolice.net/blog/page/8/" />
 <meta property="og:image" content="http://lab.dolice.net/images/facebook-icon.jpg" />
 <meta property="og:author" content="Masaki Hirokawa" />
@@ -84,6 +84,98 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/08/22/download-objc-classes-dc-device2/">
+		
+			iOS端末情報を取得する「DCDevice」クラスに言語取得機能を追加しました</a>
+	</h2>
+	<div class="entry-content">
+		<p>iPhone/iPadのデバイス情報を判別する「DCDevice」クラスに、iOSの設定言語が日本語か否かを判別する機能を追加しました。</p>
+
+<p>以下よりサンプルコードを含めたソースファイルをダウンロードできます。</p>
+
+<h2>ダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-classes-dc-device2">https://github.com/masakihirokawa/objc-classes-dc-device2</a></li>
+</ul>
+
+
+<h2>サンプルソースコード</h2>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//言語設定が日本語であれば1が返る</span>
+</span><span class='line'><span class="kt">BOOL</span> <span class="n">isJapaniese</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCDevice</span> <span class="n">isJapaneseLanguage</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>ソースコード</h2>
+
+<h3>DCDevice.m</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//言語設定取得</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">isJapaneseLanguage</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">static</span> <span class="kt">BOOL</span> <span class="n">isJapanese</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">static</span> <span class="n">dispatch_once_t</span> <span class="n">onceToken</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">dispatch_once</span><span class="p">(</span><span class="o">&amp;</span><span class="n">onceToken</span><span class="p">,</span> <span class="o">^</span><span class="p">{</span>
+</span><span class='line'>        <span class="n">NSArray</span> <span class="o">*</span><span class="n">languages</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSLocale</span> <span class="n">preferredLanguages</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">NSString</span> <span class="o">*</span><span class="n">currentLanguage</span> <span class="o">=</span> <span class="p">[</span><span class="n">languages</span> <span class="nl">objectAtIndex:</span><span class="mi">0</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">isJapanese</span> <span class="o">=</span> <span class="p">[</span><span class="n">currentLanguage</span> <span class="nl">compare:</span><span class="s">@&quot;ja&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">NSOrderedSame</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">});</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">isJapanese</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-08-22T23:20:00+09:00" pubdate data-updated="true">Aug 22<span>nd</span>, 2013</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/download/'>download</a>, <a class='category' href='/blog/categories/objective-c/'>objective-c</a>
+
+
+</div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -875,276 +967,6 @@
 </div>
 </article>
 
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/07/30/objc-ui-view-animation-transition/">
-		
-			UIViewにアニメーションを適用する方法</a>
-	</h2>
-	<div class="entry-content">
-		<p>Objective-Cで UIViewにアニメーション指定し実行するサンプルを以下に作成しました。</p>
-
-<p>下記よりサンプルのダウンロードが行えます。</p>
-
-<h2>サンプルダウンロード</h2>
-
-<ul>
-<li><a href="https://github.com/masakihirokawa/objc-ui-view-animation-transition">https://github.com/masakihirokawa/objc-ui-view-animation-transition</a></li>
-</ul>
-
-
-<h2>アニメーションの種類</h2>
-
-<table>
-<thead>
-<tr>
-<th align="left">UIViewAnimationTransition </th>
-<th align="left"> 説明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td align="left">UIViewAnimationTransitionFlipFromLeft</td>
-<td align="left">左から回転し裏返るアニメーション</td>
-</tr>
-<tr>
-<td align="left">UIViewAnimationTransitionCurlDown</td>
-<td align="left">下から捲れるアニメーション</td>
-</tr>
-</tbody>
-</table>
-
-
-<h2>ソースコード</h2>
-
-<h3>ViewController.h</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;UIKit/UIKit.h&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#define ANIMATION_FLIP_FROM_LEFT UIViewAnimationTransitionFlipFromLeft</span>
-</span><span class='line'><span class="cp">#define ANIMATION_CURL_DOWN      UIViewAnimationTransitionCurlDown</span>
-</span><span class='line'><span class="cp">#define ANIMATION_DURATION       0.75f</span>
-</span><span class='line'><span class="cp">#define FRONT_IMAGE              @&quot;Hesychasm_640_1136.jpg&quot;</span>
-</span><span class='line'><span class="cp">#define BACK_IMAGE               @&quot;Echidna_640_1136.jpg&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> : <span class="nc">UIViewController</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>ViewController.m</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-<span class='line-number'>65</span>
-<span class='line-number'>66</span>
-<span class='line-number'>67</span>
-<span class='line-number'>68</span>
-<span class='line-number'>69</span>
-<span class='line-number'>70</span>
-<span class='line-number'>71</span>
-<span class='line-number'>72</span>
-<span class='line-number'>73</span>
-<span class='line-number'>74</span>
-<span class='line-number'>75</span>
-<span class='line-number'>76</span>
-<span class='line-number'>77</span>
-<span class='line-number'>78</span>
-<span class='line-number'>79</span>
-<span class='line-number'>80</span>
-<span class='line-number'>81</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;ViewController.h&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#pragma mark start implementation for methods</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@implementation</span> <span class="nc">ViewController</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">typedef</span> <span class="k">enum</span> <span class="n">transitions</span> <span class="o">:</span> <span class="n">NSUInteger</span> <span class="p">{</span>
-</span><span class='line'>    <span class="n">viewForTransition</span> <span class="o">=</span> <span class="mi">1</span>
-</span><span class='line'><span class="p">}</span> <span class="n">transitions</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//次のビューをセット</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="p">[</span><span class="n">self</span> <span class="n">nextView</span><span class="p">]];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#pragma mark responder</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">touchesEnded:</span><span class="p">(</span><span class="n">NSSet</span> <span class="o">*</span><span class="p">)</span><span class="nv">touches</span> <span class="nf">withEvent:</span><span class="p">(</span><span class="n">UIEvent</span> <span class="o">*</span><span class="p">)</span><span class="nv">event</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="c1">//アニメーション実行中であれば処理しない</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">[</span><span class="n">UIView</span> <span class="n">areAnimationsEnabled</span><span class="p">])</span> <span class="p">{</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">nextResponder</span> <span class="nl">touchesEnded:</span><span class="n">touches</span> <span class="nl">withEvent:</span><span class="n">event</span><span class="p">];</span>
-</span><span class='line'>        <span class="k">return</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>    <span class="k">static</span> <span class="n">UIViewAnimationTransition</span> <span class="n">transition</span> <span class="o">=</span> <span class="n">ANIMATION_FLIP_FROM_LEFT</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//次のビューをセット</span>
-</span><span class='line'>    <span class="n">UIView</span> <span class="o">*</span><span class="n">nextView</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="n">nextView</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//アニメーション定義</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">UIView</span> <span class="nl">beginAnimations:</span><span class="nb">nil</span> <span class="nl">context:</span><span class="nb">NULL</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">UIView</span> <span class="nl">setAnimationDelegate:</span><span class="n">self</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">UIView</span> <span class="nl">setAnimationDidStopSelector:</span><span class="k">@selector</span><span class="p">(</span><span class="nl">animationDidStop:</span><span class="p">)];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">UIView</span> <span class="nl">setAnimationDuration:</span><span class="n">ANIMATION_DURATION</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">UIView</span> <span class="nl">setAnimationTransition:</span><span class="n">transition</span> <span class="nl">forView:</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">cache:</span><span class="n">YES</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//ビューの入れ替え</span>
-</span><span class='line'>    <span class="p">[[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">viewWithTag:</span><span class="n">viewForTransition</span><span class="p">]</span> <span class="n">removeFromSuperview</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">nextView</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//アニメーション実行</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">UIView</span> <span class="n">commitAnimations</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//アニメーションを無効にする</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">UIView</span> <span class="nl">setAnimationsEnabled:</span><span class="n">NO</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//次に実行されるアニメーションの種類変更</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">ANIMATION_CURL_DOWN</span> <span class="o">&lt;</span> <span class="o">++</span><span class="n">transition</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="n">transition</span> <span class="o">=</span> <span class="n">ANIMATION_FLIP_FROM_LEFT</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#pragma mark private methods</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">UIView</span> <span class="o">*</span><span class="p">)</span><span class="nf">nextView</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="c1">//表か裏の画像を指定</span>
-</span><span class='line'>    <span class="k">static</span> <span class="kt">BOOL</span> <span class="n">isFront</span> <span class="o">=</span> <span class="n">YES</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">UIImage</span> <span class="o">*</span><span class="n">image</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIImage</span> <span class="nl">imageNamed:</span><span class="n">isFront</span> <span class="o">?</span> <span class="n">FRONT_IMAGE</span> <span class="o">:</span> <span class="n">BACK_IMAGE</span><span class="p">];</span>
-</span><span class='line'>    <span class="n">isFront</span> <span class="o">=</span> <span class="o">!</span><span class="n">isFront</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//ビューに画像をセット</span>
-</span><span class='line'>    <span class="n">UIView</span> <span class="o">*</span><span class="n">view</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIImageView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithImage:</span><span class="n">image</span><span class="p">];</span>
-</span><span class='line'>    <span class="n">view</span><span class="p">.</span><span class="n">tag</span> <span class="o">=</span> <span class="n">viewForTransition</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">view</span><span class="p">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">bounds</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">view</span><span class="p">.</span><span class="n">autoresizingMask</span> <span class="o">=</span>
-</span><span class='line'>        <span class="n">UIViewAutoresizingFlexibleWidth</span> <span class="o">|</span> <span class="n">UIViewAutoresizingFlexibleHeight</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">view</span><span class="p">.</span><span class="n">contentMode</span> <span class="o">=</span> <span class="n">UIViewContentModeScaleAspectFill</span><span class="p">;</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">view</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">animationDidStop:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">selector</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="c1">//アニメーションを有効にする</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">UIView</span> <span class="nl">setAnimationsEnabled:</span><span class="n">YES</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-07-30T23:15:00+09:00" pubdate data-updated="true">Jul 30<span>th</span>, 2013</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>
-
-
-</div>
-	
-</div>
-</article>
-
 <nav id="pagenavi">
     
         <a href="/blog/page/7/" class="prev">Prev</a>
@@ -1182,12 +1004,12 @@
   <div id="category" class="information-box">
 <section>
   <h1>Tag Cloud</h1>
-    <span id="tag-cloud"><a href='/blog/categories/actionscript' style='font-size: 102.79792746113989%'>actionscript(9)</a> <a href='/blog/categories/actionscript3' style='font-size: 102.1761658031088%'>actionscript3(7)</a> <a href='/blog/categories/download' style='font-size: 119.27461139896373%'>download(62)</a> <a href='/blog/categories/javascript' style='font-size: 100.62176165803109%'>javascript(2)</a> <a href='/blog/categories/objective-c' style='font-size: 160.0%'>objective-c(193)</a> <a href='/blog/categories/screensaver' style='font-size: 102.79792746113989%'>screensaver(9)</a> <a href='/blog/categories/xcode' style='font-size: 111.81347150259067%'>xcode(38)</a> </span>
+    <span id="tag-cloud"><a href='/blog/categories/actionscript' style='font-size: 102.78350515463917%'>actionscript(9)</a> <a href='/blog/categories/actionscript3' style='font-size: 102.16494845360825%'>actionscript3(7)</a> <a href='/blog/categories/download' style='font-size: 119.48453608247422%'>download(63)</a> <a href='/blog/categories/javascript' style='font-size: 100.61855670103093%'>javascript(2)</a> <a href='/blog/categories/objective-c' style='font-size: 160.0%'>objective-c(194)</a> <a href='/blog/categories/screensaver' style='font-size: 102.78350515463917%'>screensaver(9)</a> <a href='/blog/categories/xcode' style='font-size: 111.75257731958763%'>xcode(38)</a> </span>
 </section>
 
 <section class="mt12">
   <h1>Categories</h1>
-    <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (62)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (193)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (38)</a></li></ul>
+    <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (63)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (194)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (38)</a></li></ul>
 </section>
 
   </div>
@@ -1229,11 +1051,11 @@
       </li>
     
       <li class="post">
-        <a href="/blog/2013/09/04/objc-classes-dc-banner/">AdMob/iAdバナーを切り替え表示する「DCBanner」クラス (メディエーション対応)</a>
+        <a href="/blog/2013/09/04/objc-classes-dc-banner-en/">Show AdMob / iAd banner DCBanner class (mediation support)</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2013/09/04/download-xcode-objc-alarm/">Objective-Cで目覚ましを作成しました</a>
+        <a href="/blog/2013/09/04/objc-classes-dc-banner/">AdMob/iAdバナーを切り替え表示する「DCBanner」クラス (メディエーション対応)</a>
       </li>
     
   </ul>

@@ -6,21 +6,11 @@
 	<title>Dolice Lab</title>
 	
 	
-	<meta name="description" content="2本指でのピンチイン/ピンチアウトで画像を拡大縮小するサンプルを以下に作成しました。 下記よりサンプルのダウンロードが行えます。 ダウンロード https://github.com/masakihirokawa/objc-pinch-in-pinch-out ソースコード 1
-2
-3
-4
-5
-6 &hellip;">
+	<meta name="description" content="iPhone本体のシェイクモーションを検知し、本体を振るとアラートを表示するサンプルを以下に作成しました。 レスポンダに登録する事で、モーション開始時、モーション終了時、モーションキャンセル時のイベントを定義する事ができます。今回のサンプルでは、モーション(シェイク) &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	<meta property="og:title" content="Dolice Lab" />
-<meta property="og:description" content="2本指でのピンチイン/ピンチアウトで画像を拡大縮小するサンプルを以下に作成しました。 下記よりサンプルのダウンロードが行えます。 ダウンロード https://github.com/masakihirokawa/objc-pinch-in-pinch-out ソースコード 1
-2
-3
-4
-5
-6 &hellip;" />
+<meta property="og:description" content="iPhone本体のシェイクモーションを検知し、本体を振るとアラートを表示するサンプルを以下に作成しました。 レスポンダに登録する事で、モーション開始時、モーション終了時、モーションキャンセル時のイベントを定義する事ができます。今回のサンプルでは、モーション(シェイク) &hellip;" />
 <meta property="og:url" content="http://lab.dolice.net/blog/page/15/" />
 <meta property="og:image" content="http://lab.dolice.net/images/facebook-icon.jpg" />
 <meta property="og:author" content="Masaki Hirokawa" />
@@ -94,6 +84,161 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/06/17/objc-label-for-motion/">
+		
+			シェイクモーションの検知</a>
+	</h2>
+	<div class="entry-content">
+		<p>iPhone本体のシェイクモーションを検知し、本体を振るとアラートを表示するサンプルを以下に作成しました。</p>
+
+<p>レスポンダに登録する事で、モーション開始時、モーション終了時、モーションキャンセル時のイベントを定義する事ができます。今回のサンプルでは、モーション(シェイク)終了時にアラートを表示しています。</p>
+
+<p>下記よりサンプルのダウンロードが行えます。</p>
+
+<h2>ダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-label-for-motion">https://github.com/masakihirokawa/objc-label-for-motion</a></li>
+</ul>
+
+
+<h2>ソースコード</h2>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//ラベル初期化</span>
+</span><span class='line'>    <span class="n">UILabel</span> <span class="o">*</span><span class="n">label</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UILabel</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">label</span><span class="p">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">bounds</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">label</span><span class="p">.</span><span class="n">autoresizingMask</span> <span class="o">=</span>
+</span><span class='line'>        <span class="n">UIViewAutoresizingFlexibleWidth</span> <span class="o">|</span>
+</span><span class='line'>        <span class="n">UIViewAutoresizingFlexibleHeight</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">label</span><span class="p">.</span><span class="n">textAlignment</span> <span class="o">=</span> <span class="n">NSTextAlignmentCenter</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">label</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="s">@&quot;シェイクしてください&quot;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//ラベルを画面に追加</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">label</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//レスポンダ登録</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">label</span> <span class="n">becomeFirstResponder</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//モーション開始時のイベント</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">motionBegan:</span><span class="p">(</span><span class="n">UIEventSubtype</span><span class="p">)</span><span class="nv">motion</span> <span class="nf">withEvent:</span><span class="p">(</span><span class="n">UIEvent</span> <span class="o">*</span><span class="p">)</span><span class="nv">event</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;motionBegan&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//モーション終了時のイベント</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">motionEnded:</span><span class="p">(</span><span class="n">UIEventSubtype</span><span class="p">)</span><span class="nv">motion</span> <span class="nf">withEvent:</span><span class="p">(</span><span class="n">UIEvent</span> <span class="o">*</span><span class="p">)</span><span class="nv">event</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;motionEnded&quot;</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">UIAlertView</span> <span class="o">*</span><span class="n">alert</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIAlertView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithTitle:</span><span class="nb">nil</span>
+</span><span class='line'>                                                    <span class="nl">message:</span><span class="s">@&quot;シェイクされました&quot;</span>
+</span><span class='line'>                                                   <span class="nl">delegate:</span><span class="nb">nil</span>
+</span><span class='line'>                                          <span class="nl">cancelButtonTitle:</span><span class="nb">nil</span>
+</span><span class='line'>                                          <span class="nl">otherButtonTitles:</span><span class="s">@&quot;OK&quot;</span><span class="p">,</span> <span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">alert</span> <span class="n">show</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//モーションキャンセル時のイベント</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">motionCancelled:</span><span class="p">(</span><span class="n">UIEventSubtype</span><span class="p">)</span><span class="nv">motion</span> <span class="nf">withEvent:</span><span class="p">(</span><span class="n">UIEvent</span> <span class="o">*</span><span class="p">)</span><span class="nv">event</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;motionCancelled&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">canBecomeFirstResponder</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">YES</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-06-17T11:12:00+09:00" pubdate data-updated="true">Jun 17<span>th</span>, 2013</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>
+
+
+</div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -471,137 +616,6 @@
 </div>
 </article>
 
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/06/13/objc-ui-web-view-html/">
-		
-			UIWebViewに HTMLタグを挿入する</a>
-	</h2>
-	<div class="entry-content">
-		<p>UIWebViewに HTMLタグを挿入し、画面に表示するサンプルを以下に作成しました。</p>
-
-<p>下記よりサンプルのダウンロードが行えます。</p>
-
-<h2>ダウンロード</h2>
-
-<ul>
-<li><a href="https://github.com/masakihirokawa/objc-ui-webview-html">https://github.com/masakihirokawa/objc-ui-webview-html</a></li>
-</ul>
-
-
-<h2>ソースコード</h2>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;ViewController.h&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> <span class="p">()</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@property</span> <span class="n">UIWebView</span> <span class="o">*</span><span class="n">webView</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@implementation</span> <span class="nc">ViewController</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span> <span class="p">{</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//UIWebView初期化</span>
-</span><span class='line'>    <span class="n">_webView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIWebView</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//UIWebViewの設定</span>
-</span><span class='line'>    <span class="n">_webView</span><span class="p">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">bounds</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">_webView</span><span class="p">.</span><span class="n">autoresizingMask</span> <span class="o">=</span>
-</span><span class='line'>        <span class="n">UIViewAutoresizingFlexibleWidth</span> <span class="o">|</span> <span class="n">UIViewAutoresizingFlexibleHeight</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">_webView</span><span class="p">.</span><span class="n">dataDetectorTypes</span> <span class="o">=</span> <span class="n">UIDataDetectorTypeAll</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//UIWebViewを画面に追加</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">_webView</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidAppear:</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nv">animated</span> <span class="p">{</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">super</span> <span class="nl">viewDidAppear:</span><span class="n">animated</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//HTMLタグの指定</span>
-</span><span class='line'>    <span class="n">NSString</span> <span class="o">*</span><span class="n">html</span> <span class="o">=</span> <span class="s">@&quot;&lt;p&gt;&lt;b&gt;電話番号&lt;/b&gt; 090-1111-1111&lt;/p&gt;&lt;p&gt;&lt;b&gt;ホームページ&lt;/b&gt; http://exsample.com/&lt;/p&gt;&quot;</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//UIWebViewに HTML追加</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">_webView</span> <span class="nl">loadHTMLString:</span><span class="n">html</span> <span class="nl">baseURL:</span><span class="nb">nil</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-06-13T11:24:00+09:00" pubdate data-updated="true">Jun 13<span>th</span>, 2013</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>
-
-
-</div>
-	
-</div>
-</article>
-
 <nav id="pagenavi">
     
         <a href="/blog/page/14/" class="prev">Prev</a>
@@ -639,12 +653,12 @@
   <div id="category" class="information-box">
 <section>
   <h1>Tag Cloud</h1>
-    <span id="tag-cloud"><a href='/blog/categories/actionscript' style='font-size: 102.79792746113989%'>actionscript(9)</a> <a href='/blog/categories/actionscript3' style='font-size: 102.1761658031088%'>actionscript3(7)</a> <a href='/blog/categories/download' style='font-size: 119.27461139896373%'>download(62)</a> <a href='/blog/categories/javascript' style='font-size: 100.62176165803109%'>javascript(2)</a> <a href='/blog/categories/objective-c' style='font-size: 160.0%'>objective-c(193)</a> <a href='/blog/categories/screensaver' style='font-size: 102.79792746113989%'>screensaver(9)</a> <a href='/blog/categories/xcode' style='font-size: 111.81347150259067%'>xcode(38)</a> </span>
+    <span id="tag-cloud"><a href='/blog/categories/actionscript' style='font-size: 102.78350515463917%'>actionscript(9)</a> <a href='/blog/categories/actionscript3' style='font-size: 102.16494845360825%'>actionscript3(7)</a> <a href='/blog/categories/download' style='font-size: 119.48453608247422%'>download(63)</a> <a href='/blog/categories/javascript' style='font-size: 100.61855670103093%'>javascript(2)</a> <a href='/blog/categories/objective-c' style='font-size: 160.0%'>objective-c(194)</a> <a href='/blog/categories/screensaver' style='font-size: 102.78350515463917%'>screensaver(9)</a> <a href='/blog/categories/xcode' style='font-size: 111.75257731958763%'>xcode(38)</a> </span>
 </section>
 
 <section class="mt12">
   <h1>Categories</h1>
-    <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (62)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (193)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (38)</a></li></ul>
+    <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (63)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (194)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (38)</a></li></ul>
 </section>
 
   </div>
@@ -686,11 +700,11 @@
       </li>
     
       <li class="post">
-        <a href="/blog/2013/09/04/objc-classes-dc-banner/">AdMob/iAdバナーを切り替え表示する「DCBanner」クラス (メディエーション対応)</a>
+        <a href="/blog/2013/09/04/objc-classes-dc-banner-en/">Show AdMob / iAd banner DCBanner class (mediation support)</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2013/09/04/download-xcode-objc-alarm/">Objective-Cで目覚ましを作成しました</a>
+        <a href="/blog/2013/09/04/objc-classes-dc-banner/">AdMob/iAdバナーを切り替え表示する「DCBanner」クラス (メディエーション対応)</a>
       </li>
     
   </ul>

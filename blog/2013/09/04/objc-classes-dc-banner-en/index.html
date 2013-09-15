@@ -3,20 +3,20 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>UIViewにアニメーションを適用する方法 - Dolice Lab</title>
+	<title>Show AdMob / iAd banner DCBanner class (mediation support) - Dolice Lab</title>
 	
 	
-	<meta name="description" content="UIViewにアニメーションを適用する方法">
+	<meta name="description" content="Show AdMob / iAd banner DCBanner class (mediation support)">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-	<meta property="og:title" content="UIViewにアニメーションを適用する方法 - Dolice Lab" />
-<meta property="og:description" content="UIViewにアニメーションを適用する方法" />
-<meta property="og:url" content="http://lab.dolice.net/blog/2013/07/30/objc-ui-view-animation-transition/" />
+	<meta property="og:title" content="Show AdMob / iAd banner DCBanner class (mediation support) - Dolice Lab" />
+<meta property="og:description" content="Show AdMob / iAd banner DCBanner class (mediation support)" />
+<meta property="og:url" content="http://lab.dolice.net/blog/2013/09/04/objc-classes-dc-banner-en/" />
 <meta property="og:image" content="http://lab.dolice.net/images/facebook-icon.jpg" />
 <meta property="og:author" content="Masaki Hirokawa" />
 <meta property="og:site_name" content="Dolice Lab" />
 	<link href="/atom.xml" rel="alternate" title="Dolice Lab" type="application/atom+xml">
-	<link rel="canonical" href="http://lab.dolice.net/blog/2013/07/30/objc-ui-view-animation-transition/">
+	<link rel="canonical" href="http://lab.dolice.net/blog/2013/09/04/objc-classes-dc-banner-en/">
 	<link href="/favicon.ico" rel="shortcut icon">
 	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
 	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
@@ -84,234 +84,74 @@
 		
 	
 	<div id="content" class="inner"><article class="post">
-	<h2 class="title">UIViewにアニメーションを適用する方法</h2>
+	<h2 class="title">Show AdMob / iAd Banner DCBanner Class (Mediation Support)</h2>
 	<div class="entry-content">
-	  <p>Objective-Cで UIViewにアニメーション指定し実行するサンプルを以下に作成しました。</p>
+	  <p><img src="/images/article/dc-banner-screenshot.png" alt="" /></p>
 
-<p>下記よりサンプルのダウンロードが行えます。</p>
+<p>It makes it to switch the display AdMob / iAd banner in the iOS app &#8220;DCBanner&#8221; class.</p>
 
-<h2>サンプルダウンロード</h2>
+<p>Because it supports the mediation, ad Nend also displayed. (You will need to set the mediation at the site of AdMob.)</p>
+
+<p>I am selling sample source code and documentation in Gumroad.</p>
+
+<h2>Download</h2>
 
 <ul>
-<li><a href="https://github.com/masakihirokawa/objc-ui-view-animation-transition">https://github.com/masakihirokawa/objc-ui-view-animation-transition</a></li>
+<li><a href="http://gum.co/dc-banner-en">http://gum.co/dc-banner-en</a></li>
 </ul>
 
 
-<h2>アニメーションの種類</h2>
+<h2>Installation procedure</h2>
 
-<table>
-<thead>
-<tr>
-<th align="left">UIViewAnimationTransition </th>
-<th align="left"> 説明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td align="left">UIViewAnimationTransitionFlipFromLeft</td>
-<td align="left">左から回転し裏返るアニメーション</td>
-</tr>
-<tr>
-<td align="left">UIViewAnimationTransitionCurlDown</td>
-<td align="left">下から捲れるアニメーション</td>
-</tr>
-</tbody>
-</table>
+<h3>1. Add SDK</h3>
+
+<p>Expand the downloaded file, and then add it to the project folder Ad.</p>
+
+<h3>2. Add necessary framework</h3>
+
+<p>Framework of seven following so you will need, I will read each.</p>
+
+<ol>
+<li>Security.framework</li>
+<li>iAd.framework</li>
+<li>AdSupport.framework</li>
+<li>SystemConfiguration.framework</li>
+<li>MessageUI.framework</li>
+<li>AudioToolbox.framework</li>
+<li>StoreKit.framework</li>
+</ol>
 
 
-<h2>ソースコード</h2>
+<h3>3. Edit Build Settings</h3>
 
-<h3>ViewController.h</h3>
+<p><img src="/images/article/dc-banner_en.png" alt="" /></p>
+
+<p>Open &#8220;TARGETS&#8221; → &#8220;Build Settings&#8221;, and then described as &#8221;<em>-ObjC </em>&#8221; in the field of [Other Linker Flags] of [Linking].</p>
+
+<h3>4. Add to DCBanner.h the AdMob unit ID</h3>
+
+<p>Open the DCBanner.h file, specify the ID of the ad unit AdMob in the line 12 to &#8220;GAD_UNIT_ID&#8221;.</p>
 
 <figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;UIKit/UIKit.h&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#define ANIMATION_FLIP_FROM_LEFT UIViewAnimationTransitionFlipFromLeft</span>
-</span><span class='line'><span class="cp">#define ANIMATION_CURL_DOWN      UIViewAnimationTransitionCurlDown</span>
-</span><span class='line'><span class="cp">#define ANIMATION_DURATION       0.75f</span>
-</span><span class='line'><span class="cp">#define FRONT_IMAGE              @&quot;Hesychasm_640_1136.jpg&quot;</span>
-</span><span class='line'><span class="cp">#define BACK_IMAGE               @&quot;Echidna_640_1136.jpg&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> : <span class="nc">UIViewController</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#define GAD_UNIT_ID @&quot;ca-app-pub-0667784050147760/9058240228&quot;</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<h3>ViewController.m</h3>
+<h2>How to display the banner</h2>
+
+<p>I can be done with one line display of the banner. To read the &#8220;DCBanner.h&#8221; file, specify as follows in viewDidAppear method.</p>
 
 <figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-<span class='line-number'>65</span>
-<span class='line-number'>66</span>
-<span class='line-number'>67</span>
-<span class='line-number'>68</span>
-<span class='line-number'>69</span>
-<span class='line-number'>70</span>
-<span class='line-number'>71</span>
-<span class='line-number'>72</span>
-<span class='line-number'>73</span>
-<span class='line-number'>74</span>
-<span class='line-number'>75</span>
-<span class='line-number'>76</span>
-<span class='line-number'>77</span>
-<span class='line-number'>78</span>
-<span class='line-number'>79</span>
-<span class='line-number'>80</span>
-<span class='line-number'>81</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;ViewController.h&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#pragma mark start implementation for methods</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@implementation</span> <span class="nc">ViewController</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">typedef</span> <span class="k">enum</span> <span class="n">transitions</span> <span class="o">:</span> <span class="n">NSUInteger</span> <span class="p">{</span>
-</span><span class='line'>    <span class="n">viewForTransition</span> <span class="o">=</span> <span class="mi">1</span>
-</span><span class='line'><span class="p">}</span> <span class="n">transitions</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//次のビューをセット</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="p">[</span><span class="n">self</span> <span class="n">nextView</span><span class="p">]];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#pragma mark responder</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">touchesEnded:</span><span class="p">(</span><span class="n">NSSet</span> <span class="o">*</span><span class="p">)</span><span class="nv">touches</span> <span class="nf">withEvent:</span><span class="p">(</span><span class="n">UIEvent</span> <span class="o">*</span><span class="p">)</span><span class="nv">event</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="c1">//アニメーション実行中であれば処理しない</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">[</span><span class="n">UIView</span> <span class="n">areAnimationsEnabled</span><span class="p">])</span> <span class="p">{</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">nextResponder</span> <span class="nl">touchesEnded:</span><span class="n">touches</span> <span class="nl">withEvent:</span><span class="n">event</span><span class="p">];</span>
-</span><span class='line'>        <span class="k">return</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>    <span class="k">static</span> <span class="n">UIViewAnimationTransition</span> <span class="n">transition</span> <span class="o">=</span> <span class="n">ANIMATION_FLIP_FROM_LEFT</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//次のビューをセット</span>
-</span><span class='line'>    <span class="n">UIView</span> <span class="o">*</span><span class="n">nextView</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="n">nextView</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//アニメーション定義</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">UIView</span> <span class="nl">beginAnimations:</span><span class="nb">nil</span> <span class="nl">context:</span><span class="nb">NULL</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">UIView</span> <span class="nl">setAnimationDelegate:</span><span class="n">self</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">UIView</span> <span class="nl">setAnimationDidStopSelector:</span><span class="k">@selector</span><span class="p">(</span><span class="nl">animationDidStop:</span><span class="p">)];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">UIView</span> <span class="nl">setAnimationDuration:</span><span class="n">ANIMATION_DURATION</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">UIView</span> <span class="nl">setAnimationTransition:</span><span class="n">transition</span> <span class="nl">forView:</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">cache:</span><span class="n">YES</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//ビューの入れ替え</span>
-</span><span class='line'>    <span class="p">[[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">viewWithTag:</span><span class="n">viewForTransition</span><span class="p">]</span> <span class="n">removeFromSuperview</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">nextView</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//アニメーション実行</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">UIView</span> <span class="n">commitAnimations</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//アニメーションを無効にする</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">UIView</span> <span class="nl">setAnimationsEnabled:</span><span class="n">NO</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//次に実行されるアニメーションの種類変更</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">ANIMATION_CURL_DOWN</span> <span class="o">&lt;</span> <span class="o">++</span><span class="n">transition</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="n">transition</span> <span class="o">=</span> <span class="n">ANIMATION_FLIP_FROM_LEFT</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#pragma mark private methods</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">UIView</span> <span class="o">*</span><span class="p">)</span><span class="nf">nextView</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="c1">//表か裏の画像を指定</span>
-</span><span class='line'>    <span class="k">static</span> <span class="kt">BOOL</span> <span class="n">isFront</span> <span class="o">=</span> <span class="n">YES</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">UIImage</span> <span class="o">*</span><span class="n">image</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIImage</span> <span class="nl">imageNamed:</span><span class="n">isFront</span> <span class="o">?</span> <span class="n">FRONT_IMAGE</span> <span class="o">:</span> <span class="n">BACK_IMAGE</span><span class="p">];</span>
-</span><span class='line'>    <span class="n">isFront</span> <span class="o">=</span> <span class="o">!</span><span class="n">isFront</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//ビューに画像をセット</span>
-</span><span class='line'>    <span class="n">UIView</span> <span class="o">*</span><span class="n">view</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIImageView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithImage:</span><span class="n">image</span><span class="p">];</span>
-</span><span class='line'>    <span class="n">view</span><span class="p">.</span><span class="n">tag</span> <span class="o">=</span> <span class="n">viewForTransition</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">view</span><span class="p">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">bounds</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">view</span><span class="p">.</span><span class="n">autoresizingMask</span> <span class="o">=</span>
-</span><span class='line'>        <span class="n">UIViewAutoresizingFlexibleWidth</span> <span class="o">|</span> <span class="n">UIViewAutoresizingFlexibleHeight</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">view</span><span class="p">.</span><span class="n">contentMode</span> <span class="o">=</span> <span class="n">UIViewContentModeScaleAspectFill</span><span class="p">;</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">view</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">animationDidStop:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">selector</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="c1">//アニメーションを有効にする</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">UIView</span> <span class="nl">setAnimationsEnabled:</span><span class="n">YES</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">[[</span><span class="n">DCBanner</span> <span class="n">sharedManager</span><span class="p">]</span> <span class="nl">showAdBanner:</span><span class="n">self</span> <span class="nl">yPos:</span><span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">frame</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">height</span> <span class="o">-</span> <span class="mi">50</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>How to delete a banner</h2>
+
+<p>You can remove the banner is specified as follows.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">[[</span><span class="n">DCBanner</span> <span class="n">sharedManager</span><span class="p">]</span> <span class="n">removeAdBanner</span><span class="p">];</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
@@ -333,11 +173,11 @@
   
 
 
-<time datetime="2013-07-30T23:15:00+09:00" pubdate data-updated="true">Jul 30<span>th</span>, 2013</time></div>
+<time datetime="2013-09-04T22:35:00+09:00" pubdate data-updated="true">Sep 4<span>th</span>, 2013</time></div>
 	<div class="tags">
 
 
-	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>
+	<a class='category' href='/blog/categories/download/'>download</a>, <a class='category' href='/blog/categories/objective-c/'>objective-c</a>
 
 
 </div>

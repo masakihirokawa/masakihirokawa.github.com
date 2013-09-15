@@ -6,33 +6,11 @@
 	<title>Dolice Lab</title>
 	
 	
-	<meta name="description" content="配列のインデックス番号を指定しオブジェクトを削除するサンプルを以下に作成しました。 サンプルダウンロード https://github.com/masakihirokawa/objc-remove-object-at-index ソースコード 1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12 &hellip;">
+	<meta name="description" content="UISliderをスライドさせた値をラベルに表示するサンプルを作成しました。 スライダーの最大値を1と指定し、スライダーを離した時だけラベルの値を更新するよう設定しています（Continuousのチェックボックスをオフ）。 サンプルダウンロード https://github.com/ &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	<meta property="og:title" content="Dolice Lab" />
-<meta property="og:description" content="配列のインデックス番号を指定しオブジェクトを削除するサンプルを以下に作成しました。 サンプルダウンロード https://github.com/masakihirokawa/objc-remove-object-at-index ソースコード 1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12 &hellip;" />
+<meta property="og:description" content="UISliderをスライドさせた値をラベルに表示するサンプルを作成しました。 スライダーの最大値を1と指定し、スライダーを離した時だけラベルの値を更新するよう設定しています（Continuousのチェックボックスをオフ）。 サンプルダウンロード https://github.com/ &hellip;" />
 <meta property="og:url" content="http://lab.dolice.net/blog/page/41/" />
 <meta property="og:image" content="http://lab.dolice.net/images/facebook-icon.jpg" />
 <meta property="og:author" content="Masaki Hirokawa" />
@@ -106,6 +84,104 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/04/03/xcode-objc-ui-slider/">
+		
+			UISliderを使用してラベルの値を変化させる</a>
+	</h2>
+	<div class="entry-content">
+		<p>UISliderをスライドさせた値をラベルに表示するサンプルを作成しました。</p>
+
+<p>スライダーの最大値を1と指定し、スライダーを離した時だけラベルの値を更新するよう設定しています（Continuousのチェックボックスをオフ）。</p>
+
+<h2>サンプルダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-ui-slider">https://github.com/masakihirokawa/objc-ui-slider</a></li>
+</ul>
+
+
+<h2>必要な手順</h2>
+
+<ol>
+<li>UISliderを MainStoryboardに配置し、ヘッダファイルにプロパティ定義します</li>
+<li>UISliderが動作した時のメソッドをヘッダファイルに定義します</li>
+<li>MainStoryboardにあるスライダーを選択し、Update Eventsの Continuousのチェックボックスをオフにします（これによりスライダーを離した時のみ値が更新されるようになります）</li>
+<li>スライダーからの値を表示するための UILabelを配置し、ヘッダファイルにプロパティ定義します</li>
+</ol>
+
+
+<h2>ソースコード</h2>
+
+<h3>ViewController.h</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//ラベルのプロパティ定義</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">weak</span><span class="p">,</span> <span class="n">nonatomic</span><span class="p">)</span> <span class="kt">IBOutlet</span> <span class="n">UILabel</span> <span class="o">*</span><span class="n">myLabel</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//テキストフィールドのプロパティ定義</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">weak</span><span class="p">,</span> <span class="n">nonatomic</span><span class="p">)</span> <span class="kt">IBOutlet</span> <span class="n">UITextField</span> <span class="o">*</span><span class="n">myTextField</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//テキスト入力のメソッド定義</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">inputText:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>ViewController.m</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">inputText:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span> <span class="p">{</span>
+</span><span class='line'>  <span class="c1">//入力されたテキストをラベルに表示</span>
+</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">myLabel</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">myTextField</span><span class="p">.</span><span class="n">text</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-04-03T10:31:00+09:00" pubdate data-updated="true">Apr 3<span>rd</span>, 2013</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>, <a class='category' href='/blog/categories/xcode/'>xcode</a>
+
+
+</div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -297,112 +373,6 @@ orderedSet: Banana, Orange</p></blockquote>
 </div>
 </article>
 
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/04/02/objc-date-picker/">
-		
-			DatePickerで入力した日付をラベルに表示する</a>
-	</h2>
-	<div class="entry-content">
-		<p>DatePickerで指定した日付をラベルに表示するサンプルを作成しました。DatePickerで選んだ日付が指定したフォーマットで表示されます。</p>
-
-<h2>サンプルダウンロード</h2>
-
-<ul>
-<li><a href="https://github.com/masakihirokawa/objc-date-picker">https://github.com/masakihirokawa/objc-date-picker</a></li>
-</ul>
-
-
-<h2>必要な手順</h2>
-
-<ol>
-<li>DatePickerを MainStoryboardに配置しヘッダファイルと接続します</li>
-<li>日付を表示するための UILabelを配置し、ヘッダファイルにプロパティ定義します</li>
-</ol>
-
-
-<h2>ソースコード</h2>
-
-<h3>ViewController.h</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//ラベルを定義</span>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">weak</span><span class="p">,</span> <span class="n">nonatomic</span><span class="p">)</span> <span class="kt">IBOutlet</span> <span class="n">UILabel</span> <span class="o">*</span><span class="n">dateLabel</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//DatePickerを定義</span>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">weak</span><span class="p">,</span> <span class="n">nonatomic</span><span class="p">)</span> <span class="kt">IBOutlet</span> <span class="n">UIDatePicker</span> <span class="o">*</span><span class="n">myDatePicker</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//DatePickerを操作した時のイベントを定義</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">changeDate:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span><span class="p">;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>ViewController.m</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">changeDate:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span> <span class="p">{</span>
-</span><span class='line'>  <span class="c1">//初期化</span>
-</span><span class='line'>  <span class="n">NSDateFormatter</span> <span class="o">*</span><span class="n">df</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSDateFormatter</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="c1">//日付のフォーマット指定</span>
-</span><span class='line'>  <span class="n">df</span><span class="p">.</span><span class="n">dateFormat</span> <span class="o">=</span> <span class="s">@&quot;yyyy/MM/dd HH:mm&quot;</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="c1">//ラベルに日付を表示</span>
-</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">dateLabel</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="p">[</span><span class="n">df</span> <span class="nl">stringFromDate:</span><span class="n">self</span><span class="p">.</span><span class="n">myDatePicker</span><span class="p">.</span><span class="n">date</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-04-02T18:54:00+09:00" pubdate data-updated="true">Apr 2<span>nd</span>, 2013</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>, <a class='category' href='/blog/categories/xcode/'>xcode</a>
-
-
-</div>
-	
-</div>
-</article>
-
 <nav id="pagenavi">
     
         <a href="/blog/page/40/" class="prev">Prev</a>
@@ -440,12 +410,12 @@ orderedSet: Banana, Orange</p></blockquote>
   <div id="category" class="information-box">
 <section>
   <h1>Tag Cloud</h1>
-    <span id="tag-cloud"><a href='/blog/categories/actionscript' style='font-size: 102.79792746113989%'>actionscript(9)</a> <a href='/blog/categories/actionscript3' style='font-size: 102.1761658031088%'>actionscript3(7)</a> <a href='/blog/categories/download' style='font-size: 119.27461139896373%'>download(62)</a> <a href='/blog/categories/javascript' style='font-size: 100.62176165803109%'>javascript(2)</a> <a href='/blog/categories/objective-c' style='font-size: 160.0%'>objective-c(193)</a> <a href='/blog/categories/screensaver' style='font-size: 102.79792746113989%'>screensaver(9)</a> <a href='/blog/categories/xcode' style='font-size: 111.81347150259067%'>xcode(38)</a> </span>
+    <span id="tag-cloud"><a href='/blog/categories/actionscript' style='font-size: 102.78350515463917%'>actionscript(9)</a> <a href='/blog/categories/actionscript3' style='font-size: 102.16494845360825%'>actionscript3(7)</a> <a href='/blog/categories/download' style='font-size: 119.48453608247422%'>download(63)</a> <a href='/blog/categories/javascript' style='font-size: 100.61855670103093%'>javascript(2)</a> <a href='/blog/categories/objective-c' style='font-size: 160.0%'>objective-c(194)</a> <a href='/blog/categories/screensaver' style='font-size: 102.78350515463917%'>screensaver(9)</a> <a href='/blog/categories/xcode' style='font-size: 111.75257731958763%'>xcode(38)</a> </span>
 </section>
 
 <section class="mt12">
   <h1>Categories</h1>
-    <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (62)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (193)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (38)</a></li></ul>
+    <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (63)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (194)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (38)</a></li></ul>
 </section>
 
   </div>
@@ -487,11 +457,11 @@ orderedSet: Banana, Orange</p></blockquote>
       </li>
     
       <li class="post">
-        <a href="/blog/2013/09/04/objc-classes-dc-banner/">AdMob/iAdバナーを切り替え表示する「DCBanner」クラス (メディエーション対応)</a>
+        <a href="/blog/2013/09/04/objc-classes-dc-banner-en/">Show AdMob / iAd banner DCBanner class (mediation support)</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2013/09/04/download-xcode-objc-alarm/">Objective-Cで目覚ましを作成しました</a>
+        <a href="/blog/2013/09/04/objc-classes-dc-banner/">AdMob/iAdバナーを切り替え表示する「DCBanner」クラス (メディエーション対応)</a>
       </li>
     
   </ul>

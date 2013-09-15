@@ -6,11 +6,11 @@
 	<title>Dolice Lab</title>
 	
 	
-	<meta name="description" content="Objective-Cで動作する iOS用の目覚ましを作成しました。 アラームが開始されると自動スリープが無効になります。また、UserDefaultsで起床時間を保持します。 下記よりソースコードのダウンロードが行えます。 ダウンロード https://github.com/ &hellip;">
+	<meta name="description" content="iOSアプリで AdMob/iAdバナーを切り替え表示する「DCBanner」クラスを作成しました。 メディエーションに対応していますので、Nendの広告も表示されます(AdMobのサイトでメディエーションの設定が必要になります)。 Gumroadにてソースコードとサンプル、マニュアルを &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	<meta property="og:title" content="Dolice Lab" />
-<meta property="og:description" content="Objective-Cで動作する iOS用の目覚ましを作成しました。 アラームが開始されると自動スリープが無効になります。また、UserDefaultsで起床時間を保持します。 下記よりソースコードのダウンロードが行えます。 ダウンロード https://github.com/ &hellip;" />
+<meta property="og:description" content="iOSアプリで AdMob/iAdバナーを切り替え表示する「DCBanner」クラスを作成しました。 メディエーションに対応していますので、Nendの広告も表示されます(AdMobのサイトでメディエーションの設定が必要になります)。 Gumroadにてソースコードとサンプル、マニュアルを &hellip;" />
 <meta property="og:url" content="http://lab.dolice.net/blog/page/4/" />
 <meta property="og:image" content="http://lab.dolice.net/images/facebook-icon.jpg" />
 <meta property="og:author" content="Masaki Hirokawa" />
@@ -84,6 +84,120 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/09/04/objc-classes-dc-banner/">
+		
+			AdMob/iAdバナーを切り替え表示する「DCBanner」クラス (メディエーション対応)</a>
+	</h2>
+	<div class="entry-content">
+		<p><img src="/images/article/dc-banner-screenshot.png" alt="" /></p>
+
+<p>iOSアプリで AdMob/iAdバナーを切り替え表示する「DCBanner」クラスを作成しました。</p>
+
+<p>メディエーションに対応していますので、Nendの広告も表示されます(AdMobのサイトでメディエーションの設定が必要になります)。</p>
+
+<p>Gumroadにてソースコードとサンプル、マニュアルを 100円で販売しています。</p>
+
+<h2>ダウンロード</h2>
+
+<ul>
+<li><a href="http://gum.co/dc-banner">http://gum.co/dc-banner</a></li>
+</ul>
+
+
+<h2>導入に必要な手順</h2>
+
+<h3>1. SDKの読み込み</h3>
+
+<p>ダウンロードしたファイルを展開し、Adフォルダをプロジェクトに追加します。</p>
+
+<h3>2. 必要なフレームワークの読み込み</h3>
+
+<p>広告を表示するために下記7個のフレームワークが必要になりますので、それぞれ読み込みます。</p>
+
+<ol>
+<li>Security.framework</li>
+<li>iAd.framework</li>
+<li>AdSupport.framework</li>
+<li>SystemConfiguration.framework</li>
+<li>MessageUI.framework</li>
+<li>AudioToolbox.framework</li>
+<li>StoreKit.framework</li>
+</ol>
+
+
+<h3>3. Build Settingsの編集</h3>
+
+<p><img src="/images/article/dc-banner.png" alt="" /></p>
+
+<p>「TARGETS」→「Build Settings」を開き、[Linking]の項目にある [Other Linker Flags]の項目に「<em>-ObjC</em>」と記述します。</p>
+
+<h3>4. AdMobの広告ユニットIDを DCBanner.hに追加</h3>
+
+<p>DCBanner.hファイルを開き、12行目にある「GAD_UNIT_ID」に AdMobの広告ユニットIDを指定します。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#define GAD_UNIT_ID @&quot;ca-app-pub-0667784050147760/9058240228&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>バナーの表示方法</h2>
+
+<p>バナーの表示は1行で行えます。「DCBanner.h」ファイルを読み込み、[viewDidAppear]メソッド内で下記のように指定します。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">// 画面の最下部に表示する場合</span>
+</span><span class='line'><span class="p">[[</span><span class="n">DCBanner</span> <span class="n">sharedManager</span><span class="p">]</span> <span class="nl">showAdBanner:</span><span class="n">self</span> <span class="nl">yPos:</span><span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">frame</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">height</span> <span class="o">-</span> <span class="mi">50</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>バナーの削除方法</h2>
+
+<p>下記のように指定するとバナーを削除できます。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">// バナー削除</span>
+</span><span class='line'><span class="p">[[</span><span class="n">DCBanner</span> <span class="n">sharedManager</span><span class="p">]</span> <span class="n">removeAdBanner</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-09-04T22:30:00+09:00" pubdate data-updated="true">Sep 4<span>th</span>, 2013</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/download/'>download</a>, <a class='category' href='/blog/categories/objective-c/'>objective-c</a>
+
+
+</div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -1176,541 +1290,6 @@
 </div>
 </article>
 
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/09/04/download-objc-classes-dc-audio-player2/">
-		
-			音楽ファイルの再生停止などの制御をする「DCAudioPlayer」クラス改訂版</a>
-	</h2>
-	<div class="entry-content">
-		<p><img src="/images/article/dc-audio-player.png" alt="" /></p>
-
-<p>音楽ファイルの再生停止などの制御をする「DCAudioPlayer」クラスを改訂しました。</p>
-
-<p>オーディオの再生／停止／一時停止／再生状況の取得、ボリュームコントロールスライダーの生成などを行えます。</p>
-
-<p>このクラスの使用には AVFoundationフレームワークが必要になります。</p>
-
-<p>今回の変更内容は下記の通りです。</p>
-
-<h2>変更内容</h2>
-
-<ol>
-<li>オーディオ再生終了時のデリゲートメソッドを指定出来るよう変更しました (初期化時にデリゲート使用有無を指定)</li>
-<li>オーディオのバックグラウンド再生をサポートしました</li>
-</ol>
-
-
-<h2>バックグラウンド再生するために必要な手順</h2>
-
-<h3>info.plistファイルを編集</h3>
-
-<ol>
-<li>info.plistファイルを Xcode左側のプロジェクトメニューから開く</li>
-<li>Keyに Required background modesを追加</li>
-<li>Item 0 の Valueを App plays audio に指定</li>
-</ol>
-
-
-<p>下記よりサンプルとソースコードのダウンロードが行えます。</p>
-
-<h2>ダウンロード</h2>
-
-<ul>
-<li><a href="https://github.com/masakihirokawa/objc-classes-dc-audio-player2">https://github.com/masakihirokawa/objc-classes-dc-audio-player2</a></li>
-</ul>
-
-
-<h2>使用方法</h2>
-
-<h3>オーディオファイルを指定し初期化</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">_audioPlayer</span> <span class="o">=</span> <span class="p">[[</span><span class="n">DCAudioPlayer</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithAudio:</span><span class="n">AUDIO_RESOURCE_FILE_NAME</span>
-</span><span class='line'>                                                <span class="nl">ext:</span><span class="n">AUDIO_RESOURCE_FILE_EXT</span>
-</span><span class='line'>                                      <span class="nl">isUseDelegate:</span><span class="n">YES</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>再生</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">[</span><span class="n">_audioPlayer</span> <span class="n">play</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>停止</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">[</span><span class="n">_audioPlayer</span> <span class="n">stop</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>一時停止</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">[</span><span class="n">_audioPlayer</span> <span class="n">pause</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>ボリュームコントロールスライダーの取得</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">_audioVolumeSlider</span> <span class="o">=</span> <span class="p">[</span><span class="n">_audioPlayer</span> <span class="nl">volumeControlSlider:</span><span class="n">self</span>
-</span><span class='line'>                                                 <span class="nl">point:</span><span class="n">CGPointMake</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">150</span><span class="p">)</span>
-</span><span class='line'>                                          <span class="nl">defaultValue:</span><span class="mf">0.5f</span>
-</span><span class='line'>                                              <span class="nl">selector:</span><span class="k">@selector</span><span class="p">(</span><span class="nl">sliderValueChanged:</span><span class="p">)];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">sliderValueChanged:</span><span class="p">(</span><span class="n">UISlider</span> <span class="o">*</span><span class="p">)</span><span class="nv">slider</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">_audioPlayer</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">_audioPlayer</span> <span class="nl">setVolume:</span><span class="n">slider</span><span class="p">.</span><span class="n">value</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>音量の指定</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">[</span><span class="n">_audioPlayer</span> <span class="nl">setVolume:</span><span class="mf">0.5f</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>現在の再生フレームの指定</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">[</span><span class="n">_audioPlayer</span> <span class="nl">setCurrentTime:</span><span class="mi">0</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>再生ループ回数の指定</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">[</span><span class="n">_audioPlayer</span> <span class="nl">setNumberOfLoops:</span><span class="o">-</span><span class="mi">1</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>再生状況の取得</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="kt">BOOL</span> <span class="n">isPlaying</span> <span class="o">=</span> <span class="n">_audioPlayer</span><span class="p">.</span><span class="n">isPlaying</span><span class="p">;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>ソースコード</h2>
-
-<h3>DCAudioPlayer.h</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;AVFoundation/AVFoundation.h&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#define AUDIO_VOLUME_SLIDER_WIDTH  220</span>
-</span><span class='line'><span class="cp">#define AUDIO_VOLUME_SLIDER_HEIGHT 0</span>
-</span><span class='line'><span class="cp">#define AUDIO_MAX_VOLUME           1.0f</span>
-</span><span class='line'><span class="cp">#define AUDIO_MIN_VOLUME           0.0f</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@protocol</span> <span class="nc">DCAudioPlayerDelegate</span>;
-</span><span class='line'>
-</span><span class='line'><span class="k">@interface</span> <span class="nc">DCAudioPlayer</span> : <span class="nc">AVAudioPlayer</span> <span class="o">&lt;</span><span class="n">AVAudioPlayerDelegate</span><span class="o">&gt;</span> <span class="p">{</span>
-</span><span class='line'>    <span class="kt">id</span><span class="o">&lt;</span><span class="n">DCAudioPlayerDelegate</span><span class="o">&gt;</span> <span class="n">_ap_delegate</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#pragma mark - property</span>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">assign</span><span class="p">)</span>                 <span class="kt">id</span><span class="o">&lt;</span><span class="n">DCAudioPlayerDelegate</span><span class="o">&gt;</span> <span class="n">ap_delegate</span><span class="p">;</span>
-</span><span class='line'><span class="k">@property</span> <span class="n">AVAudioPlayer</span>                       <span class="o">*</span><span class="n">audioPlayer</span><span class="p">;</span>
-</span><span class='line'><span class="k">@property</span> <span class="n">NSTimeInterval</span>                      <span class="n">currentTime</span><span class="p">;</span>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">readonly</span><span class="p">)</span> <span class="n">NSData</span>                   <span class="o">*</span><span class="n">data</span><span class="p">;</span>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">assign</span><span class="p">)</span> <span class="kt">id</span> <span class="o">&lt;</span><span class="n">AVAudioPlayerDelegate</span><span class="o">&gt;</span> <span class="n">delegate</span><span class="p">;</span>
-</span><span class='line'><span class="k">@property</span> <span class="n">NSTimeInterval</span>                      <span class="n">duration</span><span class="p">;</span>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">getter</span><span class="o">=</span><span class="n">isMeteringEnabled</span><span class="p">)</span> <span class="kt">BOOL</span>     <span class="n">meteringEnabled</span><span class="p">;</span>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">readonly</span><span class="p">)</span> <span class="n">NSUInteger</span>               <span class="n">numberOfChannels</span><span class="p">;</span>
-</span><span class='line'><span class="k">@property</span> <span class="n">NSInteger</span>                           <span class="n">numberOfLoops</span><span class="p">;</span>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">readonly</span><span class="p">,</span> <span class="n">getter</span><span class="o">=</span><span class="n">isPlaying</span><span class="p">)</span> <span class="kt">BOOL</span>   <span class="n">playing</span><span class="p">;</span>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">readonly</span><span class="p">)</span> <span class="n">NSURL</span>                    <span class="o">*</span><span class="n">url</span><span class="p">;</span>
-</span><span class='line'><span class="k">@property</span> <span class="kt">float</span>                               <span class="n">volume</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#pragma mark - public method</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">initWithAudio:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">fileName</span> <span class="nf">ext:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">ext</span> <span class="nf">isUseDelegate:</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nv">isUseDelegate</span><span class="p">;</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">play</span><span class="p">;</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">pause</span><span class="p">;</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">stop</span><span class="p">;</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">UISlider</span> <span class="o">*</span><span class="p">)</span><span class="nf">volumeControlSlider:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">delegate</span> <span class="nf">point:</span><span class="p">(</span><span class="n">CGPoint</span><span class="p">)</span><span class="nv">point</span> <span class="nf">defaultValue:</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="nv">defaultValue</span> <span class="nf">selector:</span><span class="p">(</span><span class="kt">SEL</span><span class="p">)</span><span class="nv">selector</span><span class="p">;</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setVolume:</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="nv">volume</span><span class="p">;</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setCurrentTime:</span><span class="p">(</span><span class="n">NSTimeInterval</span><span class="p">)</span><span class="nv">currentTime</span><span class="p">;</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setNumberOfLoops:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">numberOfLoops</span><span class="p">;</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">isPlaying</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#pragma mark - delegate method</span>
-</span><span class='line'><span class="k">@protocol</span> <span class="nc">DCAudioPlayerDelegate</span> <span class="o">&lt;</span><span class="n">NSObject</span><span class="o">&gt;</span>
-</span><span class='line'><span class="k">@optional</span>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>DCAudioPlayer.m</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-<span class='line-number'>65</span>
-<span class='line-number'>66</span>
-<span class='line-number'>67</span>
-<span class='line-number'>68</span>
-<span class='line-number'>69</span>
-<span class='line-number'>70</span>
-<span class='line-number'>71</span>
-<span class='line-number'>72</span>
-<span class='line-number'>73</span>
-<span class='line-number'>74</span>
-<span class='line-number'>75</span>
-<span class='line-number'>76</span>
-<span class='line-number'>77</span>
-<span class='line-number'>78</span>
-<span class='line-number'>79</span>
-<span class='line-number'>80</span>
-<span class='line-number'>81</span>
-<span class='line-number'>82</span>
-<span class='line-number'>83</span>
-<span class='line-number'>84</span>
-<span class='line-number'>85</span>
-<span class='line-number'>86</span>
-<span class='line-number'>87</span>
-<span class='line-number'>88</span>
-<span class='line-number'>89</span>
-<span class='line-number'>90</span>
-<span class='line-number'>91</span>
-<span class='line-number'>92</span>
-<span class='line-number'>93</span>
-<span class='line-number'>94</span>
-<span class='line-number'>95</span>
-<span class='line-number'>96</span>
-<span class='line-number'>97</span>
-<span class='line-number'>98</span>
-<span class='line-number'>99</span>
-<span class='line-number'>100</span>
-<span class='line-number'>101</span>
-<span class='line-number'>102</span>
-<span class='line-number'>103</span>
-<span class='line-number'>104</span>
-<span class='line-number'>105</span>
-<span class='line-number'>106</span>
-<span class='line-number'>107</span>
-<span class='line-number'>108</span>
-<span class='line-number'>109</span>
-<span class='line-number'>110</span>
-<span class='line-number'>111</span>
-<span class='line-number'>112</span>
-<span class='line-number'>113</span>
-<span class='line-number'>114</span>
-<span class='line-number'>115</span>
-<span class='line-number'>116</span>
-<span class='line-number'>117</span>
-<span class='line-number'>118</span>
-<span class='line-number'>119</span>
-<span class='line-number'>120</span>
-<span class='line-number'>121</span>
-<span class='line-number'>122</span>
-<span class='line-number'>123</span>
-<span class='line-number'>124</span>
-<span class='line-number'>125</span>
-<span class='line-number'>126</span>
-<span class='line-number'>127</span>
-<span class='line-number'>128</span>
-<span class='line-number'>129</span>
-<span class='line-number'>130</span>
-<span class='line-number'>131</span>
-<span class='line-number'>132</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;DCAudioPlayer.h&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@implementation</span> <span class="nc">DCAudioPlayer</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@synthesize</span> <span class="n">ap_delegate</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// 初期化</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">initWithAudio:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">fileName</span> <span class="nf">ext:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">ext</span> <span class="nf">isUseDelegate:</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nv">isUseDelegate</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">self</span> <span class="o">=</span> <span class="p">[</span><span class="n">super</span> <span class="n">init</span><span class="p">])</span> <span class="p">{</span>
-</span><span class='line'>        <span class="c1">// オーディオプレイヤー初期化</span>
-</span><span class='line'>        <span class="n">NSBundle</span> <span class="o">*</span><span class="n">mainBundle</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSBundle</span> <span class="n">mainBundle</span><span class="p">];</span>
-</span><span class='line'>        <span class="n">NSString</span> <span class="o">*</span><span class="n">filePath</span> <span class="o">=</span> <span class="p">[</span><span class="n">mainBundle</span> <span class="nl">pathForResource:</span><span class="n">fileName</span>
-</span><span class='line'>                                                  <span class="nl">ofType:</span><span class="n">ext</span><span class="p">];</span>
-</span><span class='line'>        <span class="n">NSURL</span> <span class="o">*</span><span class="n">fileUrl</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSURL</span> <span class="nl">fileURLWithPath:</span><span class="n">filePath</span><span class="p">];</span>
-</span><span class='line'>        <span class="n">NSError</span> <span class="o">*</span><span class="n">error</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
-</span><span class='line'>        <span class="n">AVAudioPlayer</span> <span class="o">*</span><span class="n">audioPlayer</span> <span class="o">=</span> <span class="p">[[</span><span class="n">AVAudioPlayer</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithContentsOfURL:</span><span class="n">fileUrl</span> <span class="nl">error:</span><span class="o">&amp;</span><span class="n">error</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="c1">// バックグラウンド再生を許可</span>
-</span><span class='line'>        <span class="n">AVAudioSession</span> <span class="o">*</span><span class="n">audioSession</span> <span class="o">=</span> <span class="p">[</span><span class="n">AVAudioSession</span> <span class="n">sharedInstance</span><span class="p">];</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">audioSession</span> <span class="nl">setCategory:</span><span class="n">AVAudioSessionCategoryPlayback</span> <span class="nl">error:</span><span class="nb">nil</span><span class="p">];</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">audioSession</span> <span class="nl">setActive:</span><span class="n">YES</span> <span class="nl">error:</span><span class="nb">nil</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="c1">// エラーであれば処理しない</span>
-</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">error</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>            <span class="c1">// オーディオプレイヤー保持</span>
-</span><span class='line'>            <span class="n">_audioPlayer</span> <span class="o">=</span> <span class="n">audioPlayer</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>            <span class="c1">// デリゲート指定</span>
-</span><span class='line'>            <span class="k">if</span> <span class="p">(</span><span class="n">isUseDelegate</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>                <span class="p">[</span><span class="n">_audioPlayer</span> <span class="nl">setDelegate:</span><span class="n">self</span><span class="p">];</span>
-</span><span class='line'>            <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>            <span class="c1">// バッファを保持</span>
-</span><span class='line'>            <span class="p">[</span><span class="n">_audioPlayer</span> <span class="n">prepareToPlay</span><span class="p">];</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">self</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// 再生</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">play</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">_audioPlayer</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">_audioPlayer</span><span class="p">.</span><span class="n">isPlaying</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>            <span class="p">[</span><span class="n">_audioPlayer</span> <span class="n">prepareToPlay</span><span class="p">];</span>
-</span><span class='line'>            <span class="p">[</span><span class="n">_audioPlayer</span> <span class="n">play</span><span class="p">];</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// 一時停止</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">pause</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">_audioPlayer</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">_audioPlayer</span><span class="p">.</span><span class="n">isPlaying</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>            <span class="p">[</span><span class="n">_audioPlayer</span> <span class="n">pause</span><span class="p">];</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// 停止</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">stop</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">_audioPlayer</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">_audioPlayer</span><span class="p">.</span><span class="n">isPlaying</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>            <span class="p">[</span><span class="n">_audioPlayer</span> <span class="nl">setCurrentTime:</span><span class="mi">0</span><span class="p">];</span>
-</span><span class='line'>            <span class="p">[</span><span class="n">_audioPlayer</span> <span class="n">stop</span><span class="p">];</span>
-</span><span class='line'>            <span class="p">[</span><span class="n">_audioPlayer</span> <span class="n">prepareToPlay</span><span class="p">];</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// ボリュームコントロールスライダー</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">UISlider</span> <span class="o">*</span><span class="p">)</span><span class="nf">volumeControlSlider:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">delegate</span> <span class="nf">point:</span><span class="p">(</span><span class="n">CGPoint</span><span class="p">)</span><span class="nv">point</span> <span class="nf">defaultValue:</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="nv">defaultValue</span> <span class="nf">selector:</span><span class="p">(</span><span class="kt">SEL</span><span class="p">)</span><span class="nv">selector</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">UISlider</span> <span class="o">*</span><span class="n">audioVolumeSlider</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UISlider</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="n">point</span><span class="p">.</span><span class="n">x</span><span class="p">,</span>
-</span><span class='line'>                                                                             <span class="n">point</span><span class="p">.</span><span class="n">y</span><span class="p">,</span>
-</span><span class='line'>                                                                             <span class="n">AUDIO_VOLUME_SLIDER_WIDTH</span><span class="p">,</span>
-</span><span class='line'>                                                                             <span class="n">AUDIO_VOLUME_SLIDER_HEIGHT</span><span class="p">)];</span>
-</span><span class='line'>    <span class="n">audioVolumeSlider</span><span class="p">.</span><span class="n">minimumValue</span> <span class="o">=</span> <span class="n">AUDIO_MIN_VOLUME</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">audioVolumeSlider</span><span class="p">.</span><span class="n">maximumValue</span> <span class="o">=</span> <span class="n">AUDIO_MAX_VOLUME</span><span class="p">;</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">defaultValue</span> <span class="o">&gt;</span> <span class="n">AUDIO_MAX_VOLUME</span><span class="p">)</span> <span class="n">defaultValue</span> <span class="o">=</span> <span class="n">AUDIO_MAX_VOLUME</span><span class="p">;</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">defaultValue</span> <span class="o">&lt;</span> <span class="n">AUDIO_MIN_VOLUME</span><span class="p">)</span> <span class="n">defaultValue</span> <span class="o">=</span> <span class="n">AUDIO_MIN_VOLUME</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">audioVolumeSlider</span><span class="p">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">defaultValue</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">audioVolumeSlider</span> <span class="nl">addTarget:</span><span class="n">delegate</span>
-</span><span class='line'>                          <span class="nl">action:</span><span class="n">selector</span>
-</span><span class='line'>                <span class="nl">forControlEvents:</span><span class="n">UIControlEventValueChanged</span><span class="p">];</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">audioVolumeSlider</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// ボリューム指定</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setVolume:</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="nv">volume</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">_audioPlayer</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="n">_audioPlayer</span><span class="p">.</span><span class="n">volume</span> <span class="o">=</span> <span class="n">volume</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// 現在の再生フレーム指定</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setCurrentTime:</span><span class="p">(</span><span class="n">NSTimeInterval</span><span class="p">)</span><span class="nv">currentTime</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">_audioPlayer</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="n">_audioPlayer</span><span class="p">.</span><span class="n">currentTime</span> <span class="o">=</span> <span class="n">currentTime</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// ループ回数指定</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setNumberOfLoops:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">numberOfLoops</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">_audioPlayer</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="n">_audioPlayer</span><span class="p">.</span><span class="n">numberOfLoops</span> <span class="o">=</span> <span class="n">numberOfLoops</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// 再生状況の取得</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">isPlaying</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">_audioPlayer</span><span class="p">.</span><span class="n">playing</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#pragma mark - AVAudioPlayerDelegate</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">audioPlayerDidFinishPlaying:</span><span class="p">(</span><span class="n">AVAudioPlayer</span> <span class="o">*</span><span class="p">)</span><span class="nv">player</span> <span class="nf">successfully:</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nv">successfully</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">successfully</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="c1">// ここでデリゲートメソッドを指定する</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-09-04T14:40:00+09:00" pubdate data-updated="true">Sep 4<span>th</span>, 2013</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/download/'>download</a>, <a class='category' href='/blog/categories/objective-c/'>objective-c</a>
-
-
-</div>
-	
-</div>
-</article>
-
 <nav id="pagenavi">
     
         <a href="/blog/page/3/" class="prev">Prev</a>
@@ -1748,12 +1327,12 @@
   <div id="category" class="information-box">
 <section>
   <h1>Tag Cloud</h1>
-    <span id="tag-cloud"><a href='/blog/categories/actionscript' style='font-size: 102.79792746113989%'>actionscript(9)</a> <a href='/blog/categories/actionscript3' style='font-size: 102.1761658031088%'>actionscript3(7)</a> <a href='/blog/categories/download' style='font-size: 119.27461139896373%'>download(62)</a> <a href='/blog/categories/javascript' style='font-size: 100.62176165803109%'>javascript(2)</a> <a href='/blog/categories/objective-c' style='font-size: 160.0%'>objective-c(193)</a> <a href='/blog/categories/screensaver' style='font-size: 102.79792746113989%'>screensaver(9)</a> <a href='/blog/categories/xcode' style='font-size: 111.81347150259067%'>xcode(38)</a> </span>
+    <span id="tag-cloud"><a href='/blog/categories/actionscript' style='font-size: 102.78350515463917%'>actionscript(9)</a> <a href='/blog/categories/actionscript3' style='font-size: 102.16494845360825%'>actionscript3(7)</a> <a href='/blog/categories/download' style='font-size: 119.48453608247422%'>download(63)</a> <a href='/blog/categories/javascript' style='font-size: 100.61855670103093%'>javascript(2)</a> <a href='/blog/categories/objective-c' style='font-size: 160.0%'>objective-c(194)</a> <a href='/blog/categories/screensaver' style='font-size: 102.78350515463917%'>screensaver(9)</a> <a href='/blog/categories/xcode' style='font-size: 111.75257731958763%'>xcode(38)</a> </span>
 </section>
 
 <section class="mt12">
   <h1>Categories</h1>
-    <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (62)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (193)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (38)</a></li></ul>
+    <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (63)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (194)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (38)</a></li></ul>
 </section>
 
   </div>
@@ -1795,11 +1374,11 @@
       </li>
     
       <li class="post">
-        <a href="/blog/2013/09/04/objc-classes-dc-banner/">AdMob/iAdバナーを切り替え表示する「DCBanner」クラス (メディエーション対応)</a>
+        <a href="/blog/2013/09/04/objc-classes-dc-banner-en/">Show AdMob / iAd banner DCBanner class (mediation support)</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2013/09/04/download-xcode-objc-alarm/">Objective-Cで目覚ましを作成しました</a>
+        <a href="/blog/2013/09/04/objc-classes-dc-banner/">AdMob/iAdバナーを切り替え表示する「DCBanner」クラス (メディエーション対応)</a>
       </li>
     
   </ul>
