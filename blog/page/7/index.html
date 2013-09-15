@@ -6,11 +6,11 @@
 	<title>Dolice Lab</title>
 	
 	
-	<meta name="description" content="Objective-Cでアプリの起動中に自動スリープを禁止するサンプルを以下に作成しました。 AppDelegateの didFinishLaunchingWithOptionsメソッド内に、[[UIApplication sharedApplication] &hellip;">
+	<meta name="description" content="iOSアプリで音声のバックグラウンド再生を許可する方法を以下に記載します。 下記よりサンプルのダウンロードが行えます。 ダウンロード https://github.com/masakihirokawa/xcode-objc-required-background-modes 手順 1. info &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	<meta property="og:title" content="Dolice Lab" />
-<meta property="og:description" content="Objective-Cでアプリの起動中に自動スリープを禁止するサンプルを以下に作成しました。 AppDelegateの didFinishLaunchingWithOptionsメソッド内に、[[UIApplication sharedApplication] &hellip;" />
+<meta property="og:description" content="iOSアプリで音声のバックグラウンド再生を許可する方法を以下に記載します。 下記よりサンプルのダウンロードが行えます。 ダウンロード https://github.com/masakihirokawa/xcode-objc-required-background-modes 手順 1. info &hellip;" />
 <meta property="og:url" content="http://lab.dolice.net/blog/page/7/" />
 <meta property="og:image" content="http://lab.dolice.net/images/facebook-icon.jpg" />
 <meta property="og:author" content="Masaki Hirokawa" />
@@ -84,6 +84,85 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/09/02/xcode-objc-required-background-modes/">
+		
+			iOSアプリで音楽のバックグラウンド再生を許可する方法</a>
+	</h2>
+	<div class="entry-content">
+		<p><img src="/images/article/required_background_modes.png" alt="" /></p>
+
+<p>iOSアプリで音声のバックグラウンド再生を許可する方法を以下に記載します。</p>
+
+<p>下記よりサンプルのダウンロードが行えます。</p>
+
+<h2>ダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/xcode-objc-required-background-modes">https://github.com/masakihirokawa/xcode-objc-required-background-modes</a></li>
+</ul>
+
+
+<h2>手順</h2>
+
+<h3>1. info.plistファイルを編集</h3>
+
+<p>info.plistファイルを Xcode左側のプロジェクトメニューから開き、Keyに [Required background modes]を追加し、[Item 0] の Valueを [App plays audio]にします</p>
+
+<h3>2. アプリ起動時のコードに以下の記述を追加 (AVFoundationフレームワークの読み込みが前提)</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">application:</span><span class="p">(</span><span class="n">UIApplication</span> <span class="o">*</span><span class="p">)</span><span class="nv">application</span> <span class="nf">didFinishLaunchingWithOptions:</span><span class="p">(</span><span class="n">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nv">launchOptions</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">AVAudioSession</span> <span class="o">*</span><span class="n">audioSession</span> <span class="o">=</span> <span class="p">[</span><span class="n">AVAudioSession</span> <span class="n">sharedInstance</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">audioSession</span> <span class="nl">setCategory:</span><span class="n">AVAudioSessionCategoryPlayback</span> <span class="nl">error:</span><span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="n">YES</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-09-02T17:06:00+09:00" pubdate data-updated="true">Sep 2<span>nd</span>, 2013</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>, <a class='category' href='/blog/categories/xcode/'>xcode</a>
+
+
+</div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -308,125 +387,6 @@
 </div>
 </article>
 
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/08/22/objc-app-delegate-global/">
-		
-			Objective-Cで AppDelegateをグローバル化する方法</a>
-	</h2>
-	<div class="entry-content">
-		<p>Objective-Cで AppDelegateに定義された変数やメソッドをどこからでも呼べるようグローバル化するサンプルを以下に作成しました。</p>
-
-<p>*.pchファイルに一度 AppDelegateを定数として定義しておけば、以降どこからでも AppDelegateを初期化せずに呼ぶ事ができます。</p>
-
-<p>以下よりサンプルのダウンロードが行えます。</p>
-
-<h2>ダウンロード</h2>
-
-<ul>
-<li><a href="https://github.com/masakihirokawa/objc-app-delegate-global">https://github.com/masakihirokawa/objc-app-delegate-global</a></li>
-</ul>
-
-
-<h2>使用方法</h2>
-
-<h3>1. *.pchファイルに AppDelegateのヘッダファイルを読み込む</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;AppDelegate.h&quot;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>2. *.pchファイルの定数に AppDelegateを代入する</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#define APP_DELEGATE (AppDelegate*)[[UIApplication sharedApplication] delegate]</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>3. 2の手順で生成した定数経由でメソッドや変数を取得する</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="n">globalStrings</span> <span class="o">=</span> <span class="p">[</span><span class="n">APP_DELEGATE</span> <span class="n">globalStrings</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>ソースコード</h2>
-
-<h3>*.pch</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;AppDelegate.h&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#define APP_DELEGATE (AppDelegate*)[[UIApplication sharedApplication] delegate]</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>AppDelegate.h</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nf">globalStrings</span><span class="p">;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>AppDelegate.m</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nf">globalStrings</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="s">@&quot;AppDelegate Global Strings&quot;</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>ViewController.m</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//AppDelegate内のメソッドから変数を取得</span>
-</span><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="n">globalStrings</span> <span class="o">=</span> <span class="p">[</span><span class="n">APP_DELEGATE</span> <span class="n">globalStrings</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-08-22T23:35:00+09:00" pubdate data-updated="true">Aug 22<span>nd</span>, 2013</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/objective-c/'>objective-c</a>
-
-
-</div>
-	
-</div>
-</article>
-
 <nav id="pagenavi">
     
         <a href="/blog/page/6/" class="prev">Prev</a>
@@ -464,12 +424,12 @@
   <div id="category" class="information-box">
 <section>
   <h1>Tag Cloud</h1>
-    <span id="tag-cloud"><a href='/blog/categories/actionscript' style='font-size: 102.78350515463917%'>actionscript(9)</a> <a href='/blog/categories/actionscript3' style='font-size: 102.16494845360825%'>actionscript3(7)</a> <a href='/blog/categories/download' style='font-size: 119.48453608247422%'>download(63)</a> <a href='/blog/categories/javascript' style='font-size: 100.61855670103093%'>javascript(2)</a> <a href='/blog/categories/objective-c' style='font-size: 160.0%'>objective-c(194)</a> <a href='/blog/categories/screensaver' style='font-size: 102.78350515463917%'>screensaver(9)</a> <a href='/blog/categories/xcode' style='font-size: 111.75257731958763%'>xcode(38)</a> </span>
+    <span id="tag-cloud"><a href='/blog/categories/actionscript' style='font-size: 102.76923076923077%'>actionscript(9)</a> <a href='/blog/categories/actionscript3' style='font-size: 102.15384615384616%'>actionscript3(7)</a> <a href='/blog/categories/download' style='font-size: 119.6923076923077%'>download(64)</a> <a href='/blog/categories/javascript' style='font-size: 100.61538461538461%'>javascript(2)</a> <a href='/blog/categories/objective-c' style='font-size: 160.0%'>objective-c(195)</a> <a href='/blog/categories/screensaver' style='font-size: 102.76923076923077%'>screensaver(9)</a> <a href='/blog/categories/xcode' style='font-size: 111.6923076923077%'>xcode(38)</a> </span>
 </section>
 
 <section class="mt12">
   <h1>Categories</h1>
-    <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (63)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (194)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (38)</a></li></ul>
+    <ul id="category-list"><li><a href='/blog/categories/actionscript/'>actionscript (9)</a></li><li><a href='/blog/categories/actionscript3/'>actionscript3 (7)</a></li><li><a href='/blog/categories/download/'>download (64)</a></li><li><a href='/blog/categories/javascript/'>javascript (2)</a></li><li><a href='/blog/categories/objective-c/'>objective-c (195)</a></li><li><a href='/blog/categories/screensaver/'>screensaver (9)</a></li><li><a href='/blog/categories/xcode/'>xcode (38)</a></li></ul>
 </section>
 
   </div>
