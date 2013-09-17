@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: NSCalendar | Dolice Lab]]></title>
+  <link href="http://lab.dolice.net/blog/categories/nscalendar/atom.xml" rel="self"/>
+  <link href="http://lab.dolice.net/"/>
+  <updated>2013-09-17T21:04:49+09:00</updated>
+  <id>http://lab.dolice.net/</id>
+  <author>
+    <name><![CDATA[Masaki Hirokawa]]></name>
+    <email><![CDATA[info@dolice.net]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[指定した日時から計算した日時を取得する]]></title>
+    <link href="http://lab.dolice.net/blog/2013/04/14/objc-calendar-date-by-adding-components/"/>
+    <updated>2013-04-14T17:03:00+09:00</updated>
+    <id>http://lab.dolice.net/blog/2013/04/14/objc-calendar-date-by-adding-components</id>
+    <content type="html"><![CDATA[<p>指定した日時を基準にして特定の日時を取得するには、「dateByAddingComponents」メソッドを使用します。以下にサンプルを作成しました。</p>
+
+<h2>サンプルダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-calendar-date-by-adding-components">https://github.com/masakihirokawa/objc-calendar-date-by-adding-components</a></li>
+</ul>
+
+
+<h2>ソースコード</h2>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">main</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="c1">//現在の日時を取得する</span>
+</span><span class='line'>  <span class="n">NSDate</span> <span class="o">*</span><span class="n">currentDate</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSDate</span> <span class="n">date</span><span class="p">];</span>
+</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;BaseDate: %@&quot;</span><span class="p">,</span> <span class="n">currentDate</span><span class="p">);</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>  <span class="c1">//30日前のオブジェクトを取得する</span>
+</span><span class='line'>  <span class="n">NSDateComponents</span> <span class="o">*</span><span class="n">components</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSDateComponents</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">components</span> <span class="nl">setDay:</span> <span class="o">-</span><span class="mi">30</span><span class="p">];</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>  <span class="c1">//グレゴリオ暦のカレンダーを取得する</span>
+</span><span class='line'>  <span class="n">NSCalendar</span> <span class="o">*</span><span class="n">calendar</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">calendar</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSCalendar</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithCalendarIdentifier:</span><span class="n">NSGregorianCalendar</span><span class="p">];</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>  <span class="c1">//オブジェクトを取得する</span>
+</span><span class='line'>  <span class="n">NSDate</span> <span class="o">*</span><span class="n">date</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">date</span> <span class="o">=</span> <span class="p">[</span><span class="n">calendar</span> <span class="nl">dateByAddingComponents:</span><span class="n">components</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span>                               <span class="nl">toDate:</span><span class="n">currentDate</span>
+</span><span class='line'>                              <span class="nl">options:</span><span class="mi">0</span><span class="p">];</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;Before 30days: %@&quot;</span><span class="p">,</span> <span class="n">date</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h2>出力結果</h2>
+
+<blockquote><p>BaseDate: 2013-04-14 08:10:44 +0000<br />
+Before 30days: 2013-03-15 08:10:44 +0000</p></blockquote>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[2つの日時を比較し新しい方の日時を取得する]]></title>
+    <link href="http://lab.dolice.net/blog/2013/04/14/objc-date-later-date/"/>
+    <updated>2013-04-14T11:15:00+09:00</updated>
+    <id>http://lab.dolice.net/blog/2013/04/14/objc-date-later-date</id>
+    <content type="html"><![CDATA[<p>2つの日時を比較し、新しい方の日時を取得するサンプルを以下に作成しました。</p>
+
+<p>新しい方の日時を取得するには、「laterDate」メソッドを使用します。逆に古い方の日時を取得するには、「earlierDate」メソッドを使用します。</p>
+
+<h2>サンプルダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-date-later-date">https://github.com/masakihirokawa/objc-date-later-date</a></li>
+</ul>
+
+
+<h2>ソースコード</h2>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">main</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="n">NSDate</span> <span class="o">*</span><span class="n">dates</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="nb">nil</span><span class="p">,</span> <span class="nb">nil</span><span class="p">};</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>  <span class="c1">//日時を作成する</span>
+</span><span class='line'>  <span class="n">NSCalendar</span> <span class="o">&lt;</span><span class="n">em</span><span class="o">&gt;</span><span class="n">calendar</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSCalendar</span> <span class="n">currentCalendar</span><span class="p">];</span>
+</span><span class='line'>  <span class="n">NSDateComponents</span> <span class="o">&lt;/</span><span class="n">em</span><span class="o">&gt;</span><span class="n">components</span><span class="p">;</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>  <span class="c1">//UTCタイムゾーンを設定する</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">calendar</span> <span class="nl">setTimeZone:</span><span class="p">[</span><span class="n">NSTimeZone</span> <span class="nl">timeZoneForSecondsFromGMT:</span><span class="mi">0</span><span class="p">]];</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>  <span class="c1">//2013/04/11のオブジェクトを作成する</span>
+</span><span class='line'>  <span class="n">components</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSDateComponents</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">components</span> <span class="nl">setYear:</span><span class="mi">2013</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">components</span> <span class="nl">setMonth:</span><span class="mi">4</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">components</span> <span class="nl">setDay:</span><span class="mi">11</span><span class="p">];</span>
+</span><span class='line'>  <span class="n">dates</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">calendar</span> <span class="nl">dateFromComponents:</span><span class="n">components</span><span class="p">];</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>  <span class="c1">//2013/04/14のオブジェクトを作成する</span>
+</span><span class='line'>  <span class="n">components</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSDateComponents</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">components</span> <span class="nl">setYear:</span><span class="mi">2013</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">components</span> <span class="nl">setMonth:</span><span class="mi">4</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">components</span> <span class="nl">setDay:</span><span class="mi">14</span><span class="p">];</span>
+</span><span class='line'>  <span class="n">dates</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">calendar</span> <span class="nl">dateFromComponents:</span><span class="n">components</span><span class="p">];</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>  <span class="c1">//2つの日時で新しい方の日時を取得する</span>
+</span><span class='line'>  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="mi">2</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;laterDate: %@&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">dates</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="nl">laterDate:</span><span class="n">dates</span><span class="p">[</span><span class="n">i</span><span class="p">]]);</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h2>出力結果</h2>
+
+<blockquote><p>laterDate: 2013-04-14 00:00:00 +0000</p></blockquote>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[特定の日時のオブジェクトを取得する]]></title>
+    <link href="http://lab.dolice.net/blog/2013/04/14/objc-ns-calendar/"/>
+    <updated>2013-04-14T09:02:00+09:00</updated>
+    <id>http://lab.dolice.net/blog/2013/04/14/objc-ns-calendar</id>
+    <content type="html"><![CDATA[<p>特定の日時のオブジェクトを取得するには、NSCalendarクラスを使用します。以下にサンプルを作成しました。</p>
+
+<h2>サンプルダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-ns-calendar">https://github.com/masakihirokawa/objc-ns-calendar</a></li>
+</ul>
+
+
+<h2>ソースコード</h2>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">main</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="c1">//現在のカレンダーを取得する</span>
+</span><span class='line'>  <span class="n">NSCalendar</span> <span class="o">*</span><span class="n">calendar</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSCalendar</span> <span class="n">currentCalendar</span><span class="p">];</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">[[</span><span class="n">calendar</span> <span class="n">calendarIdentifier</span><span class="p">]</span> <span class="nl">isEqualToString:</span><span class="n">NSGregorianCalendar</span><span class="p">])</span> <span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="c1">//グレゴリオ暦以外のカレンダーが使用されている</span>
+</span><span class='line'><span class="n">calendar</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSCalendar</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithCalendarIdentifier:</span><span class="n">NSGregorianCalendar</span><span class="p">];</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>  <span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>  <span class="c1">//取得する日時の情報を格納したインスタンスを生成する</span>
+</span><span class='line'>  <span class="n">NSDateComponents</span> <span class="o">*</span><span class="n">components</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSDateComponents</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>  <span class="p">[</span><span class="n">components</span> <span class="nl">setYear:</span><span class="mi">2013</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">components</span> <span class="nl">setMonth:</span><span class="mi">4</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">components</span> <span class="nl">setDay:</span><span class="mi">14</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">components</span> <span class="nl">setHour:</span><span class="mi">9</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">components</span> <span class="nl">setMinute:</span><span class="mi">0</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">components</span> <span class="nl">setSecond:</span><span class="mi">55</span><span class="p">];</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>  <span class="c1">//日時のオブジェクトを取得する</span>
+</span><span class='line'>  <span class="n">NSDate</span> <span class="o">*</span><span class="n">date</span> <span class="o">=</span> <span class="p">[</span><span class="n">calendar</span> <span class="nl">dateFromComponents:</span><span class="n">components</span><span class="p">];</span>
+</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;%@&quot;</span><span class="p">,</span> <span class="n">date</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h2>出力結果</h2>
+
+<blockquote><p>2013-04-14 00:00:55 +0000</p></blockquote>
+]]></content>
+  </entry>
+  
+</feed>
