@@ -6,29 +6,11 @@
 	<title>Dolice Lab</title>
 	
 	
-	<meta name="description" content="一定時間後にメソッドを実行するには以下のように記述します。 ソースコード 1
-2
-3
-4
-5
-6
-7
-8
-9
-- (void)viewDidLoad //2.5秒後に myFuncメソッドを実行 [self performSelector:@selector(myFunc) withObject &hellip;">
+	<meta name="description" content="Objective-Cでフェードイン・フェードアウトアニメーションを実行するサンプルを以下に作成しました。ボタンを押すと背景画像がアニメーションします。 サンプルダウンロード https://github.com/masakihirokawa/objc-animations-fade &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	<meta property="og:title" content="Dolice Lab" />
-<meta property="og:description" content="一定時間後にメソッドを実行するには以下のように記述します。 ソースコード 1
-2
-3
-4
-5
-6
-7
-8
-9
-- (void)viewDidLoad //2.5秒後に myFuncメソッドを実行 [self performSelector:@selector(myFunc) withObject &hellip;" />
+<meta property="og:description" content="Objective-Cでフェードイン・フェードアウトアニメーションを実行するサンプルを以下に作成しました。ボタンを押すと背景画像がアニメーションします。 サンプルダウンロード https://github.com/masakihirokawa/objc-animations-fade &hellip;" />
 <meta property="og:url" content="http://lab.dolice.net/blog/page/45/" />
 <meta property="og:image" content="http://lab.dolice.net/images/facebook-icon.jpg" />
 <meta property="og:author" content="Masaki Hirokawa" />
@@ -120,6 +102,332 @@
     <article class="post">
 	<h2 class="title">
 		
+		<a href="/blog/2013/03/31/xcode-objc-animations-fade-in-out/">
+		
+			フェードイン・フェードアウトアニメーションの実行</a>
+	</h2>
+	<div class="entry-content">
+		<p>Objective-Cでフェードイン・フェードアウトアニメーションを実行するサンプルを以下に作成しました。ボタンを押すと背景画像がアニメーションします。</p>
+
+<h2>サンプルダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-animations-fade">https://github.com/masakihirokawa/objc-animations-fade</a></li>
+</ul>
+
+
+<h2>ソースコード</h2>
+
+<h3>ViewController.h</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;UIKit/UIKit.h&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> : <span class="nc">UIViewController</span> <span class="p">{</span>
+</span><span class='line'>  <span class="kt">BOOL</span> <span class="n">_isFadeIn</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">weak</span><span class="p">,</span> <span class="n">nonatomic</span><span class="p">)</span> <span class="kt">IBOutlet</span> <span class="n">UIButton</span> <span class="o">*</span><span class="n">sampleButton</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">weak</span><span class="p">,</span> <span class="n">nonatomic</span><span class="p">)</span> <span class="kt">IBOutlet</span> <span class="n">UIImageView</span> <span class="o">*</span><span class="n">sampleImageView</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">buttonFadeInOut:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>ViewController.m</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;ViewController.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> <span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">ViewController</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
+</span><span class='line'>  <span class="n">_isFadeIn</span> <span class="o">=</span> <span class="n">YES</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">didReceiveMemoryWarning</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">super</span> <span class="n">didReceiveMemoryWarning</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">buttonFadeInOut:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="n">_isFadeIn</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">//フェードアウトアニメーション実行</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="n">sampleImageFadeOut</span><span class="p">];</span>
+</span><span class='line'>    <span class="c1">//ボタンのテキストを変更</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">_sampleButton</span> <span class="nl">setTitle:</span><span class="s">@&quot;fadeIn&quot;</span> <span class="nl">forState:</span><span class="n">UIControlStateNormal</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">//フェードインアニメーション実行</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="n">sampleImageFadeIn</span><span class="p">];</span>
+</span><span class='line'>    <span class="c1">//ボタンのテキストを変更</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">_sampleButton</span> <span class="nl">setTitle:</span><span class="s">@&quot;fadeOut&quot;</span> <span class="nl">forState:</span><span class="n">UIControlStateNormal</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="n">_isFadeIn</span> <span class="o">=</span> <span class="o">!</span><span class="n">_isFadeIn</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">sampleImageFadeIn</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="c1">//フェードイン</span>
+</span><span class='line'>  <span class="n">_sampleImageView</span><span class="p">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>  <span class="c1">//アニメーションのタイプを指定</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">UIView</span> <span class="nl">beginAnimations:</span><span class="s">@&quot;fadeIn&quot;</span> <span class="nl">context:</span><span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//イージング指定</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">UIView</span> <span class="nl">setAnimationCurve:</span><span class="n">UIViewAnimationCurveEaseInOut</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//アニメーション秒数を指定</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">UIView</span> <span class="nl">setAnimationDuration:</span><span class="mf">0.3</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//目標のアルファ値を指定</span>
+</span><span class='line'>  <span class="n">_sampleImageView</span><span class="p">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+</span><span class='line'>  <span class="c1">//アニメーション実行</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">UIView</span> <span class="n">commitAnimations</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">sampleImageFadeOut</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="c1">//フェードアウト</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">UIView</span> <span class="nl">beginAnimations:</span><span class="s">@&quot;fadeOut&quot;</span> <span class="nl">context:</span><span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//イージング指定</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">UIView</span> <span class="nl">setAnimationCurve:</span><span class="n">UIViewAnimationCurveEaseOut</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//アニメーション秒数を指定</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">UIView</span> <span class="nl">setAnimationDuration:</span><span class="mf">0.15</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//目標のアルファ値を指定</span>
+</span><span class='line'>  <span class="n">_sampleImageView</span><span class="p">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>  <span class="c1">//アニメーション実行</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">UIView</span> <span class="n">commitAnimations</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+		
+		
+		<div id="google-adsense-728_15">
+  <div class="google-adsense-728_15-container">
+    <script type="text/javascript">
+    <!--
+      google_ad_client = "ca-pub-0667784050147760";
+      google_ad_slot = "9219927027";
+      google_ad_width = 728;
+      google_ad_height = 15;
+    //-->
+    </script>
+    <script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js"></script>
+  </div>
+</div>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-31T08:55:00+09:00" pubdate data-updated="true">Mar 31<span>st</span>, 2013</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/animation/'>Animation</a>, <a class='category' href='/blog/categories/objective-c/'>Objective-C</a>, <a class='category' href='/blog/categories/sample/'>Sample</a>, <a class='category' href='/blog/categories/uikit/'>UIKit</a>, <a class='category' href='/blog/categories/uiview/'>UIView</a>, <a class='category' href='/blog/categories/xcode/'>Xcode</a>
+
+
+</div>
+	
+</div>
+</article>
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/03/31/objc-remove-object-in-range/">
+		
+			検索範囲を指定してオブジェクトを削除する</a>
+	</h2>
+	<div class="entry-content">
+		<p>特定の範囲内にあるオブジェクトを検索して削除したい場合は、「removeObject:inRange」メソッドを使用します。以下にサンプルを作成しました。</p>
+
+<h2>サンプルダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-remove-object-in-range">https://github.com/masakihirokawa/objc-remove-object-in-range</a></li>
+</ul>
+
+
+<h2>ソースコード</h2>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">main</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="c1">//配列を生成する</span>
+</span><span class='line'>  <span class="n">NSMutableArray</span> <span class="o">*</span><span class="n">myArray</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">myArray</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSMutableArray</span> <span class="nl">arrayWithObjects:</span>
+</span><span class='line'>             <span class="s">@&quot;Apple&quot;</span><span class="p">,</span> <span class="s">@&quot;Banana&quot;</span><span class="p">,</span> <span class="s">@&quot;Orange&quot;</span><span class="p">,</span> <span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">//範囲を指定して削除する</span>
+</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;myArray: %@&quot;</span><span class="p">,</span> <span class="n">myArray</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">myArray</span> <span class="nl">removeObject:</span><span class="s">@&quot;Apple&quot;</span>
+</span><span class='line'>                <span class="nl">inRange:</span><span class="n">NSMakeRange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)];</span>
+</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;myArray: %@&quot;</span><span class="p">,</span> <span class="n">myArray</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>出力結果</h2>
+
+<blockquote><p>myArray: Apple, Banana, Orange<br />
+myArray: Banana, Orange</p></blockquote>
+
+		
+		
+		<div id="google-adsense-728_15">
+  <div class="google-adsense-728_15-container">
+    <script type="text/javascript">
+    <!--
+      google_ad_client = "ca-pub-0667784050147760";
+      google_ad_slot = "9219927027";
+      google_ad_width = 728;
+      google_ad_height = 15;
+    //-->
+    </script>
+    <script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js"></script>
+  </div>
+</div>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-31T08:50:00+09:00" pubdate data-updated="true">Mar 31<span>st</span>, 2013</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/foundation/'>Foundation</a>, <a class='category' href='/blog/categories/nsmutablearray/'>NSMutableArray</a>, <a class='category' href='/blog/categories/objective-c/'>Objective-C</a>
+
+
+</div>
+	
+</div>
+</article>
+
+
+    <article class="post">
+	<h2 class="title">
+		
 		<a href="/blog/2013/03/31/objc-perform-selector-after-delay/">
 		
 			一定時間後にメソッドを実行するタイマー</a>
@@ -195,219 +503,6 @@
 </div>
 </article>
 
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/03/31/objc-remove-object/">
-		
-			配列やセットからオブジェクトを削除する</a>
-	</h2>
-	<div class="entry-content">
-		<p>配列やセットからオブジェクトを削除するサンプルを以下に作成しました。</p>
-
-<h2>サンプルダウンロード</h2>
-
-<ul>
-<li><a href="https://github.com/masakihirokawa/objc-remove-object">https://github.com/masakihirokawa/objc-remove-object</a></li>
-</ul>
-
-
-<h2>ソースコード</h2>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">main</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="c1">//配列を生成する</span>
-</span><span class='line'>  <span class="n">NSMutableArray</span> <span class="o">*</span><span class="n">myArray</span><span class="p">;</span>
-</span><span class='line'>  <span class="n">myArray</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSMutableArray</span> <span class="nl">arrayWithObjects:</span>
-</span><span class='line'>             <span class="s">@&quot;Apple&quot;</span><span class="p">,</span> <span class="s">@&quot;Banana&quot;</span><span class="p">,</span> <span class="s">@&quot;Orange&quot;</span><span class="p">,</span> <span class="nb">nil</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="c1">//順序付けされたセットを生成する</span>
-</span><span class='line'>  <span class="n">NSMutableOrderedSet</span> <span class="o">*</span><span class="n">orderedSet</span><span class="p">;</span>
-</span><span class='line'>  <span class="n">orderedSet</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSMutableOrderedSet</span> <span class="nl">orderedSetWithArray:</span><span class="n">myArray</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="c1">//オブジェクトを指定して削除する</span>
-</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;myArray: %@&quot;</span><span class="p">,</span> <span class="n">myArray</span><span class="p">);</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">myArray</span> <span class="nl">removeObject:</span><span class="s">@&quot;Apple&quot;</span><span class="p">];</span>
-</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;myArray: %@&quot;</span><span class="p">,</span> <span class="n">myArray</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;orderedSet: %@&quot;</span><span class="p">,</span> <span class="n">orderedSet</span><span class="p">);</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">orderedSet</span> <span class="nl">removeObject:</span><span class="s">@&quot;Apple&quot;</span><span class="p">];</span>
-</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;orderedSet: %@&quot;</span><span class="p">,</span> <span class="n">orderedSet</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>出力結果</h2>
-
-<blockquote><p>Apple, Banana, Orange<br />
-Banana, Orange</p></blockquote>
-
-		
-		
-		<div id="google-adsense-728_15">
-  <div class="google-adsense-728_15-container">
-    <script type="text/javascript">
-    <!--
-      google_ad_client = "ca-pub-0667784050147760";
-      google_ad_slot = "9219927027";
-      google_ad_width = 728;
-      google_ad_height = 15;
-    //-->
-    </script>
-    <script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js"></script>
-  </div>
-</div>
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-03-31T07:20:00+09:00" pubdate data-updated="true">Mar 31<span>st</span>, 2013</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/foundation/'>Foundation</a>, <a class='category' href='/blog/categories/nsmutablearray/'>NSMutableArray</a>, <a class='category' href='/blog/categories/nsmutableorderedset/'>NSMutableOrderedSet</a>, <a class='category' href='/blog/categories/objective-c/'>Objective-C</a>
-
-
-</div>
-	
-</div>
-</article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/03/31/objc-add-set-add-objects-from-array/">
-		
-			順序付けされたセットに複数のオブジェクトを挿入する</a>
-	</h2>
-	<div class="entry-content">
-		<p>順序付けされたセットに、重複しない複数のオブジェクトを挿入する方法を以下に記載します。</p>
-
-<h2>サンプルダウンロード</h2>
-
-<ul>
-<li><a href="https://github.com/masakihirokawa/objc-set-add-objects-from-array">https://github.com/masakihirokawa/objc-set-add-objects-from-array</a></li>
-</ul>
-
-
-<h2>ソースコード</h2>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">main</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="c1">//順序付けされたセットを生成する</span>
-</span><span class='line'>  <span class="n">NSMutableOrderedSet</span> <span class="o">*</span><span class="n">orderedSet</span><span class="p">;</span>
-</span><span class='line'>  <span class="n">orderedSet</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSMutableOrderedSet</span> <span class="n">orderedSet</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="c1">//追加するオブジェクトの配列を生成する</span>
-</span><span class='line'>  <span class="n">NSArray</span> <span class="o">*</span><span class="n">myArray</span><span class="p">;</span>
-</span><span class='line'>  <span class="n">myArray</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSArray</span> <span class="nl">arrayWithObjects:</span>
-</span><span class='line'>             <span class="s">@&quot;Apple&quot;</span><span class="p">,</span> <span class="s">@&quot;Banana&quot;</span><span class="p">,</span> <span class="s">@&quot;Apple&quot;</span><span class="p">,</span> <span class="nb">nil</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="c1">//順序付けされたセットに追加する</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">orderedSet</span> <span class="nl">addObjectsFromArray:</span><span class="n">myArray</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;%@&quot;</span><span class="p">,</span> <span class="n">orderedSet</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>出力結果</h2>
-
-<blockquote><p>Apple, Banana</p></blockquote>
-
-		
-		
-		<div id="google-adsense-728_15">
-  <div class="google-adsense-728_15-container">
-    <script type="text/javascript">
-    <!--
-      google_ad_client = "ca-pub-0667784050147760";
-      google_ad_slot = "9219927027";
-      google_ad_width = 728;
-      google_ad_height = 15;
-    //-->
-    </script>
-    <script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js"></script>
-  </div>
-</div>
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-03-31T07:15:00+09:00" pubdate data-updated="true">Mar 31<span>st</span>, 2013</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/foundation/'>Foundation</a>, <a class='category' href='/blog/categories/nsarray/'>NSArray</a>, <a class='category' href='/blog/categories/nsmutableorderedset/'>NSMutableOrderedSet</a>, <a class='category' href='/blog/categories/objective-c/'>Objective-C</a>
-
-
-</div>
-	
-</div>
-</article>
-
 <nav id="pagenavi">
     
         <a href="/blog/page/44/" class="prev">Prev</a>
@@ -464,7 +559,7 @@ Banana, Orange</p></blockquote>
   <div class="information-box-wide">
 <section>
   <h1>Tag Cloud</h1>
-    <span id="tag-cloud"><a href='/blog/categories/actionscript' style='font-size: 102.75510204081633%'>ActionScript(9)</a> <a href='/blog/categories/actionscript3' style='font-size: 102.14285714285714%'>ActionScript3(7)</a> <a href='/blog/categories/admob' style='font-size: 100.61224489795919%'>AdMob(2)</a> <a href='/blog/categories/animation' style='font-size: 105.20408163265306%'>Animation(17)</a> <a href='/blog/categories/appdelegate' style='font-size: 100.91836734693878%'>AppDelegate(3)</a> <a href='/blog/categories/arc' style='font-size: 100.3061224489796%'>ARC(1)</a> <a href='/blog/categories/avaudioplayer' style='font-size: 101.22448979591837%'>AVAudioPlayer(4)</a> <a href='/blog/categories/avaudiosession' style='font-size: 100.3061224489796%'>AVAudioSession(1)</a> <a href='/blog/categories/avfoundation' style='font-size: 100.91836734693878%'>AVFoundation(3)</a> <a href='/blog/categories/banner' style='font-size: 101.22448979591837%'>Banner(4)</a> <a href='/blog/categories/camera' style='font-size: 101.22448979591837%'>Camera(4)</a> <a href='/blog/categories/cgaffinetransform' style='font-size: 101.22448979591837%'>CGAffineTransform(4)</a> <a href='/blog/categories/cgblendmode' style='font-size: 100.61224489795919%'>CGBlendMode(2)</a> <a href='/blog/categories/cgcontextref' style='font-size: 100.3061224489796%'>CGContextRef(1)</a> <a href='/blog/categories/cgimageref' style='font-size: 100.3061224489796%'>CGImageRef(1)</a> <a href='/blog/categories/classes' style='font-size: 111.93877551020408%'>Classes(39)</a> <a href='/blog/categories/cllocationmanager' style='font-size: 100.3061224489796%'>CLLocationManager(1)</a> <a href='/blog/categories/corelocation' style='font-size: 100.61224489795919%'>CoreLocation(2)</a> <a href='/blog/categories/delegate' style='font-size: 100.91836734693878%'>Delegate(3)</a> <a href='/blog/categories/device' style='font-size: 102.14285714285714%'>Device(7)</a> <a href='/blog/categories/download' style='font-size: 123.26530612244898%'>Download(76)</a> <a href='/blog/categories/facebook' style='font-size: 101.53061224489795%'>Facebook(5)</a> <a href='/blog/categories/foundation' style='font-size: 122.04081632653062%'>Foundation(72)</a> <a href='/blog/categories/framework' style='font-size: 100.61224489795919%'>Framework(2)</a> <a href='/blog/categories/iad' style='font-size: 101.53061224489795%'>iAd(5)</a> <a href='/blog/categories/inapppurchase' style='font-size: 100.61224489795919%'>InAppPurchase(2)</a> <a href='/blog/categories/ios' style='font-size: 102.75510204081633%'>iOS(9)</a> <a href='/blog/categories/ipad' style='font-size: 101.83673469387755%'>iPad(6)</a> <a href='/blog/categories/iphone' style='font-size: 102.14285714285714%'>iPhone(7)</a> <a href='/blog/categories/javascript' style='font-size: 100.61224489795919%'>JavaScript(2)</a> <a href='/blog/categories/line' style='font-size: 100.91836734693878%'>LINE(3)</a> <a href='/blog/categories/nend' style='font-size: 100.61224489795919%'>Nend(2)</a> <a href='/blog/categories/nsarray' style='font-size: 106.73469387755102%'>NSArray(22)</a> <a href='/blog/categories/nscalendar' style='font-size: 100.91836734693878%'>NSCalendar(3)</a> <a href='/blog/categories/nsdata' style='font-size: 100.3061224489796%'>NSData(1)</a> <a href='/blog/categories/nsdate' style='font-size: 101.53061224489795%'>NSDate(5)</a> <a href='/blog/categories/nsdatecomponents' style='font-size: 100.61224489795919%'>NSDateComponents(2)</a> <a href='/blog/categories/nsdateformatter' style='font-size: 100.3061224489796%'>NSDateFormatter(1)</a> <a href='/blog/categories/nsdictionary' style='font-size: 103.06122448979592%'>NSDictionary(10)</a> <a href='/blog/categories/nsenumerator' style='font-size: 100.3061224489796%'>NSEnumerator(1)</a> <a href='/blog/categories/nsindexset' style='font-size: 100.3061224489796%'>NSIndexSet(1)</a> <a href='/blog/categories/nsinteger' style='font-size: 101.83673469387755%'>NSInteger(6)</a> <a href='/blog/categories/nsmutablearray' style='font-size: 104.59183673469389%'>NSMutableArray(15)</a> <a href='/blog/categories/nsmutabledictionary' style='font-size: 101.53061224489795%'>NSMutableDictionary(5)</a> <a href='/blog/categories/nsmutableorderedset' style='font-size: 102.14285714285714%'>NSMutableOrderedSet(7)</a> <a href='/blog/categories/nsmutablestring' style='font-size: 101.22448979591837%'>NSMutableString(4)</a> <a href='/blog/categories/nsnotificationcenter' style='font-size: 100.3061224489796%'>NSNotificationCenter(1)</a> <a href='/blog/categories/nsnumber' style='font-size: 100.3061224489796%'>NSNumber(1)</a> <a href='/blog/categories/nsobject' style='font-size: 100.3061224489796%'>NSObject(1)</a> <a href='/blog/categories/nsorderedset' style='font-size: 102.14285714285714%'>NSOrderedSet(7)</a> <a href='/blog/categories/nsrange' style='font-size: 100.61224489795919%'>NSRange(2)</a> <a href='/blog/categories/nsselectorfromstring' style='font-size: 100.3061224489796%'>NSSelectorFromString(1)</a> <a href='/blog/categories/nsset' style='font-size: 101.83673469387755%'>NSSet(6)</a> <a href='/blog/categories/nsstring' style='font-size: 105.20408163265306%'>NSString(17)</a> <a href='/blog/categories/nstimer' style='font-size: 101.22448979591837%'>NSTimer(4)</a> <a href='/blog/categories/nstimezone' style='font-size: 100.3061224489796%'>NSTimeZone(1)</a> <a href='/blog/categories/nsurl' style='font-size: 101.53061224489795%'>NSURL(5)</a> <a href='/blog/categories/nsurlrequest' style='font-size: 100.61224489795919%'>NSURLRequest(2)</a> <a href='/blog/categories/nsuserdefaults' style='font-size: 101.83673469387755%'>NSUserDefaults(6)</a> <a href='/blog/categories/nsxmlparser' style='font-size: 100.61224489795919%'>NSXMLParser(2)</a> <a href='/blog/categories/objective-c' style='font-size: 160.0%'>Objective-C(196)</a> <a href='/blog/categories/products' style='font-size: 101.22448979591837%'>Products(4)</a> <a href='/blog/categories/quartzcore' style='font-size: 100.91836734693878%'>QuartzCore(3)</a> <a href='/blog/categories/rss' style='font-size: 100.61224489795919%'>RSS(2)</a> <a href='/blog/categories/sample' style='font-size: 115.3061224489796%'>Sample(50)</a> <a href='/blog/categories/screensaver' style='font-size: 102.75510204081633%'>Screensaver(9)</a> <a href='/blog/categories/sdk' style='font-size: 100.3061224489796%'>SDK(1)</a> <a href='/blog/categories/social' style='font-size: 102.14285714285714%'>Social(7)</a> <a href='/blog/categories/storekit' style='font-size: 100.61224489795919%'>StoreKit(2)</a> <a href='/blog/categories/twitter' style='font-size: 101.53061224489795%'>Twitter(5)</a> <a href='/blog/categories/uiaccelerometer' style='font-size: 100.91836734693878%'>UIAccelerometer(3)</a> <a href='/blog/categories/uiactionsheet' style='font-size: 100.3061224489796%'>UIActionSheet(1)</a> <a href='/blog/categories/uiactivityindicatorview' style='font-size: 100.91836734693878%'>UIActivityIndicatorView(3)</a> <a href='/blog/categories/uiactivityviewcontroller' style='font-size: 100.3061224489796%'>UIActivityViewController(1)</a> <a href='/blog/categories/uialertview' style='font-size: 100.91836734693878%'>UIAlertView(3)</a> <a href='/blog/categories/uiapplication' style='font-size: 101.53061224489795%'>UIApplication(5)</a> <a href='/blog/categories/uibutton' style='font-size: 101.22448979591837%'>UIButton(4)</a> <a href='/blog/categories/uicolor' style='font-size: 100.91836734693878%'>UIColor(3)</a> <a href='/blog/categories/uidatepicker' style='font-size: 100.91836734693878%'>UIDatePicker(3)</a> <a href='/blog/categories/uideviceorientation' style='font-size: 100.3061224489796%'>UIDeviceOrientation(1)</a> <a href='/blog/categories/uievent' style='font-size: 101.83673469387755%'>UIEvent(6)</a> <a href='/blog/categories/uiimage' style='font-size: 104.59183673469389%'>UIImage(15)</a> <a href='/blog/categories/uiimagepickercontroller' style='font-size: 101.22448979591837%'>UIImagePickerController(4)</a> <a href='/blog/categories/uiimageview' style='font-size: 103.6734693877551%'>UIImageView(12)</a> <a href='/blog/categories/uikit' style='font-size: 117.44897959183673%'>UIKit(57)</a> <a href='/blog/categories/uilabel' style='font-size: 102.14285714285714%'>UILabel(7)</a> <a href='/blog/categories/uinavigationbar' style='font-size: 101.22448979591837%'>UINavigationBar(4)</a> <a href='/blog/categories/uinavigationitem' style='font-size: 100.3061224489796%'>UINavigationItem(1)</a> <a href='/blog/categories/uipasteboard' style='font-size: 100.61224489795919%'>UIPasteboard(2)</a> <a href='/blog/categories/uiscreen' style='font-size: 100.3061224489796%'>UIScreen(1)</a> <a href='/blog/categories/uiscrollbar' style='font-size: 100.3061224489796%'>UIScrollBar(1)</a> <a href='/blog/categories/uiscrollview' style='font-size: 100.3061224489796%'>UIScrollView(1)</a> <a href='/blog/categories/uislider' style='font-size: 100.91836734693878%'>UISlider(3)</a> <a href='/blog/categories/uistoryboardsegue' style='font-size: 100.91836734693878%'>UIStoryboardSegue(3)</a> <a href='/blog/categories/uiswitch' style='font-size: 100.3061224489796%'>UISwitch(1)</a> <a href='/blog/categories/uitabbar' style='font-size: 100.61224489795919%'>UITabBar(2)</a> <a href='/blog/categories/uitextfield' style='font-size: 100.61224489795919%'>UITextField(2)</a> <a href='/blog/categories/uiview' style='font-size: 103.36734693877551%'>UIView(11)</a> <a href='/blog/categories/uiviewanimationtransition' style='font-size: 100.3061224489796%'>UIViewAnimationTransition(1)</a> <a href='/blog/categories/uiviewcontroller' style='font-size: 101.22448979591837%'>UIViewController(4)</a> <a href='/blog/categories/uiwebview' style='font-size: 100.91836734693878%'>UIWebView(3)</a> <a href='/blog/categories/xcode' style='font-size: 111.63265306122449%'>Xcode(38)</a> </span>
+  <p id="tag-cloud"><a href='/blog/categories/actionscript' style='font-size: 102.74111675126903%'>ActionScript(9)</a> <a href='/blog/categories/actionscript3' style='font-size: 102.13197969543147%'>ActionScript3(7)</a> <a href='/blog/categories/admob' style='font-size: 100.60913705583756%'>AdMob(2)</a> <a href='/blog/categories/animation' style='font-size: 105.17766497461929%'>Animation(17)</a> <a href='/blog/categories/appdelegate' style='font-size: 100.91370558375634%'>AppDelegate(3)</a> <a href='/blog/categories/arc' style='font-size: 100.30456852791878%'>ARC(1)</a> <a href='/blog/categories/avaudioplayer' style='font-size: 101.21827411167513%'>AVAudioPlayer(4)</a> <a href='/blog/categories/avaudiosession' style='font-size: 100.30456852791878%'>AVAudioSession(1)</a> <a href='/blog/categories/avfoundation' style='font-size: 100.91370558375634%'>AVFoundation(3)</a> <a href='/blog/categories/banner' style='font-size: 101.21827411167513%'>Banner(4)</a> <a href='/blog/categories/camera' style='font-size: 101.21827411167513%'>Camera(4)</a> <a href='/blog/categories/cgaffinetransform' style='font-size: 101.21827411167513%'>CGAffineTransform(4)</a> <a href='/blog/categories/cgblendmode' style='font-size: 100.60913705583756%'>CGBlendMode(2)</a> <a href='/blog/categories/cgcontextref' style='font-size: 100.30456852791878%'>CGContextRef(1)</a> <a href='/blog/categories/cgimageref' style='font-size: 100.30456852791878%'>CGImageRef(1)</a> <a href='/blog/categories/classes' style='font-size: 111.87817258883248%'>Classes(39)</a> <a href='/blog/categories/cllocationmanager' style='font-size: 100.30456852791878%'>CLLocationManager(1)</a> <a href='/blog/categories/corelocation' style='font-size: 100.60913705583756%'>CoreLocation(2)</a> <a href='/blog/categories/delegate' style='font-size: 100.91370558375634%'>Delegate(3)</a> <a href='/blog/categories/device' style='font-size: 102.13197969543147%'>Device(7)</a> <a href='/blog/categories/download' style='font-size: 123.14720812182742%'>Download(76)</a> <a href='/blog/categories/facebook' style='font-size: 101.5228426395939%'>Facebook(5)</a> <a href='/blog/categories/foundation' style='font-size: 121.92893401015229%'>Foundation(72)</a> <a href='/blog/categories/framework' style='font-size: 100.60913705583756%'>Framework(2)</a> <a href='/blog/categories/iad' style='font-size: 101.5228426395939%'>iAd(5)</a> <a href='/blog/categories/inapppurchase' style='font-size: 100.60913705583756%'>InAppPurchase(2)</a> <a href='/blog/categories/ios' style='font-size: 103.04568527918782%'>iOS(10)</a> <a href='/blog/categories/ios-7' style='font-size: 100.60913705583756%'>iOS 7(2)</a> <a href='/blog/categories/ipad' style='font-size: 101.8274111675127%'>iPad(6)</a> <a href='/blog/categories/iphone' style='font-size: 102.13197969543147%'>iPhone(7)</a> <a href='/blog/categories/javascript' style='font-size: 100.60913705583756%'>JavaScript(2)</a> <a href='/blog/categories/line' style='font-size: 100.91370558375634%'>LINE(3)</a> <a href='/blog/categories/nend' style='font-size: 100.60913705583756%'>Nend(2)</a> <a href='/blog/categories/nsarray' style='font-size: 106.7005076142132%'>NSArray(22)</a> <a href='/blog/categories/nscalendar' style='font-size: 100.91370558375634%'>NSCalendar(3)</a> <a href='/blog/categories/nsdata' style='font-size: 100.30456852791878%'>NSData(1)</a> <a href='/blog/categories/nsdate' style='font-size: 101.5228426395939%'>NSDate(5)</a> <a href='/blog/categories/nsdatecomponents' style='font-size: 100.60913705583756%'>NSDateComponents(2)</a> <a href='/blog/categories/nsdateformatter' style='font-size: 100.30456852791878%'>NSDateFormatter(1)</a> <a href='/blog/categories/nsdictionary' style='font-size: 103.04568527918782%'>NSDictionary(10)</a> <a href='/blog/categories/nsenumerator' style='font-size: 100.30456852791878%'>NSEnumerator(1)</a> <a href='/blog/categories/nsindexset' style='font-size: 100.30456852791878%'>NSIndexSet(1)</a> <a href='/blog/categories/nsinteger' style='font-size: 101.8274111675127%'>NSInteger(6)</a> <a href='/blog/categories/nsmutablearray' style='font-size: 104.56852791878173%'>NSMutableArray(15)</a> <a href='/blog/categories/nsmutabledictionary' style='font-size: 101.5228426395939%'>NSMutableDictionary(5)</a> <a href='/blog/categories/nsmutableorderedset' style='font-size: 102.13197969543147%'>NSMutableOrderedSet(7)</a> <a href='/blog/categories/nsmutablestring' style='font-size: 101.21827411167513%'>NSMutableString(4)</a> <a href='/blog/categories/nsnotificationcenter' style='font-size: 100.30456852791878%'>NSNotificationCenter(1)</a> <a href='/blog/categories/nsnumber' style='font-size: 100.30456852791878%'>NSNumber(1)</a> <a href='/blog/categories/nsobject' style='font-size: 100.30456852791878%'>NSObject(1)</a> <a href='/blog/categories/nsorderedset' style='font-size: 102.13197969543147%'>NSOrderedSet(7)</a> <a href='/blog/categories/nsrange' style='font-size: 100.60913705583756%'>NSRange(2)</a> <a href='/blog/categories/nsselectorfromstring' style='font-size: 100.30456852791878%'>NSSelectorFromString(1)</a> <a href='/blog/categories/nsset' style='font-size: 101.8274111675127%'>NSSet(6)</a> <a href='/blog/categories/nsstring' style='font-size: 105.17766497461929%'>NSString(17)</a> <a href='/blog/categories/nstimer' style='font-size: 101.21827411167513%'>NSTimer(4)</a> <a href='/blog/categories/nstimezone' style='font-size: 100.30456852791878%'>NSTimeZone(1)</a> <a href='/blog/categories/nsurl' style='font-size: 101.5228426395939%'>NSURL(5)</a> <a href='/blog/categories/nsurlrequest' style='font-size: 100.60913705583756%'>NSURLRequest(2)</a> <a href='/blog/categories/nsuserdefaults' style='font-size: 101.8274111675127%'>NSUserDefaults(6)</a> <a href='/blog/categories/nsxmlparser' style='font-size: 100.60913705583756%'>NSXMLParser(2)</a> <a href='/blog/categories/objective-c' style='font-size: 160.0%'>Objective-C(197)</a> <a href='/blog/categories/products' style='font-size: 101.21827411167513%'>Products(4)</a> <a href='/blog/categories/quartzcore' style='font-size: 100.91370558375634%'>QuartzCore(3)</a> <a href='/blog/categories/rss' style='font-size: 100.60913705583756%'>RSS(2)</a> <a href='/blog/categories/sample' style='font-size: 115.22842639593908%'>Sample(50)</a> <a href='/blog/categories/screensaver' style='font-size: 102.74111675126903%'>Screensaver(9)</a> <a href='/blog/categories/sdk' style='font-size: 100.60913705583756%'>SDK(2)</a> <a href='/blog/categories/social' style='font-size: 102.13197969543147%'>Social(7)</a> <a href='/blog/categories/storekit' style='font-size: 100.60913705583756%'>StoreKit(2)</a> <a href='/blog/categories/twitter' style='font-size: 101.5228426395939%'>Twitter(5)</a> <a href='/blog/categories/uiaccelerometer' style='font-size: 100.91370558375634%'>UIAccelerometer(3)</a> <a href='/blog/categories/uiactionsheet' style='font-size: 100.30456852791878%'>UIActionSheet(1)</a> <a href='/blog/categories/uiactivityindicatorview' style='font-size: 100.91370558375634%'>UIActivityIndicatorView(3)</a> <a href='/blog/categories/uiactivityviewcontroller' style='font-size: 100.30456852791878%'>UIActivityViewController(1)</a> <a href='/blog/categories/uialertview' style='font-size: 100.91370558375634%'>UIAlertView(3)</a> <a href='/blog/categories/uiapplication' style='font-size: 101.5228426395939%'>UIApplication(5)</a> <a href='/blog/categories/uibutton' style='font-size: 101.21827411167513%'>UIButton(4)</a> <a href='/blog/categories/uicolor' style='font-size: 100.91370558375634%'>UIColor(3)</a> <a href='/blog/categories/uidatepicker' style='font-size: 100.91370558375634%'>UIDatePicker(3)</a> <a href='/blog/categories/uideviceorientation' style='font-size: 100.30456852791878%'>UIDeviceOrientation(1)</a> <a href='/blog/categories/uievent' style='font-size: 101.8274111675127%'>UIEvent(6)</a> <a href='/blog/categories/uiimage' style='font-size: 104.56852791878173%'>UIImage(15)</a> <a href='/blog/categories/uiimagepickercontroller' style='font-size: 101.21827411167513%'>UIImagePickerController(4)</a> <a href='/blog/categories/uiimageview' style='font-size: 103.65482233502539%'>UIImageView(12)</a> <a href='/blog/categories/uikit' style='font-size: 117.36040609137055%'>UIKit(57)</a> <a href='/blog/categories/uilabel' style='font-size: 102.13197969543147%'>UILabel(7)</a> <a href='/blog/categories/uinavigationbar' style='font-size: 101.21827411167513%'>UINavigationBar(4)</a> <a href='/blog/categories/uinavigationitem' style='font-size: 100.30456852791878%'>UINavigationItem(1)</a> <a href='/blog/categories/uipasteboard' style='font-size: 100.60913705583756%'>UIPasteboard(2)</a> <a href='/blog/categories/uiscreen' style='font-size: 100.30456852791878%'>UIScreen(1)</a> <a href='/blog/categories/uiscrollbar' style='font-size: 100.30456852791878%'>UIScrollBar(1)</a> <a href='/blog/categories/uiscrollview' style='font-size: 100.30456852791878%'>UIScrollView(1)</a> <a href='/blog/categories/uislider' style='font-size: 100.91370558375634%'>UISlider(3)</a> <a href='/blog/categories/uistoryboardsegue' style='font-size: 100.91370558375634%'>UIStoryboardSegue(3)</a> <a href='/blog/categories/uiswitch' style='font-size: 100.30456852791878%'>UISwitch(1)</a> <a href='/blog/categories/uitabbar' style='font-size: 100.60913705583756%'>UITabBar(2)</a> <a href='/blog/categories/uitextfield' style='font-size: 100.60913705583756%'>UITextField(2)</a> <a href='/blog/categories/uiview' style='font-size: 103.3502538071066%'>UIView(11)</a> <a href='/blog/categories/uiviewanimationtransition' style='font-size: 100.30456852791878%'>UIViewAnimationTransition(1)</a> <a href='/blog/categories/uiviewcontroller' style='font-size: 101.21827411167513%'>UIViewController(4)</a> <a href='/blog/categories/uiwebview' style='font-size: 100.91370558375634%'>UIWebView(3)</a> <a href='/blog/categories/xcode' style='font-size: 112.18274111675127%'>Xcode(40)</a> </p>
 </section>
 
   </div>
@@ -472,6 +567,14 @@ Banana, Orange</p></blockquote>
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/09/19/objc-deprecated-api-ios7/">iOS 7から非推奨になった API一覧 (日本語訳)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/09/19/xcode-5-update/">Xcode 5へのアップデート時に気をつけたい4つのポイント</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2013/09/10/download-objc-classes-2013-sep/">Objective-Cのクラスライブラリ「DCLibrary」を公開しました</a>
@@ -487,14 +590,6 @@ Banana, Orange</p></blockquote>
     
       <li class="post">
         <a href="/blog/2013/09/09/objc-classes-dc-blend-image/">画像をブレンド加工する「DCBlendImage」クラス</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/09/09/download-objc-classes-dc-randomize/">乱数の生成や配列のシャッフルを行う「DCRandomize」クラス</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/09/06/objc-ui-tab-bar-controller/">UITabBarを使用した画面で外から画面遷移を呼ぶ方法</a>
       </li>
     
   </ul>
