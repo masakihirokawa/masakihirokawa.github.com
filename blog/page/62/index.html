@@ -6,31 +6,25 @@
 	<title>Dolice Lab</title>
 	
 	
-	<meta name="description" content="Objective-Cで各単語の頭文字を大文字に変換する方法を以下に記載します。 サンプルダウンロード https://github.com/masakihirokawa/objc-capitalized-string ソースコード 1
+	<meta name="description" content="遷移先の画面(ここでは SecondViewController)へ変数を渡す方法を以下に記載します。 まず、遷移元の画面の実装ファイル(ViewController.m)に以下のコードを記述します ViewController.m 1
 2
 3
 4
 5
 6
 7
-8
-9
-10
-- (void) &hellip;">
+//遷移先の画面( &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	<meta property="og:title" content="Dolice Lab" />
-<meta property="og:description" content="Objective-Cで各単語の頭文字を大文字に変換する方法を以下に記載します。 サンプルダウンロード https://github.com/masakihirokawa/objc-capitalized-string ソースコード 1
+<meta property="og:description" content="遷移先の画面(ここでは SecondViewController)へ変数を渡す方法を以下に記載します。 まず、遷移元の画面の実装ファイル(ViewController.m)に以下のコードを記述します ViewController.m 1
 2
 3
 4
 5
 6
 7
-8
-9
-10
-- (void) &hellip;" />
+//遷移先の画面( &hellip;" />
 <meta property="og:url" content="http://lab.dolice.net/blog/page/62/" />
 <meta property="og:image" content="http://lab.dolice.net/images/facebook-icon.jpg" />
 <meta property="og:author" content="Masaki Hirokawa" />
@@ -122,21 +116,16 @@
     <article class="post">
 	<h2 class="title">
 		
-		<a href="/blog/2013/03/20/objc-capitalized-string/">
+		<a href="/blog/2013/03/21/objc-segue-args/">
 		
-			各単語の頭文字を大文字にする</a>
+			遷移先の画面に変数を渡す</a>
 	</h2>
 	<div class="entry-content">
-		<p>Objective-Cで各単語の頭文字を大文字に変換する方法を以下に記載します。</p>
+		<p>遷移先の画面(ここでは SecondViewController)へ変数を渡す方法を以下に記載します。</p>
 
-<h2>サンプルダウンロード</h2>
+<p>まず、遷移元の画面の実装ファイル(ViewController.m)に以下のコードを記述します</p>
 
-<ul>
-<li><a href="https://github.com/masakihirokawa/objc-capitalized-string">https://github.com/masakihirokawa/objc-capitalized-string</a></li>
-</ul>
-
-
-<h2>ソースコード</h2>
+<h2>ViewController.m</h2>
 
 <figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -145,25 +134,43 @@
 <span class='line-number'>5</span>
 <span class='line-number'>6</span>
 <span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">main</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="c1">//変換元の文字列を作成</span>
-</span><span class='line'>  <span class="n">NSString</span> <span class="o">*</span><span class="n">str</span> <span class="o">=</span> <span class="s">@&quot;The Objective-C language.&quot;</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="c1">//各単語の頭文字を大文字にする</span>
-</span><span class='line'>  <span class="n">str</span> <span class="o">=</span> <span class="p">[</span><span class="n">str</span> <span class="n">capitalizedString</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;%@&quot;</span><span class="p">,</span> <span class="n">str</span><span class="p">);</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//遷移先の画面(SecondViewController)に変数を渡す</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">prepareForSegue:</span><span class="p">(</span><span class="n">UIStoryboardSegue</span> <span class="o">*</span><span class="p">)</span><span class="nv">segue</span> <span class="nf">sender:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">([</span><span class="n">segue</span><span class="p">.</span><span class="n">identifier</span> <span class="nl">isEqualToString:</span><span class="s">@&quot;mySegue&quot;</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">SecondViewController</span> <span class="o">*</span><span class="n">secondViewController</span> <span class="o">=</span> <span class="n">segue</span><span class="p">.</span><span class="n">destinationViewController</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">secondViewController</span><span class="p">.</span><span class="n">arg</span> <span class="o">=</span> <span class="n">_arg</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
 </span><span class='line'><span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<h2>出力結果</h2>
+<p>次に遷移先の画面のヘッダファイル(SecondViewController.h)に変数の宣言を追加します</p>
 
-<blockquote><p>The Objective-C Language.</p></blockquote>
+<h2>SecondViewController.h</h2>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">@interface</span> <span class="nc">SecondViewController</span> : <span class="nc">UIViewController</span> <span class="p">{</span>
+</span><span class='line'>  <span class="kt">int</span> <span class="n">_arg</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">)</span> <span class="kt">int</span> <span class="n">arg</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>最後に遷移先の画面の実装ファイル(SecondViewController.m)に @synthesize宣言を追加します</p>
+
+<h2>SecondViewController.m</h2>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">@synthesize</span> <span class="n">arg</span> <span class="o">=</span> <span class="n">_arg</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
 
 		
 		
@@ -183,11 +190,11 @@
   
 
 
-<time datetime="2013-03-20T21:37:00+09:00" pubdate data-updated="true">Mar 20<span>th</span>, 2013</time></div>
+<time datetime="2013-03-21T12:42:00+09:00" pubdate data-updated="true">Mar 21<span>st</span>, 2013</time></div>
 	<div class="tags">
 
 
-	<a class='category' href='/blog/categories/foundation/'>Foundation</a>, <a class='category' href='/blog/categories/nsstring/'>NSString</a>, <a class='category' href='/blog/categories/objective-c/'>Objective-C</a>
+	<a class='category' href='/blog/categories/objective-c/'>Objective-C</a>, <a class='category' href='/blog/categories/uikit/'>UIKit</a>, <a class='category' href='/blog/categories/uistoryboardsegue/'>UIStoryboardSegue</a>, <a class='category' href='/blog/categories/uiviewcontroller/'>UIViewController</a>, <a class='category' href='/blog/categories/xcode/'>Xcode</a>
 
 
 </div>
@@ -199,21 +206,47 @@
     <article class="post">
 	<h2 class="title">
 		
-		<a href="/blog/2013/03/20/objc-case-string/">
+		<a href="/blog/2013/03/21/objc-segue/">
 		
-			大文字・小文字に変換する</a>
+			Xcodeの画面遷移</a>
 	</h2>
 	<div class="entry-content">
-		<p>Objective-Cで文字列を大文字・小文字へ変換する方法を以下に記載します。</p>
+		<p>Xcodeで画面遷移を実装する手順を以下にまとめました。サンプルもダウンロードできますので、説明と合わせてご覧ください。</p>
 
 <h2>サンプルダウンロード</h2>
 
-<ul>
-<li><a href="https://github.com/masakihirokawa/objc-case-string">https://github.com/masakihirokawa/objc-case-string</a></li>
-</ul>
+<p><a href="https://github.com/masakihirokawa/objc-segue">https://github.com/masakihirokawa/objc-segue</a></p>
+
+<h2>手順</h2>
+
+<h3>1: まずストーリーボード上に2つ目の画面(ViewController)を配置します</h3>
+
+<p><img src="/images/article/segue/segue1.png" title="ストーリーボード上に2つ目の画面を配置" alt="ストーリーボード上に2つ目の画面を配置" /></p>
+
+<h3>2: 次に1つ目の画面の下にあるオレンジ色の ViewControllerアイコンを、controlキーを押しながら2つ目の画面へドラッグします</h3>
+
+<p><img src="/images/article/segue/segue2.png" title="オレンジ色の ViewControllerアイコンを右クリックしながら2つ目の画面へドラッグ" alt="オレンジ色の ViewControllerアイコンを右クリックしながら2つ目の画面へドラッグ" /></p>
+
+<h3>3: 遷移の方式を「Push」「Modal」「Custom」のいずれかから選択します</h3>
+
+<p><img src="/images/article/segue/segue3.png" title="遷移の方式を「Push」「Modal」「Custom」のいずれかから選択" alt="遷移の方式を「Push」「Modal」「Custom」のいずれかから選択" /></p>
+
+<h3>4: 1つ目の画面から2つ目の画面へ矢印が引かれ、その真ん中にアイコンがありますので、そこをクリックしてから Xcode画面右側にある Identiferの欄に画面遷移IDを指定します</h3>
+
+<p><img src="/images/article/segue/segue4.png" title="Xcode画面右側にある Identiferの欄に画面遷移IDを指定します" alt="Xcode画面右側にある Identiferの欄に画面遷移IDを指定します" /></p>
+
+<h3>5: 最後に、画面遷移させたいところに以下のコードを記述してください</h3>
+
+<h4>画面遷移</h4>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//次の画面へ遷移</span>
+</span><span class='line'><span class="p">[</span><span class="n">self</span> <span class="nl">performSegueWithIdentifier:</span><span class="s">@&quot;mySegue&quot;</span> <span class="nl">sender:</span><span class="n">self</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
-<h2>ソースコード</h2>
+<h4>2つ目の画面にパラメータを渡したい場合は以下を追記</h4>
 
 <figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -224,30 +257,30 @@
 <span class='line-number'>7</span>
 <span class='line-number'>8</span>
 <span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">main</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="c1">//変換元の文字列を作成</span>
-</span><span class='line'>  <span class="n">NSString</span> <span class="o">*</span><span class="n">originalStr</span> <span class="o">=</span> <span class="s">@&quot;This is Objective-C Language.&quot;</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="c1">//大文字に変換する</span>
-</span><span class='line'>  <span class="n">NSString</span> <span class="o">*</span><span class="n">str</span> <span class="o">=</span> <span class="p">[</span><span class="n">originalStr</span> <span class="n">uppercaseString</span><span class="p">];</span>
-</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;%@&quot;</span><span class="p">,</span> <span class="n">str</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="c1">//小文字に変換する</span>
-</span><span class='line'>  <span class="n">str</span> <span class="o">=</span> <span class="p">[</span><span class="n">originalStr</span> <span class="n">lowercaseString</span><span class="p">];</span>
-</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;%@&quot;</span><span class="p">,</span> <span class="n">str</span><span class="p">);</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//画面遷移時に呼ばれるメソッド</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">prepareForSegue:</span><span class="p">(</span><span class="n">UIStoryboardSegue</span> <span class="o">*</span><span class="p">)</span><span class="nv">segue</span> <span class="nf">sender:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span> <span class="p">{</span>
+</span><span class='line'>  <span class="c1">//2つ目の画面にパラメータを渡して遷移する</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">([</span><span class="n">segue</span><span class="p">.</span><span class="n">identifier</span> <span class="nl">isEqualToString:</span><span class="s">@&quot;mySegue&quot;</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">//ここでパラメータを渡す</span>
+</span><span class='line'>    <span class="n">SecondViewController</span> <span class="o">*</span><span class="n">secondViewController</span> <span class="o">=</span> <span class="n">segue</span><span class="p">.</span><span class="n">destinationViewController</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">secondViewController</span><span class="p">.</span><span class="n">arguments</span> <span class="o">=</span> <span class="n">_arguments</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
 </span><span class='line'><span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<h2>出力結果</h2>
+<h4>画面を閉じる</h4>
 
-<blockquote><p>THIS IS Objective-C LANGUAGE.<br />
-this is Objective-C language.</p></blockquote>
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//前の画面へ戻る</span>
+</span><span class='line'><span class="p">[</span><span class="n">self</span> <span class="nl">dismissViewControllerAnimated:</span><span class="n">YES</span> <span class="nl">completion:</span><span class="nb">NULL</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>関連記事</h2>
+
+<p><a href="/blog/2013/03/31/Xcode-objc-ui-storyboard-segue/" title="次の画面へパラメータを渡して画面遷移する">次の画面へパラメータを渡して画面遷移する</a></p>
 
 		
 		
@@ -267,11 +300,11 @@ this is Objective-C language.</p></blockquote>
   
 
 
-<time datetime="2013-03-20T21:32:00+09:00" pubdate data-updated="true">Mar 20<span>th</span>, 2013</time></div>
+<time datetime="2013-03-21T11:16:00+09:00" pubdate data-updated="true">Mar 21<span>st</span>, 2013</time></div>
 	<div class="tags">
 
 
-	<a class='category' href='/blog/categories/foundation/'>Foundation</a>, <a class='category' href='/blog/categories/nsstring/'>NSString</a>, <a class='category' href='/blog/categories/objective-c/'>Objective-C</a>
+	<a class='category' href='/blog/categories/objective-c/'>Objective-C</a>, <a class='category' href='/blog/categories/uikit/'>UIKit</a>, <a class='category' href='/blog/categories/uistoryboardsegue/'>UIStoryboardSegue</a>, <a class='category' href='/blog/categories/uiviewcontroller/'>UIViewController</a>, <a class='category' href='/blog/categories/xcode/'>Xcode</a>
 
 
 </div>
@@ -283,55 +316,30 @@ this is Objective-C language.</p></blockquote>
     <article class="post">
 	<h2 class="title">
 		
-		<a href="/blog/2013/03/20/objc-has-prefix/">
+		<a href="/blog/2013/03/21/objc-cast/">
 		
-			指定したプレフィックスの有無を調べる</a>
+			文字列〜数値のキャスト</a>
 	</h2>
 	<div class="entry-content">
-		<p>Objective-Cで文字列が指定した接頭詞を持っているか調べる方法を以下に記載します。</p>
+		<p>Objective-Cで数値から文字列へキャストする方法と、文字列から数値へキャストする方法を以下に記載します。</p>
 
-<h2>サンプルダウンロード</h2>
-
-<ul>
-<li><a href="https://github.com/masakihirokawa/objc-has-prefix">https://github.com/masakihirokawa/objc-has-prefix</a></li>
-</ul>
-
-
-<h2>ソースコード</h2>
+<h2>数値から文字列へのキャスト</h2>
 
 <figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">main</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="c1">//チェックする文字列を作成</span>
-</span><span class='line'>  <span class="n">NSString</span> <span class="o">*</span><span class="n">str</span> <span class="o">=</span> <span class="s">@&quot;iPhone5&quot;</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="c1">//「iPhone」というプレフィックスか調べる</span>
-</span><span class='line'>  <span class="kt">BOOL</span> <span class="n">isiPhone</span> <span class="o">=</span> <span class="p">[</span><span class="n">str</span> <span class="nl">hasPrefix:</span><span class="s">@&quot;iPhone&quot;</span><span class="p">];</span>
-</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;hasPrefix:&#39;iPhone&#39; = %d&quot;</span><span class="p">,</span> <span class="n">isiPhone</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="c1">//「iPhone」というプレフィックスか調べる</span>
-</span><span class='line'>  <span class="kt">BOOL</span> <span class="n">isiPhoneLowerCase</span> <span class="o">=</span> <span class="p">[</span><span class="n">str</span> <span class="nl">hasPrefix:</span><span class="s">@&quot;iPhone&quot;</span><span class="p">];</span>
-</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;hasPrefix:&#39;iPhone&#39; = %d&quot;</span><span class="p">,</span> <span class="n">isiPhoneLowerCase</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">NSString</span><span class="o">*</span> <span class="n">myStr</span><span class="p">;</span>
+</span><span class='line'><span class="n">myStr</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSString</span> <span class="n">stringWithFormat</span> <span class="o">:</span> <span class="s">@&quot;%d&quot;</span><span class="p">,</span> <span class="mi">123</span><span class="p">];</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<h2>出力結果</h2>
+<h2>文字列から数値へのキャスト</h2>
 
-<blockquote><p>hasPrefix:&#8217;iPhone&#8217; = 1<br />
-hasPrefix:&#8217;iPhone&#8217; = 0</p></blockquote>
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="kt">int</span> <span class="n">myNumber</span> <span class="o">=</span> <span class="p">[</span> <span class="s">@&quot;123&quot;</span> <span class="n">intValue</span> <span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
 
 		
 		
@@ -351,11 +359,11 @@ hasPrefix:&#8217;iPhone&#8217; = 0</p></blockquote>
   
 
 
-<time datetime="2013-03-20T21:24:00+09:00" pubdate data-updated="true">Mar 20<span>th</span>, 2013</time></div>
+<time datetime="2013-03-21T09:55:00+09:00" pubdate data-updated="true">Mar 21<span>st</span>, 2013</time></div>
 	<div class="tags">
 
 
-	<a class='category' href='/blog/categories/foundation/'>Foundation</a>, <a class='category' href='/blog/categories/nsstring/'>NSString</a>, <a class='category' href='/blog/categories/objective-c/'>Objective-C</a>
+	<a class='category' href='/blog/categories/foundation/'>Foundation</a>, <a class='category' href='/blog/categories/nsinteger/'>NSInteger</a>, <a class='category' href='/blog/categories/nsstring/'>NSString</a>, <a class='category' href='/blog/categories/objective-c/'>Objective-C</a>
 
 
 </div>
@@ -420,7 +428,7 @@ hasPrefix:&#8217;iPhone&#8217; = 0</p></blockquote>
   <div class="information-box-wide">
 <section>
   <h1>Tag Cloud</h1>
-  <p id="tag-cloud"><a href='/blog/categories/actionscript' style='font-size: 102.74111675126903%'>ActionScript(9)</a> <a href='/blog/categories/actionscript3' style='font-size: 102.13197969543147%'>ActionScript3(7)</a> <a href='/blog/categories/admob' style='font-size: 100.60913705583756%'>AdMob(2)</a> <a href='/blog/categories/animation' style='font-size: 105.17766497461929%'>Animation(17)</a> <a href='/blog/categories/appdelegate' style='font-size: 100.91370558375634%'>AppDelegate(3)</a> <a href='/blog/categories/arc' style='font-size: 100.30456852791878%'>ARC(1)</a> <a href='/blog/categories/avaudioplayer' style='font-size: 101.21827411167513%'>AVAudioPlayer(4)</a> <a href='/blog/categories/avaudiosession' style='font-size: 100.30456852791878%'>AVAudioSession(1)</a> <a href='/blog/categories/avfoundation' style='font-size: 100.91370558375634%'>AVFoundation(3)</a> <a href='/blog/categories/banner' style='font-size: 101.21827411167513%'>Banner(4)</a> <a href='/blog/categories/camera' style='font-size: 101.21827411167513%'>Camera(4)</a> <a href='/blog/categories/cgaffinetransform' style='font-size: 101.21827411167513%'>CGAffineTransform(4)</a> <a href='/blog/categories/cgblendmode' style='font-size: 100.60913705583756%'>CGBlendMode(2)</a> <a href='/blog/categories/cgcontextref' style='font-size: 100.30456852791878%'>CGContextRef(1)</a> <a href='/blog/categories/cgimageref' style='font-size: 100.30456852791878%'>CGImageRef(1)</a> <a href='/blog/categories/classes' style='font-size: 111.87817258883248%'>Classes(39)</a> <a href='/blog/categories/cllocationmanager' style='font-size: 100.30456852791878%'>CLLocationManager(1)</a> <a href='/blog/categories/corelocation' style='font-size: 100.60913705583756%'>CoreLocation(2)</a> <a href='/blog/categories/delegate' style='font-size: 100.91370558375634%'>Delegate(3)</a> <a href='/blog/categories/device' style='font-size: 102.13197969543147%'>Device(7)</a> <a href='/blog/categories/download' style='font-size: 123.4517766497462%'>Download(77)</a> <a href='/blog/categories/facebook' style='font-size: 101.5228426395939%'>Facebook(5)</a> <a href='/blog/categories/foundation' style='font-size: 121.92893401015229%'>Foundation(72)</a> <a href='/blog/categories/framework' style='font-size: 100.60913705583756%'>Framework(2)</a> <a href='/blog/categories/iad' style='font-size: 101.5228426395939%'>iAd(5)</a> <a href='/blog/categories/inapppurchase' style='font-size: 100.60913705583756%'>InAppPurchase(2)</a> <a href='/blog/categories/ios' style='font-size: 103.04568527918782%'>iOS(10)</a> <a href='/blog/categories/ios-7' style='font-size: 100.60913705583756%'>iOS 7(2)</a> <a href='/blog/categories/ipad' style='font-size: 101.8274111675127%'>iPad(6)</a> <a href='/blog/categories/iphone' style='font-size: 102.43654822335026%'>iPhone(8)</a> <a href='/blog/categories/javascript' style='font-size: 100.60913705583756%'>JavaScript(2)</a> <a href='/blog/categories/line' style='font-size: 100.91370558375634%'>LINE(3)</a> <a href='/blog/categories/nend' style='font-size: 100.60913705583756%'>Nend(2)</a> <a href='/blog/categories/nsarray' style='font-size: 106.7005076142132%'>NSArray(22)</a> <a href='/blog/categories/nscalendar' style='font-size: 100.91370558375634%'>NSCalendar(3)</a> <a href='/blog/categories/nsdata' style='font-size: 100.30456852791878%'>NSData(1)</a> <a href='/blog/categories/nsdate' style='font-size: 101.5228426395939%'>NSDate(5)</a> <a href='/blog/categories/nsdatecomponents' style='font-size: 100.60913705583756%'>NSDateComponents(2)</a> <a href='/blog/categories/nsdateformatter' style='font-size: 100.30456852791878%'>NSDateFormatter(1)</a> <a href='/blog/categories/nsdictionary' style='font-size: 103.04568527918782%'>NSDictionary(10)</a> <a href='/blog/categories/nsenumerator' style='font-size: 100.30456852791878%'>NSEnumerator(1)</a> <a href='/blog/categories/nsindexset' style='font-size: 100.30456852791878%'>NSIndexSet(1)</a> <a href='/blog/categories/nsinteger' style='font-size: 101.8274111675127%'>NSInteger(6)</a> <a href='/blog/categories/nsmutablearray' style='font-size: 104.56852791878173%'>NSMutableArray(15)</a> <a href='/blog/categories/nsmutabledictionary' style='font-size: 101.5228426395939%'>NSMutableDictionary(5)</a> <a href='/blog/categories/nsmutableorderedset' style='font-size: 102.13197969543147%'>NSMutableOrderedSet(7)</a> <a href='/blog/categories/nsmutablestring' style='font-size: 101.21827411167513%'>NSMutableString(4)</a> <a href='/blog/categories/nsnotificationcenter' style='font-size: 100.30456852791878%'>NSNotificationCenter(1)</a> <a href='/blog/categories/nsnumber' style='font-size: 100.30456852791878%'>NSNumber(1)</a> <a href='/blog/categories/nsobject' style='font-size: 100.30456852791878%'>NSObject(1)</a> <a href='/blog/categories/nsorderedset' style='font-size: 102.13197969543147%'>NSOrderedSet(7)</a> <a href='/blog/categories/nsrange' style='font-size: 100.60913705583756%'>NSRange(2)</a> <a href='/blog/categories/nsselectorfromstring' style='font-size: 100.30456852791878%'>NSSelectorFromString(1)</a> <a href='/blog/categories/nsset' style='font-size: 101.8274111675127%'>NSSet(6)</a> <a href='/blog/categories/nsstring' style='font-size: 105.17766497461929%'>NSString(17)</a> <a href='/blog/categories/nstimer' style='font-size: 101.21827411167513%'>NSTimer(4)</a> <a href='/blog/categories/nstimezone' style='font-size: 100.30456852791878%'>NSTimeZone(1)</a> <a href='/blog/categories/nsurl' style='font-size: 101.5228426395939%'>NSURL(5)</a> <a href='/blog/categories/nsurlrequest' style='font-size: 100.60913705583756%'>NSURLRequest(2)</a> <a href='/blog/categories/nsuserdefaults' style='font-size: 101.8274111675127%'>NSUserDefaults(6)</a> <a href='/blog/categories/nsxmlparser' style='font-size: 100.60913705583756%'>NSXMLParser(2)</a> <a href='/blog/categories/objective-c' style='font-size: 160.0%'>Objective-C(197)</a> <a href='/blog/categories/products' style='font-size: 101.5228426395939%'>Products(5)</a> <a href='/blog/categories/quartzcore' style='font-size: 100.91370558375634%'>QuartzCore(3)</a> <a href='/blog/categories/rss' style='font-size: 100.60913705583756%'>RSS(2)</a> <a href='/blog/categories/sample' style='font-size: 115.22842639593908%'>Sample(50)</a> <a href='/blog/categories/screensaver' style='font-size: 102.74111675126903%'>Screensaver(9)</a> <a href='/blog/categories/sdk' style='font-size: 100.60913705583756%'>SDK(2)</a> <a href='/blog/categories/social' style='font-size: 102.13197969543147%'>Social(7)</a> <a href='/blog/categories/storekit' style='font-size: 100.60913705583756%'>StoreKit(2)</a> <a href='/blog/categories/twitter' style='font-size: 101.5228426395939%'>Twitter(5)</a> <a href='/blog/categories/uiaccelerometer' style='font-size: 100.91370558375634%'>UIAccelerometer(3)</a> <a href='/blog/categories/uiactionsheet' style='font-size: 100.30456852791878%'>UIActionSheet(1)</a> <a href='/blog/categories/uiactivityindicatorview' style='font-size: 100.91370558375634%'>UIActivityIndicatorView(3)</a> <a href='/blog/categories/uiactivityviewcontroller' style='font-size: 100.30456852791878%'>UIActivityViewController(1)</a> <a href='/blog/categories/uialertview' style='font-size: 100.91370558375634%'>UIAlertView(3)</a> <a href='/blog/categories/uiapplication' style='font-size: 101.5228426395939%'>UIApplication(5)</a> <a href='/blog/categories/uibutton' style='font-size: 101.21827411167513%'>UIButton(4)</a> <a href='/blog/categories/uicolor' style='font-size: 100.91370558375634%'>UIColor(3)</a> <a href='/blog/categories/uidatepicker' style='font-size: 100.91370558375634%'>UIDatePicker(3)</a> <a href='/blog/categories/uideviceorientation' style='font-size: 100.30456852791878%'>UIDeviceOrientation(1)</a> <a href='/blog/categories/uievent' style='font-size: 101.8274111675127%'>UIEvent(6)</a> <a href='/blog/categories/uiimage' style='font-size: 104.56852791878173%'>UIImage(15)</a> <a href='/blog/categories/uiimagepickercontroller' style='font-size: 101.21827411167513%'>UIImagePickerController(4)</a> <a href='/blog/categories/uiimageview' style='font-size: 103.65482233502539%'>UIImageView(12)</a> <a href='/blog/categories/uikit' style='font-size: 117.36040609137055%'>UIKit(57)</a> <a href='/blog/categories/uilabel' style='font-size: 102.13197969543147%'>UILabel(7)</a> <a href='/blog/categories/uinavigationbar' style='font-size: 101.21827411167513%'>UINavigationBar(4)</a> <a href='/blog/categories/uinavigationitem' style='font-size: 100.30456852791878%'>UINavigationItem(1)</a> <a href='/blog/categories/uipasteboard' style='font-size: 100.60913705583756%'>UIPasteboard(2)</a> <a href='/blog/categories/uiscreen' style='font-size: 100.30456852791878%'>UIScreen(1)</a> <a href='/blog/categories/uiscrollbar' style='font-size: 100.30456852791878%'>UIScrollBar(1)</a> <a href='/blog/categories/uiscrollview' style='font-size: 100.30456852791878%'>UIScrollView(1)</a> <a href='/blog/categories/uislider' style='font-size: 100.91370558375634%'>UISlider(3)</a> <a href='/blog/categories/uistoryboardsegue' style='font-size: 100.91370558375634%'>UIStoryboardSegue(3)</a> <a href='/blog/categories/uiswitch' style='font-size: 100.30456852791878%'>UISwitch(1)</a> <a href='/blog/categories/uitabbar' style='font-size: 100.60913705583756%'>UITabBar(2)</a> <a href='/blog/categories/uitextfield' style='font-size: 100.60913705583756%'>UITextField(2)</a> <a href='/blog/categories/uiview' style='font-size: 103.3502538071066%'>UIView(11)</a> <a href='/blog/categories/uiviewanimationtransition' style='font-size: 100.30456852791878%'>UIViewAnimationTransition(1)</a> <a href='/blog/categories/uiviewcontroller' style='font-size: 101.21827411167513%'>UIViewController(4)</a> <a href='/blog/categories/uiwebview' style='font-size: 100.91370558375634%'>UIWebView(3)</a> <a href='/blog/categories/xcode' style='font-size: 112.18274111675127%'>Xcode(40)</a> </p>
+  <p id="tag-cloud"><a href='/blog/categories/actionscript' style='font-size: 102.68656716417911%'>ActionScript(9)</a> <a href='/blog/categories/actionscript3' style='font-size: 102.08955223880596%'>ActionScript3(7)</a> <a href='/blog/categories/admob' style='font-size: 100.59701492537313%'>AdMob(2)</a> <a href='/blog/categories/animation' style='font-size: 105.07462686567165%'>Animation(17)</a> <a href='/blog/categories/appdelegate' style='font-size: 100.8955223880597%'>AppDelegate(3)</a> <a href='/blog/categories/arc' style='font-size: 100.29850746268657%'>ARC(1)</a> <a href='/blog/categories/avaudioplayer' style='font-size: 101.19402985074626%'>AVAudioPlayer(4)</a> <a href='/blog/categories/avaudiosession' style='font-size: 100.29850746268657%'>AVAudioSession(1)</a> <a href='/blog/categories/avfoundation' style='font-size: 100.8955223880597%'>AVFoundation(3)</a> <a href='/blog/categories/banner' style='font-size: 101.19402985074626%'>Banner(4)</a> <a href='/blog/categories/camera' style='font-size: 101.19402985074626%'>Camera(4)</a> <a href='/blog/categories/cgaffinetransform' style='font-size: 101.19402985074626%'>CGAffineTransform(4)</a> <a href='/blog/categories/cgblendmode' style='font-size: 100.59701492537313%'>CGBlendMode(2)</a> <a href='/blog/categories/cgcontextref' style='font-size: 100.29850746268657%'>CGContextRef(1)</a> <a href='/blog/categories/cgimageref' style='font-size: 100.29850746268657%'>CGImageRef(1)</a> <a href='/blog/categories/classes' style='font-size: 112.23880597014926%'>Classes(41)</a> <a href='/blog/categories/cllocationmanager' style='font-size: 100.29850746268657%'>CLLocationManager(1)</a> <a href='/blog/categories/corelocation' style='font-size: 100.59701492537313%'>CoreLocation(2)</a> <a href='/blog/categories/delegate' style='font-size: 100.8955223880597%'>Delegate(3)</a> <a href='/blog/categories/device' style='font-size: 102.08955223880596%'>Device(7)</a> <a href='/blog/categories/download' style='font-size: 123.58208955223881%'>Download(79)</a> <a href='/blog/categories/facebook' style='font-size: 101.49253731343283%'>Facebook(5)</a> <a href='/blog/categories/foundation' style='font-size: 121.49253731343283%'>Foundation(72)</a> <a href='/blog/categories/framework' style='font-size: 100.59701492537313%'>Framework(2)</a> <a href='/blog/categories/iad' style='font-size: 101.49253731343283%'>iAd(5)</a> <a href='/blog/categories/inapppurchase' style='font-size: 100.59701492537313%'>InAppPurchase(2)</a> <a href='/blog/categories/ios' style='font-size: 102.98507462686567%'>iOS(10)</a> <a href='/blog/categories/ios-7' style='font-size: 102.38805970149254%'>iOS 7(8)</a> <a href='/blog/categories/ipad' style='font-size: 101.7910447761194%'>iPad(6)</a> <a href='/blog/categories/iphone' style='font-size: 102.38805970149254%'>iPhone(8)</a> <a href='/blog/categories/javascript' style='font-size: 100.59701492537313%'>JavaScript(2)</a> <a href='/blog/categories/line' style='font-size: 100.8955223880597%'>LINE(3)</a> <a href='/blog/categories/nend' style='font-size: 100.59701492537313%'>Nend(2)</a> <a href='/blog/categories/nsarray' style='font-size: 106.56716417910448%'>NSArray(22)</a> <a href='/blog/categories/nscalendar' style='font-size: 100.8955223880597%'>NSCalendar(3)</a> <a href='/blog/categories/nsdata' style='font-size: 100.29850746268657%'>NSData(1)</a> <a href='/blog/categories/nsdate' style='font-size: 101.7910447761194%'>NSDate(6)</a> <a href='/blog/categories/nsdatecomponents' style='font-size: 100.59701492537313%'>NSDateComponents(2)</a> <a href='/blog/categories/nsdateformatter' style='font-size: 100.29850746268657%'>NSDateFormatter(1)</a> <a href='/blog/categories/nsdictionary' style='font-size: 103.28358208955224%'>NSDictionary(11)</a> <a href='/blog/categories/nsenumerator' style='font-size: 100.29850746268657%'>NSEnumerator(1)</a> <a href='/blog/categories/nsindexset' style='font-size: 100.29850746268657%'>NSIndexSet(1)</a> <a href='/blog/categories/nsinteger' style='font-size: 101.7910447761194%'>NSInteger(6)</a> <a href='/blog/categories/nsmutablearray' style='font-size: 104.4776119402985%'>NSMutableArray(15)</a> <a href='/blog/categories/nsmutabledictionary' style='font-size: 101.49253731343283%'>NSMutableDictionary(5)</a> <a href='/blog/categories/nsmutableorderedset' style='font-size: 102.08955223880596%'>NSMutableOrderedSet(7)</a> <a href='/blog/categories/nsmutablestring' style='font-size: 101.19402985074626%'>NSMutableString(4)</a> <a href='/blog/categories/nsnotificationcenter' style='font-size: 100.29850746268657%'>NSNotificationCenter(1)</a> <a href='/blog/categories/nsnumber' style='font-size: 100.29850746268657%'>NSNumber(1)</a> <a href='/blog/categories/nsobject' style='font-size: 100.29850746268657%'>NSObject(1)</a> <a href='/blog/categories/nsorderedset' style='font-size: 102.08955223880596%'>NSOrderedSet(7)</a> <a href='/blog/categories/nsrange' style='font-size: 100.59701492537313%'>NSRange(2)</a> <a href='/blog/categories/nsselectorfromstring' style='font-size: 100.29850746268657%'>NSSelectorFromString(1)</a> <a href='/blog/categories/nsset' style='font-size: 101.7910447761194%'>NSSet(6)</a> <a href='/blog/categories/nsstring' style='font-size: 105.3731343283582%'>NSString(18)</a> <a href='/blog/categories/nstimer' style='font-size: 101.19402985074626%'>NSTimer(4)</a> <a href='/blog/categories/nstimezone' style='font-size: 100.29850746268657%'>NSTimeZone(1)</a> <a href='/blog/categories/nsurl' style='font-size: 101.7910447761194%'>NSURL(6)</a> <a href='/blog/categories/nsurlrequest' style='font-size: 100.59701492537313%'>NSURLRequest(2)</a> <a href='/blog/categories/nsuserdefaults' style='font-size: 101.7910447761194%'>NSUserDefaults(6)</a> <a href='/blog/categories/nsxmlparser' style='font-size: 100.59701492537313%'>NSXMLParser(2)</a> <a href='/blog/categories/objective-c' style='font-size: 160.0%'>Objective-C(201)</a> <a href='/blog/categories/products' style='font-size: 101.49253731343283%'>Products(5)</a> <a href='/blog/categories/quartzcore' style='font-size: 100.8955223880597%'>QuartzCore(3)</a> <a href='/blog/categories/rss' style='font-size: 100.59701492537313%'>RSS(2)</a> <a href='/blog/categories/sample' style='font-size: 114.92537313432835%'>Sample(50)</a> <a href='/blog/categories/screensaver' style='font-size: 102.68656716417911%'>Screensaver(9)</a> <a href='/blog/categories/sdk' style='font-size: 100.59701492537313%'>SDK(2)</a> <a href='/blog/categories/social' style='font-size: 102.38805970149254%'>Social(8)</a> <a href='/blog/categories/storekit' style='font-size: 100.59701492537313%'>StoreKit(2)</a> <a href='/blog/categories/twitter' style='font-size: 101.49253731343283%'>Twitter(5)</a> <a href='/blog/categories/uiaccelerometer' style='font-size: 100.8955223880597%'>UIAccelerometer(3)</a> <a href='/blog/categories/uiactionsheet' style='font-size: 100.29850746268657%'>UIActionSheet(1)</a> <a href='/blog/categories/uiactivityindicatorview' style='font-size: 100.8955223880597%'>UIActivityIndicatorView(3)</a> <a href='/blog/categories/uiactivityviewcontroller' style='font-size: 100.29850746268657%'>UIActivityViewController(1)</a> <a href='/blog/categories/uialertview' style='font-size: 101.19402985074626%'>UIAlertView(4)</a> <a href='/blog/categories/uiapplication' style='font-size: 101.7910447761194%'>UIApplication(6)</a> <a href='/blog/categories/uibutton' style='font-size: 101.19402985074626%'>UIButton(4)</a> <a href='/blog/categories/uicolor' style='font-size: 100.8955223880597%'>UIColor(3)</a> <a href='/blog/categories/uidatepicker' style='font-size: 101.19402985074626%'>UIDatePicker(4)</a> <a href='/blog/categories/uideviceorientation' style='font-size: 100.29850746268657%'>UIDeviceOrientation(1)</a> <a href='/blog/categories/uievent' style='font-size: 101.7910447761194%'>UIEvent(6)</a> <a href='/blog/categories/uiimage' style='font-size: 104.4776119402985%'>UIImage(15)</a> <a href='/blog/categories/uiimagepickercontroller' style='font-size: 101.19402985074626%'>UIImagePickerController(4)</a> <a href='/blog/categories/uiimageview' style='font-size: 103.58208955223881%'>UIImageView(12)</a> <a href='/blog/categories/uikit' style='font-size: 117.01492537313433%'>UIKit(57)</a> <a href='/blog/categories/uilabel' style='font-size: 102.08955223880596%'>UILabel(7)</a> <a href='/blog/categories/uinavigationbar' style='font-size: 101.19402985074626%'>UINavigationBar(4)</a> <a href='/blog/categories/uinavigationitem' style='font-size: 100.29850746268657%'>UINavigationItem(1)</a> <a href='/blog/categories/uipasteboard' style='font-size: 100.8955223880597%'>UIPasteboard(3)</a> <a href='/blog/categories/uiscreen' style='font-size: 100.29850746268657%'>UIScreen(1)</a> <a href='/blog/categories/uiscrollbar' style='font-size: 100.29850746268657%'>UIScrollBar(1)</a> <a href='/blog/categories/uiscrollview' style='font-size: 100.29850746268657%'>UIScrollView(1)</a> <a href='/blog/categories/uislider' style='font-size: 100.8955223880597%'>UISlider(3)</a> <a href='/blog/categories/uistoryboardsegue' style='font-size: 100.8955223880597%'>UIStoryboardSegue(3)</a> <a href='/blog/categories/uiswitch' style='font-size: 100.29850746268657%'>UISwitch(1)</a> <a href='/blog/categories/uitabbar' style='font-size: 100.59701492537313%'>UITabBar(2)</a> <a href='/blog/categories/uitextfield' style='font-size: 100.59701492537313%'>UITextField(2)</a> <a href='/blog/categories/uiview' style='font-size: 103.28358208955224%'>UIView(11)</a> <a href='/blog/categories/uiviewanimationtransition' style='font-size: 100.29850746268657%'>UIViewAnimationTransition(1)</a> <a href='/blog/categories/uiviewcontroller' style='font-size: 101.19402985074626%'>UIViewController(4)</a> <a href='/blog/categories/uiwebview' style='font-size: 100.8955223880597%'>UIWebView(3)</a> <a href='/blog/categories/xcode' style='font-size: 111.94029850746269%'>Xcode(40)</a> </p>
 </section>
 
   </div>
@@ -430,27 +438,27 @@ hasPrefix:&#8217;iPhone&#8217; = 0</p></blockquote>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2013/09/25/objc-ios7-status-bar/">iOS 7でステータスバーを非表示にしたりスタイルを変更する方法</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/09/25/objc-ios7-review-url/">iOS 7でアプリのレビュー画面を開く際の対策</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/09/25/download-objc-classes-dc-util-ios7/">ユーティリティ機能をまとめた「DCUtil」クラス - iOS 7対応版</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/09/25/download-objc-classes-dc-date-ios7/">日付時刻の情報や UIDatePickerを取得する「DCDate」クラス - iOS 7対応版</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2013/09/22/ios-hearing-healing/">iPhoneアプリ「ヒーリング音楽と癒しの雨音」をリリースしました</a>
       </li>
     
       <li class="post">
         <a href="/blog/2013/09/19/objc-deprecated-api-ios7/">iOS 7から非推奨になった API一覧 (日本語訳)</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/09/19/xcode-5-update/">Xcode 5へのアップデート時に気をつけたい4つのポイント</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/09/10/download-objc-classes-2013-sep/">Objective-Cのクラスライブラリ「DCLibrary」を公開しました</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/09/10/objc-classes-dc-date/">日付時刻の情報や UIDatePickerを取得する「DCDate」クラス</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/09/10/objc-classes-dc-slider/">2種類のスライダーを取得する「DCSlider」クラス</a>
       </li>
     
   </ul>

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: NSURL | Dolice Lab]]></title>
   <link href="http://lab.dolice.net/blog/categories/nsurl/atom.xml" rel="self"/>
   <link href="http://lab.dolice.net/"/>
-  <updated>2013-09-22T18:41:18+09:00</updated>
+  <updated>2013-09-25T20:08:54+09:00</updated>
   <id>http://lab.dolice.net/</id>
   <author>
     <name><![CDATA[Masaki Hirokawa]]></name>
@@ -12,6 +12,69 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[iOS 7でアプリのレビュー画面を開く際の対策]]></title>
+    <link href="http://lab.dolice.net/blog/2013/09/25/objc-ios7-review-url/"/>
+    <updated>2013-09-25T09:54:00+09:00</updated>
+    <id>http://lab.dolice.net/blog/2013/09/25/objc-ios7-review-url</id>
+    <content type="html"><![CDATA[<p>iOS 7からアプリのレビューURLが変更になり、従来の URLでは真っ白な画面が表示されるだけになりましたので、iOSのバージョンを判別しそれぞれのレビューURLへ遷移させる方法を以下に記載します。</p>
+
+<p>レビューURLを iOS 7から直接開く方法はまだ判っておらず、iOS 7以降ではアプリの紹介画面へ遷移する方式を取っています。</p>
+
+<p>以下にサンプルソースコードを記載します。</p>
+
+<h3>サンプルソースコード</h3>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">// AppStoreのレビューURLを開く (引数に AppStoreのアプリIDを指定)</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">openReviewUrl:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">appStoreId</span>
+</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="c1">// レビュー画面の URL</span>
+</span><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="n">reviewUrl</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// iOSのバージョンを判別</span>
+</span><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="n">osversion</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIDevice</span> <span class="n">currentDevice</span><span class="p">].</span><span class="n">systemVersion</span><span class="p">;</span>
+</span><span class='line'><span class="n">NSArray</span> <span class="o">*</span><span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="n">osversion</span> <span class="nl">componentsSeparatedByString:</span><span class="s">@&quot;.&quot;</span><span class="p">];</span>
+</span><span class='line'><span class="k">if</span> <span class="p">([(</span><span class="n">NSString</span><span class="o">*</span><span class="p">)[</span><span class="n">a</span> <span class="nl">objectAtIndex:</span><span class="mi">0</span><span class="p">]</span> <span class="n">intValue</span><span class="p">]</span> <span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">=</span> <span class="mi">7</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">// iOS 7以降</span>
+</span><span class='line'>    <span class="n">reviewUrl</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">@&quot;itms-apps://itunes.apple.com/app/id%@&quot;</span><span class="p">,</span> <span class="n">appStoreId</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">// iOS 7未満</span>
+</span><span class='line'>    <span class="n">reviewUrl</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">@&quot;itms-apps://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?id=%@&amp;amp;onlyLatestVersion=true&amp;amp;pageNumber=0&amp;amp;sortOrdering=1&amp;amp;type=Purple+Software&quot;</span><span class="p">,</span> <span class="n">appStoreId</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// レビュー画面へ遷移</span>
+</span><span class='line'><span class="p">[[</span><span class="n">UIApplication</span> <span class="n">sharedApplication</span><span class="p">]</span> <span class="nl">openURL:</span><span class="p">[</span><span class="n">NSURL</span> <span class="nl">URLWithString:</span><span class="n">reviewUrl</span><span class="p">]];</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[iPhoneアプリに「LINEで送る」ボタンを組み込むサンプル]]></title>
@@ -319,53 +382,6 @@
 </pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//http://lab.dolice.net へ遷移させる場合</span>
 </span><span class='line'><span class="n">NSURL</span> <span class="o">*</span><span class="n">url</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSURL</span> <span class="nl">URLWithString:</span><span class="s">@&quot;http://lab.dolice.net&quot;</span><span class="p">];</span>
 </span><span class='line'><span class="p">[[</span><span class="n">UIApplication</span> <span class="n">sharedApplication</span><span class="p">]</span> <span class="nl">openURL:</span><span class="n">url</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[UIWebViewにウェブサイトを表示する]]></title>
-    <link href="http://lab.dolice.net/blog/2013/03/20/objc-uiwebview/"/>
-    <updated>2013-03-20T17:55:00+09:00</updated>
-    <id>http://lab.dolice.net/blog/2013/03/20/objc-uiwebview</id>
-    <content type="html"><![CDATA[<p>UIWebViewに任意のウェブサイトを表示するコードを以下に記述します。</p>
-
-<h2>ViewController.h</h2>
-
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> : <span class="nc">UIViewController</span>
-</span><span class='line'><span class="c1">//ストーリーボードの UIWebViewと紐付けておく</span>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">weak</span><span class="p">,</span> <span class="n">nonatomic</span><span class="p">)</span> <span class="kt">IBOutlet</span> <span class="n">UIWebView</span> <span class="o">*</span><span class="n">myWebView</span><span class="p">;</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
-
-<h2>ViewController.m</h2>
-
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
-</span><span class='line'>  <span class="c1">//myURLに Appleのサイトを指定</span>
-</span><span class='line'>  <span class="n">NSURL</span> <span class="o">&lt;</span><span class="n">em</span><span class="o">&gt;</span><span class="n">myURL</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSURL</span> <span class="nl">URLWithString:</span><span class="s">@&quot;http://www.apple.com/jp/&quot;</span><span class="p">];</span>
-</span><span class='line'>  <span class="c1">//リクエストを作成</span>
-</span><span class='line'>  <span class="n">NSURLRequest</span> <span class="o">&lt;/</span><span class="n">em</span><span class="o">&gt;</span><span class="n">myRequest</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSURLRequest</span> <span class="nl">requestWithURL:</span><span class="n">myURL</span><span class="p">];</span>
-</span><span class='line'>  <span class="c1">//リクエストされた URLを読み込み</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">myWebView</span> <span class="nl">loadRequest:</span><span class="n">myRequest</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure></notextile></div></p>
 ]]></content>
   </entry>
