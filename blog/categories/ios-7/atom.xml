@@ -4,7 +4,7 @@
   <title><![CDATA[Category: iOS 7 | Dolice Lab]]></title>
   <link href="http://lab.dolice.net/blog/categories/ios-7/atom.xml" rel="self"/>
   <link href="http://lab.dolice.net/"/>
-  <updated>2013-09-25T20:08:54+09:00</updated>
+  <updated>2013-09-26T20:22:49+09:00</updated>
   <id>http://lab.dolice.net/</id>
   <author>
     <name><![CDATA[Masaki Hirokawa]]></name>
@@ -12,6 +12,61 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[iOS 7以降か判定する方法]]></title>
+    <link href="http://lab.dolice.net/blog/2013/09/26/objc-ios7-decision-version/"/>
+    <updated>2013-09-26T08:36:00+09:00</updated>
+    <id>http://lab.dolice.net/blog/2013/09/26/objc-ios7-decision-version</id>
+    <content type="html"><![CDATA[<p>iOS 7とそれより前のバージョンでは、ステータスバーをはじめ UILabelや UISliderのレイアウトが微妙にずれる問題があったため、頻繁に処理を振り分ける必要がありました。</p>
+
+<p>Objective-Cで iOS 7以降か判別するコードを以下に記載します。</p>
+
+<h3>iOS 7以降であるかの判定</h3>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">// iOS7以降であるか</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">isIOS7</span>
+</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">NSString</span> <span class="o">*</span><span class="n">osversion</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIDevice</span> <span class="n">currentDevice</span><span class="p">].</span><span class="n">systemVersion</span><span class="p">;</span>
+</span><span class='line'><span class="n">NSArray</span> <span class="o">*</span><span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="n">osversion</span> <span class="nl">componentsSeparatedByString:</span><span class="s">@&quot;.&quot;</span><span class="p">];</span>
+</span><span class='line'><span class="k">return</span> <span class="p">([(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)[</span><span class="n">a</span> <span class="nl">objectAtIndex:</span><span class="mi">0</span><span class="p">]</span> <span class="n">intValue</span><span class="p">]</span> <span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">=</span> <span class="mi">7</span><span class="p">);</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h3>iOSのバージョン取得</h3>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">// iOSのバージョン取得</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">CGFloat</span><span class="p">)</span><span class="nf">iOSVersion</span>
+</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="k">return</span> <span class="p">([[[</span><span class="n">UIDevice</span> <span class="n">currentDevice</span><span class="p">]</span> <span class="n">systemVersion</span><span class="p">]</span> <span class="n">floatValue</span><span class="p">]);</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[iOS 7でステータスバーを非表示にしたりスタイルを変更する方法]]></title>
@@ -22,7 +77,7 @@
 
 <h2>前準備</h2>
 
-<p><em>Info.plist</em>ファイルで <em>UIViewControllerBasedStatusBarAppearance</em>の値を NOにする事で、コードでのステータスバーの変更が可能になります。または、<em>Info.plist</em>の <em>View controller-based status bar appearance</em>の値を YESでも問題ありません。</p>
+<p><strong>Info.plist</strong>ファイルで <strong>UIViewControllerBasedStatusBarAppearance</strong>の値を NOにする事で、コードでのステータスバーの変更が可能になります。または、<strong>Info.plist</strong>の <strong>View controller-based status bar appearance</strong>の値を YESでも問題ありません。</p>
 
 <p>下記にステータスバーを制御するコードを記載します。</p>
 
@@ -196,7 +251,7 @@
 
 <h2>起動時を含め全画面からステータスバーを非表示</h2>
 
-<p><em>Info.plist</em>で <em>Status bar is initially hidden</em>という値を追加し YESを指定すると、起動時のスプラッシュ画面を含む全画面でステータスバーが非表示になります。</p>
+<p><strong>Info.plist</strong>で <strong>Status bar is initially hidden</strong>という値を追加し YESを指定すると、起動時のスプラッシュ画面を含む全画面でステータスバーが非表示になります。</p>
 
 <h2>iOS 7以降であるかの判別</h2>
 
@@ -257,7 +312,7 @@
     <id>http://lab.dolice.net/blog/2013/09/25/objc-ios7-review-url</id>
     <content type="html"><![CDATA[<p>iOS 7からアプリのレビューURLが変更になり、従来の URLでは真っ白な画面が表示されるだけになりましたので、iOSのバージョンを判別しそれぞれのレビューURLへ遷移させる方法を以下に記載します。</p>
 
-<p>レビューURLを iOS 7から直接開く方法はまだ判っておらず、iOS 7以降ではアプリの紹介画面へ遷移する方式を取っています。</p>
+<p><strong>レビューURLを iOS 7から直接開く方法はまだ判っておらず、iOS 7以降ではアプリの紹介画面へ遷移する方式を取っています。</strong></p>
 
 <p>以下にサンプルソースコードを記載します。</p>
 
@@ -286,6 +341,7 @@
 <span class='line-number'>21</span>
 <span class='line-number'>22</span>
 <span class='line-number'>23</span>
+<span class='line-number'>24</span>
 </pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">// AppStoreのレビューURLを開く (引数に AppStoreのアプリIDを指定)</span>
 </span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">openReviewUrl:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">appStoreId</span>
 </span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
@@ -296,7 +352,8 @@
 </span><span class='line'><span class="c1">// iOSのバージョンを判別</span>
 </span><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="n">osversion</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIDevice</span> <span class="n">currentDevice</span><span class="p">].</span><span class="n">systemVersion</span><span class="p">;</span>
 </span><span class='line'><span class="n">NSArray</span> <span class="o">*</span><span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="n">osversion</span> <span class="nl">componentsSeparatedByString:</span><span class="s">@&quot;.&quot;</span><span class="p">];</span>
-</span><span class='line'><span class="k">if</span> <span class="p">([(</span><span class="n">NSString</span><span class="o">*</span><span class="p">)[</span><span class="n">a</span> <span class="nl">objectAtIndex:</span><span class="mi">0</span><span class="p">]</span> <span class="n">intValue</span><span class="p">]</span> <span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">=</span> <span class="mi">7</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'><span class="kt">BOOL</span> <span class="n">isIOS7</span> <span class="o">=</span> <span class="p">[(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)[</span><span class="n">a</span> <span class="nl">objectAtIndex:</span><span class="mi">0</span><span class="p">]</span> <span class="n">intValue</span><span class="p">]</span> <span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span><span class="o">=</span> <span class="mi">7</span><span class="p">;</span>
+</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="n">isIOS7</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>    <span class="c1">// iOS 7以降</span>
 </span><span class='line'>    <span class="n">reviewUrl</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">@&quot;itms-apps://itunes.apple.com/app/id%@&quot;</span><span class="p">,</span> <span class="n">appStoreId</span><span class="p">];</span>
 </span><span class='line'><span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
@@ -1383,58 +1440,6 @@
 </span><span class='line'>
 </span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure></notextile></div></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[iOS 7から非推奨になった API一覧 (日本語訳)]]></title>
-    <link href="http://lab.dolice.net/blog/2013/09/19/objc-deprecated-api-ios7/"/>
-    <updated>2013-09-19T23:45:00+09:00</updated>
-    <id>http://lab.dolice.net/blog/2013/09/19/objc-deprecated-api-ios7</id>
-    <content type="html"><![CDATA[<p>iOS 7から非推奨になった API一覧が Apple Developerサイトに記載されていましたので、以下に簡素な和訳リストを作成しました。アプリを iOS 7に対応する際の参考になれば幸いです。</p>
-
-<h2>iOS 7以降の非推奨APIリスト</h2>
-
-<ol>
-<li>MapKitフレームワークの MKOverlayViewクラスとそのサブクラス</li>
-<li>Audio ToolboxフレームワークのオーディオセッションAPI (代わりに AVFoundationフレームワークの AVAudioSessionクラスを推奨)</li>
-<li>Core Locationフレームワークの CLRegionクラスは CLCircularRegionクラスに置き換え (ただし CLRegionクラスは座標と現在地を示すクラスとして存在し続ける)</li>
-<li>CBCentralクラスの UUIDプロパティ (代わりに識別子プロパティを推奨)</li>
-<li>GameKitフレームワークは既存の APIをクリーンアップし、新機能のより良いサポートを提供するため多くの非推奨APIを含む</li>
-<li>UIViewControllerの wantsFullScreenLayoutプロパティ (iOS 7以降では、View Controllerは常にフルスクリーンレイアウトをサポートしているため)</li>
-<li>UIColorを使用した背景テクスチャの描画</li>
-<li>描画系クラスへの NSStringの使用</li>
-</ol>
-
-
-<h2>原文</h2>
-
-<h3>What's New in iOS: iOS 7.0 (Deprecated APIsの項目)</h3>
-
-<ul>
-<li><a href="https://developer.apple.com/library/ios/releasenotes/General/WhatsNewIniOS/Articles/iOS7.html">https://developer.apple.com/library/ios/releasenotes/General/WhatsNewIniOS/Articles/iOS7.html</a></li>
-</ul>
-
-
-<h3>原文引用</h3>
-
-<blockquote><p>Deprecated APIs</p>
-
-<p>The Map Kit framework includes deprecations for the MKOverlayView class and its various subclasses. The existing overlay views have been replaced with an updated set of overlay renderer objects that descend from the MKOverlayRenderer class. For more information about the classes of this framework, see Map Kit Framework Reference.</p>
-
-<p>The Audio Session API in the Audio Toolbox framework is deprecated. Apps should use the AVAudioSession class in the AV Foundation framework instead.</p>
-
-<p>The CLRegion class in the Core Location framework is replaced by the CLCircularRegion class. The CLRegion class continues to exist as an abstract base class that supports both geographic and beacon regions.</p>
-
-<p>The UUID property of the CBCentral class is deprecated. To specify the unique ID of your central objects, use the identifier property instead.</p>
-
-<p>The Game Kit framework contains assorted deprecations intended to clean up the existing API and provide better support for new features.</p>
-
-<p>The UIKit framework contains the following deprecations:
-The wantsFullScreenLayout property of UIViewController is deprecated. In iOS 7 and later, view controllers always support full screen layout.</p>
-
-<p>UIColor objects that provided background textures for earlier versions of iOS are gone.
-Many drawing additions to the NSString class are deprecated in favor of newer variants.</p></blockquote>
 ]]></content>
   </entry>
   
