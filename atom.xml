@@ -4,7 +4,7 @@
   <title><![CDATA[Dolice Lab]]></title>
   <link href="http://lab.dolice.net/atom.xml" rel="self"/>
   <link href="http://lab.dolice.net/"/>
-  <updated>2013-10-04T21:23:55+09:00</updated>
+  <updated>2013-10-10T19:00:01+09:00</updated>
   <id>http://lab.dolice.net/</id>
   <author>
     <name><![CDATA[Masaki Hirokawa]]></name>
@@ -12,6 +12,131 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[サーバサイドでバナーの表示/非表示を切り替えるサンプル]]></title>
+    <link href="http://lab.dolice.net/blog/2013/10/10/objc-server-linked-banner/"/>
+    <updated>2013-10-10T12:11:00+09:00</updated>
+    <id>http://lab.dolice.net/blog/2013/10/10/objc-server-linked-banner</id>
+    <content type="html"><![CDATA[<p>Objective-Cで PHPのフラグを見てバナーの表示/非表示を切り替えるサンプルを GitHubに公開しました。</p>
+
+<p>iPhoneアプリ公開後でも PHPの編集のみでバナーの表示と非表示を切り替えられますので、例えば有料アプリの無料セール中のみバナーを表示するという事が可能になります。</p>
+
+<p>下記よりサンプルのダウンロードが行えます。</p>
+
+<h2>サンプルダウンロード</h2>
+
+<p><a href="https://github.com/masakihirokawa/objc-server-linked-banner">https://github.com/masakihirokawa/objc-server-linked-banner</a></p>
+
+<h2>導入手順</h2>
+
+<h3>1. バナーの表示/非表示フラグを持つ簡易PHPをサーバに配置</h3>
+
+<p>1を指定でバナー表示、0を指定でバナーを非表示にします。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='php'><span class='line'><span class="cp">&lt;?php</span>
+</span><span class='line'>    <span class="k">echo</span> <span class="mi">1</span><span class="p">;</span>
+</span><span class='line'><span class="cp">?&gt;</span><span class="x"></span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>2. バナーの表示フラグをグローバル定義</h3>
+
+<p>*.pchファイルにバナーの表示フラグをグローバル変数として定義します。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="kt">BOOL</span> <span class="n">isShowBanner</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>3. アプリ起動時に PHPのフラグを取得し、バナー表示フラグ初期化</h3>
+
+<p>AppDelegate.m を以下のように編集します。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">application:</span><span class="p">(</span><span class="n">UIApplication</span> <span class="o">*</span><span class="p">)</span><span class="nv">application</span> <span class="nf">didFinishLaunchingWithOptions:</span><span class="p">(</span><span class="n">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nv">launchOptions</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// バナー表示設定初期化</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="n">initBannerSetting</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="n">YES</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">initBannerSetting</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// PHPの URLを指定</span>
+</span><span class='line'>    <span class="n">NSString</span> <span class="o">*</span><span class="n">url</span> <span class="o">=</span> <span class="s">@&quot;http://dolice.net/sample/server_linked_banner.php&quot;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">NSMutableURLRequest</span> <span class="o">*</span><span class="n">reqest</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSMutableURLRequest</span> <span class="nl">requestWithURL:</span><span class="p">[</span><span class="n">NSURL</span> <span class="nl">URLWithString:</span><span class="n">url</span><span class="p">]];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">reqest</span> <span class="nl">setHTTPMethod:</span><span class="s">@&quot;GET&quot;</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">NSURLConnection</span> <span class="o">*</span><span class="n">connection</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSURLConnection</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithRequest:</span><span class="n">reqest</span> <span class="nl">delegate:</span><span class="n">self</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">connection</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">NSURLResponse</span> <span class="o">*</span><span class="n">response</span><span class="p">;</span>
+</span><span class='line'>        <span class="n">NSError</span> <span class="o">*</span><span class="n">err</span><span class="p">;</span>
+</span><span class='line'>        <span class="n">NSData</span> <span class="o">*</span><span class="n">responseData</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSURLConnection</span> <span class="nl">sendSynchronousRequest:</span><span class="n">reqest</span> <span class="nl">returningResponse:</span><span class="o">&amp;</span><span class="n">response</span> <span class="nl">error:</span><span class="o">&amp;</span><span class="n">err</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">NSString</span> <span class="o">*</span><span class="n">responseStr</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSString</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithData:</span><span class="n">responseData</span> <span class="nl">encoding:</span><span class="n">NSUTF8StringEncoding</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// サーバから取得した値が 1ならバナー表示フラグを立てる</span>
+</span><span class='line'>        <span class="n">isShowBanner</span> <span class="o">=</span> <span class="p">[</span><span class="n">responseStr</span> <span class="n">intValue</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>4. サーバから取得したフラグを見てバナー表示</h3>
+
+<p>ViewControllerの viewWillAppearメソッドからバナーの表示フラグを見て、もしフラグが立っていればバナーを表示します。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewWillAppear:</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nv">animated</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// バナー表示</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">isShowBanner</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">NSInteger</span> <span class="n">bannerY</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">frame</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">height</span> <span class="o">-</span> <span class="mi">50</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">[[</span><span class="n">DCBanner</span> <span class="n">sharedManager</span><span class="p">]</span> <span class="nl">showAdBanner:</span><span class="n">self</span> <span class="nl">yPos:</span><span class="n">bannerY</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[iOS 7以降か判定する方法]]></title>
@@ -4940,118 +5065,6 @@ Facebook/Twitter/LINEへの画像/テキスト/URLの投稿をシンプルな記
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'>
 </span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Objective-Cのみで4種類の画面遷移アニメーションを実行する方法]]></title>
-    <link href="http://lab.dolice.net/blog/2013/09/04/objc-modal-transition-style/"/>
-    <updated>2013-09-04T15:53:00+09:00</updated>
-    <id>http://lab.dolice.net/blog/2013/09/04/objc-modal-transition-style</id>
-    <content type="html"><![CDATA[<p><img src="http://lab.dolice.net/images/article/modal-transition-style.png" alt="" /></p>
-
-<p>Objective-Cのみで画面遷移をアニメーション付きで実行するサンプルを以下に作成しました。</p>
-
-<h2>サンプルダウンロード</h2>
-
-<ul>
-<li><a href="https://github.com/masakihirokawa/objc-modal-transition-style">https://github.com/masakihirokawa/objc-modal-transition-style</a></li>
-</ul>
-
-
-<h2>必要な手順</h2>
-
-<h3>1. ヘッダファイルに遷移先 ViewControllerのヘッダインポート</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;HogeViewController.h&quot;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>2. 次に ViewControllerのインスタンス生成</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">UIViewController</span> <span class="o">*</span><span class="n">hogeViewController</span> <span class="o">=</span> <span class="p">[[</span><span class="n">HogeViewController</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>3. アニメーション方式の指定</h3>
-
-<h4>下からせり上がってくるアニメーション指定</h4>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">hogeViewController</span><span class="p">.</span><span class="n">modalTransitionStyle</span> <span class="o">=</span> <span class="n">UIModalTransitionStyleCoverVertical</span><span class="p">;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h4>横方向にひっくり返るアニメーション指定</h4>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">hogeViewController</span><span class="p">.</span><span class="n">modalTransitionStyle</span> <span class="o">=</span> <span class="n">UIModalTransitionStyleFlipHorizontal</span><span class="p">;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h4>下から捲れるアニメーション指定</h4>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">hogeViewController</span><span class="p">.</span><span class="n">modalTransitionStyle</span> <span class="o">=</span> <span class="n">UIModalTransitionStylePartialCurl</span><span class="p">;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h4>フェードイン・フェードアウトしながら切り替わるアニメーション指定</h4>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">hogeViewController</span><span class="p">.</span><span class="n">modalTransitionStyle</span> <span class="o">=</span> <span class="n">UIModalTransitionStyleCrossDissolve</span><span class="p">;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>4. 画面遷移アニメーション実行</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">[</span><span class="n">self</span> <span class="nl">presentViewController:</span><span class="n">hogeViewController</span> <span class="nl">animated:</span><span class="n">YES</span> <span class="nl">completion:</span><span class="nb">nil</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>前の画面へ戻る</h2>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">[</span><span class="n">self</span> <span class="nl">dismissViewControllerAnimated:</span><span class="n">YES</span> <span class="nl">completion:</span><span class="nb">nil</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>ソースコード</h2>
-
-<h3>アニメーション付きで画面遷移実行 (RootViewController.m)</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//ViewControllerのインスタンス生成</span>
-</span><span class='line'><span class="n">UIViewController</span> <span class="o">*</span><span class="n">secondViewController</span> <span class="o">=</span> <span class="p">[[</span><span class="n">SecondViewController</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//画面遷移アニメーションの指定</span>
-</span><span class='line'><span class="n">secondViewController</span><span class="p">.</span><span class="n">modalTransitionStyle</span> <span class="o">=</span> <span class="n">UIModalTransitionStyleCoverVertical</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//画面遷移実行</span>
-</span><span class='line'><span class="p">[</span><span class="n">self</span> <span class="nl">presentViewController:</span><span class="n">secondViewController</span> <span class="nl">animated:</span><span class="n">YES</span> <span class="nl">completion:</span><span class="nb">nil</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>前の画面へ戻る (SecondViewController.m)</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//前の画面へ戻る</span>
-</span><span class='line'><span class="p">[</span><span class="n">self</span> <span class="nl">dismissViewControllerAnimated:</span><span class="n">YES</span> <span class="nl">completion:</span><span class="nb">nil</span><span class="p">];</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
