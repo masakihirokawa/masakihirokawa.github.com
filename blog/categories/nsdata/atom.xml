@@ -4,7 +4,7 @@
   <title><![CDATA[Category: NSData | Dolice Lab]]></title>
   <link href="http://lab.dolice.net/blog/categories/nsdata/atom.xml" rel="self"/>
   <link href="http://lab.dolice.net/"/>
-  <updated>2013-11-20T13:54:27+09:00</updated>
+  <updated>2013-12-30T13:29:46+09:00</updated>
   <id>http://lab.dolice.net/</id>
   <author>
     <name><![CDATA[Masaki Hirokawa]]></name>
@@ -12,6 +12,56 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[NSMutableArrayをユーザーデフォルトに保存する方法]]></title>
+    <link href="http://lab.dolice.net/blog/2013/12/30/objc-ns-user-defaults-and-ns-data/"/>
+    <updated>2013-12-30T13:20:00+09:00</updated>
+    <id>http://lab.dolice.net/blog/2013/12/30/objc-ns-user-defaults-and-ns-data</id>
+    <content type="html"><![CDATA[<p>NSMutableArrayを NSUserDefaultsで扱おうとするとエラーが出てしまいます。</p>
+
+<p>これを回避するには、配列を一旦 NSDataに変換する必要があります。</p>
+
+<p>下記よりサンプルのダウンロードが行えます。</p>
+
+<h2>サンプルダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-ns-user-defaults-and-ns-data">https://github.com/masakihirokawa/objc-ns-user-defaults-and-ns-data</a></li>
+</ul>
+
+
+<h2>ソースコード</h2>
+
+<h3>ユーザーデフォルトから配列を読み込み</h3>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">NSUserDefaults</span> <span class="o">&lt;</span><span class="n">em</span><span class="o">&gt;</span><span class="n">userDefaults</span>  <span class="o">=</span> <span class="p">[</span><span class="n">NSUserDefaults</span> <span class="n">standardUserDefaults</span><span class="p">];</span>
+</span><span class='line'><span class="n">NSData</span> <span class="o">&lt;/</span><span class="n">em</span><span class="o">&gt;</span><span class="n">listData</span> <span class="o">=</span> <span class="p">[</span><span class="n">userDefaults</span> <span class="nl">objectForKey:</span><span class="s">@&quot;UD_LIST_KEY&quot;</span><span class="p">];</span>
+</span><span class='line'><span class="n">NSMutableArray</span> <span class="o">*</span><span class="n">list</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSMutableArray</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'><span class="n">list</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSKeyedUnarchiver</span> <span class="nl">unarchiveObjectWithData:</span><span class="n">listData</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h3>ユーザーデフォルトに配列を書き込み</h3>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">NSUserDefaults</span> <span class="o">&lt;</span><span class="n">em</span><span class="o">&gt;</span><span class="n">userDefaults</span>  <span class="o">=</span> <span class="p">[</span><span class="n">NSUserDefaults</span> <span class="n">standardUserDefaults</span><span class="p">];</span>
+</span><span class='line'><span class="n">NSMutableArray</span> <span class="o">&lt;/</span><span class="n">em</span><span class="o">&gt;</span><span class="n">list</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSMutableArray</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'><span class="p">[</span><span class="n">list</span> <span class="nl">addObject:</span><span class="s">@&quot;Apple&quot;</span><span class="p">];</span>
+</span><span class='line'><span class="n">NSData</span> <span class="o">*</span><span class="n">listData</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSKeyedArchiver</span> <span class="nl">archivedDataWithRootObject:</span><span class="n">list</span><span class="p">];</span>
+</span><span class='line'><span class="p">[</span><span class="n">userDefaults</span> <span class="nl">setObject:</span><span class="n">listData</span> <span class="nl">forKey:</span><span class="s">@&quot;UD_LIST_KEY&quot;</span><span class="p">];</span>
+</span><span class='line'><span class="p">[</span><span class="n">userDefaults</span> <span class="n">synchronize</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[指定した URLの画像を UIImageViewに表示する]]></title>

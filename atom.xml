@@ -4,7 +4,7 @@
   <title><![CDATA[Dolice Lab]]></title>
   <link href="http://lab.dolice.net/atom.xml" rel="self"/>
   <link href="http://lab.dolice.net/"/>
-  <updated>2013-11-20T13:54:27+09:00</updated>
+  <updated>2013-12-30T13:29:46+09:00</updated>
   <id>http://lab.dolice.net/</id>
   <author>
     <name><![CDATA[Masaki Hirokawa]]></name>
@@ -12,6 +12,60 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[NSMutableArrayをユーザーデフォルトに保存する方法]]></title>
+    <link href="http://lab.dolice.net/blog/2013/12/30/objc-ns-user-defaults-and-ns-data/"/>
+    <updated>2013-12-30T13:20:00+09:00</updated>
+    <id>http://lab.dolice.net/blog/2013/12/30/objc-ns-user-defaults-and-ns-data</id>
+    <content type="html"><![CDATA[<p>NSMutableArrayを NSUserDefaultsで扱おうとするとエラーが出てしまいます。</p>
+
+<p>これを回避するには、配列を一旦 NSDataに変換する必要があります。</p>
+
+<p>下記よりサンプルのダウンロードが行えます。</p>
+
+<h2>サンプルダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-ns-user-defaults-and-ns-data">https://github.com/masakihirokawa/objc-ns-user-defaults-and-ns-data</a></li>
+</ul>
+
+
+<h2>ソースコード</h2>
+
+<h3>ユーザーデフォルトから配列を読み込み</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">NSUserDefaults</span> <span class="o">*</span><span class="n">userDefaults</span>  <span class="o">=</span> <span class="p">[</span><span class="n">NSUserDefaults</span> <span class="n">standardUserDefaults</span><span class="p">];</span>
+</span><span class='line'><span class="n">NSData</span> <span class="o">*</span><span class="n">listData</span> <span class="o">=</span> <span class="p">[</span><span class="n">userDefaults</span> <span class="nl">objectForKey:</span><span class="s">@&quot;UD_LIST_KEY&quot;</span><span class="p">];</span>
+</span><span class='line'><span class="n">NSMutableArray</span> <span class="o">*</span><span class="n">list</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSMutableArray</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'><span class="n">list</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSKeyedUnarchiver</span> <span class="nl">unarchiveObjectWithData:</span><span class="n">listData</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>ユーザーデフォルトに配列を書き込み</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">NSUserDefaults</span> <span class="o">*</span><span class="n">userDefaults</span>  <span class="o">=</span> <span class="p">[</span><span class="n">NSUserDefaults</span> <span class="n">standardUserDefaults</span><span class="p">];</span>
+</span><span class='line'><span class="n">NSMutableArray</span> <span class="o">*</span><span class="n">list</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSMutableArray</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'><span class="p">[</span><span class="n">list</span> <span class="nl">addObject:</span><span class="s">@&quot;Apple&quot;</span><span class="p">];</span>
+</span><span class='line'><span class="n">NSData</span> <span class="o">*</span><span class="n">listData</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSKeyedArchiver</span> <span class="nl">archivedDataWithRootObject:</span><span class="n">list</span><span class="p">];</span>
+</span><span class='line'><span class="p">[</span><span class="n">userDefaults</span> <span class="nl">setObject:</span><span class="n">listData</span> <span class="nl">forKey:</span><span class="s">@&quot;UD_LIST_KEY&quot;</span><span class="p">];</span>
+</span><span class='line'><span class="p">[</span><span class="n">userDefaults</span> <span class="n">synchronize</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[iPhoneアプリのリリース後に役立つサービスまとめ（販促/集計/翻訳）]]></title>
@@ -4151,90 +4205,6 @@ Facebook/Twitter/LINEへの画像/テキスト/URLの投稿をシンプルな記
 <h3>4. Add to DCBanner.h the AdMob unit ID</h3>
 
 <p>Open the DCBanner.h file, specify the ID of the ad unit AdMob in the line 12 to &#8220;GAD_UNIT_ID&#8221;.</p>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#define GAD_UNIT_ID @&quot;ca-app-pub-0667784050147760/9058240228&quot;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[iAd/AdMob/Nendバナーの切り替え表示クラス (メディエーション対応)]]></title>
-    <link href="http://lab.dolice.net/blog/2013/09/04/objc-classes-dc-banner/"/>
-    <updated>2013-09-04T22:30:00+09:00</updated>
-    <id>http://lab.dolice.net/blog/2013/09/04/objc-classes-dc-banner</id>
-    <content type="html"><![CDATA[<p><img src="http://lab.dolice.net/images/article/dc-banner-screenshot.png" alt="" /></p>
-
-<p>iOSアプリで AdMob/Nend/iAdバナーを切り替え表示する「<a href="http://gum.co/dc-app-purchase-en" title="DCBanner">DCBanner</a>」クラスを作成しました。</p>
-
-<p>自分がリリースしているアプリでは、このクラスを使用し広告を表示しています。アプリは主に海外でのダウンロードが多いため、国外でも広告が表示される AdMobに切り替えたところ、クリック数が約8倍になりました。</p>
-
-<p>メディエーションに対応していますので、Nendの広告も表示されます(AdMobのサイトでメディエーションの設定が必要になります)。</p>
-
-<p>Gumroadにてソースコードとサンプル、マニュアルを 100円で販売しています。</p>
-
-<h2>ダウンロード</h2>
-
-<ul>
-<li><a href="http://gum.co/dc-banner">http://gum.co/dc-banner</a></li>
-</ul>
-
-
-<h2>バナーの表示方法</h2>
-
-<p>バナーの表示は1行で行えます。「DCBanner.h」ファイルを読み込み、viewDidAppearメソッド内で下記のように指定します。</p>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">// 画面の最下部に表示する場合</span>
-</span><span class='line'><span class="p">[[</span><span class="n">DCBanner</span> <span class="n">sharedManager</span><span class="p">]</span> <span class="nl">showAdBanner:</span><span class="n">self</span> <span class="nl">yPos:</span><span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">frame</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">height</span> <span class="o">-</span> <span class="mi">50</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>バナーの削除方法</h2>
-
-<p>下記のように指定するとバナーを削除できます。</p>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">// バナー削除</span>
-</span><span class='line'><span class="p">[[</span><span class="n">DCBanner</span> <span class="n">sharedManager</span><span class="p">]</span> <span class="n">removeAdBanner</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>導入に必要な手順</h2>
-
-<h3>1. SDKの読み込み</h3>
-
-<p>ダウンロードしたファイルを展開し、Adフォルダをプロジェクトに追加します。</p>
-
-<h3>2. 必要なフレームワークの読み込み</h3>
-
-<p>広告を表示するために下記7個のフレームワークが必要になりますので、それぞれ読み込みます。</p>
-
-<ol>
-<li>Security.framework</li>
-<li>iAd.framework</li>
-<li>AdSupport.framework</li>
-<li>SystemConfiguration.framework</li>
-<li>MessageUI.framework</li>
-<li>AudioToolbox.framework</li>
-<li>StoreKit.framework</li>
-</ol>
-
-
-<h3>3. Build Settingsの編集</h3>
-
-<p><img src="http://lab.dolice.net/images/article/dc-banner.png" alt="" /></p>
-
-<p>「TARGETS」→「Build Settings」を開き、[Linking]の項目にある [Other Linker Flags]の項目に「<em>-ObjC</em>」と記述します。</p>
-
-<h3>4. AdMobの広告ユニットIDを DCBanner.hに追加</h3>
-
-<p>DCBanner.hファイルを開き、12行目にある「GAD_UNIT_ID」に AdMobの広告ユニットIDを指定します。</p>
 
 <figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#define GAD_UNIT_ID @&quot;ca-app-pub-0667784050147760/9058240228&quot;</span>
