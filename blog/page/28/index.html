@@ -6,11 +6,13 @@
 	<title>Dolice Lab</title>
 	
 	
-	<meta name="description" content="シンプルなカメラアプリを作成しました。カメラを開く機能と、フォトライブラリの閲覧機能が備わっています。 下記よりサンプルのダウンロードが行えます。 サンプルダウンロード https://github.com/masakihirokawa/objc-Xcode-camera ソースコード &hellip;">
+	<meta name="description" content="iPhone/iPadのデバイス名を判別する Deviceクラスに2つの機能を追加しました。 今回は以下の2つの機能を追加しています。 4インチ端末であるかの情報取得
+iOS6以降であるかの情報取得 以下よりサンプルコードを含めたソースファイルをダウンロードできます。 ダウンロード https &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	<meta property="og:title" content="Dolice Lab" />
-<meta property="og:description" content="シンプルなカメラアプリを作成しました。カメラを開く機能と、フォトライブラリの閲覧機能が備わっています。 下記よりサンプルのダウンロードが行えます。 サンプルダウンロード https://github.com/masakihirokawa/objc-Xcode-camera ソースコード &hellip;" />
+<meta property="og:description" content="iPhone/iPadのデバイス名を判別する Deviceクラスに2つの機能を追加しました。 今回は以下の2つの機能を追加しています。 4インチ端末であるかの情報取得
+iOS6以降であるかの情報取得 以下よりサンプルコードを含めたソースファイルをダウンロードできます。 ダウンロード https &hellip;" />
 <meta property="og:url" content="http://lab.dolice.net/blog/page/28/" />
 <meta property="og:image" content="http://lab.dolice.net/images/facebook-icon.jpg" />
 <meta property="og:author" content="Masaki Hirokawa" />
@@ -97,6 +99,110 @@
   </div>
 </div>
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/05/20/download-objc-classes-device3/">
+		
+			iOS端末情報を取得する「Device」クラスに2つの機能を追加しました</a>
+	</h2>
+	<div class="entry-content">
+		<p>iPhone/iPadのデバイス名を判別する <a href="https://github.com/masakihirokawa/objc-classes-devce3" title="Deviceクラス">Deviceクラス</a>に2つの機能を追加しました。</p>
+
+<p>今回は以下の2つの機能を追加しています。</p>
+
+<ol>
+<li>4インチ端末であるかの情報取得</li>
+<li>iOS6以降であるかの情報取得</li>
+</ol>
+
+
+<p>以下よりサンプルコードを含めたソースファイルをダウンロードできます。</p>
+
+<h2>ダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-classes-devce3">https://github.com/masakihirokawa/objc-classes-devce3</a></li>
+</ul>
+
+
+<h2>サンプルソースコード</h2>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//4インチ端末であれば1が返る</span>
+</span><span class='line'><span class="n">self</span><span class="p">.</span><span class="n">label4inch</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">@&quot;%@%d&quot;</span><span class="p">,</span> <span class="s">@&quot;is4inch: &quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">Device</span> <span class="n">is4inch</span><span class="p">]];</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//iOS6以降であれば1が返る</span>
+</span><span class='line'><span class="n">self</span><span class="p">.</span><span class="n">labeliOS6</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">@&quot;%@%d&quot;</span><span class="p">,</span> <span class="s">@&quot;isiOS6: &quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">Device</span> <span class="n">isiOS6</span><span class="p">]];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>ソースコード</h2>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//4インチ端末であるか</span>
+</span><span class='line'><span class="k">+</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span> <span class="nf">is4inch</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">CGSize</span> <span class="n">screenSize</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIScreen</span> <span class="n">mainScreen</span><span class="p">]</span> <span class="n">bounds</span><span class="p">].</span><span class="n">size</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">(</span><span class="n">screenSize</span><span class="p">.</span><span class="n">width</span> <span class="o">==</span> <span class="mf">320.0</span> <span class="o">&amp;&amp;</span> <span class="n">screenSize</span><span class="p">.</span><span class="n">height</span> <span class="o">==</span> <span class="mf">568.0</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//iOS6以降であるか</span>
+</span><span class='line'><span class="k">+</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span> <span class="nf">isiOS6</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">NSString</span> <span class="o">*</span><span class="n">osversion</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIDevice</span> <span class="n">currentDevice</span><span class="p">].</span><span class="n">systemVersion</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">NSArray</span> <span class="o">*</span><span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="n">osversion</span> <span class="nl">componentsSeparatedByString:</span><span class="s">@&quot;.&quot;</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">([(</span><span class="n">NSString</span><span class="o">*</span><span class="p">)[</span><span class="n">a</span> <span class="nl">objectAtIndex:</span><span class="mi">0</span><span class="p">]</span> <span class="n">intValue</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">6</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-05-20T23:10:00+09:00" pubdate data-updated="true">May 20<span>th</span>, 2013</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/classes/'>Classes</a>, <a class='category' href='/blog/categories/device/'>Device</a>, <a class='category' href='/blog/categories/download/'>Download</a>, <a class='category' href='/blog/categories/objective-c/'>Objective-C</a>, <a class='category' href='/blog/categories/xcode/'>Xcode</a>, <a class='category' href='/blog/categories/ios/'>iOS</a>, <a class='category' href='/blog/categories/ipad/'>iPad</a>, <a class='category' href='/blog/categories/iphone/'>iPhone</a>
+
+
+</div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -493,328 +599,6 @@
 </div>
 </article>
 
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/05/14/download-objc-classes-dc-animation/">
-		
-			5種類のアニメーションを実行する「DCAnimationLite」クラス</a>
-	</h2>
-	<div class="entry-content">
-		<p>5種類のアニメーションをシンプルな記述で実行する「DCAnimationLite」クラスを作成しました。主な機能は以下の通りです。</p>
-
-<h2>主な機能</h2>
-
-<ol>
-<li>フェードイン・フェードアウトアニメーション</li>
-<li>スライドインアニメーション</li>
-<li>回転アニメーション</li>
-<li>拡大縮小アニメーション</li>
-<li>平行移動アニメーション</li>
-</ol>
-
-
-<h2>ダウンロード</h2>
-
-<ul>
-<li><a href="https://github.com/masakihirokawa/objc-classes-dc-animation">https://github.com/masakihirokawa/objc-classes-dc-animation</a></li>
-</ul>
-
-
-<h2>サンプルソースコード</h2>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;ViewController.h&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> <span class="p">()</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@property</span> <span class="kt">BOOL</span> <span class="n">isAnimationTargetFadeIn</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@implementation</span> <span class="nc">ViewController</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//フェードアニメーション実行</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">startFadeAnimation:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span> <span class="p">{</span>
-</span><span class='line'>  <span class="c1">//アニメーション秒数とフェードモードを指定</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">DCAnimation</span> <span class="nl">fade:</span><span class="n">self</span><span class="p">.</span><span class="n">animationTargetImage</span>
-</span><span class='line'>           <span class="nl">duration:</span><span class="mf">0.5f</span>
-</span><span class='line'>           <span class="nl">isFadeIn:</span><span class="n">_isAnimationTargetFadeIn</span><span class="p">];</span>
-</span><span class='line'>  <span class="c1">//フェードインフラグ切り替え</span>
-</span><span class='line'>  <span class="n">_isAnimationTargetFadeIn</span> <span class="o">=</span> <span class="o">!</span><span class="n">_isAnimationTargetFadeIn</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//スライドアニメーション実行</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">startSlideAnimation:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span> <span class="p">{</span>
-</span><span class='line'>  <span class="c1">//アニメーション秒数と目標座標・サイズを指定</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">DCAnimation</span> <span class="nl">slide:</span><span class="n">self</span><span class="p">.</span><span class="n">animationTargetImage</span>
-</span><span class='line'>            <span class="nl">duration:</span><span class="mf">0.5f</span>
-</span><span class='line'>             <span class="nl">aimRect:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">57</span><span class="p">,</span> <span class="mi">57</span><span class="p">)];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//回転アニメーション実行</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">startRotateAnimation:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span> <span class="p">{</span>
-</span><span class='line'>  <span class="c1">//アニメーション秒数と目標回転度数を指定</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">DCAnimation</span> <span class="nl">rotate:</span><span class="n">self</span><span class="p">.</span><span class="n">animationTargetImage</span>
-</span><span class='line'>             <span class="nl">duration:</span><span class="mf">0.5f</span>
-</span><span class='line'>             <span class="nl">aimAngle:</span><span class="mi">90</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">startScaleAnimation:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span> <span class="p">{</span>
-</span><span class='line'>  <span class="c1">//アニメーション秒数と目標スケール値を指定</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">DCAnimation</span> <span class="nl">scale:</span><span class="n">self</span><span class="p">.</span><span class="n">animationTargetImage</span>
-</span><span class='line'>            <span class="nl">duration:</span><span class="mf">0.5f</span>
-</span><span class='line'>            <span class="nl">aimScale:</span><span class="mf">2.0f</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">startTranslateAnimation:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span> <span class="p">{</span>
-</span><span class='line'>  <span class="c1">//アニメーション秒数とXYの移動量を指定</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">DCAnimation</span> <span class="nl">translate:</span><span class="n">self</span><span class="p">.</span><span class="n">animationTargetImage</span>
-</span><span class='line'>                <span class="nl">duration:</span><span class="mf">0.5f</span>
-</span><span class='line'>             <span class="nl">movePosition:</span><span class="mi">100</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>ソースコード</h2>
-
-<h3>DCAnimationLite.h</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;UIKit/UIKit.h&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@interface</span> <span class="nc">DCAnimationLite</span> : <span class="nc">UIView</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#pragma mark - public method</span>
-</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">fade:</span><span class="p">(</span><span class="n">UIView</span> <span class="o">*</span><span class="p">)</span><span class="nv">imageView</span> <span class="nf">duration:</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="nv">duration</span> <span class="nf">isFadeIn:</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nv">isFadeIn</span><span class="p">;</span>
-</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">slide:</span><span class="p">(</span><span class="n">UIView</span> <span class="o">*</span><span class="p">)</span><span class="nv">imageView</span> <span class="nf">duration:</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="nv">duration</span> <span class="nf">aimRect:</span><span class="p">(</span><span class="n">CGRect</span><span class="p">)</span><span class="nv">rect</span><span class="p">;</span>
-</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">rotate:</span><span class="p">(</span><span class="n">UIView</span> <span class="o">*</span><span class="p">)</span><span class="nv">imageView</span> <span class="nf">duration:</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="nv">duration</span> <span class="nf">aimAngle:</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="nv">angle</span><span class="p">;</span>
-</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">scale:</span><span class="p">(</span><span class="n">UIView</span> <span class="o">*</span><span class="p">)</span><span class="nv">imageView</span> <span class="nf">duration:</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="nv">duration</span> <span class="nf">aimScale:</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="nv">scale</span><span class="p">;</span>
-</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">translate:</span><span class="p">(</span><span class="n">UIView</span> <span class="o">*</span><span class="p">)</span><span class="nv">imageView</span> <span class="nf">duration:</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="nv">duration</span> <span class="nf">movePosition:</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="nv">position</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>DCAnimationLite.m</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;DCAnimationLite.h&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@implementation</span> <span class="nc">DCAnimationLite</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// フェードアニメーション</span>
-</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">fade:</span><span class="p">(</span><span class="n">UIView</span> <span class="o">*</span><span class="p">)</span><span class="nv">imageView</span> <span class="nf">duration:</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="nv">duration</span> <span class="nf">isFadeIn:</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nv">isFadeIn</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">UIView</span> <span class="nl">beginAnimations:</span><span class="nb">nil</span> <span class="nl">context:</span><span class="nb">NULL</span><span class="p">];</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">UIView</span> <span class="nl">setAnimationDuration:</span><span class="n">duration</span><span class="p">];</span>
-</span><span class='line'>  <span class="n">imageView</span><span class="p">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="n">isFadeIn</span> <span class="o">?</span> <span class="mi">0</span> <span class="o">:</span> <span class="mf">1.0f</span><span class="p">;</span>
-</span><span class='line'>  <span class="n">imageView</span><span class="p">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="n">isFadeIn</span> <span class="o">?</span> <span class="mf">1.0f</span> <span class="o">:</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">UIView</span> <span class="n">commitAnimations</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// スライドアニメーション</span>
-</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">slide:</span><span class="p">(</span><span class="n">UIView</span> <span class="o">*</span><span class="p">)</span><span class="nv">imageView</span> <span class="nf">duration:</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="nv">duration</span> <span class="nf">aimRect:</span><span class="p">(</span><span class="n">CGRect</span><span class="p">)</span><span class="nv">rect</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">UIView</span> <span class="nl">beginAnimations:</span><span class="nb">nil</span> <span class="nl">context:</span><span class="nb">NULL</span><span class="p">];</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">UIView</span> <span class="nl">setAnimationDuration:</span><span class="n">duration</span><span class="p">];</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">imageView</span> <span class="nl">setFrame:</span><span class="n">rect</span><span class="p">];</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">UIView</span> <span class="n">commitAnimations</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// 回転アニメーション</span>
-</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">rotate:</span><span class="p">(</span><span class="n">UIView</span> <span class="o">*</span><span class="p">)</span><span class="nv">imageView</span> <span class="nf">duration:</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="nv">duration</span> <span class="nf">aimAngle:</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="nv">angle</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">UIView</span> <span class="nl">beginAnimations:</span><span class="nb">nil</span> <span class="nl">context:</span><span class="nb">NULL</span><span class="p">];</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">UIView</span> <span class="nl">setAnimationDuration:</span><span class="n">duration</span><span class="p">];</span>
-</span><span class='line'>  <span class="n">CGAffineTransform</span> <span class="n">rotate</span> <span class="o">=</span> <span class="n">CGAffineTransformMakeRotation</span><span class="p">(</span><span class="n">angle</span> <span class="o">*</span> <span class="p">(</span><span class="n">M_PI</span> <span class="o">/</span> <span class="mf">180.0f</span><span class="p">));</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">imageView</span> <span class="nl">setTransform:</span><span class="n">rotate</span><span class="p">];</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">UIView</span> <span class="n">commitAnimations</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// 拡縮アニメーション</span>
-</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">scale:</span><span class="p">(</span><span class="n">UIView</span> <span class="o">*</span><span class="p">)</span><span class="nv">imageView</span> <span class="nf">duration:</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="nv">duration</span> <span class="nf">aimScale:</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="nv">scale</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">UIView</span> <span class="nl">beginAnimations:</span><span class="nb">nil</span> <span class="nl">context:</span><span class="nb">NULL</span><span class="p">];</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">UIView</span> <span class="nl">setAnimationDuration:</span><span class="n">duration</span><span class="p">];</span>
-</span><span class='line'>  <span class="n">CGAffineTransform</span> <span class="n">aimScale</span> <span class="o">=</span> <span class="n">CGAffineTransformMakeScale</span><span class="p">(</span><span class="n">scale</span><span class="p">,</span> <span class="n">scale</span><span class="p">);</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">imageView</span> <span class="nl">setTransform:</span><span class="n">aimScale</span><span class="p">];</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">UIView</span> <span class="n">commitAnimations</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// XY方向に平行移動</span>
-</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">translate:</span><span class="p">(</span><span class="n">UIView</span> <span class="o">*</span><span class="p">)</span><span class="nv">imageView</span> <span class="nf">duration:</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="nv">duration</span> <span class="nf">movePosition:</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="nv">position</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">UIView</span> <span class="nl">beginAnimations:</span><span class="nb">nil</span> <span class="nl">context:</span><span class="nb">NULL</span><span class="p">];</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">UIView</span> <span class="nl">setAnimationDuration:</span><span class="n">duration</span><span class="p">];</span>
-</span><span class='line'>  <span class="n">CGAffineTransform</span> <span class="n">translate</span> <span class="o">=</span> <span class="n">CGAffineTransformMakeTranslation</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="n">position</span><span class="p">);</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">imageView</span> <span class="nl">setTransform:</span><span class="n">translate</span><span class="p">];</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">UIView</span> <span class="n">commitAnimations</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-05-14T23:12:00+09:00" pubdate data-updated="true">May 14<span>th</span>, 2013</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/animation/'>Animation</a>, <a class='category' href='/blog/categories/cgaffinetransform/'>CGAffineTransform</a>, <a class='category' href='/blog/categories/classes/'>Classes</a>, <a class='category' href='/blog/categories/download/'>Download</a>, <a class='category' href='/blog/categories/objective-c/'>Objective-C</a>, <a class='category' href='/blog/categories/uiview/'>UIView</a>, <a class='category' href='/blog/categories/xcode/'>Xcode</a>
-
-
-</div>
-	
-</div>
-</article>
-
 <nav id="pagenavi">
     
         <a href="/blog/page/27/" class="prev">Prev</a>
@@ -872,7 +656,7 @@
   <div class="information-box-wide">
 <section>
   <h1>Tag Cloud</h1>
-  <p id="tag-cloud"><a href='/blog/categories/actionscript' style='font-size: 102.63414634146342%'>ActionScript(9)</a> <a href='/blog/categories/actionscript3' style='font-size: 102.04878048780488%'>ActionScript3(7)</a> <a href='/blog/categories/admob' style='font-size: 100.8780487804878%'>AdMob(3)</a> <a href='/blog/categories/animation' style='font-size: 104.97560975609755%'>Animation(17)</a> <a href='/blog/categories/appdelegate' style='font-size: 100.8780487804878%'>AppDelegate(3)</a> <a href='/blog/categories/arc' style='font-size: 100.29268292682927%'>ARC(1)</a> <a href='/blog/categories/avaudioplayer' style='font-size: 101.17073170731707%'>AVAudioPlayer(4)</a> <a href='/blog/categories/avaudiosession' style='font-size: 100.29268292682927%'>AVAudioSession(1)</a> <a href='/blog/categories/avfoundation' style='font-size: 100.8780487804878%'>AVFoundation(3)</a> <a href='/blog/categories/banner' style='font-size: 101.17073170731707%'>Banner(4)</a> <a href='/blog/categories/camera' style='font-size: 101.17073170731707%'>Camera(4)</a> <a href='/blog/categories/cgaffinetransform' style='font-size: 101.17073170731707%'>CGAffineTransform(4)</a> <a href='/blog/categories/cgblendmode' style='font-size: 100.58536585365853%'>CGBlendMode(2)</a> <a href='/blog/categories/cgcontextref' style='font-size: 100.29268292682927%'>CGContextRef(1)</a> <a href='/blog/categories/cgimageref' style='font-size: 100.29268292682927%'>CGImageRef(1)</a> <a href='/blog/categories/classes' style='font-size: 112.0%'>Classes(41)</a> <a href='/blog/categories/cllocationmanager' style='font-size: 100.29268292682927%'>CLLocationManager(1)</a> <a href='/blog/categories/corelocation' style='font-size: 100.58536585365853%'>CoreLocation(2)</a> <a href='/blog/categories/delegate' style='font-size: 100.8780487804878%'>Delegate(3)</a> <a href='/blog/categories/device' style='font-size: 102.04878048780488%'>Device(7)</a> <a href='/blog/categories/download' style='font-size: 123.41463414634146%'>Download(80)</a> <a href='/blog/categories/facebook' style='font-size: 101.46341463414635%'>Facebook(5)</a> <a href='/blog/categories/foundation' style='font-size: 121.07317073170732%'>Foundation(72)</a> <a href='/blog/categories/framework' style='font-size: 100.58536585365853%'>Framework(2)</a> <a href='/blog/categories/iad' style='font-size: 101.7560975609756%'>iAd(6)</a> <a href='/blog/categories/inapppurchase' style='font-size: 100.58536585365853%'>InAppPurchase(2)</a> <a href='/blog/categories/ios' style='font-size: 103.51219512195122%'>iOS(12)</a> <a href='/blog/categories/ios-7' style='font-size: 102.92682926829268%'>iOS 7(10)</a> <a href='/blog/categories/ipad' style='font-size: 102.04878048780488%'>iPad(7)</a> <a href='/blog/categories/iphone' style='font-size: 102.92682926829268%'>iPhone(10)</a> <a href='/blog/categories/javascript' style='font-size: 100.58536585365853%'>JavaScript(2)</a> <a href='/blog/categories/line' style='font-size: 100.8780487804878%'>LINE(3)</a> <a href='/blog/categories/nend' style='font-size: 100.8780487804878%'>Nend(3)</a> <a href='/blog/categories/nsarray' style='font-size: 106.4390243902439%'>NSArray(22)</a> <a href='/blog/categories/nscalendar' style='font-size: 100.8780487804878%'>NSCalendar(3)</a> <a href='/blog/categories/nsdata' style='font-size: 100.58536585365853%'>NSData(2)</a> <a href='/blog/categories/nsdate' style='font-size: 101.7560975609756%'>NSDate(6)</a> <a href='/blog/categories/nsdatecomponents' style='font-size: 100.58536585365853%'>NSDateComponents(2)</a> <a href='/blog/categories/nsdateformatter' style='font-size: 100.29268292682927%'>NSDateFormatter(1)</a> <a href='/blog/categories/nsdictionary' style='font-size: 103.21951219512195%'>NSDictionary(11)</a> <a href='/blog/categories/nsenumerator' style='font-size: 100.29268292682927%'>NSEnumerator(1)</a> <a href='/blog/categories/nsindexset' style='font-size: 100.29268292682927%'>NSIndexSet(1)</a> <a href='/blog/categories/nsinteger' style='font-size: 101.7560975609756%'>NSInteger(6)</a> <a href='/blog/categories/nsmutablearray' style='font-size: 104.6829268292683%'>NSMutableArray(16)</a> <a href='/blog/categories/nsmutabledictionary' style='font-size: 101.46341463414635%'>NSMutableDictionary(5)</a> <a href='/blog/categories/nsmutableorderedset' style='font-size: 102.04878048780488%'>NSMutableOrderedSet(7)</a> <a href='/blog/categories/nsmutablestring' style='font-size: 101.17073170731707%'>NSMutableString(4)</a> <a href='/blog/categories/nsmutableurlrequest' style='font-size: 100.29268292682927%'>NSMutableURLRequest(1)</a> <a href='/blog/categories/nsnotificationcenter' style='font-size: 100.29268292682927%'>NSNotificationCenter(1)</a> <a href='/blog/categories/nsnumber' style='font-size: 100.29268292682927%'>NSNumber(1)</a> <a href='/blog/categories/nsobject' style='font-size: 100.29268292682927%'>NSObject(1)</a> <a href='/blog/categories/nsorderedset' style='font-size: 102.04878048780488%'>NSOrderedSet(7)</a> <a href='/blog/categories/nsrange' style='font-size: 100.58536585365853%'>NSRange(2)</a> <a href='/blog/categories/nsselectorfromstring' style='font-size: 100.29268292682927%'>NSSelectorFromString(1)</a> <a href='/blog/categories/nsset' style='font-size: 101.7560975609756%'>NSSet(6)</a> <a href='/blog/categories/nsstring' style='font-size: 105.26829268292683%'>NSString(18)</a> <a href='/blog/categories/nstimer' style='font-size: 101.17073170731707%'>NSTimer(4)</a> <a href='/blog/categories/nstimezone' style='font-size: 100.29268292682927%'>NSTimeZone(1)</a> <a href='/blog/categories/nsurl' style='font-size: 102.04878048780488%'>NSURL(7)</a> <a href='/blog/categories/nsurlconnection' style='font-size: 100.29268292682927%'>NSURLConnection(1)</a> <a href='/blog/categories/nsurlrequest' style='font-size: 100.58536585365853%'>NSURLRequest(2)</a> <a href='/blog/categories/nsuserdefaults' style='font-size: 102.04878048780488%'>NSUserDefaults(7)</a> <a href='/blog/categories/nsxmlparser' style='font-size: 100.58536585365853%'>NSXMLParser(2)</a> <a href='/blog/categories/objective-c' style='font-size: 160.0%'>Objective-C(205)</a> <a href='/blog/categories/php' style='font-size: 100.29268292682927%'>PHP(1)</a> <a href='/blog/categories/products' style='font-size: 101.46341463414635%'>Products(5)</a> <a href='/blog/categories/quartzcore' style='font-size: 100.8780487804878%'>QuartzCore(3)</a> <a href='/blog/categories/rss' style='font-size: 100.58536585365853%'>RSS(2)</a> <a href='/blog/categories/sample' style='font-size: 114.92682926829268%'>Sample(51)</a> <a href='/blog/categories/screensaver' style='font-size: 102.63414634146342%'>Screensaver(9)</a> <a href='/blog/categories/sdk' style='font-size: 100.58536585365853%'>SDK(2)</a> <a href='/blog/categories/social' style='font-size: 102.34146341463415%'>Social(8)</a> <a href='/blog/categories/storekit' style='font-size: 100.8780487804878%'>StoreKit(3)</a> <a href='/blog/categories/twitter' style='font-size: 101.46341463414635%'>Twitter(5)</a> <a href='/blog/categories/uiaccelerometer' style='font-size: 100.8780487804878%'>UIAccelerometer(3)</a> <a href='/blog/categories/uiactionsheet' style='font-size: 100.29268292682927%'>UIActionSheet(1)</a> <a href='/blog/categories/uiactivityindicatorview' style='font-size: 100.8780487804878%'>UIActivityIndicatorView(3)</a> <a href='/blog/categories/uiactivityviewcontroller' style='font-size: 100.29268292682927%'>UIActivityViewController(1)</a> <a href='/blog/categories/uialertview' style='font-size: 101.17073170731707%'>UIAlertView(4)</a> <a href='/blog/categories/uiapplication' style='font-size: 101.7560975609756%'>UIApplication(6)</a> <a href='/blog/categories/uibutton' style='font-size: 101.17073170731707%'>UIButton(4)</a> <a href='/blog/categories/uicolor' style='font-size: 100.8780487804878%'>UIColor(3)</a> <a href='/blog/categories/uidatepicker' style='font-size: 101.17073170731707%'>UIDatePicker(4)</a> <a href='/blog/categories/uidevice' style='font-size: 101.17073170731707%'>UIDevice(4)</a> <a href='/blog/categories/uideviceorientation' style='font-size: 100.29268292682927%'>UIDeviceOrientation(1)</a> <a href='/blog/categories/uievent' style='font-size: 101.7560975609756%'>UIEvent(6)</a> <a href='/blog/categories/uiimage' style='font-size: 104.39024390243902%'>UIImage(15)</a> <a href='/blog/categories/uiimagepickercontroller' style='font-size: 101.17073170731707%'>UIImagePickerController(4)</a> <a href='/blog/categories/uiimageview' style='font-size: 103.51219512195122%'>UIImageView(12)</a> <a href='/blog/categories/uikit' style='font-size: 116.6829268292683%'>UIKit(57)</a> <a href='/blog/categories/uilabel' style='font-size: 102.04878048780488%'>UILabel(7)</a> <a href='/blog/categories/uinavigationbar' style='font-size: 101.17073170731707%'>UINavigationBar(4)</a> <a href='/blog/categories/uinavigationitem' style='font-size: 100.29268292682927%'>UINavigationItem(1)</a> <a href='/blog/categories/uipasteboard' style='font-size: 100.8780487804878%'>UIPasteboard(3)</a> <a href='/blog/categories/uiscreen' style='font-size: 100.29268292682927%'>UIScreen(1)</a> <a href='/blog/categories/uiscrollbar' style='font-size: 100.29268292682927%'>UIScrollBar(1)</a> <a href='/blog/categories/uiscrollview' style='font-size: 100.29268292682927%'>UIScrollView(1)</a> <a href='/blog/categories/uislider' style='font-size: 100.8780487804878%'>UISlider(3)</a> <a href='/blog/categories/uistoryboardsegue' style='font-size: 100.8780487804878%'>UIStoryboardSegue(3)</a> <a href='/blog/categories/uiswitch' style='font-size: 100.29268292682927%'>UISwitch(1)</a> <a href='/blog/categories/uitabbar' style='font-size: 100.8780487804878%'>UITabBar(3)</a> <a href='/blog/categories/uitextfield' style='font-size: 100.58536585365853%'>UITextField(2)</a> <a href='/blog/categories/uiview' style='font-size: 103.21951219512195%'>UIView(11)</a> <a href='/blog/categories/uiviewanimationtransition' style='font-size: 100.29268292682927%'>UIViewAnimationTransition(1)</a> <a href='/blog/categories/uiviewcontroller' style='font-size: 101.17073170731707%'>UIViewController(4)</a> <a href='/blog/categories/uiwebview' style='font-size: 100.8780487804878%'>UIWebView(3)</a> <a href='/blog/categories/xcode' style='font-size: 111.70731707317073%'>Xcode(40)</a> </p>
+  <p id="tag-cloud"><a href='/blog/categories/actionscript' style='font-size: 102.62135922330097%'>ActionScript(9)</a> <a href='/blog/categories/actionscript3' style='font-size: 102.03883495145631%'>ActionScript3(7)</a> <a href='/blog/categories/admob' style='font-size: 100.87378640776699%'>AdMob(3)</a> <a href='/blog/categories/animation' style='font-size: 104.95145631067962%'>Animation(17)</a> <a href='/blog/categories/appdelegate' style='font-size: 100.87378640776699%'>AppDelegate(3)</a> <a href='/blog/categories/arc' style='font-size: 100.29126213592232%'>ARC(1)</a> <a href='/blog/categories/avaudioplayer' style='font-size: 101.16504854368932%'>AVAudioPlayer(4)</a> <a href='/blog/categories/avaudiosession' style='font-size: 100.29126213592232%'>AVAudioSession(1)</a> <a href='/blog/categories/avfoundation' style='font-size: 100.87378640776699%'>AVFoundation(3)</a> <a href='/blog/categories/banner' style='font-size: 101.16504854368932%'>Banner(4)</a> <a href='/blog/categories/camera' style='font-size: 101.16504854368932%'>Camera(4)</a> <a href='/blog/categories/cgaffinetransform' style='font-size: 101.16504854368932%'>CGAffineTransform(4)</a> <a href='/blog/categories/cgblendmode' style='font-size: 100.58252427184466%'>CGBlendMode(2)</a> <a href='/blog/categories/cgcontextref' style='font-size: 100.29126213592232%'>CGContextRef(1)</a> <a href='/blog/categories/cgimageref' style='font-size: 100.29126213592232%'>CGImageRef(1)</a> <a href='/blog/categories/classes' style='font-size: 111.94174757281553%'>Classes(41)</a> <a href='/blog/categories/cllocationmanager' style='font-size: 100.29126213592232%'>CLLocationManager(1)</a> <a href='/blog/categories/corelocation' style='font-size: 100.58252427184466%'>CoreLocation(2)</a> <a href='/blog/categories/delegate' style='font-size: 100.87378640776699%'>Delegate(3)</a> <a href='/blog/categories/device' style='font-size: 102.03883495145631%'>Device(7)</a> <a href='/blog/categories/download' style='font-size: 123.30097087378641%'>Download(80)</a> <a href='/blog/categories/facebook' style='font-size: 101.45631067961165%'>Facebook(5)</a> <a href='/blog/categories/foundation' style='font-size: 120.97087378640776%'>Foundation(72)</a> <a href='/blog/categories/framework' style='font-size: 100.58252427184466%'>Framework(2)</a> <a href='/blog/categories/iad' style='font-size: 101.74757281553399%'>iAd(6)</a> <a href='/blog/categories/inapppurchase' style='font-size: 100.58252427184466%'>InAppPurchase(2)</a> <a href='/blog/categories/ios' style='font-size: 103.49514563106796%'>iOS(12)</a> <a href='/blog/categories/ios-7' style='font-size: 102.9126213592233%'>iOS 7(10)</a> <a href='/blog/categories/ipad' style='font-size: 102.03883495145631%'>iPad(7)</a> <a href='/blog/categories/iphone' style='font-size: 102.9126213592233%'>iPhone(10)</a> <a href='/blog/categories/javascript' style='font-size: 100.58252427184466%'>JavaScript(2)</a> <a href='/blog/categories/line' style='font-size: 100.87378640776699%'>LINE(3)</a> <a href='/blog/categories/nend' style='font-size: 100.87378640776699%'>Nend(3)</a> <a href='/blog/categories/nsarray' style='font-size: 106.40776699029126%'>NSArray(22)</a> <a href='/blog/categories/nscalendar' style='font-size: 100.87378640776699%'>NSCalendar(3)</a> <a href='/blog/categories/nsdata' style='font-size: 100.58252427184466%'>NSData(2)</a> <a href='/blog/categories/nsdate' style='font-size: 101.74757281553399%'>NSDate(6)</a> <a href='/blog/categories/nsdatecomponents' style='font-size: 100.58252427184466%'>NSDateComponents(2)</a> <a href='/blog/categories/nsdateformatter' style='font-size: 100.29126213592232%'>NSDateFormatter(1)</a> <a href='/blog/categories/nsdictionary' style='font-size: 103.20388349514563%'>NSDictionary(11)</a> <a href='/blog/categories/nsenumerator' style='font-size: 100.29126213592232%'>NSEnumerator(1)</a> <a href='/blog/categories/nsindexset' style='font-size: 100.29126213592232%'>NSIndexSet(1)</a> <a href='/blog/categories/nsinteger' style='font-size: 101.74757281553399%'>NSInteger(6)</a> <a href='/blog/categories/nsmutablearray' style='font-size: 104.66019417475728%'>NSMutableArray(16)</a> <a href='/blog/categories/nsmutabledictionary' style='font-size: 101.45631067961165%'>NSMutableDictionary(5)</a> <a href='/blog/categories/nsmutableorderedset' style='font-size: 102.03883495145631%'>NSMutableOrderedSet(7)</a> <a href='/blog/categories/nsmutablestring' style='font-size: 101.16504854368932%'>NSMutableString(4)</a> <a href='/blog/categories/nsmutableurlrequest' style='font-size: 100.29126213592232%'>NSMutableURLRequest(1)</a> <a href='/blog/categories/nsnotificationcenter' style='font-size: 100.29126213592232%'>NSNotificationCenter(1)</a> <a href='/blog/categories/nsnumber' style='font-size: 100.29126213592232%'>NSNumber(1)</a> <a href='/blog/categories/nsobject' style='font-size: 100.29126213592232%'>NSObject(1)</a> <a href='/blog/categories/nsorderedset' style='font-size: 102.03883495145631%'>NSOrderedSet(7)</a> <a href='/blog/categories/nsrange' style='font-size: 100.58252427184466%'>NSRange(2)</a> <a href='/blog/categories/nsselectorfromstring' style='font-size: 100.29126213592232%'>NSSelectorFromString(1)</a> <a href='/blog/categories/nsset' style='font-size: 101.74757281553399%'>NSSet(6)</a> <a href='/blog/categories/nsstring' style='font-size: 105.24271844660194%'>NSString(18)</a> <a href='/blog/categories/nstimer' style='font-size: 101.16504854368932%'>NSTimer(4)</a> <a href='/blog/categories/nstimezone' style='font-size: 100.29126213592232%'>NSTimeZone(1)</a> <a href='/blog/categories/nsurl' style='font-size: 102.03883495145631%'>NSURL(7)</a> <a href='/blog/categories/nsurlconnection' style='font-size: 100.29126213592232%'>NSURLConnection(1)</a> <a href='/blog/categories/nsurlrequest' style='font-size: 100.58252427184466%'>NSURLRequest(2)</a> <a href='/blog/categories/nsuserdefaults' style='font-size: 102.03883495145631%'>NSUserDefaults(7)</a> <a href='/blog/categories/nsxmlparser' style='font-size: 100.58252427184466%'>NSXMLParser(2)</a> <a href='/blog/categories/objective-c' style='font-size: 160.0%'>Objective-C(206)</a> <a href='/blog/categories/php' style='font-size: 100.29126213592232%'>PHP(1)</a> <a href='/blog/categories/products' style='font-size: 101.45631067961165%'>Products(5)</a> <a href='/blog/categories/quartzcore' style='font-size: 100.87378640776699%'>QuartzCore(3)</a> <a href='/blog/categories/rss' style='font-size: 100.58252427184466%'>RSS(2)</a> <a href='/blog/categories/sample' style='font-size: 114.85436893203884%'>Sample(51)</a> <a href='/blog/categories/screensaver' style='font-size: 102.62135922330097%'>Screensaver(9)</a> <a href='/blog/categories/sdk' style='font-size: 100.58252427184466%'>SDK(2)</a> <a href='/blog/categories/social' style='font-size: 102.33009708737865%'>Social(8)</a> <a href='/blog/categories/storekit' style='font-size: 100.87378640776699%'>StoreKit(3)</a> <a href='/blog/categories/twitter' style='font-size: 101.45631067961165%'>Twitter(5)</a> <a href='/blog/categories/uiaccelerometer' style='font-size: 100.87378640776699%'>UIAccelerometer(3)</a> <a href='/blog/categories/uiactionsheet' style='font-size: 100.29126213592232%'>UIActionSheet(1)</a> <a href='/blog/categories/uiactivityindicator' style='font-size: 100.29126213592232%'>UIActivityIndicator(1)</a> <a href='/blog/categories/uiactivityindicatorview' style='font-size: 100.87378640776699%'>UIActivityIndicatorView(3)</a> <a href='/blog/categories/uiactivityviewcontroller' style='font-size: 100.29126213592232%'>UIActivityViewController(1)</a> <a href='/blog/categories/uialertview' style='font-size: 101.16504854368932%'>UIAlertView(4)</a> <a href='/blog/categories/uiapplication' style='font-size: 101.74757281553399%'>UIApplication(6)</a> <a href='/blog/categories/uibutton' style='font-size: 101.16504854368932%'>UIButton(4)</a> <a href='/blog/categories/uicolor' style='font-size: 100.87378640776699%'>UIColor(3)</a> <a href='/blog/categories/uidatepicker' style='font-size: 101.16504854368932%'>UIDatePicker(4)</a> <a href='/blog/categories/uidevice' style='font-size: 101.16504854368932%'>UIDevice(4)</a> <a href='/blog/categories/uideviceorientation' style='font-size: 100.29126213592232%'>UIDeviceOrientation(1)</a> <a href='/blog/categories/uievent' style='font-size: 101.74757281553399%'>UIEvent(6)</a> <a href='/blog/categories/uiimage' style='font-size: 104.36893203883496%'>UIImage(15)</a> <a href='/blog/categories/uiimagepickercontroller' style='font-size: 101.16504854368932%'>UIImagePickerController(4)</a> <a href='/blog/categories/uiimageview' style='font-size: 103.49514563106796%'>UIImageView(12)</a> <a href='/blog/categories/uikit' style='font-size: 116.60194174757282%'>UIKit(57)</a> <a href='/blog/categories/uilabel' style='font-size: 102.03883495145631%'>UILabel(7)</a> <a href='/blog/categories/uinavigationbar' style='font-size: 101.16504854368932%'>UINavigationBar(4)</a> <a href='/blog/categories/uinavigationitem' style='font-size: 100.29126213592232%'>UINavigationItem(1)</a> <a href='/blog/categories/uipasteboard' style='font-size: 100.87378640776699%'>UIPasteboard(3)</a> <a href='/blog/categories/uiscreen' style='font-size: 100.29126213592232%'>UIScreen(1)</a> <a href='/blog/categories/uiscrollbar' style='font-size: 100.29126213592232%'>UIScrollBar(1)</a> <a href='/blog/categories/uiscrollview' style='font-size: 100.29126213592232%'>UIScrollView(1)</a> <a href='/blog/categories/uislider' style='font-size: 100.87378640776699%'>UISlider(3)</a> <a href='/blog/categories/uistoryboardsegue' style='font-size: 100.87378640776699%'>UIStoryboardSegue(3)</a> <a href='/blog/categories/uiswitch' style='font-size: 100.29126213592232%'>UISwitch(1)</a> <a href='/blog/categories/uitabbar' style='font-size: 100.87378640776699%'>UITabBar(3)</a> <a href='/blog/categories/uitextfield' style='font-size: 100.58252427184466%'>UITextField(2)</a> <a href='/blog/categories/uiview' style='font-size: 103.20388349514563%'>UIView(11)</a> <a href='/blog/categories/uiviewanimationtransition' style='font-size: 100.29126213592232%'>UIViewAnimationTransition(1)</a> <a href='/blog/categories/uiviewcontroller' style='font-size: 101.16504854368932%'>UIViewController(4)</a> <a href='/blog/categories/uiwebview' style='font-size: 101.16504854368932%'>UIWebView(4)</a> <a href='/blog/categories/xcode' style='font-size: 111.6504854368932%'>Xcode(40)</a> </p>
 </section>
 
   </div>
@@ -880,6 +664,10 @@
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/12/31/objc-ui-web-view-and-ui-activity-indicator/">UIWebViewのページロード中にインジケータを表示する際の注意点</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2013/12/30/objc-ios7-ui-tab-bar-custom/">UITabBarのデザインカスタマイズ方法（iOS 7/iOS 6.1両対応）</a>
@@ -899,10 +687,6 @@
     
       <li class="post">
         <a href="/blog/2013/09/26/objc-ios7-decision-version/">iOS 7以降か判定する方法</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/09/25/objc-ios7-status-bar/">iOS 7でステータスバーを非表示にしたりスタイルを変更する方法</a>
       </li>
     
   </ul>
