@@ -6,11 +6,11 @@
 	<title>Dolice Lab</title>
 	
 	
-	<meta name="description" content="iOS 6.1以前と iOS 7以降ではタブバーのカスタマイズ方法が異なるようで、iOS 7に最適化したカスタマイズ方法を用いると iOS 6.1でクラッシュしてしまうため、デバイスのバージョンを判別し処理を分ける必要があります。 下記よりサンプルのダウンロードとソースコードの閲覧が行えます。 &hellip;">
+	<meta name="description" content="ウェブビューにページを読み込む際、レギュレーション上アクティビティインジケータを表示する必要があります。 その際にインジケータの表示と停止を同一スレッドで行ってもインジケータが消えないため、表示と停止は別スレッドで処理する必要があります。 下記のサンプルでは、 &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	<meta property="og:title" content="Dolice Lab" />
-<meta property="og:description" content="iOS 6.1以前と iOS 7以降ではタブバーのカスタマイズ方法が異なるようで、iOS 7に最適化したカスタマイズ方法を用いると iOS 6.1でクラッシュしてしまうため、デバイスのバージョンを判別し処理を分ける必要があります。 下記よりサンプルのダウンロードとソースコードの閲覧が行えます。 &hellip;" />
+<meta property="og:description" content="ウェブビューにページを読み込む際、レギュレーション上アクティビティインジケータを表示する必要があります。 その際にインジケータの表示と停止を同一スレッドで行ってもインジケータが消えないため、表示と停止は別スレッドで処理する必要があります。 下記のサンプルでは、 &hellip;" />
 <meta property="og:url" content="http://lab.dolice.net/blog/page/4/" />
 <meta property="og:image" content="http://lab.dolice.net/images/facebook-icon.jpg" />
 <meta property="og:author" content="Masaki Hirokawa" />
@@ -97,6 +97,294 @@
   </div>
 </div>
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/12/31/objc-ui-web-view-and-ui-activity-indicator/">
+		
+			UIWebViewのページロード中にインジケータを表示する際の注意点</a>
+	</h2>
+	<div class="entry-content">
+		<p>ウェブビューにページを読み込む際、レギュレーション上アクティビティインジケータを表示する必要があります。</p>
+
+<p>その際にインジケータの表示と停止を同一スレッドで行ってもインジケータが消えないため、表示と停止は別スレッドで処理する必要があります。</p>
+
+<p>下記のサンプルでは、<strong>viewDidLoad</strong>でインジケータを表示し、UIWebViewのデリゲートメソッドである <strong>webViewDidFinishLoad</strong>でインジケータを非表示にしています。</p>
+
+<p>尚、ステータスバーに表示されるインジケータに関しては同一スレッドで処理しても問題ありません。</p>
+
+<h2>サンプルダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-ui-web-view-ui-activiry-indicator">https://github.com/masakihirokawa/objc-ui-web-view-ui-activiry-indicator</a></li>
+</ul>
+
+
+<h2>ソースコード</h2>
+
+<h3>インジケータの表示</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
+</span><span class='line'>  
+</span><span class='line'>    <span class="n">_indicator</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIActivityIndicatorView</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">_indicator</span><span class="p">.</span><span class="n">activityIndicatorViewStyle</span> <span class="o">=</span> <span class="n">UIActivityIndicatorViewStyleGray</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">_indicator</span><span class="p">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">_indicator</span><span class="p">.</span><span class="n">center</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">center</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">_indicator</span><span class="p">.</span><span class="n">hidesWhenStopped</span> <span class="o">=</span> <span class="n">YES</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">_indicator</span> <span class="n">startAnimating</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">_indicator</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>インジケータの非表示</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">webViewDidFinishLoad:</span><span class="p">(</span><span class="n">UIWebView</span> <span class="o">*</span><span class="p">)</span><span class="nv">webView</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">_indicator</span> <span class="n">stopAnimating</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>ViewController.h</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;UIKit/UIKit.h&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> : <span class="nc">UIViewController</span> <span class="o">&lt;</span><span class="n">UIWebViewDelegate</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>ViewController.m</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;ViewController.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> <span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@property</span> <span class="n">UIWebView</span>               <span class="o">*</span><span class="n">webView</span><span class="p">;</span>   <span class="c1">// ウェブビュー</span>
+</span><span class='line'><span class="k">@property</span> <span class="n">UIActivityIndicatorView</span> <span class="o">*</span><span class="n">indicator</span><span class="p">;</span> <span class="c1">// アクティビティインジケータ</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">ViewController</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
+</span><span class='line'>  
+</span><span class='line'>    <span class="c1">// ウェブビュー配置</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="n">setWebView</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// ウェブビューにページ読み込み</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="n">loadWebPageForWebView</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// アクティビティインジケータ表示</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="n">startActiviryIndicatorAnimation</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark - Web View</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// ウェブビュー配置</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setWebView</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">_webView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIWebView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame:</span><span class="p">[[</span><span class="n">UIScreen</span> <span class="n">mainScreen</span><span class="p">]</span> <span class="n">applicationFrame</span><span class="p">]];</span>
+</span><span class='line'>    <span class="n">_webView</span><span class="p">.</span><span class="n">delegate</span> <span class="o">=</span> <span class="n">self</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">_webView</span><span class="p">.</span><span class="n">scalesPageToFit</span> <span class="o">=</span> <span class="n">YES</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">_webView</span><span class="p">.</span><span class="n">opaque</span> <span class="o">=</span> <span class="n">NO</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">_webView</span><span class="p">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIColor</span> <span class="n">whiteColor</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">_webView</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// ウェブビューにページ読み込み</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">loadWebPageForWebView</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">NSURL</span> <span class="o">*</span><span class="n">url</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSURL</span> <span class="nl">URLWithString:</span><span class="s">@&quot;http://dolice.net/mb/&quot;</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">NSURLRequest</span> <span class="o">*</span><span class="n">request</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSURLRequest</span> <span class="nl">requestWithURL:</span><span class="n">url</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">_webView</span> <span class="nl">loadRequest:</span><span class="n">request</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// ページ読込開始時にインジケータ表示</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">webViewDidStartLoad:</span><span class="p">(</span><span class="n">UIWebView</span> <span class="o">*</span><span class="p">)</span><span class="nv">webView</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// ステータスバーのインジケータ表示</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">UIApplication</span> <span class="n">sharedApplication</span><span class="p">].</span><span class="n">networkActivityIndicatorVisible</span> <span class="o">=</span> <span class="n">YES</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// ページ読込完了時にインジケータ非表示</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">webViewDidFinishLoad:</span><span class="p">(</span><span class="n">UIWebView</span> <span class="o">*</span><span class="p">)</span><span class="nv">webView</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// アクティビティインジケータ非表示</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="n">stopActivityIndicatorAnimation</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// ステータスバーのインジケータ非表示</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">UIApplication</span> <span class="n">sharedApplication</span><span class="p">].</span><span class="n">networkActivityIndicatorVisible</span> <span class="o">=</span> <span class="n">NO</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark - Activity Indicator</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// アクティビティインジケータ表示</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">startActiviryIndicatorAnimation</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">_indicator</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIActivityIndicatorView</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">_indicator</span><span class="p">.</span><span class="n">activityIndicatorViewStyle</span> <span class="o">=</span> <span class="n">UIActivityIndicatorViewStyleGray</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">_indicator</span><span class="p">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">_indicator</span><span class="p">.</span><span class="n">center</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">center</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">_indicator</span><span class="p">.</span><span class="n">hidesWhenStopped</span> <span class="o">=</span> <span class="n">YES</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">_indicator</span> <span class="n">startAnimating</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">_indicator</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// アクティビティインジケータ非表示</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">stopActivityIndicatorAnimation</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">_indicator</span> <span class="n">stopAnimating</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-12-31T13:54:00+09:00" pubdate data-updated="true">Dec 31<span>st</span>, 2013</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/objective-c/'>Objective-C</a>, <a class='category' href='/blog/categories/uiactivityindicator/'>UIActivityIndicator</a>, <a class='category' href='/blog/categories/uiwebview/'>UIWebView</a>
+
+
+</div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -498,126 +786,6 @@
 </div>
 </article>
 
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/11/04/ios-marketing-and-promotions/">
-		
-			iPhoneアプリのリリース後に役立つサービスまとめ（販促/集計/翻訳）</a>
-	</h2>
-	<div class="entry-content">
-		<p>iPhone/iPadアプリリリース後に役立つツールやサービスを以下にまとめました。</p>
-
-<p>宣伝サイトも下の方に掲載していますので、アプリのプロモーション活動のお役に立てば幸いです。</p>
-
-<h2>集計ツール/サービス</h2>
-
-<h3><a href="https://appviz.com" title="AppViz">AppViz</a></h3>
-
-<p><img src="/images/article/appviz2.png" title="AppViz" alt="AppViz" /></p>
-
-<p>アプリの売上/ランキング/レビューを閲覧できるツールです。シェアウェアで $49です。各国のレビューを一覧できる機能を特に重宝しています。他のサービスでもレビューは閲覧できますが、全ての国のレビューが一覧になりますので非常に助かっています。</p>
-
-<h3><a href="http://appfigures.com" title="AppFigures">AppFigures</a></h3>
-
-<p><img src="/images/article/appfigures2.png" title="AppFigures" alt="AppFigures" /></p>
-
-<p>売上をデイリーレポートとウィークリーレポートとしてメールを送ってくれます。アプリの売上と iAd広告の売上、ダウンロード/アップデート数が通知されます。プロモーションコードの使用回数や、返品数も通知されます。</p>
-
-<h2>翻訳サービス</h2>
-
-<h3><a href="http://gengo.com/ja/" title="Gengo">Gengo</a></h3>
-
-<p><img src="/images/article/gengo.png" title="Gengo" alt="Gengo" /></p>
-
-<p>一文字3円〜10円でアプリのタイトルや紹介文、メニュー等を翻訳してくれます。Proコースでも7時間以内に翻訳完了し、納品まで24時間以上かかったことはありませんでした。</p>
-
-<p>翻訳コースが3種あり、Standardコースが一文字3円、Proコースが一文字5円、校正付きの Ultraコースが一文字10円です。日本語からの翻訳対応言語は、<strong>英語</strong>、<strong>中国語(簡体/繁体)</strong>、<strong>インドネシア語</strong>、<strong>スペイン語</strong>、<strong>韓国語</strong>です。</p>
-
-<h3><a href="http://www.rozetta.jp/honyaku/" title="ロゼッタの専門翻訳サービス">ロゼッタの専門翻訳サービス</a></h3>
-
-<p><img src="/images/article/rozetta.png" title="ロゼッタの専門翻訳サービス" alt="ロゼッタの専門翻訳サービス" /></p>
-
-<p>一文字30円と Gengoの約3倍の費用がかかりますが、Gengoの対応していない<strong>ロシア語</strong>、<strong>ドイツ語</strong>、<strong>フランス語</strong>、<strong>ベトナム語</strong>、<strong>タイ語</strong>に対応しています。最低発注金額は、21,000円です。</p>
-
-<h2>販促に役立つサイト（国内）</h2>
-
-<h3><a href="http://iphone.ascii.jp" title="iPhonePLUS">iPhonePLUS</a></h3>
-
-<p><img src="/images/article/iphoneplus.png" title="iPhonePLUS" alt="iPhonePLUS" /></p>
-
-<p>週刊アスキー運営の iPhoneアプリ情報サイトです。フォームから申請をすると Wordpressアカウントを作成するメールが届き、記事を自分で作成する形でアプリの紹介記事を投稿できます。</p>
-
-<p>記事を書いた後レビュー申請し、メールでお願いをする必要があるなど手順は少し面倒なところもありますが、確実に掲載していただけます。</p>
-
-<p>また、アップデートの度に記事を新規投稿することを推奨しているため露出の機会が多く、国内アプリランキングへの影響はとても強いです。週末の投稿で約2000ビュー/day ありました。</p>
-
-<h3><a href="http://www.appbank.net" title="AppBank">AppBank</a></h3>
-
-<p><img src="/images/article/appbank.png" title="AppBank" alt="AppBank" /></p>
-
-<p>審査が厳しいですが、国内での販促効果は非常に強いです。</p>
-
-<h3><a href="http://d.hatena.ne.jp/glass-_-onion/20091103/1257175510" title="iPhoneアプリの販促活動に関してまとめてみた">iPhoneアプリの販促活動に関してまとめてみた</a></h3>
-
-<p>国内外での販促手段について丁寧に掲載されています。</p>
-
-<h3>販促用 Twitterアカウント</h3>
-
-<p>下記アカウント宛に Twitterでつぶやくとリツイートしていただけます。</p>
-
-<ul>
-<li><strong>@iphone_dev_jp</strong></li>
-<li><strong>@iphonefan</strong></li>
-<li><strong>@iphoneug</strong></li>
-</ul>
-
-
-<h2>販促に役立つサイト（海外）</h2>
-
-<p>下記サイトはアプリを掲載してくださいましたし、営業やスパムメールも来ませんでした。アプリを紹介いただいた事で、ロシアの無料ランキングで1位になりました。</p>
-
-<ul>
-<li><a href="http://www.148apps.com" title="148Apps">148Apps</a></li>
-<li><a href="http://prmac.com/member/" title="prMac">prMac</a></li>
-<li><a href="http://iphoneapplicationlist.com/apps/" title="iPhone Application List">iPhone Application List</a></li>
-<li><a href="http://www.appcraver.com" title="AppCraver">AppCraver</a></li>
-<li><a href="http://iphone.iusethis.com" title="i use this">i use this</a></li>
-<li><a href="http://www.appsafari.com" title="148Apps">AppSafari</a></li>
-</ul>
-
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-11-04T18:23:00+09:00" pubdate data-updated="true">Nov 4<span>th</span>, 2013</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/ios/'>iOS</a>, <a class='category' href='/blog/categories/ipad/'>iPad</a>, <a class='category' href='/blog/categories/iphone/'>iPhone</a>
-
-
-</div>
-	
-</div>
-</article>
-
 <nav id="pagenavi">
     
         <a href="/blog/page/3/" class="prev">Prev</a>
@@ -675,7 +843,7 @@
   <div class="information-box-wide">
 <section>
   <h1>Tag Cloud</h1>
-  <p id="tag-cloud"><a href='/blog/categories/actionscript' style='font-size: 102.57142857142857%'>ActionScript(9)</a> <a href='/blog/categories/actionscript3' style='font-size: 102.0%'>ActionScript3(7)</a> <a href='/blog/categories/admob' style='font-size: 100.85714285714286%'>AdMob(3)</a> <a href='/blog/categories/animation' style='font-size: 104.85714285714286%'>Animation(17)</a> <a href='/blog/categories/appdelegate' style='font-size: 100.85714285714286%'>AppDelegate(3)</a> <a href='/blog/categories/arc' style='font-size: 100.28571428571429%'>ARC(1)</a> <a href='/blog/categories/avaudioplayer' style='font-size: 101.14285714285714%'>AVAudioPlayer(4)</a> <a href='/blog/categories/avaudiosession' style='font-size: 100.28571428571429%'>AVAudioSession(1)</a> <a href='/blog/categories/avfoundation' style='font-size: 100.85714285714286%'>AVFoundation(3)</a> <a href='/blog/categories/banner' style='font-size: 101.14285714285714%'>Banner(4)</a> <a href='/blog/categories/camera' style='font-size: 101.14285714285714%'>Camera(4)</a> <a href='/blog/categories/cgaffinetransform' style='font-size: 101.14285714285714%'>CGAffineTransform(4)</a> <a href='/blog/categories/cgblendmode' style='font-size: 100.57142857142857%'>CGBlendMode(2)</a> <a href='/blog/categories/cgcontextref' style='font-size: 100.28571428571429%'>CGContextRef(1)</a> <a href='/blog/categories/cgimageref' style='font-size: 100.28571428571429%'>CGImageRef(1)</a> <a href='/blog/categories/classes' style='font-size: 112.57142857142857%'>Classes(44)</a> <a href='/blog/categories/cllocationmanager' style='font-size: 100.28571428571429%'>CLLocationManager(1)</a> <a href='/blog/categories/corelocation' style='font-size: 100.57142857142857%'>CoreLocation(2)</a> <a href='/blog/categories/delegate' style='font-size: 100.85714285714286%'>Delegate(3)</a> <a href='/blog/categories/device' style='font-size: 102.0%'>Device(7)</a> <a href='/blog/categories/download' style='font-size: 123.71428571428572%'>Download(83)</a> <a href='/blog/categories/facebook' style='font-size: 101.71428571428571%'>Facebook(6)</a> <a href='/blog/categories/foundation' style='font-size: 120.57142857142857%'>Foundation(72)</a> <a href='/blog/categories/framework' style='font-size: 100.57142857142857%'>Framework(2)</a> <a href='/blog/categories/iad' style='font-size: 101.71428571428571%'>iAd(6)</a> <a href='/blog/categories/inapppurchase' style='font-size: 100.57142857142857%'>InAppPurchase(2)</a> <a href='/blog/categories/ios' style='font-size: 103.42857142857143%'>iOS(12)</a> <a href='/blog/categories/ios-7' style='font-size: 104.28571428571429%'>iOS 7(15)</a> <a href='/blog/categories/ipad' style='font-size: 102.0%'>iPad(7)</a> <a href='/blog/categories/iphone' style='font-size: 102.85714285714286%'>iPhone(10)</a> <a href='/blog/categories/javascript' style='font-size: 100.57142857142857%'>JavaScript(2)</a> <a href='/blog/categories/line' style='font-size: 101.14285714285714%'>LINE(4)</a> <a href='/blog/categories/nend' style='font-size: 100.85714285714286%'>Nend(3)</a> <a href='/blog/categories/nsarray' style='font-size: 106.28571428571429%'>NSArray(22)</a> <a href='/blog/categories/nscalendar' style='font-size: 100.85714285714286%'>NSCalendar(3)</a> <a href='/blog/categories/nsdata' style='font-size: 100.57142857142857%'>NSData(2)</a> <a href='/blog/categories/nsdate' style='font-size: 101.71428571428571%'>NSDate(6)</a> <a href='/blog/categories/nsdatecomponents' style='font-size: 100.57142857142857%'>NSDateComponents(2)</a> <a href='/blog/categories/nsdateformatter' style='font-size: 100.28571428571429%'>NSDateFormatter(1)</a> <a href='/blog/categories/nsdictionary' style='font-size: 103.42857142857143%'>NSDictionary(12)</a> <a href='/blog/categories/nsenumerator' style='font-size: 100.28571428571429%'>NSEnumerator(1)</a> <a href='/blog/categories/nsindexset' style='font-size: 100.28571428571429%'>NSIndexSet(1)</a> <a href='/blog/categories/nsinteger' style='font-size: 101.71428571428571%'>NSInteger(6)</a> <a href='/blog/categories/nsmutablearray' style='font-size: 104.57142857142857%'>NSMutableArray(16)</a> <a href='/blog/categories/nsmutabledictionary' style='font-size: 101.42857142857143%'>NSMutableDictionary(5)</a> <a href='/blog/categories/nsmutableorderedset' style='font-size: 102.0%'>NSMutableOrderedSet(7)</a> <a href='/blog/categories/nsmutablestring' style='font-size: 101.14285714285714%'>NSMutableString(4)</a> <a href='/blog/categories/nsmutableurlrequest' style='font-size: 100.28571428571429%'>NSMutableURLRequest(1)</a> <a href='/blog/categories/nsnotificationcenter' style='font-size: 100.28571428571429%'>NSNotificationCenter(1)</a> <a href='/blog/categories/nsnumber' style='font-size: 100.28571428571429%'>NSNumber(1)</a> <a href='/blog/categories/nsobject' style='font-size: 100.28571428571429%'>NSObject(1)</a> <a href='/blog/categories/nsorderedset' style='font-size: 102.0%'>NSOrderedSet(7)</a> <a href='/blog/categories/nsrange' style='font-size: 100.57142857142857%'>NSRange(2)</a> <a href='/blog/categories/nsselectorfromstring' style='font-size: 100.28571428571429%'>NSSelectorFromString(1)</a> <a href='/blog/categories/nsset' style='font-size: 101.71428571428571%'>NSSet(6)</a> <a href='/blog/categories/nsstring' style='font-size: 105.42857142857143%'>NSString(19)</a> <a href='/blog/categories/nstimer' style='font-size: 101.14285714285714%'>NSTimer(4)</a> <a href='/blog/categories/nstimezone' style='font-size: 100.28571428571429%'>NSTimeZone(1)</a> <a href='/blog/categories/nsurl' style='font-size: 102.0%'>NSURL(7)</a> <a href='/blog/categories/nsurlconnection' style='font-size: 100.28571428571429%'>NSURLConnection(1)</a> <a href='/blog/categories/nsurlrequest' style='font-size: 100.57142857142857%'>NSURLRequest(2)</a> <a href='/blog/categories/nsuserdefaults' style='font-size: 102.0%'>NSUserDefaults(7)</a> <a href='/blog/categories/nsxmlparser' style='font-size: 100.57142857142857%'>NSXMLParser(2)</a> <a href='/blog/categories/objective-c' style='font-size: 160.0%'>Objective-C(210)</a> <a href='/blog/categories/php' style='font-size: 100.28571428571429%'>PHP(1)</a> <a href='/blog/categories/products' style='font-size: 101.42857142857143%'>Products(5)</a> <a href='/blog/categories/quartzcore' style='font-size: 100.85714285714286%'>QuartzCore(3)</a> <a href='/blog/categories/rss' style='font-size: 100.57142857142857%'>RSS(2)</a> <a href='/blog/categories/sample' style='font-size: 114.57142857142857%'>Sample(51)</a> <a href='/blog/categories/screensaver' style='font-size: 102.57142857142857%'>Screensaver(9)</a> <a href='/blog/categories/sdk' style='font-size: 100.57142857142857%'>SDK(2)</a> <a href='/blog/categories/social' style='font-size: 102.85714285714286%'>Social(10)</a> <a href='/blog/categories/storekit' style='font-size: 100.85714285714286%'>StoreKit(3)</a> <a href='/blog/categories/twitter' style='font-size: 101.71428571428571%'>Twitter(6)</a> <a href='/blog/categories/uiaccelerometer' style='font-size: 100.85714285714286%'>UIAccelerometer(3)</a> <a href='/blog/categories/uiactionsheet' style='font-size: 100.28571428571429%'>UIActionSheet(1)</a> <a href='/blog/categories/uiactivityindicator' style='font-size: 100.28571428571429%'>UIActivityIndicator(1)</a> <a href='/blog/categories/uiactivityindicatorview' style='font-size: 100.85714285714286%'>UIActivityIndicatorView(3)</a> <a href='/blog/categories/uiactivityviewcontroller' style='font-size: 100.28571428571429%'>UIActivityViewController(1)</a> <a href='/blog/categories/uialertview' style='font-size: 101.42857142857143%'>UIAlertView(5)</a> <a href='/blog/categories/uiapplication' style='font-size: 102.0%'>UIApplication(7)</a> <a href='/blog/categories/uibutton' style='font-size: 101.14285714285714%'>UIButton(4)</a> <a href='/blog/categories/uicolor' style='font-size: 100.85714285714286%'>UIColor(3)</a> <a href='/blog/categories/uidatepicker' style='font-size: 101.14285714285714%'>UIDatePicker(4)</a> <a href='/blog/categories/uidevice' style='font-size: 101.42857142857143%'>UIDevice(5)</a> <a href='/blog/categories/uideviceorientation' style='font-size: 100.28571428571429%'>UIDeviceOrientation(1)</a> <a href='/blog/categories/uievent' style='font-size: 101.71428571428571%'>UIEvent(6)</a> <a href='/blog/categories/uiimage' style='font-size: 104.28571428571429%'>UIImage(15)</a> <a href='/blog/categories/uiimagepickercontroller' style='font-size: 101.14285714285714%'>UIImagePickerController(4)</a> <a href='/blog/categories/uiimageview' style='font-size: 103.42857142857143%'>UIImageView(12)</a> <a href='/blog/categories/uikit' style='font-size: 116.57142857142857%'>UIKit(58)</a> <a href='/blog/categories/uilabel' style='font-size: 102.0%'>UILabel(7)</a> <a href='/blog/categories/uinavigationbar' style='font-size: 101.14285714285714%'>UINavigationBar(4)</a> <a href='/blog/categories/uinavigationitem' style='font-size: 100.28571428571429%'>UINavigationItem(1)</a> <a href='/blog/categories/uipasteboard' style='font-size: 101.14285714285714%'>UIPasteboard(4)</a> <a href='/blog/categories/uiscreen' style='font-size: 100.28571428571429%'>UIScreen(1)</a> <a href='/blog/categories/uiscrollbar' style='font-size: 100.28571428571429%'>UIScrollBar(1)</a> <a href='/blog/categories/uiscrollview' style='font-size: 100.28571428571429%'>UIScrollView(1)</a> <a href='/blog/categories/uislider' style='font-size: 100.85714285714286%'>UISlider(3)</a> <a href='/blog/categories/uistoryboardsegue' style='font-size: 100.85714285714286%'>UIStoryboardSegue(3)</a> <a href='/blog/categories/uiswitch' style='font-size: 100.28571428571429%'>UISwitch(1)</a> <a href='/blog/categories/uitabbar' style='font-size: 100.85714285714286%'>UITabBar(3)</a> <a href='/blog/categories/uitableview' style='font-size: 100.28571428571429%'>UITableView(1)</a> <a href='/blog/categories/uitextfield' style='font-size: 100.57142857142857%'>UITextField(2)</a> <a href='/blog/categories/uiview' style='font-size: 103.14285714285714%'>UIView(11)</a> <a href='/blog/categories/uiviewanimationtransition' style='font-size: 100.28571428571429%'>UIViewAnimationTransition(1)</a> <a href='/blog/categories/uiviewcontroller' style='font-size: 101.14285714285714%'>UIViewController(4)</a> <a href='/blog/categories/uiwebview' style='font-size: 101.42857142857143%'>UIWebView(5)</a> <a href='/blog/categories/xcode' style='font-size: 112.57142857142857%'>Xcode(44)</a> </p>
+  <p id="tag-cloud"><a href='/blog/categories/actionscript' style='font-size: 102.55924170616113%'>ActionScript(9)</a> <a href='/blog/categories/actionscript3' style='font-size: 101.99052132701422%'>ActionScript3(7)</a> <a href='/blog/categories/admob' style='font-size: 100.85308056872037%'>AdMob(3)</a> <a href='/blog/categories/animation' style='font-size: 104.83412322274881%'>Animation(17)</a> <a href='/blog/categories/appdelegate' style='font-size: 100.85308056872037%'>AppDelegate(3)</a> <a href='/blog/categories/arc' style='font-size: 100.28436018957346%'>ARC(1)</a> <a href='/blog/categories/avaudioplayer' style='font-size: 101.13744075829383%'>AVAudioPlayer(4)</a> <a href='/blog/categories/avaudiosession' style='font-size: 100.28436018957346%'>AVAudioSession(1)</a> <a href='/blog/categories/avfoundation' style='font-size: 100.85308056872037%'>AVFoundation(3)</a> <a href='/blog/categories/banner' style='font-size: 101.13744075829383%'>Banner(4)</a> <a href='/blog/categories/camera' style='font-size: 101.13744075829383%'>Camera(4)</a> <a href='/blog/categories/cgaffinetransform' style='font-size: 101.13744075829383%'>CGAffineTransform(4)</a> <a href='/blog/categories/cgblendmode' style='font-size: 100.56872037914692%'>CGBlendMode(2)</a> <a href='/blog/categories/cgcontextref' style='font-size: 100.28436018957346%'>CGContextRef(1)</a> <a href='/blog/categories/cgimageref' style='font-size: 100.28436018957346%'>CGImageRef(1)</a> <a href='/blog/categories/classes' style='font-size: 112.79620853080569%'>Classes(45)</a> <a href='/blog/categories/cllocationmanager' style='font-size: 100.28436018957346%'>CLLocationManager(1)</a> <a href='/blog/categories/corelocation' style='font-size: 100.56872037914692%'>CoreLocation(2)</a> <a href='/blog/categories/delegate' style='font-size: 100.85308056872037%'>Delegate(3)</a> <a href='/blog/categories/device' style='font-size: 101.99052132701422%'>Device(7)</a> <a href='/blog/categories/download' style='font-size: 123.88625592417061%'>Download(84)</a> <a href='/blog/categories/facebook' style='font-size: 101.70616113744076%'>Facebook(6)</a> <a href='/blog/categories/foundation' style='font-size: 120.4739336492891%'>Foundation(72)</a> <a href='/blog/categories/framework' style='font-size: 100.56872037914692%'>Framework(2)</a> <a href='/blog/categories/iad' style='font-size: 101.70616113744076%'>iAd(6)</a> <a href='/blog/categories/inapppurchase' style='font-size: 100.56872037914692%'>InAppPurchase(2)</a> <a href='/blog/categories/ios' style='font-size: 103.41232227488152%'>iOS(12)</a> <a href='/blog/categories/ios-7' style='font-size: 104.26540284360189%'>iOS 7(15)</a> <a href='/blog/categories/ipad' style='font-size: 101.99052132701422%'>iPad(7)</a> <a href='/blog/categories/iphone' style='font-size: 102.8436018957346%'>iPhone(10)</a> <a href='/blog/categories/javascript' style='font-size: 100.56872037914692%'>JavaScript(2)</a> <a href='/blog/categories/line' style='font-size: 101.13744075829383%'>LINE(4)</a> <a href='/blog/categories/mfcomposeviewcontroller' style='font-size: 100.28436018957346%'>MFComposeViewController(1)</a> <a href='/blog/categories/nend' style='font-size: 100.85308056872037%'>Nend(3)</a> <a href='/blog/categories/nsarray' style='font-size: 106.25592417061611%'>NSArray(22)</a> <a href='/blog/categories/nscalendar' style='font-size: 100.85308056872037%'>NSCalendar(3)</a> <a href='/blog/categories/nsdata' style='font-size: 100.56872037914692%'>NSData(2)</a> <a href='/blog/categories/nsdate' style='font-size: 101.70616113744076%'>NSDate(6)</a> <a href='/blog/categories/nsdatecomponents' style='font-size: 100.56872037914692%'>NSDateComponents(2)</a> <a href='/blog/categories/nsdateformatter' style='font-size: 100.28436018957346%'>NSDateFormatter(1)</a> <a href='/blog/categories/nsdictionary' style='font-size: 103.41232227488152%'>NSDictionary(12)</a> <a href='/blog/categories/nsenumerator' style='font-size: 100.28436018957346%'>NSEnumerator(1)</a> <a href='/blog/categories/nsindexset' style='font-size: 100.28436018957346%'>NSIndexSet(1)</a> <a href='/blog/categories/nsinteger' style='font-size: 101.70616113744076%'>NSInteger(6)</a> <a href='/blog/categories/nsmutablearray' style='font-size: 104.54976303317535%'>NSMutableArray(16)</a> <a href='/blog/categories/nsmutabledictionary' style='font-size: 101.4218009478673%'>NSMutableDictionary(5)</a> <a href='/blog/categories/nsmutableorderedset' style='font-size: 101.99052132701422%'>NSMutableOrderedSet(7)</a> <a href='/blog/categories/nsmutablestring' style='font-size: 101.13744075829383%'>NSMutableString(4)</a> <a href='/blog/categories/nsmutableurlrequest' style='font-size: 100.28436018957346%'>NSMutableURLRequest(1)</a> <a href='/blog/categories/nsnotificationcenter' style='font-size: 100.28436018957346%'>NSNotificationCenter(1)</a> <a href='/blog/categories/nsnumber' style='font-size: 100.28436018957346%'>NSNumber(1)</a> <a href='/blog/categories/nsobject' style='font-size: 100.28436018957346%'>NSObject(1)</a> <a href='/blog/categories/nsorderedset' style='font-size: 101.99052132701422%'>NSOrderedSet(7)</a> <a href='/blog/categories/nsrange' style='font-size: 100.56872037914692%'>NSRange(2)</a> <a href='/blog/categories/nsselectorfromstring' style='font-size: 100.28436018957346%'>NSSelectorFromString(1)</a> <a href='/blog/categories/nsset' style='font-size: 101.70616113744076%'>NSSet(6)</a> <a href='/blog/categories/nsstring' style='font-size: 105.40284360189574%'>NSString(19)</a> <a href='/blog/categories/nstimer' style='font-size: 101.13744075829383%'>NSTimer(4)</a> <a href='/blog/categories/nstimezone' style='font-size: 100.28436018957346%'>NSTimeZone(1)</a> <a href='/blog/categories/nsurl' style='font-size: 101.99052132701422%'>NSURL(7)</a> <a href='/blog/categories/nsurlconnection' style='font-size: 100.28436018957346%'>NSURLConnection(1)</a> <a href='/blog/categories/nsurlrequest' style='font-size: 100.56872037914692%'>NSURLRequest(2)</a> <a href='/blog/categories/nsuserdefaults' style='font-size: 101.99052132701422%'>NSUserDefaults(7)</a> <a href='/blog/categories/nsxmlparser' style='font-size: 100.56872037914692%'>NSXMLParser(2)</a> <a href='/blog/categories/objective-c' style='font-size: 160.0%'>Objective-C(211)</a> <a href='/blog/categories/php' style='font-size: 100.28436018957346%'>PHP(1)</a> <a href='/blog/categories/products' style='font-size: 101.4218009478673%'>Products(5)</a> <a href='/blog/categories/quartzcore' style='font-size: 100.85308056872037%'>QuartzCore(3)</a> <a href='/blog/categories/rss' style='font-size: 100.56872037914692%'>RSS(2)</a> <a href='/blog/categories/sample' style='font-size: 114.50236966824644%'>Sample(51)</a> <a href='/blog/categories/screensaver' style='font-size: 102.55924170616113%'>Screensaver(9)</a> <a href='/blog/categories/sdk' style='font-size: 100.56872037914692%'>SDK(2)</a> <a href='/blog/categories/social' style='font-size: 102.8436018957346%'>Social(10)</a> <a href='/blog/categories/storekit' style='font-size: 100.85308056872037%'>StoreKit(3)</a> <a href='/blog/categories/twitter' style='font-size: 101.70616113744076%'>Twitter(6)</a> <a href='/blog/categories/uiaccelerometer' style='font-size: 100.85308056872037%'>UIAccelerometer(3)</a> <a href='/blog/categories/uiactionsheet' style='font-size: 100.28436018957346%'>UIActionSheet(1)</a> <a href='/blog/categories/uiactivityindicator' style='font-size: 100.28436018957346%'>UIActivityIndicator(1)</a> <a href='/blog/categories/uiactivityindicatorview' style='font-size: 100.85308056872037%'>UIActivityIndicatorView(3)</a> <a href='/blog/categories/uiactivityviewcontroller' style='font-size: 100.28436018957346%'>UIActivityViewController(1)</a> <a href='/blog/categories/uialertview' style='font-size: 101.4218009478673%'>UIAlertView(5)</a> <a href='/blog/categories/uiapplication' style='font-size: 101.99052132701422%'>UIApplication(7)</a> <a href='/blog/categories/uibutton' style='font-size: 101.13744075829383%'>UIButton(4)</a> <a href='/blog/categories/uicolor' style='font-size: 100.85308056872037%'>UIColor(3)</a> <a href='/blog/categories/uidatepicker' style='font-size: 101.13744075829383%'>UIDatePicker(4)</a> <a href='/blog/categories/uidevice' style='font-size: 101.4218009478673%'>UIDevice(5)</a> <a href='/blog/categories/uideviceorientation' style='font-size: 100.28436018957346%'>UIDeviceOrientation(1)</a> <a href='/blog/categories/uievent' style='font-size: 101.70616113744076%'>UIEvent(6)</a> <a href='/blog/categories/uiimage' style='font-size: 104.26540284360189%'>UIImage(15)</a> <a href='/blog/categories/uiimagepickercontroller' style='font-size: 101.13744075829383%'>UIImagePickerController(4)</a> <a href='/blog/categories/uiimageview' style='font-size: 103.41232227488152%'>UIImageView(12)</a> <a href='/blog/categories/uikit' style='font-size: 116.49289099526067%'>UIKit(58)</a> <a href='/blog/categories/uilabel' style='font-size: 101.99052132701422%'>UILabel(7)</a> <a href='/blog/categories/uinavigationbar' style='font-size: 101.13744075829383%'>UINavigationBar(4)</a> <a href='/blog/categories/uinavigationitem' style='font-size: 100.28436018957346%'>UINavigationItem(1)</a> <a href='/blog/categories/uipasteboard' style='font-size: 101.13744075829383%'>UIPasteboard(4)</a> <a href='/blog/categories/uiscreen' style='font-size: 100.28436018957346%'>UIScreen(1)</a> <a href='/blog/categories/uiscrollbar' style='font-size: 100.28436018957346%'>UIScrollBar(1)</a> <a href='/blog/categories/uiscrollview' style='font-size: 100.28436018957346%'>UIScrollView(1)</a> <a href='/blog/categories/uislider' style='font-size: 100.85308056872037%'>UISlider(3)</a> <a href='/blog/categories/uistoryboardsegue' style='font-size: 100.85308056872037%'>UIStoryboardSegue(3)</a> <a href='/blog/categories/uiswitch' style='font-size: 100.28436018957346%'>UISwitch(1)</a> <a href='/blog/categories/uitabbar' style='font-size: 100.85308056872037%'>UITabBar(3)</a> <a href='/blog/categories/uitableview' style='font-size: 100.28436018957346%'>UITableView(1)</a> <a href='/blog/categories/uitextfield' style='font-size: 100.56872037914692%'>UITextField(2)</a> <a href='/blog/categories/uiview' style='font-size: 103.12796208530806%'>UIView(11)</a> <a href='/blog/categories/uiviewanimationtransition' style='font-size: 100.28436018957346%'>UIViewAnimationTransition(1)</a> <a href='/blog/categories/uiviewcontroller' style='font-size: 101.13744075829383%'>UIViewController(4)</a> <a href='/blog/categories/uiwebview' style='font-size: 101.4218009478673%'>UIWebView(5)</a> <a href='/blog/categories/xcode' style='font-size: 112.51184834123222%'>Xcode(44)</a> </p>
 </section>
 
   </div>
@@ -683,6 +851,10 @@
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/01/09/objc-mf-mail-compose-view-controller/">アプリ内メーラーを起動する「MFComposeViewController」の使用方法</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2014/01/09/download-objc-classes-dc-social2/">Facebook/Twitter/LINEへ投稿する「DCSocial」クラス (iOS 7対応版)</a>
@@ -702,10 +874,6 @@
     
       <li class="post">
         <a href="/blog/2014/01/03/xcode5-app-icon-already-gloss-effects/">Xcode 5でアプリアイコンのグロス効果を無効にする方法</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/01/03/xcode5-select-provisioning-profile/">Xcode 5の Provisioning Profile指定方法</a>
       </li>
     
   </ul>
