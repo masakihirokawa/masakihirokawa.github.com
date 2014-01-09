@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Objective-C | Dolice Lab]]></title>
   <link href="http://lab.dolice.net/blog/categories/objective-c/atom.xml" rel="self"/>
   <link href="http://lab.dolice.net/"/>
-  <updated>2014-01-09T15:11:39+09:00</updated>
+  <updated>2014-01-09T19:33:47+09:00</updated>
   <id>http://lab.dolice.net/</id>
   <author>
     <name><![CDATA[Masaki Hirokawa]]></name>
@@ -12,6 +12,25 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[テーブルビューのある画面に広告を表示する際の余白対策]]></title>
+    <link href="http://lab.dolice.net/blog/2014/01/09/objc-ui-table-view-content-inset/"/>
+    <updated>2014-01-09T19:23:00+09:00</updated>
+    <id>http://lab.dolice.net/blog/2014/01/09/objc-ui-table-view-content-inset</id>
+    <content type="html"><![CDATA[<p>テーブルビューのある画面下部に広告を表示する際、テーブルビューの寸法を縦に狭める方法では広告が非表示の時に白い余白ができてしまいます。</p>
+
+<p>この問題はテーブルビューにオフセットを指定することで回避できます。</p>
+
+<h2>テーブルビューのオフセットを指定</h2>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">// テーブルビューの下方向に 50ピクセルの余白を指定</span>
+</span><span class='line'><span class="n">_myTableView</span><span class="p">.</span><span class="n">contentInset</span> <span class="o">=</span> <span class="n">UIEdgeInsetsMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[アプリ内メーラーを起動する「MFComposeViewController」の使用方法]]></title>
@@ -1463,77 +1482,6 @@
 </span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
 </span><span class='line'>
 </span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[UITableViewを指定した位置までスクロールさせる方法]]></title>
-    <link href="http://lab.dolice.net/blog/2014/01/03/objc-ui-table-view-content-offset/"/>
-    <updated>2014-01-03T18:49:00+09:00</updated>
-    <id>http://lab.dolice.net/blog/2014/01/03/objc-ui-table-view-content-offset</id>
-    <content type="html"><![CDATA[<p>テーブルビューを指定した位置までスクロールする方法を以下に記載します。</p>
-
-<p>画面の更新時にテーブルビューの中身を指定位置までスクロールさせ、他の画面へ遷移した時に最後のスクロール位置を保持しておけば、再度テーブルビューのある画面へ戻ってきた際に、最後の位置までスクロールさせる事ができます。</p>
-
-<p>アプリの仕様上、画面の更新時にテーブルビューをリセットする処理を入れている際などに有効です。</p>
-
-<h2>ソースコード</h2>
-
-<h3>宣言プロパティ</h3>
-
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">@property</span> <span class="n">UITableView</span>     <span class="o">*</span><span class="n">myTableView</span><span class="p">;</span>     <span class="c1">// テーブルビュー</span>
-</span><span class='line'><span class="k">@property</span> <span class="n">CGPoint</span>         <span class="n">lastScrollOffset</span><span class="p">;</span> <span class="c1">// テーブルビュー最後のスクロール位置</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
-
-<h3>画面が更新された時にテーブルビューを指定位置までスクロールさせる</h3>
-
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidAppear:</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nv">animated</span>
-</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="p">[</span><span class="n">super</span> <span class="nl">viewDidAppear:</span><span class="n">animated</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// テーブルビューを最後に保存した位置までスクロールする</span>
-</span><span class='line'><span class="p">[</span><span class="n">_myTableView</span> <span class="nl">setContentOffset:</span><span class="n">_lastScrollOffset</span><span class="p">];</span>
-</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
-
-<h3>他の画面へ遷移した時にテーブルビューのスクロール位置を保持する</h3>
-
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidDisappear:</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nv">animated</span>
-</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="p">[</span><span class="n">super</span> <span class="nl">viewDidDisappear:</span><span class="n">animated</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// テーブルビューの最後の位置を保持</span>
-</span><span class='line'><span class="n">_lastScrollOffset</span> <span class="o">=</span> <span class="p">[</span><span class="n">_myTableView</span> <span class="n">contentOffset</span><span class="p">];</span>
-</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure></notextile></div></p>
 ]]></content>
   </entry>
