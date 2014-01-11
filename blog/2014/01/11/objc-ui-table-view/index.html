@@ -119,10 +119,10 @@
 <ol>
 <li><a href="#tv-main1">ヘッダー追加</a></li>
 <li><a href="#tv-main2">フッター追加</a></li>
-<li><a href="#tv-main3">スクロール位置の復元</a></li>
-<li><a href="#tv-main4">セルをフリックした際の編集モード</a></li>
+<li><a href="#tv-main3">スクロール位置の保持と復元</a></li>
+<li><a href="#tv-main4">セルをフリックした際の編集モード追加</a></li>
 <li><a href="#tv-main5">編集モード時の削除ボタンの文言変更</a></li>
-<li><a href="#tv-main6">カスタムセルでボーダーラインを指定（標準の <em>UITableViewCellSeparatorStyle</em>で余白が空く問題解消）</a></li>
+<li><a href="#tv-main6">カスタムセルの使用方法</a></li>
 </ol>
 
 
@@ -133,6 +133,8 @@
 <li><a href="#tv-sub2">セルの選択時の背景指定</a></li>
 <li><a href="#tv-sub3">セルの右側に矢印アイコンを指定</a></li>
 <li><a href="#tv-sub4">オフセットの指定</a></li>
+<li><a href="#tv-sub5">セルが選択されていた場合に選択を解除</a></li>
+<li><a href="#tv-sub6">テーブルビューの更新時にスクロールバーが点滅するよう指定</a></li>
 </ol>
 
 
@@ -149,7 +151,7 @@
 
 <h2>カスタマイズ例</h2>
 
-<h3><a name="tv-main1">ヘッダー追加方法</a></h3>
+<h3><a name="tv-main1">ヘッダー追加</a></h3>
 
 <figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -184,7 +186,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<h3><a name="tv-main2">フッター追加方法</a></h3>
+<h3><a name="tv-main2">フッター追加</a></h3>
 
 <figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -219,7 +221,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<h3><a name="tv-main3">テーブルビューを最後に保存した位置までスクロール</a></h3>
+<h3><a name="tv-main3">スクロール位置の保持と復元</a></h3>
 
 <figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -228,7 +230,23 @@
 <span class='line-number'>5</span>
 <span class='line-number'>6</span>
 <span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidAppear:</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nv">animated</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidDisappear:</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nv">animated</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">super</span> <span class="nl">viewDidDisappear:</span><span class="n">animated</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// テーブルビューの最後の位置を保持</span>
+</span><span class='line'>    <span class="n">_lastScrollOffset</span> <span class="o">=</span> <span class="p">[</span><span class="n">_myTableView</span> <span class="n">contentOffset</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidAppear:</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nv">animated</span>
 </span><span class='line'><span class="p">{</span>
 </span><span class='line'>    <span class="p">[</span><span class="n">super</span> <span class="nl">viewDidAppear:</span><span class="n">animated</span><span class="p">];</span>
 </span><span class='line'>
@@ -238,7 +256,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<h3><a name="tv-main4">編集モードの追加方法</a></h3>
+<h3><a name="tv-main4">セルをフリックした際の編集モード追加</a></h3>
 
 <figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -454,6 +472,52 @@
 
 <figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">_myTableView</span><span class="p">.</span><span class="n">contentInset</span> <span class="o">=</span> <span class="n">UIEdgeInsetsMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3><a name="tv-sub5">セルが選択されていた場合に選択を解除</a></h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewWillAppear:</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nv">animated</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">super</span> <span class="nl">viewWillAppear:</span><span class="n">animated</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// テーブルビューのセルが選択されていた場合に選択を解除する</span>
+</span><span class='line'>    <span class="n">NSIndexPath</span> <span class="o">*</span><span class="n">selection</span> <span class="o">=</span> <span class="p">[</span><span class="n">_myTableView</span> <span class="n">indexPathForSelectedRow</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">selection</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">_myTableView</span> <span class="nl">deselectRowAtIndexPath:</span><span class="n">selection</span> <span class="nl">animated:</span><span class="n">YES</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">_myTableView</span> <span class="n">reloadData</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3><a name="tv-sub6">テーブルビューの更新時にスクロールバーが点滅するよう指定</a></h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidAppear:</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nv">animated</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">super</span> <span class="nl">viewDidAppear:</span><span class="n">animated</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// テーブルビューが更新された時にスクロールバーが点滅するよう指定</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">_myTableView</span> <span class="n">flashScrollIndicators</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
