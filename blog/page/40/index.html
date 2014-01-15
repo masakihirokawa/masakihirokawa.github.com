@@ -6,11 +6,11 @@
 	<title>Dolice Lab</title>
 	
 	
-	<meta name="description" content="iOSアプリをローカライズするまでの全スクリーンショットに手順を添えて紹介します。 下記にサンプルを用意しました。スクリーンショットも同梱しています。 サンプルダウンロード https://github.com/masakihirokawa/Xcode-localize &hellip;">
+	<meta name="description" content="Objective-Cで XMLファイルを解析し、タグ名／属性／要素をテキストビューに表示するサンプルを以下に作成しました。 サンプルでは、「game」というキーワードを基に XMLを解析しています。 サンプルダウンロード https://github.com/masakihirokawa/ &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	<meta property="og:title" content="Dolice Lab" />
-<meta property="og:description" content="iOSアプリをローカライズするまでの全スクリーンショットに手順を添えて紹介します。 下記にサンプルを用意しました。スクリーンショットも同梱しています。 サンプルダウンロード https://github.com/masakihirokawa/Xcode-localize &hellip;" />
+<meta property="og:description" content="Objective-Cで XMLファイルを解析し、タグ名／属性／要素をテキストビューに表示するサンプルを以下に作成しました。 サンプルでは、「game」というキーワードを基に XMLを解析しています。 サンプルダウンロード https://github.com/masakihirokawa/ &hellip;" />
 <meta property="og:url" content="http://lab.dolice.net/blog/page/40/" />
 <meta property="og:image" content="http://lab.dolice.net/images/facebook-icon.jpg" />
 <meta property="og:author" content="Masaki Hirokawa" />
@@ -97,6 +97,279 @@
   </div>
 </div>
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/04/18/download-objc-xml-parser/">
+		
+			XMLパーサのサンプルを作成しました</a>
+	</h2>
+	<div class="entry-content">
+		<p>Objective-Cで XMLファイルを解析し、タグ名／属性／要素をテキストビューに表示するサンプルを以下に作成しました。</p>
+
+<p>サンプルでは、「game」というキーワードを基に XMLを解析しています。</p>
+
+<h2>サンプルダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-xml-parser">https://github.com/masakihirokawa/objc-xml-parser</a></li>
+</ul>
+
+
+<h2>XMLファイル</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-xml-parser/blob/master/sample.xml">https://github.com/masakihirokawa/objc-xml-parser/blob/master/sample.xml</a></li>
+</ul>
+
+
+<h2>ソースコード</h2>
+
+<h3>ViewController.h</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;UIKit/UIKit.h&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> : <span class="nc">UIViewController</span> <span class="o">&lt;</span><span class="n">NSXMLParserDelegate</span><span class="o">&gt;</span> <span class="p">{</span>
+</span><span class='line'>  <span class="n">NSString</span> <span class="o">*</span><span class="n">nowTagStr</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">NSString</span> <span class="o">*</span><span class="n">txtBuffer</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">strong</span><span class="p">,</span> <span class="n">nonatomic</span><span class="p">)</span> <span class="n">UITextView</span> <span class="o">*</span><span class="n">textView</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>ViewController.m</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;ViewController.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">ViewController</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//テキストビューの初期化</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">self</span> <span class="n">initTextView</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//URLを指定してXMLパーサーを作る</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">self</span> <span class="n">setXMLParser</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//テキストビューの初期化</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">initTextView</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="c1">//</span>
+</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">textView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UITextView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">260</span><span class="p">,</span> <span class="mi">508</span><span class="p">)];</span>
+</span><span class='line'>  <span class="c1">//テキストビューを空欄にする</span>
+</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">textView</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="s">@&quot;&quot;</span><span class="p">;</span>
+</span><span class='line'>  <span class="c1">//テキストビューを編集不可に設定</span>
+</span><span class='line'>  <span class="n">self</span><span class="p">.</span><span class="n">textView</span><span class="p">.</span><span class="n">editable</span> <span class="o">=</span> <span class="n">NO</span><span class="p">;</span>
+</span><span class='line'>  <span class="c1">//テキストビューを画面に追加</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">self</span><span class="p">.</span><span class="n">textView</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//URLを指定してXMLパーサーを作る</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setXMLParser</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="c1">//XMLを読み込む</span>
+</span><span class='line'>  <span class="n">NSURL</span> <span class="o">*</span><span class="n">myURL</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSURL</span> <span class="nl">URLWithString:</span><span class="s">@&quot;http://dolice.net/sample/ios/XMLParser/sample.xml&quot;</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//XMLパーサを初期化</span>
+</span><span class='line'>  <span class="n">NSXMLParser</span> <span class="o">*</span><span class="n">myParser</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSXMLParser</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithContentsOfURL:</span><span class="n">myURL</span><span class="p">];</span>
+</span><span class='line'>  <span class="c1">//デリゲート指定</span>
+</span><span class='line'>  <span class="n">myParser</span><span class="p">.</span><span class="n">delegate</span> <span class="o">=</span> <span class="n">self</span><span class="p">;</span>
+</span><span class='line'>  <span class="c1">// 解析を開始する</span>
+</span><span class='line'>  <span class="p">[</span><span class="n">myParser</span> <span class="n">parse</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//解析開始時の処理</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">parserDidStartDocument:</span><span class="p">(</span><span class="n">NSXMLParser</span> <span class="o">*</span><span class="p">)</span><span class="nv">parser</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="c1">//解析中タグの初期化</span>
+</span><span class='line'>  <span class="n">nowTagStr</span> <span class="o">=</span> <span class="s">@&quot;&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//テキストビューに、タグ名と、price属性を追加する</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">parser:</span><span class="p">(</span><span class="n">NSXMLParser</span> <span class="o">*</span><span class="p">)</span><span class="nv">parser</span>
+</span><span class='line'><span class="nf">didStartElement:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">elementName</span>
+</span><span class='line'>  <span class="nf">namespaceURI:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">namespaceURI</span>
+</span><span class='line'> <span class="nf">qualifiedName:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">qName</span>
+</span><span class='line'>    <span class="nf">attributes:</span><span class="p">(</span><span class="n">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nv">attributeDict</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="c1">//開始タグが「game」だったら</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">([</span><span class="n">elementName</span> <span class="nl">isEqualToString:</span><span class="s">@&quot;game&quot;</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>      <span class="c1">//解析中タグに設定</span>
+</span><span class='line'>      <span class="n">nowTagStr</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithString:</span><span class="n">elementName</span><span class="p">];</span>
+</span><span class='line'>      <span class="c1">//テキストバッファの初期化</span>
+</span><span class='line'>      <span class="n">txtBuffer</span> <span class="o">=</span> <span class="s">@&quot;&quot;</span><span class="p">;</span>
+</span><span class='line'>      <span class="c1">//テキストビューに、タグ名と、price属性を追加する</span>
+</span><span class='line'>      <span class="n">self</span><span class="p">.</span><span class="n">textView</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">textView</span><span class="p">.</span><span class="n">text</span> <span class="nl">stringByAppendingFormat:</span>
+</span><span class='line'>                          <span class="s">@&quot;タグ名=[%@]</span><span class="se">\n</span><span class="s"> 属性 price=[%@]&quot;</span><span class="p">,</span>
+</span><span class='line'>                          <span class="n">elementName</span><span class="p">,</span> <span class="p">[</span><span class="n">attributeDict</span> <span class="nl">objectForKey:</span><span class="s">@&quot;price&quot;</span><span class="p">]];</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//テキストバッファに文字を追加する</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">parser:</span><span class="p">(</span><span class="n">NSXMLParser</span> <span class="o">*</span><span class="p">)</span><span class="nv">parser</span> <span class="nf">foundCharacters:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">string</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="c1">//解析中のタグが「game」だったら</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">([</span><span class="n">nowTagStr</span> <span class="nl">isEqualToString:</span><span class="s">@&quot;game&quot;</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>      <span class="c1">//テキストバッファに文字を追加する</span>
+</span><span class='line'>      <span class="n">txtBuffer</span> <span class="o">=</span> <span class="p">[</span><span class="n">txtBuffer</span> <span class="nl">stringByAppendingString:</span><span class="n">string</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//テキストビューにテキストバッファの文字を追加する</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">parser:</span><span class="p">(</span><span class="n">NSXMLParser</span> <span class="o">*</span><span class="p">)</span><span class="nv">parser</span>
+</span><span class='line'> <span class="nf">didEndElement:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">elementName</span>
+</span><span class='line'>  <span class="nf">namespaceURI:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">namespaceURI</span>
+</span><span class='line'> <span class="nf">qualifiedName:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">qName</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="c1">//終了タグが「game」だったら</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">([</span><span class="n">elementName</span> <span class="nl">isEqualToString:</span><span class="s">@&quot;game&quot;</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>      <span class="c1">//テキストビューにテキストバッファの文字を追加する</span>
+</span><span class='line'>      <span class="n">self</span><span class="p">.</span><span class="n">textView</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">textView</span><span class="p">.</span><span class="n">text</span> <span class="nl">stringByAppendingFormat:</span>
+</span><span class='line'>                          <span class="s">@&quot;</span><span class="se">\n</span><span class="s"> 要素=[%@]</span><span class="se">\n\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">txtBuffer</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-04-18T20:44:00+09:00" pubdate data-updated="true">Apr 18<span>th</span>, 2013</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/download/'>Download</a>, <a class='category' href='/blog/categories/nsxmlparser/'>NSXMLParser</a>, <a class='category' href='/blog/categories/objective-c/'>Objective-C</a>, <a class='category' href='/blog/categories/rss/'>RSS</a>
+
+
+</div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -495,114 +768,6 @@
 </div>
 </article>
 
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/04/17/objc-ns-string-from-class/">
-		
-			クラス名を取得する</a>
-	</h2>
-	<div class="entry-content">
-		<p>クラス名を取得するサンプルを以下に作成しました。</p>
-
-<p>新たに「MyClass」クラスを作成し、ヘッダファイルをインポートしてクラス名を取得しています。</p>
-
-<h2>サンプルダウンロード</h2>
-
-<ul>
-<li><a href="https://github.com/masakihirokawa/objc-ns-string-from-class">https://github.com/masakihirokawa/objc-ns-string-from-class</a></li>
-</ul>
-
-
-<h2>ソースコード</h2>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;ViewController.h&quot;</span>
-</span><span class='line'><span class="cp">#import &quot;MyClass.h&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> <span class="p">()</span>
-</span><span class='line'><span class="k">@end</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@implementation</span> <span class="nc">ViewController</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">self</span> <span class="n">main</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">main</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="c1">//インスタンスを生成する</span>
-</span><span class='line'>  <span class="kt">id</span> <span class="n">str</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSString</span> <span class="n">string</span><span class="p">];</span>
-</span><span class='line'>  <span class="kt">id</span> <span class="n">myObject</span> <span class="o">=</span> <span class="p">[[</span><span class="n">MyClass</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="c1">//インスタンスからクラスを取得し、クラスからクラス名を取得する</span>
-</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;%@&quot;</span><span class="p">,</span> <span class="n">NSStringFromClass</span><span class="p">([</span><span class="n">str</span> <span class="n">class</span><span class="p">]));</span>
-</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;%@&quot;</span><span class="p">,</span> <span class="n">NSStringFromClass</span><span class="p">([</span><span class="n">myObject</span> <span class="n">class</span><span class="p">]));</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>出力結果</h2>
-
-<blockquote><p>__NSCFConstantString<br />
-MyClass</p></blockquote>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-04-17T09:25:00+09:00" pubdate data-updated="true">Apr 17<span>th</span>, 2013</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/foundation/'>Foundation</a>, <a class='category' href='/blog/categories/objective-c/'>Objective-C</a>, <a class='category' href='/blog/categories/sample/'>Sample</a>
-
-
-</div>
-	
-</div>
-</article>
-
 <nav id="pagenavi">
     
         <a href="/blog/page/39/" class="prev">Prev</a>
@@ -660,7 +825,7 @@ MyClass</p></blockquote>
   <div class="information-box-wide">
 <section>
   <h1>Tag Cloud</h1>
-  <p id="tag-cloud"><a href='/blog/categories/actionscript' style='font-size: 102.53521126760563%'>ActionScript(9)</a> <a href='/blog/categories/actionscript3' style='font-size: 101.97183098591549%'>ActionScript3(7)</a> <a href='/blog/categories/admob' style='font-size: 100.84507042253522%'>AdMob(3)</a> <a href='/blog/categories/animation' style='font-size: 104.78873239436619%'>Animation(17)</a> <a href='/blog/categories/appdelegate' style='font-size: 100.84507042253522%'>AppDelegate(3)</a> <a href='/blog/categories/arc' style='font-size: 100.28169014084507%'>ARC(1)</a> <a href='/blog/categories/avaudioplayer' style='font-size: 101.12676056338029%'>AVAudioPlayer(4)</a> <a href='/blog/categories/avaudiosession' style='font-size: 100.28169014084507%'>AVAudioSession(1)</a> <a href='/blog/categories/avfoundation' style='font-size: 100.84507042253522%'>AVFoundation(3)</a> <a href='/blog/categories/banner' style='font-size: 101.12676056338029%'>Banner(4)</a> <a href='/blog/categories/camera' style='font-size: 101.12676056338029%'>Camera(4)</a> <a href='/blog/categories/cgaffinetransform' style='font-size: 101.12676056338029%'>CGAffineTransform(4)</a> <a href='/blog/categories/cgblendmode' style='font-size: 100.56338028169014%'>CGBlendMode(2)</a> <a href='/blog/categories/cgcontextref' style='font-size: 100.28169014084507%'>CGContextRef(1)</a> <a href='/blog/categories/cgimageref' style='font-size: 100.28169014084507%'>CGImageRef(1)</a> <a href='/blog/categories/classes' style='font-size: 112.67605633802818%'>Classes(45)</a> <a href='/blog/categories/cllocationmanager' style='font-size: 100.28169014084507%'>CLLocationManager(1)</a> <a href='/blog/categories/corelocation' style='font-size: 100.56338028169014%'>CoreLocation(2)</a> <a href='/blog/categories/delegate' style='font-size: 100.84507042253522%'>Delegate(3)</a> <a href='/blog/categories/device' style='font-size: 101.97183098591549%'>Device(7)</a> <a href='/blog/categories/download' style='font-size: 124.22535211267606%'>Download(86)</a> <a href='/blog/categories/facebook' style='font-size: 101.69014084507042%'>Facebook(6)</a> <a href='/blog/categories/foundation' style='font-size: 120.28169014084507%'>Foundation(72)</a> <a href='/blog/categories/framework' style='font-size: 100.56338028169014%'>Framework(2)</a> <a href='/blog/categories/iad' style='font-size: 101.69014084507042%'>iAd(6)</a> <a href='/blog/categories/inapppurchase' style='font-size: 100.56338028169014%'>InAppPurchase(2)</a> <a href='/blog/categories/ios' style='font-size: 103.38028169014085%'>iOS(12)</a> <a href='/blog/categories/ios-7' style='font-size: 104.22535211267606%'>iOS 7(15)</a> <a href='/blog/categories/ipad' style='font-size: 101.97183098591549%'>iPad(7)</a> <a href='/blog/categories/iphone' style='font-size: 102.8169014084507%'>iPhone(10)</a> <a href='/blog/categories/javascript' style='font-size: 100.56338028169014%'>JavaScript(2)</a> <a href='/blog/categories/line' style='font-size: 101.12676056338029%'>LINE(4)</a> <a href='/blog/categories/mfcomposeviewcontroller' style='font-size: 100.28169014084507%'>MFComposeViewController(1)</a> <a href='/blog/categories/nend' style='font-size: 100.84507042253522%'>Nend(3)</a> <a href='/blog/categories/nsarray' style='font-size: 106.19718309859155%'>NSArray(22)</a> <a href='/blog/categories/nscalendar' style='font-size: 100.84507042253522%'>NSCalendar(3)</a> <a href='/blog/categories/nsdata' style='font-size: 100.56338028169014%'>NSData(2)</a> <a href='/blog/categories/nsdate' style='font-size: 101.69014084507042%'>NSDate(6)</a> <a href='/blog/categories/nsdatecomponents' style='font-size: 100.56338028169014%'>NSDateComponents(2)</a> <a href='/blog/categories/nsdateformatter' style='font-size: 100.28169014084507%'>NSDateFormatter(1)</a> <a href='/blog/categories/nsdictionary' style='font-size: 103.38028169014085%'>NSDictionary(12)</a> <a href='/blog/categories/nsenumerator' style='font-size: 100.28169014084507%'>NSEnumerator(1)</a> <a href='/blog/categories/nsindexset' style='font-size: 100.28169014084507%'>NSIndexSet(1)</a> <a href='/blog/categories/nsinteger' style='font-size: 101.69014084507042%'>NSInteger(6)</a> <a href='/blog/categories/nsmutablearray' style='font-size: 104.50704225352112%'>NSMutableArray(16)</a> <a href='/blog/categories/nsmutabledictionary' style='font-size: 101.40845070422534%'>NSMutableDictionary(5)</a> <a href='/blog/categories/nsmutableorderedset' style='font-size: 101.97183098591549%'>NSMutableOrderedSet(7)</a> <a href='/blog/categories/nsmutablestring' style='font-size: 101.12676056338029%'>NSMutableString(4)</a> <a href='/blog/categories/nsmutableurlrequest' style='font-size: 100.28169014084507%'>NSMutableURLRequest(1)</a> <a href='/blog/categories/nsnotificationcenter' style='font-size: 100.28169014084507%'>NSNotificationCenter(1)</a> <a href='/blog/categories/nsnumber' style='font-size: 100.28169014084507%'>NSNumber(1)</a> <a href='/blog/categories/nsobject' style='font-size: 100.28169014084507%'>NSObject(1)</a> <a href='/blog/categories/nsorderedset' style='font-size: 101.97183098591549%'>NSOrderedSet(7)</a> <a href='/blog/categories/nsrange' style='font-size: 100.56338028169014%'>NSRange(2)</a> <a href='/blog/categories/nsselectorfromstring' style='font-size: 100.28169014084507%'>NSSelectorFromString(1)</a> <a href='/blog/categories/nsset' style='font-size: 101.69014084507042%'>NSSet(6)</a> <a href='/blog/categories/nsstring' style='font-size: 105.35211267605634%'>NSString(19)</a> <a href='/blog/categories/nstimer' style='font-size: 101.12676056338029%'>NSTimer(4)</a> <a href='/blog/categories/nstimezone' style='font-size: 100.28169014084507%'>NSTimeZone(1)</a> <a href='/blog/categories/nsurl' style='font-size: 101.97183098591549%'>NSURL(7)</a> <a href='/blog/categories/nsurlconnection' style='font-size: 100.28169014084507%'>NSURLConnection(1)</a> <a href='/blog/categories/nsurlrequest' style='font-size: 100.56338028169014%'>NSURLRequest(2)</a> <a href='/blog/categories/nsuserdefaults' style='font-size: 101.97183098591549%'>NSUserDefaults(7)</a> <a href='/blog/categories/nsxmlparser' style='font-size: 100.56338028169014%'>NSXMLParser(2)</a> <a href='/blog/categories/objective-c' style='font-size: 160.0%'>Objective-C(213)</a> <a href='/blog/categories/php' style='font-size: 100.28169014084507%'>PHP(1)</a> <a href='/blog/categories/products' style='font-size: 101.40845070422534%'>Products(5)</a> <a href='/blog/categories/quartzcore' style='font-size: 100.84507042253522%'>QuartzCore(3)</a> <a href='/blog/categories/rss' style='font-size: 100.56338028169014%'>RSS(2)</a> <a href='/blog/categories/sample' style='font-size: 114.36619718309859%'>Sample(51)</a> <a href='/blog/categories/screensaver' style='font-size: 102.53521126760563%'>Screensaver(9)</a> <a href='/blog/categories/sdk' style='font-size: 100.56338028169014%'>SDK(2)</a> <a href='/blog/categories/social' style='font-size: 102.8169014084507%'>Social(10)</a> <a href='/blog/categories/storekit' style='font-size: 100.84507042253522%'>StoreKit(3)</a> <a href='/blog/categories/twitter' style='font-size: 101.69014084507042%'>Twitter(6)</a> <a href='/blog/categories/uiaccelerometer' style='font-size: 100.84507042253522%'>UIAccelerometer(3)</a> <a href='/blog/categories/uiactionsheet' style='font-size: 100.28169014084507%'>UIActionSheet(1)</a> <a href='/blog/categories/uiactivityindicator' style='font-size: 100.28169014084507%'>UIActivityIndicator(1)</a> <a href='/blog/categories/uiactivityindicatorview' style='font-size: 100.84507042253522%'>UIActivityIndicatorView(3)</a> <a href='/blog/categories/uiactivityviewcontroller' style='font-size: 100.28169014084507%'>UIActivityViewController(1)</a> <a href='/blog/categories/uialertview' style='font-size: 101.40845070422534%'>UIAlertView(5)</a> <a href='/blog/categories/uiapplication' style='font-size: 101.97183098591549%'>UIApplication(7)</a> <a href='/blog/categories/uibutton' style='font-size: 101.12676056338029%'>UIButton(4)</a> <a href='/blog/categories/uicolor' style='font-size: 100.84507042253522%'>UIColor(3)</a> <a href='/blog/categories/uidatepicker' style='font-size: 101.12676056338029%'>UIDatePicker(4)</a> <a href='/blog/categories/uidevice' style='font-size: 101.40845070422534%'>UIDevice(5)</a> <a href='/blog/categories/uideviceorientation' style='font-size: 100.28169014084507%'>UIDeviceOrientation(1)</a> <a href='/blog/categories/uievent' style='font-size: 101.69014084507042%'>UIEvent(6)</a> <a href='/blog/categories/uiimage' style='font-size: 104.22535211267606%'>UIImage(15)</a> <a href='/blog/categories/uiimagepickercontroller' style='font-size: 101.12676056338029%'>UIImagePickerController(4)</a> <a href='/blog/categories/uiimageview' style='font-size: 103.38028169014085%'>UIImageView(12)</a> <a href='/blog/categories/uikit' style='font-size: 116.33802816901408%'>UIKit(58)</a> <a href='/blog/categories/uilabel' style='font-size: 101.97183098591549%'>UILabel(7)</a> <a href='/blog/categories/uinavigationbar' style='font-size: 101.12676056338029%'>UINavigationBar(4)</a> <a href='/blog/categories/uinavigationitem' style='font-size: 100.28169014084507%'>UINavigationItem(1)</a> <a href='/blog/categories/uipasteboard' style='font-size: 101.12676056338029%'>UIPasteboard(4)</a> <a href='/blog/categories/uiscreen' style='font-size: 100.28169014084507%'>UIScreen(1)</a> <a href='/blog/categories/uiscrollbar' style='font-size: 100.28169014084507%'>UIScrollBar(1)</a> <a href='/blog/categories/uiscrollview' style='font-size: 100.28169014084507%'>UIScrollView(1)</a> <a href='/blog/categories/uislider' style='font-size: 100.84507042253522%'>UISlider(3)</a> <a href='/blog/categories/uistoryboardsegue' style='font-size: 100.84507042253522%'>UIStoryboardSegue(3)</a> <a href='/blog/categories/uiswitch' style='font-size: 100.28169014084507%'>UISwitch(1)</a> <a href='/blog/categories/uitabbar' style='font-size: 100.84507042253522%'>UITabBar(3)</a> <a href='/blog/categories/uitableview' style='font-size: 100.84507042253522%'>UITableView(3)</a> <a href='/blog/categories/uitextfield' style='font-size: 100.56338028169014%'>UITextField(2)</a> <a href='/blog/categories/uiview' style='font-size: 103.09859154929578%'>UIView(11)</a> <a href='/blog/categories/uiviewanimationtransition' style='font-size: 100.28169014084507%'>UIViewAnimationTransition(1)</a> <a href='/blog/categories/uiviewcontroller' style='font-size: 101.12676056338029%'>UIViewController(4)</a> <a href='/blog/categories/uiwebview' style='font-size: 101.40845070422534%'>UIWebView(5)</a> <a href='/blog/categories/xcode' style='font-size: 112.3943661971831%'>Xcode(44)</a> </p>
+  <p id="tag-cloud"><a href='/blog/categories/actionscript' style='font-size: 102.5233644859813%'>ActionScript(9)</a> <a href='/blog/categories/actionscript3' style='font-size: 101.96261682242991%'>ActionScript3(7)</a> <a href='/blog/categories/admob' style='font-size: 100.8411214953271%'>AdMob(3)</a> <a href='/blog/categories/animation' style='font-size: 104.76635514018692%'>Animation(17)</a> <a href='/blog/categories/appdelegate' style='font-size: 100.8411214953271%'>AppDelegate(3)</a> <a href='/blog/categories/arc' style='font-size: 100.2803738317757%'>ARC(1)</a> <a href='/blog/categories/avaudioplayer' style='font-size: 101.1214953271028%'>AVAudioPlayer(4)</a> <a href='/blog/categories/avaudiosession' style='font-size: 100.2803738317757%'>AVAudioSession(1)</a> <a href='/blog/categories/avfoundation' style='font-size: 100.8411214953271%'>AVFoundation(3)</a> <a href='/blog/categories/banner' style='font-size: 101.1214953271028%'>Banner(4)</a> <a href='/blog/categories/camera' style='font-size: 101.1214953271028%'>Camera(4)</a> <a href='/blog/categories/cgaffinetransform' style='font-size: 101.1214953271028%'>CGAffineTransform(4)</a> <a href='/blog/categories/cgblendmode' style='font-size: 100.5607476635514%'>CGBlendMode(2)</a> <a href='/blog/categories/cgcontextref' style='font-size: 100.2803738317757%'>CGContextRef(1)</a> <a href='/blog/categories/cgimageref' style='font-size: 100.2803738317757%'>CGImageRef(1)</a> <a href='/blog/categories/classes' style='font-size: 112.89719626168224%'>Classes(46)</a> <a href='/blog/categories/cllocationmanager' style='font-size: 100.2803738317757%'>CLLocationManager(1)</a> <a href='/blog/categories/corelocation' style='font-size: 100.5607476635514%'>CoreLocation(2)</a> <a href='/blog/categories/delegate' style='font-size: 100.8411214953271%'>Delegate(3)</a> <a href='/blog/categories/device' style='font-size: 101.96261682242991%'>Device(7)</a> <a href='/blog/categories/download' style='font-size: 124.39252336448598%'>Download(87)</a> <a href='/blog/categories/facebook' style='font-size: 101.6822429906542%'>Facebook(6)</a> <a href='/blog/categories/foundation' style='font-size: 120.18691588785046%'>Foundation(72)</a> <a href='/blog/categories/framework' style='font-size: 100.5607476635514%'>Framework(2)</a> <a href='/blog/categories/iad' style='font-size: 101.6822429906542%'>iAd(6)</a> <a href='/blog/categories/inapppurchase' style='font-size: 100.5607476635514%'>InAppPurchase(2)</a> <a href='/blog/categories/ios' style='font-size: 103.3644859813084%'>iOS(12)</a> <a href='/blog/categories/ios-7' style='font-size: 104.20560747663552%'>iOS 7(15)</a> <a href='/blog/categories/ipad' style='font-size: 101.96261682242991%'>iPad(7)</a> <a href='/blog/categories/iphone' style='font-size: 102.80373831775701%'>iPhone(10)</a> <a href='/blog/categories/javascript' style='font-size: 100.5607476635514%'>JavaScript(2)</a> <a href='/blog/categories/line' style='font-size: 101.1214953271028%'>LINE(4)</a> <a href='/blog/categories/mfcomposeviewcontroller' style='font-size: 100.2803738317757%'>MFComposeViewController(1)</a> <a href='/blog/categories/nend' style='font-size: 100.8411214953271%'>Nend(3)</a> <a href='/blog/categories/nsarray' style='font-size: 106.16822429906541%'>NSArray(22)</a> <a href='/blog/categories/nscalendar' style='font-size: 100.8411214953271%'>NSCalendar(3)</a> <a href='/blog/categories/nsdata' style='font-size: 100.5607476635514%'>NSData(2)</a> <a href='/blog/categories/nsdate' style='font-size: 101.96261682242991%'>NSDate(7)</a> <a href='/blog/categories/nsdatecomponents' style='font-size: 100.5607476635514%'>NSDateComponents(2)</a> <a href='/blog/categories/nsdateformatter' style='font-size: 100.5607476635514%'>NSDateFormatter(2)</a> <a href='/blog/categories/nsdictionary' style='font-size: 103.3644859813084%'>NSDictionary(12)</a> <a href='/blog/categories/nsenumerator' style='font-size: 100.2803738317757%'>NSEnumerator(1)</a> <a href='/blog/categories/nsindexset' style='font-size: 100.2803738317757%'>NSIndexSet(1)</a> <a href='/blog/categories/nsinteger' style='font-size: 101.6822429906542%'>NSInteger(6)</a> <a href='/blog/categories/nsmutablearray' style='font-size: 104.48598130841121%'>NSMutableArray(16)</a> <a href='/blog/categories/nsmutabledictionary' style='font-size: 101.4018691588785%'>NSMutableDictionary(5)</a> <a href='/blog/categories/nsmutableorderedset' style='font-size: 101.96261682242991%'>NSMutableOrderedSet(7)</a> <a href='/blog/categories/nsmutablestring' style='font-size: 101.1214953271028%'>NSMutableString(4)</a> <a href='/blog/categories/nsmutableurlrequest' style='font-size: 100.2803738317757%'>NSMutableURLRequest(1)</a> <a href='/blog/categories/nsnotificationcenter' style='font-size: 100.2803738317757%'>NSNotificationCenter(1)</a> <a href='/blog/categories/nsnumber' style='font-size: 100.2803738317757%'>NSNumber(1)</a> <a href='/blog/categories/nsobject' style='font-size: 100.2803738317757%'>NSObject(1)</a> <a href='/blog/categories/nsorderedset' style='font-size: 101.96261682242991%'>NSOrderedSet(7)</a> <a href='/blog/categories/nsrange' style='font-size: 100.5607476635514%'>NSRange(2)</a> <a href='/blog/categories/nsselectorfromstring' style='font-size: 100.2803738317757%'>NSSelectorFromString(1)</a> <a href='/blog/categories/nsset' style='font-size: 101.6822429906542%'>NSSet(6)</a> <a href='/blog/categories/nsstring' style='font-size: 105.32710280373831%'>NSString(19)</a> <a href='/blog/categories/nstimer' style='font-size: 101.1214953271028%'>NSTimer(4)</a> <a href='/blog/categories/nstimezone' style='font-size: 100.2803738317757%'>NSTimeZone(1)</a> <a href='/blog/categories/nsurl' style='font-size: 101.96261682242991%'>NSURL(7)</a> <a href='/blog/categories/nsurlconnection' style='font-size: 100.2803738317757%'>NSURLConnection(1)</a> <a href='/blog/categories/nsurlrequest' style='font-size: 100.5607476635514%'>NSURLRequest(2)</a> <a href='/blog/categories/nsuserdefaults' style='font-size: 101.96261682242991%'>NSUserDefaults(7)</a> <a href='/blog/categories/nsxmlparser' style='font-size: 100.5607476635514%'>NSXMLParser(2)</a> <a href='/blog/categories/objective-c' style='font-size: 160.0%'>Objective-C(214)</a> <a href='/blog/categories/php' style='font-size: 100.2803738317757%'>PHP(1)</a> <a href='/blog/categories/products' style='font-size: 101.4018691588785%'>Products(5)</a> <a href='/blog/categories/quartzcore' style='font-size: 100.8411214953271%'>QuartzCore(3)</a> <a href='/blog/categories/rss' style='font-size: 100.5607476635514%'>RSS(2)</a> <a href='/blog/categories/sample' style='font-size: 114.29906542056075%'>Sample(51)</a> <a href='/blog/categories/screensaver' style='font-size: 102.5233644859813%'>Screensaver(9)</a> <a href='/blog/categories/sdk' style='font-size: 100.5607476635514%'>SDK(2)</a> <a href='/blog/categories/social' style='font-size: 102.80373831775701%'>Social(10)</a> <a href='/blog/categories/storekit' style='font-size: 100.8411214953271%'>StoreKit(3)</a> <a href='/blog/categories/twitter' style='font-size: 101.6822429906542%'>Twitter(6)</a> <a href='/blog/categories/uiaccelerometer' style='font-size: 100.8411214953271%'>UIAccelerometer(3)</a> <a href='/blog/categories/uiactionsheet' style='font-size: 100.2803738317757%'>UIActionSheet(1)</a> <a href='/blog/categories/uiactivityindicator' style='font-size: 100.2803738317757%'>UIActivityIndicator(1)</a> <a href='/blog/categories/uiactivityindicatorview' style='font-size: 100.8411214953271%'>UIActivityIndicatorView(3)</a> <a href='/blog/categories/uiactivityviewcontroller' style='font-size: 100.2803738317757%'>UIActivityViewController(1)</a> <a href='/blog/categories/uialertview' style='font-size: 101.4018691588785%'>UIAlertView(5)</a> <a href='/blog/categories/uiapplication' style='font-size: 101.96261682242991%'>UIApplication(7)</a> <a href='/blog/categories/uibutton' style='font-size: 101.1214953271028%'>UIButton(4)</a> <a href='/blog/categories/uicolor' style='font-size: 100.8411214953271%'>UIColor(3)</a> <a href='/blog/categories/uidatepicker' style='font-size: 101.4018691588785%'>UIDatePicker(5)</a> <a href='/blog/categories/uidevice' style='font-size: 101.4018691588785%'>UIDevice(5)</a> <a href='/blog/categories/uideviceorientation' style='font-size: 100.2803738317757%'>UIDeviceOrientation(1)</a> <a href='/blog/categories/uievent' style='font-size: 101.6822429906542%'>UIEvent(6)</a> <a href='/blog/categories/uiimage' style='font-size: 104.20560747663552%'>UIImage(15)</a> <a href='/blog/categories/uiimagepickercontroller' style='font-size: 101.1214953271028%'>UIImagePickerController(4)</a> <a href='/blog/categories/uiimageview' style='font-size: 103.3644859813084%'>UIImageView(12)</a> <a href='/blog/categories/uikit' style='font-size: 116.26168224299066%'>UIKit(58)</a> <a href='/blog/categories/uilabel' style='font-size: 101.96261682242991%'>UILabel(7)</a> <a href='/blog/categories/uinavigationbar' style='font-size: 101.1214953271028%'>UINavigationBar(4)</a> <a href='/blog/categories/uinavigationitem' style='font-size: 100.2803738317757%'>UINavigationItem(1)</a> <a href='/blog/categories/uipasteboard' style='font-size: 101.1214953271028%'>UIPasteboard(4)</a> <a href='/blog/categories/uiscreen' style='font-size: 100.2803738317757%'>UIScreen(1)</a> <a href='/blog/categories/uiscrollbar' style='font-size: 100.2803738317757%'>UIScrollBar(1)</a> <a href='/blog/categories/uiscrollview' style='font-size: 100.2803738317757%'>UIScrollView(1)</a> <a href='/blog/categories/uislider' style='font-size: 100.8411214953271%'>UISlider(3)</a> <a href='/blog/categories/uistoryboardsegue' style='font-size: 100.8411214953271%'>UIStoryboardSegue(3)</a> <a href='/blog/categories/uiswitch' style='font-size: 100.2803738317757%'>UISwitch(1)</a> <a href='/blog/categories/uitabbar' style='font-size: 100.8411214953271%'>UITabBar(3)</a> <a href='/blog/categories/uitableview' style='font-size: 100.8411214953271%'>UITableView(3)</a> <a href='/blog/categories/uitextfield' style='font-size: 100.5607476635514%'>UITextField(2)</a> <a href='/blog/categories/uiview' style='font-size: 103.08411214953271%'>UIView(11)</a> <a href='/blog/categories/uiviewanimationtransition' style='font-size: 100.2803738317757%'>UIViewAnimationTransition(1)</a> <a href='/blog/categories/uiviewcontroller' style='font-size: 101.1214953271028%'>UIViewController(4)</a> <a href='/blog/categories/uiwebview' style='font-size: 101.4018691588785%'>UIWebView(5)</a> <a href='/blog/categories/xcode' style='font-size: 112.33644859813084%'>Xcode(44)</a> </p>
 </section>
 
   </div>
@@ -668,6 +833,10 @@ MyClass</p></blockquote>
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/01/15/download-objc-classes-dc-date3/">指定した日時からの経過時間を取得する「DCDate」クラス改訂版</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2014/01/11/objc-ui-table-view/">テーブルビューの使用方法まとめ</a>
@@ -687,10 +856,6 @@ MyClass</p></blockquote>
     
       <li class="post">
         <a href="/blog/2014/01/09/download-objc-classes-dc-util3/">ユーティリティ機能をまとめた「DCUtil」クラス改訂版</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/01/05/objc-classes-dc-web-view/">ウェブビューに必要な機能を搭載した「DCWebView」クラス</a>
       </li>
     
   </ul>

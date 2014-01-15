@@ -6,11 +6,11 @@
 	<title>Dolice Lab</title>
 	
 	
-	<meta name="description" content="テーブルビューの使用例をまとめたサンプルを作成しました。このサンプルでは、UITableViewControllerを使用せず、UIViewControllerに UITableViewのデリゲートを指定し使用しています。 カスタムセルや編集モードの使用例をはじめ、 &hellip;">
+	<meta name="description" content="UIDatePickerの取得や年号日付時刻等の情報を取得する「DCDate」クラスに、指定した日時からの経過時間を「日・時・分・秒」で取得する機能を追加しました。 例えば「RSSフィードから取得した更新日時が7日以内であればアイコンを表示する」等の用途に使用できると思います。 &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	<meta property="og:title" content="Dolice Lab" />
-<meta property="og:description" content="テーブルビューの使用例をまとめたサンプルを作成しました。このサンプルでは、UITableViewControllerを使用せず、UIViewControllerに UITableViewのデリゲートを指定し使用しています。 カスタムセルや編集モードの使用例をはじめ、 &hellip;" />
+<meta property="og:description" content="UIDatePickerの取得や年号日付時刻等の情報を取得する「DCDate」クラスに、指定した日時からの経過時間を「日・時・分・秒」で取得する機能を追加しました。 例えば「RSSフィードから取得した更新日時が7日以内であればアイコンを表示する」等の用途に使用できると思います。 &hellip;" />
 <meta property="og:url" content="http://lab.dolice.net/" />
 <meta property="og:image" content="http://lab.dolice.net/images/facebook-icon.jpg" />
 <meta property="og:author" content="Masaki Hirokawa" />
@@ -97,6 +97,678 @@
   </div>
 </div>
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2014/01/15/download-objc-classes-dc-date3/">
+		
+			指定した日時からの経過時間を取得する「DCDate」クラス改訂版</a>
+	</h2>
+	<div class="entry-content">
+		<p><img src="/images/article/dc-date3.png" alt="" /></p>
+
+<p>UIDatePickerの取得や年号日付時刻等の情報を取得する「DCDate」クラスに、指定した日時からの経過時間を「日・時・分・秒」で取得する機能を追加しました。</p>
+
+<p>例えば「RSSフィードから取得した更新日時が7日以内であればアイコンを表示する」等の用途に使用できると思います。</p>
+
+<p>下記よりファイルのダウンロードが行えます。</p>
+
+<h2>ダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-classes-dc-date">https://github.com/masakihirokawa/objc-classes-dc-date</a></li>
+</ul>
+
+
+<h2>主な機能</h2>
+
+<ol>
+<li>UIDatePickerの取得</li>
+<li>UIDatePickerの選択時刻と現在時刻の比較</li>
+<li>UIDatePickerで選択した日付と現在の日付の比較</li>
+<li>UIDatePickerで選択中の年号/月日/時分の取得</li>
+<li>現在の年号/月日/時分秒の取得</li>
+<li>指定した日時からの経過時間を取得</li>
+</ol>
+
+
+<h2>使用方法</h2>
+
+<h3>指定した日時からの経過日数を取得</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">// 日付フォーマット定義</span>
+</span><span class='line'><span class="n">NSDateFormatter</span> <span class="o">*</span><span class="n">dateFormatter</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSDateFormatter</span> <span class="n">alloc</span><span class="p">]</span><span class="n">init</span><span class="p">];</span>
+</span><span class='line'><span class="p">[</span><span class="n">dateFormatter</span> <span class="nl">setDateFormat:</span><span class="s">@&quot;yyyy-MM-dd HH:mm:ss&quot;</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 基点となる日付(2014年1月1日)と目標の日付(今日)を定義</span>
+</span><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="n">referenceDateString</span> <span class="o">=</span> <span class="s">@&quot;2014-01-01 00:00:00&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="n">targetDateString</span>    <span class="o">=</span> <span class="p">[</span><span class="n">dateFormatter</span> <span class="nl">stringFromDate:</span><span class="p">[</span><span class="n">NSDate</span> <span class="n">date</span><span class="p">]];</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 2014年1月1日から今日までの経過日数を CGFloat型で取得</span>
+</span><span class='line'><span class="n">CGFloat</span> <span class="n">since</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCDate</span> <span class="nl">since:</span><span class="n">referenceDateString</span> <span class="nl">targetDateString:</span><span class="n">targetDateString</span> <span class="nl">dateFormat:</span><span class="s">@&quot;yyyy-MM-dd HH:mm:ss&quot;</span> <span class="nl">dateUnit:</span><span class="mi">3</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 四捨五入して NSNumber型に変換</span>
+</span><span class='line'><span class="n">NSNumber</span> <span class="o">*</span><span class="n">sinceNum</span> <span class="o">=</span> <span class="err">@</span><span class="p">(</span><span class="n">floorf</span><span class="p">(</span><span class="n">since</span><span class="p">));</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// コンソール出力</span>
+</span><span class='line'><span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;今日は 2014年1月1日から %@日経過しています&quot;</span><span class="p">,</span> <span class="n">sinceNum</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>UIDatePickerの取得</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">UIDatePicker</span> <span class="o">*</span><span class="n">datePicker</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCDate</span> <span class="nl">picker:</span><span class="n">self</span> <span class="nl">rect:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">frame</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">height</span> <span class="o">-</span> <span class="mi">210</span><span class="p">,</span> <span class="mi">320</span><span class="p">,</span> <span class="mi">210</span><span class="p">)</span>
+</span><span class='line'>                        <span class="nl">mode:</span><span class="n">UIDatePickerModeDateAndTime</span> <span class="nl">minuteInterval:</span><span class="mi">1</span>
+</span><span class='line'>                    <span class="nl">dateText:</span><span class="s">@&quot;2013-09-09 15:00:00&quot;</span> <span class="nl">dateFormat:</span><span class="s">@&quot;yyyy-MM-dd HH:mm:ss&quot;</span>
+</span><span class='line'>                      <span class="nl">action:</span><span class="k">@selector</span><span class="p">(</span><span class="nl">pickerChanged:</span><span class="p">)];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>現在の日付とピッカーの日付を比較</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="kt">BOOL</span> <span class="n">isCurrentDate</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCDate</span> <span class="n">isCurrentDate</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>現在時刻とピッカーの時刻を比較</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="kt">BOOL</span> <span class="n">isCurrentTime</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCDate</span> <span class="n">isCurrentTime</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>UIDatePickerで選択中の年号/月日/時分の取得</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">NSInteger</span> <span class="n">pickerYear</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCDate</span> <span class="n">pickerYear</span><span class="p">];</span>
+</span><span class='line'><span class="n">NSInteger</span> <span class="n">pickerMonth</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCDate</span> <span class="n">pickerMonth</span><span class="p">];</span>
+</span><span class='line'><span class="n">NSInteger</span> <span class="n">pickerDay</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCDate</span> <span class="n">pickerDay</span><span class="p">];</span>
+</span><span class='line'><span class="n">NSInteger</span> <span class="n">pickerHour</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCDate</span> <span class="n">pickerHour</span><span class="p">];</span>
+</span><span class='line'><span class="n">NSInteger</span> <span class="n">pickerMinute</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCDate</span> <span class="n">pickerMinute</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>現在の年号/月日/時分秒の取得</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">NSInteger</span> <span class="n">currentYear</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCDate</span> <span class="n">currentYear</span><span class="p">];</span>
+</span><span class='line'><span class="n">NSInteger</span> <span class="n">currentMonth</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCDate</span> <span class="n">currentMonth</span><span class="p">];</span>
+</span><span class='line'><span class="n">NSInteger</span> <span class="n">currentDay</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCDate</span> <span class="n">currentDay</span><span class="p">];</span>
+</span><span class='line'><span class="n">NSInteger</span> <span class="n">currentHour</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCDate</span> <span class="n">currentHour</span><span class="p">];</span>
+</span><span class='line'><span class="n">NSInteger</span> <span class="n">currentMinute</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCDate</span> <span class="n">currentMinute</span><span class="p">];</span>
+</span><span class='line'><span class="n">NSInteger</span> <span class="n">currentSecond</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCDate</span> <span class="n">currentSecond</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>ソースコード</h2>
+
+<h3>DCDate.h</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;Foundation/Foundation.h&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">DCDate</span> : <span class="nc">NSObject</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark - public method</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">UIDatePicker</span> <span class="o">*</span><span class="p">)</span><span class="nf">picker:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">delegate</span> <span class="nf">rect:</span><span class="p">(</span><span class="n">CGRect</span><span class="p">)</span><span class="nv">rect</span> <span class="nf">mode:</span><span class="p">(</span><span class="n">UIDatePickerMode</span><span class="p">)</span><span class="nv">mode</span> <span class="nf">minuteInterval:</span><span class="p">(</span><span class="n">NSUInteger</span><span class="p">)</span><span class="nv">minuteInterval</span> <span class="nf">dateText:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">dateText</span> <span class="nf">dateFormat:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">dateFormat</span> <span class="nf">action:</span><span class="p">(</span><span class="kt">SEL</span><span class="p">)</span><span class="nv">action</span><span class="p">;</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSDate</span> <span class="o">*</span><span class="p">)</span><span class="nf">date:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">dateText</span> <span class="nf">dateFormat:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">dateFormat</span><span class="p">;</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nf">dateText:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">dateFormat</span><span class="p">;</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nf">pickerYear</span><span class="p">;</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nf">pickerMonth</span><span class="p">;</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nf">pickerDay</span><span class="p">;</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nf">pickerHour</span><span class="p">;</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nf">pickerMinute</span><span class="p">;</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nf">currentYear</span><span class="p">;</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nf">currentMonth</span><span class="p">;</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nf">currentDay</span><span class="p">;</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nf">currentHour</span><span class="p">;</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nf">currentMinute</span><span class="p">;</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nf">currentSecond</span><span class="p">;</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSDateComponents</span> <span class="o">*</span><span class="p">)</span><span class="nf">currentDateComponents</span><span class="p">;</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">isCurrentDate</span><span class="p">;</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">isCurrentTime</span><span class="p">;</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">CGFloat</span><span class="p">)</span><span class="nf">since:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">referenceDateString</span> <span class="nf">targetDateString:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">targetDateString</span> <span class="nf">dateFormat:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">dateFormat</span> <span class="nf">dateUnit:</span><span class="p">(</span><span class="n">NSUInteger</span><span class="p">)</span><span class="nv">dateUnit</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>DCDate.m</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+<span class='line-number'>102</span>
+<span class='line-number'>103</span>
+<span class='line-number'>104</span>
+<span class='line-number'>105</span>
+<span class='line-number'>106</span>
+<span class='line-number'>107</span>
+<span class='line-number'>108</span>
+<span class='line-number'>109</span>
+<span class='line-number'>110</span>
+<span class='line-number'>111</span>
+<span class='line-number'>112</span>
+<span class='line-number'>113</span>
+<span class='line-number'>114</span>
+<span class='line-number'>115</span>
+<span class='line-number'>116</span>
+<span class='line-number'>117</span>
+<span class='line-number'>118</span>
+<span class='line-number'>119</span>
+<span class='line-number'>120</span>
+<span class='line-number'>121</span>
+<span class='line-number'>122</span>
+<span class='line-number'>123</span>
+<span class='line-number'>124</span>
+<span class='line-number'>125</span>
+<span class='line-number'>126</span>
+<span class='line-number'>127</span>
+<span class='line-number'>128</span>
+<span class='line-number'>129</span>
+<span class='line-number'>130</span>
+<span class='line-number'>131</span>
+<span class='line-number'>132</span>
+<span class='line-number'>133</span>
+<span class='line-number'>134</span>
+<span class='line-number'>135</span>
+<span class='line-number'>136</span>
+<span class='line-number'>137</span>
+<span class='line-number'>138</span>
+<span class='line-number'>139</span>
+<span class='line-number'>140</span>
+<span class='line-number'>141</span>
+<span class='line-number'>142</span>
+<span class='line-number'>143</span>
+<span class='line-number'>144</span>
+<span class='line-number'>145</span>
+<span class='line-number'>146</span>
+<span class='line-number'>147</span>
+<span class='line-number'>148</span>
+<span class='line-number'>149</span>
+<span class='line-number'>150</span>
+<span class='line-number'>151</span>
+<span class='line-number'>152</span>
+<span class='line-number'>153</span>
+<span class='line-number'>154</span>
+<span class='line-number'>155</span>
+<span class='line-number'>156</span>
+<span class='line-number'>157</span>
+<span class='line-number'>158</span>
+<span class='line-number'>159</span>
+<span class='line-number'>160</span>
+<span class='line-number'>161</span>
+<span class='line-number'>162</span>
+<span class='line-number'>163</span>
+<span class='line-number'>164</span>
+<span class='line-number'>165</span>
+<span class='line-number'>166</span>
+<span class='line-number'>167</span>
+<span class='line-number'>168</span>
+<span class='line-number'>169</span>
+<span class='line-number'>170</span>
+<span class='line-number'>171</span>
+<span class='line-number'>172</span>
+<span class='line-number'>173</span>
+<span class='line-number'>174</span>
+<span class='line-number'>175</span>
+<span class='line-number'>176</span>
+<span class='line-number'>177</span>
+<span class='line-number'>178</span>
+<span class='line-number'>179</span>
+<span class='line-number'>180</span>
+<span class='line-number'>181</span>
+<span class='line-number'>182</span>
+<span class='line-number'>183</span>
+<span class='line-number'>184</span>
+<span class='line-number'>185</span>
+<span class='line-number'>186</span>
+<span class='line-number'>187</span>
+<span class='line-number'>188</span>
+<span class='line-number'>189</span>
+<span class='line-number'>190</span>
+<span class='line-number'>191</span>
+<span class='line-number'>192</span>
+<span class='line-number'>193</span>
+<span class='line-number'>194</span>
+<span class='line-number'>195</span>
+<span class='line-number'>196</span>
+<span class='line-number'>197</span>
+<span class='line-number'>198</span>
+<span class='line-number'>199</span>
+<span class='line-number'>200</span>
+<span class='line-number'>201</span>
+<span class='line-number'>202</span>
+<span class='line-number'>203</span>
+<span class='line-number'>204</span>
+<span class='line-number'>205</span>
+<span class='line-number'>206</span>
+<span class='line-number'>207</span>
+<span class='line-number'>208</span>
+<span class='line-number'>209</span>
+<span class='line-number'>210</span>
+<span class='line-number'>211</span>
+<span class='line-number'>212</span>
+<span class='line-number'>213</span>
+<span class='line-number'>214</span>
+<span class='line-number'>215</span>
+<span class='line-number'>216</span>
+<span class='line-number'>217</span>
+<span class='line-number'>218</span>
+<span class='line-number'>219</span>
+<span class='line-number'>220</span>
+<span class='line-number'>221</span>
+<span class='line-number'>222</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;DCDate.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">DCDate</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">static</span> <span class="n">UIDatePicker</span> <span class="o">*</span><span class="n">datePicker</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark - Date Picker</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// ピッカー取得</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">UIDatePicker</span> <span class="o">*</span><span class="p">)</span><span class="nf">picker:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">delegate</span> <span class="nf">rect:</span><span class="p">(</span><span class="n">CGRect</span><span class="p">)</span><span class="nv">rect</span> <span class="nf">mode:</span><span class="p">(</span><span class="n">UIDatePickerMode</span><span class="p">)</span><span class="nv">mode</span> <span class="nf">minuteInterval:</span><span class="p">(</span><span class="n">NSUInteger</span><span class="p">)</span><span class="nv">minuteInterval</span> <span class="nf">dateText:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">dateText</span> <span class="nf">dateFormat:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">dateFormat</span> <span class="nf">action:</span><span class="p">(</span><span class="kt">SEL</span><span class="p">)</span><span class="nv">action</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// ピッカー初期化</span>
+</span><span class='line'>    <span class="n">DCDate</span><span class="p">.</span><span class="n">datePicker</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIDatePicker</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame:</span><span class="n">rect</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 背景色指定</span>
+</span><span class='line'>    <span class="n">DCDate</span><span class="p">.</span><span class="n">datePicker</span><span class="p">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIColor</span> <span class="n">whiteColor</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 日付の表示モードを変更する</span>
+</span><span class='line'>    <span class="n">DCDate</span><span class="p">.</span><span class="n">datePicker</span><span class="p">.</span><span class="n">datePickerMode</span> <span class="o">=</span> <span class="n">mode</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 何分刻みにするか</span>
+</span><span class='line'>    <span class="n">DCDate</span><span class="p">.</span><span class="n">datePicker</span><span class="p">.</span><span class="n">minuteInterval</span> <span class="o">=</span> <span class="n">minuteInterval</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 初期時刻設定</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">DCDate</span><span class="p">.</span><span class="n">datePicker</span> <span class="nl">setDate:</span><span class="p">[</span><span class="n">DCDate</span> <span class="nl">date:</span><span class="n">dateText</span> <span class="nl">dateFormat:</span><span class="n">dateFormat</span><span class="p">]];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// ピッカーの値が変更されたときに呼ばれるメソッドを設定</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">DCDate</span><span class="p">.</span><span class="n">datePicker</span> <span class="nl">addTarget:</span><span class="n">delegate</span> <span class="nl">action:</span><span class="n">action</span> <span class="nl">forControlEvents:</span><span class="n">UIControlEventValueChanged</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="n">DCDate</span><span class="p">.</span><span class="n">datePicker</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// ピッカーに表示する時間取得</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSDate</span> <span class="o">*</span><span class="p">)</span><span class="nf">date:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">dateText</span> <span class="nf">dateFormat:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">dateFormat</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">NSString</span> <span class="o">*</span><span class="n">dateString</span> <span class="o">=</span> <span class="n">dateText</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">NSDateFormatter</span> <span class="o">*</span><span class="n">dateFormater</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSDateFormatter</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">dateFormater</span> <span class="nl">setDateFormat:</span><span class="n">dateFormat</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">NSDate</span> <span class="o">*</span><span class="n">date</span> <span class="o">=</span> <span class="p">[</span><span class="n">dateFormater</span> <span class="nl">dateFromString:</span><span class="n">dateString</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">date</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// ピッカーで指定されている時間をテキストで取得</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nf">dateText:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">dateFormat</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">NSDateFormatter</span> <span class="o">*</span><span class="n">dateFormatter</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSDateFormatter</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">dateFormatter</span><span class="p">.</span><span class="n">dateFormat</span> <span class="o">=</span> <span class="n">dateFormat</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">[</span><span class="n">dateFormatter</span> <span class="nl">stringFromDate:</span><span class="n">DCDate</span><span class="p">.</span><span class="n">datePicker</span><span class="p">.</span><span class="n">date</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// ピッカーで指定されている年取得</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nf">pickerYear</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">NSDateFormatter</span> <span class="o">*</span><span class="n">yearFormatter</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSDateFormatter</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">yearFormatter</span> <span class="nl">setLocale:</span><span class="p">[</span><span class="n">NSLocale</span> <span class="n">currentLocale</span><span class="p">]];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">yearFormatter</span> <span class="nl">setDateFormat:</span><span class="s">@&quot;yyyy&quot;</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">NSString</span> <span class="o">*</span><span class="n">pickerYear</span> <span class="o">=</span> <span class="p">[</span><span class="n">yearFormatter</span> <span class="nl">stringFromDate:</span><span class="n">DCDate</span><span class="p">.</span><span class="n">datePicker</span><span class="p">.</span><span class="n">date</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">[</span><span class="n">pickerYear</span> <span class="n">intValue</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// ピッカーで指定されている月取得</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nf">pickerMonth</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">NSDateFormatter</span> <span class="o">*</span><span class="n">monthFormatter</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSDateFormatter</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">monthFormatter</span> <span class="nl">setLocale:</span><span class="p">[</span><span class="n">NSLocale</span> <span class="n">currentLocale</span><span class="p">]];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">monthFormatter</span> <span class="nl">setDateFormat:</span><span class="s">@&quot;MM&quot;</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">NSString</span> <span class="o">*</span><span class="n">pickerMonth</span> <span class="o">=</span> <span class="p">[</span><span class="n">monthFormatter</span> <span class="nl">stringFromDate:</span><span class="n">DCDate</span><span class="p">.</span><span class="n">datePicker</span><span class="p">.</span><span class="n">date</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">[</span><span class="n">pickerMonth</span> <span class="n">intValue</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// ピッカーで指定されている日付取得</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nf">pickerDay</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">NSDateFormatter</span> <span class="o">*</span><span class="n">dayFormatter</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSDateFormatter</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">dayFormatter</span> <span class="nl">setLocale:</span><span class="p">[</span><span class="n">NSLocale</span> <span class="n">currentLocale</span><span class="p">]];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">dayFormatter</span> <span class="nl">setDateFormat:</span><span class="s">@&quot;dd&quot;</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">NSString</span> <span class="o">*</span><span class="n">pickerDay</span> <span class="o">=</span> <span class="p">[</span><span class="n">dayFormatter</span> <span class="nl">stringFromDate:</span><span class="n">DCDate</span><span class="p">.</span><span class="n">datePicker</span><span class="p">.</span><span class="n">date</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">[</span><span class="n">pickerDay</span> <span class="n">intValue</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// ピッカーで指定されている時刻(時)取得</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nf">pickerHour</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">NSDateFormatter</span> <span class="o">*</span><span class="n">hourFormatter</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSDateFormatter</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">hourFormatter</span> <span class="nl">setLocale:</span><span class="p">[</span><span class="n">NSLocale</span> <span class="n">currentLocale</span><span class="p">]];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">hourFormatter</span> <span class="nl">setDateFormat:</span><span class="s">@&quot;HH&quot;</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">NSString</span> <span class="o">*</span><span class="n">pickerHour</span> <span class="o">=</span> <span class="p">[</span><span class="n">hourFormatter</span> <span class="nl">stringFromDate:</span><span class="n">DCDate</span><span class="p">.</span><span class="n">datePicker</span><span class="p">.</span><span class="n">date</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">[</span><span class="n">pickerHour</span> <span class="n">intValue</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// ピッカーで指定されている時刻(分)取得</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nf">pickerMinute</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">NSDateFormatter</span> <span class="o">*</span><span class="n">minuteFormatter</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSDateFormatter</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">minuteFormatter</span> <span class="nl">setLocale:</span><span class="p">[</span><span class="n">NSLocale</span> <span class="n">currentLocale</span><span class="p">]];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">minuteFormatter</span> <span class="nl">setDateFormat:</span><span class="s">@&quot;mm&quot;</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">NSString</span> <span class="o">*</span><span class="n">pickerMinute</span> <span class="o">=</span> <span class="p">[</span><span class="n">minuteFormatter</span> <span class="nl">stringFromDate:</span><span class="n">DCDate</span><span class="p">.</span><span class="n">datePicker</span><span class="p">.</span><span class="n">date</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">[</span><span class="n">pickerMinute</span> <span class="n">intValue</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark - Utils</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 現在の月を取得</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nf">currentYear</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">NSDateComponents</span> <span class="o">*</span><span class="n">currentTimeComponents</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCDate</span> <span class="n">currentDateComponents</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">currentTimeComponents</span><span class="p">.</span><span class="n">year</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 現在の月を取得</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nf">currentMonth</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">NSDateComponents</span> <span class="o">*</span><span class="n">currentTimeComponents</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCDate</span> <span class="n">currentDateComponents</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">currentTimeComponents</span><span class="p">.</span><span class="n">month</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 現在の日付を取得</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nf">currentDay</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">NSDateComponents</span> <span class="o">*</span><span class="n">currentTimeComponents</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCDate</span> <span class="n">currentDateComponents</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">currentTimeComponents</span><span class="p">.</span><span class="n">day</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 現在の時間を取得</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nf">currentHour</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">NSDateComponents</span> <span class="o">*</span><span class="n">currentTimeComponents</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCDate</span> <span class="n">currentDateComponents</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">currentTimeComponents</span><span class="p">.</span><span class="n">hour</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 現在の分数を取得</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nf">currentMinute</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">NSDateComponents</span> <span class="o">*</span><span class="n">currentTimeComponents</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCDate</span> <span class="n">currentDateComponents</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">currentTimeComponents</span><span class="p">.</span><span class="n">minute</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 現在の秒数を取得</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nf">currentSecond</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">NSDateComponents</span> <span class="o">*</span><span class="n">currentTimeComponents</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCDate</span> <span class="n">currentDateComponents</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">currentTimeComponents</span><span class="p">.</span><span class="n">second</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 現在時刻のコンポーネント取得</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSDateComponents</span> <span class="o">*</span><span class="p">)</span><span class="nf">currentDateComponents</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// 現在の時刻を取得</span>
+</span><span class='line'>    <span class="n">NSDate</span> <span class="o">*</span><span class="n">nowDate</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSDate</span> <span class="n">date</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 現在時刻のコンポーネント定義</span>
+</span><span class='line'>    <span class="n">NSDateComponents</span> <span class="o">*</span><span class="n">nowComponents</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">nowComponents</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSCalendar</span> <span class="n">currentCalendar</span><span class="p">]</span> <span class="nl">components:</span><span class="p">(</span><span class="n">NSYearCalendarUnit</span> <span class="o">|</span>
+</span><span class='line'>                                                              <span class="n">NSMonthCalendarUnit</span> <span class="o">|</span>
+</span><span class='line'>                                                              <span class="n">NSDayCalendarUnit</span> <span class="o">|</span>
+</span><span class='line'>                                                              <span class="n">NSHourCalendarUnit</span> <span class="o">|</span>
+</span><span class='line'>                                                              <span class="n">NSMinuteCalendarUnit</span> <span class="o">|</span>
+</span><span class='line'>                                                              <span class="n">NSSecondCalendarUnit</span><span class="p">)</span>
+</span><span class='line'>                                                    <span class="nl">fromDate:</span><span class="n">nowDate</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">nowComponents</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark - Decision</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// ピッカーで指定されている日付が現在と同じであるか</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">isCurrentDate</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">([</span><span class="n">DCDate</span> <span class="n">currentYear</span><span class="p">]</span> <span class="o">==</span> <span class="p">[</span><span class="n">DCDate</span> <span class="n">pickerYear</span><span class="p">]</span> <span class="o">&amp;&amp;</span>
+</span><span class='line'>            <span class="p">[</span><span class="n">DCDate</span> <span class="n">currentMonth</span><span class="p">]</span> <span class="o">==</span> <span class="p">[</span><span class="n">DCDate</span> <span class="n">pickerMonth</span><span class="p">]</span> <span class="o">&amp;&amp;</span>
+</span><span class='line'>            <span class="p">[</span><span class="n">DCDate</span> <span class="n">currentDay</span><span class="p">]</span> <span class="o">==</span> <span class="p">[</span><span class="n">DCDate</span> <span class="n">pickerDay</span><span class="p">]);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// ピッカーで指定されている時刻が現在時刻であるか</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">isCurrentTime</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">([</span><span class="n">DCDate</span> <span class="n">currentHour</span><span class="p">]</span> <span class="o">==</span> <span class="p">[</span><span class="n">DCDate</span> <span class="n">pickerHour</span><span class="p">]</span> <span class="o">&amp;&amp;</span>
+</span><span class='line'>            <span class="p">[</span><span class="n">DCDate</span> <span class="n">currentMinute</span><span class="p">]</span> <span class="o">==</span> <span class="p">[</span><span class="n">DCDate</span> <span class="n">pickerMinute</span><span class="p">]);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark - Since</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">typedef</span> <span class="nf">NS_ENUM</span><span class="p">(</span><span class="n">NSUInteger</span><span class="p">,</span> <span class="n">dateUnitId</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">SEC</span>  <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+</span><span class='line'>    <span class="n">MIN</span>  <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+</span><span class='line'>    <span class="n">HOUR</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+</span><span class='line'>    <span class="n">DAY</span>  <span class="o">=</span> <span class="mi">3</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 指定した日付からの経過時間を取得</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">CGFloat</span><span class="p">)</span><span class="nf">since:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">referenceDateString</span> <span class="nf">targetDateString:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">targetDateString</span> <span class="nf">dateFormat:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">dateFormat</span> <span class="nf">dateUnit:</span><span class="p">(</span><span class="n">NSUInteger</span><span class="p">)</span><span class="nv">dateUnit</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">NSDateFormatter</span> <span class="o">*</span><span class="n">dateFormatter</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSDateFormatter</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">dateFormatter</span> <span class="nl">setLocale:</span><span class="p">[</span><span class="n">NSLocale</span> <span class="n">systemLocale</span><span class="p">]];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">dateFormatter</span> <span class="nl">setDateFormat:</span><span class="n">dateFormat</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">NSDate</span> <span class="o">*</span><span class="n">referenceDate</span> <span class="o">=</span> <span class="p">[</span><span class="n">dateFormatter</span> <span class="nl">dateFromString:</span><span class="n">referenceDateString</span><span class="p">];</span>
+</span><span class='line'>  <span class="n">NSDate</span> <span class="o">*</span><span class="n">targetDate</span>    <span class="o">=</span> <span class="p">[</span><span class="n">dateFormatter</span> <span class="nl">dateFromString:</span><span class="n">targetDateString</span><span class="p">];</span>
+</span><span class='line'>  <span class="n">NSTimeInterval</span> <span class="n">since</span>  <span class="o">=</span> <span class="p">[</span><span class="n">targetDate</span> <span class="nl">timeIntervalSinceDate:</span><span class="n">referenceDate</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">dateUnit</span> <span class="o">==</span> <span class="n">SEC</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">since</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">dateUnit</span> <span class="o">==</span> <span class="n">MIN</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">since</span> <span class="o">/</span> <span class="mi">60</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">dateUnit</span> <span class="o">==</span> <span class="n">HOUR</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">since</span> <span class="o">/</span> <span class="p">(</span><span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">dateUnit</span> <span class="o">==</span> <span class="n">DAY</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">since</span> <span class="o">/</span> <span class="p">(</span><span class="mi">24</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">since</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark - setter/getter method</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setDatePicker:</span><span class="p">(</span><span class="n">UIDatePicker</span> <span class="o">*</span><span class="p">)</span><span class="nv">picker</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">datePicker</span> <span class="o">=</span> <span class="n">picker</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">UIDatePicker</span> <span class="o">*</span><span class="p">)</span><span class="nf">datePicker</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">datePicker</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-01-15T14:51:00+09:00" pubdate data-updated="true">Jan 15<span>th</span>, 2014</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/classes/'>Classes</a>, <a class='category' href='/blog/categories/download/'>Download</a>, <a class='category' href='/blog/categories/nsdate/'>NSDate</a>, <a class='category' href='/blog/categories/nsdateformatter/'>NSDateFormatter</a>, <a class='category' href='/blog/categories/objective-c/'>Objective-C</a>, <a class='category' href='/blog/categories/uidatepicker/'>UIDatePicker</a>
+
+
+</div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -1119,293 +1791,6 @@
 </div>
 </article>
 
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2014/01/09/objc-mf-mail-compose-view-controller/">
-		
-			アプリ内メーラーを起動する「MFComposeViewController」の使用方法</a>
-	</h2>
-	<div class="entry-content">
-		<p><img src="/images/article/mf_mail_compose_view_controller.png" title="MFMailComposeViewControllerの使用サンプル" alt="MFMailComposeViewControllerの使用サンプル" /></p>
-
-<p>Objective-Cで iPhoneのアプリ内メーラーを起動するサンプルを作成しました。アプリを閉じずにメーラーを開けますので、コンテンツのシェア機能を搭載する際に重宝しています。</p>
-
-<p>下記よりサンプルのダウンロードが行えます。</p>
-
-<h2>ダウンロード</h2>
-
-<ul>
-<li><a href="https://github.com/masakihirokawa/objc-mf-mail-compose-view-controller">https://github.com/masakihirokawa/objc-mf-mail-compose-view-controller</a></li>
-</ul>
-
-
-<h2>使用する前に必要な手順</h2>
-
-<h3>MessageUIの「MFMailComposeViewController.h」インポート</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;MessageUI/MFMailComposeViewController.h&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>デリゲート宣言</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> : <span class="nc">UIViewController</span> <span class="o">&lt;</span><span class="n">MFMailComposeViewControllerDelegate</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>使用方法</h2>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">// メールビュー生成</span>
-</span><span class='line'><span class="n">MFMailComposeViewController</span> <span class="o">*</span><span class="n">picker</span> <span class="o">=</span> <span class="p">[[</span><span class="n">MFMailComposeViewController</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'><span class="n">picker</span><span class="p">.</span><span class="n">mailComposeDelegate</span> <span class="o">=</span> <span class="n">self</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// メール件名</span>
-</span><span class='line'><span class="p">[</span><span class="n">picker</span> <span class="nl">setSubject:</span><span class="s">@&quot;メールの件名をここに入力します&quot;</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// 添付画像</span>
-</span><span class='line'><span class="n">NSData</span> <span class="o">*</span><span class="n">myData</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSData</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithData:</span><span class="n">UIImageJPEGRepresentation</span><span class="p">([</span><span class="n">UIImage</span> <span class="nl">imageNamed:</span><span class="s">@&quot;Pandora_744_1392.jpg&quot;</span><span class="p">],</span> <span class="mi">1</span><span class="p">)];</span>
-</span><span class='line'><span class="p">[</span><span class="n">picker</span> <span class="nl">addAttachmentData:</span><span class="n">myData</span> <span class="nl">mimeType:</span><span class="s">@&quot;image/jpeg&quot;</span> <span class="nl">fileName:</span><span class="s">@&quot;image&quot;</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// メール本文</span>
-</span><span class='line'><span class="p">[</span><span class="n">picker</span> <span class="nl">setMessageBody:</span><span class="s">@&quot;メールの本文がここに入ります&quot;</span> <span class="nl">isHTML:</span><span class="n">NO</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// メールビュー表示</span>
-</span><span class='line'><span class="p">[</span><span class="n">self</span> <span class="nl">presentViewController:</span><span class="n">picker</span> <span class="nl">animated:</span><span class="n">YES</span> <span class="nl">completion:</span><span class="nb">nil</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>ソースコード</h2>
-
-<h3>ViewController.h</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;UIKit/UIKit.h&gt;</span>
-</span><span class='line'><span class="cp">#import &lt;MessageUI/MFMailComposeViewController.h&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> : <span class="nc">UIViewController</span> <span class="o">&lt;</span><span class="n">MFMailComposeViewControllerDelegate</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>ViewController.m</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-<span class='line-number'>65</span>
-<span class='line-number'>66</span>
-<span class='line-number'>67</span>
-<span class='line-number'>68</span>
-<span class='line-number'>69</span>
-<span class='line-number'>70</span>
-<span class='line-number'>71</span>
-<span class='line-number'>72</span>
-<span class='line-number'>73</span>
-<span class='line-number'>74</span>
-<span class='line-number'>75</span>
-<span class='line-number'>76</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;ViewController.h&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> <span class="p">()</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@implementation</span> <span class="nc">ViewController</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
-</span><span class='line'>  
-</span><span class='line'>    <span class="c1">// メール送信ボタン配置</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="n">setSendToMailButton</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// メール送信ボタン配置</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setSendToMailButton</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">UIButton</span> <span class="o">*</span><span class="n">sendToMailButton</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIButton</span> <span class="nl">buttonWithType:</span><span class="n">UIButtonTypeRoundedRect</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">sendToMailButton</span> <span class="nl">setTitle:</span><span class="s">@&quot;Open Mailer&quot;</span> <span class="nl">forState:</span><span class="n">UIControlStateNormal</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">sendToMailButton</span> <span class="n">sizeToFit</span><span class="p">];</span>
-</span><span class='line'>    <span class="n">sendToMailButton</span><span class="p">.</span><span class="n">center</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">center</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">sendToMailButton</span> <span class="nl">addTarget:</span><span class="n">self</span> <span class="nl">action:</span><span class="k">@selector</span><span class="p">(</span><span class="nl">sendToMailButtonTapEvent:</span><span class="p">)</span>
-</span><span class='line'>               <span class="nl">forControlEvents:</span><span class="n">UIControlEventTouchUpInside</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">sendToMailButton</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// この記事へのリンクをメールボタンイベント</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">sendToMailButtonTapEvent:</span><span class="p">(</span><span class="n">UIButton</span> <span class="o">*</span><span class="p">)</span><span class="nv">button</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="c1">// メールビュー生成</span>
-</span><span class='line'>    <span class="n">MFMailComposeViewController</span> <span class="o">*</span><span class="n">picker</span> <span class="o">=</span> <span class="p">[[</span><span class="n">MFMailComposeViewController</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'>    <span class="n">picker</span><span class="p">.</span><span class="n">mailComposeDelegate</span> <span class="o">=</span> <span class="n">self</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// メール件名</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">picker</span> <span class="nl">setSubject:</span><span class="s">@&quot;メールの件名をここに入力します&quot;</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 添付画像</span>
-</span><span class='line'>    <span class="n">NSData</span> <span class="o">*</span><span class="n">myData</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSData</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithData:</span><span class="n">UIImageJPEGRepresentation</span><span class="p">([</span><span class="n">UIImage</span> <span class="nl">imageNamed:</span><span class="s">@&quot;Pandora_744_1392.jpg&quot;</span><span class="p">],</span> <span class="mi">1</span><span class="p">)];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">picker</span> <span class="nl">addAttachmentData:</span><span class="n">myData</span> <span class="nl">mimeType:</span><span class="s">@&quot;image/jpeg&quot;</span> <span class="nl">fileName:</span><span class="s">@&quot;image&quot;</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// メール本文</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">picker</span> <span class="nl">setMessageBody:</span><span class="s">@&quot;メールの本文がここに入ります&quot;</span> <span class="nl">isHTML:</span><span class="n">NO</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// メールビュー表示</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="nl">presentViewController:</span><span class="n">picker</span> <span class="nl">animated:</span><span class="n">YES</span> <span class="nl">completion:</span><span class="nb">nil</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// アプリ内メーラーのデリゲートメソッド</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">mailComposeController:</span><span class="p">(</span><span class="n">MFMailComposeViewController</span> <span class="o">*</span><span class="p">)</span><span class="nv">controller</span> <span class="nf">didFinishWithResult:</span><span class="p">(</span><span class="n">MFMailComposeResult</span><span class="p">)</span><span class="nv">result</span> <span class="nf">error:</span><span class="p">(</span><span class="n">NSError</span> <span class="o">*</span><span class="p">)</span><span class="nv">error</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">switch</span> <span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="k">case</span> <span class="nl">MFMailComposeResultCancelled:</span>
-</span><span class='line'>            <span class="c1">// キャンセル</span>
-</span><span class='line'>
-</span><span class='line'>            <span class="k">break</span><span class="p">;</span>
-</span><span class='line'>        <span class="k">case</span> <span class="nl">MFMailComposeResultSaved:</span>
-</span><span class='line'>            <span class="c1">// 保存 (ここでアラート表示するなど何らかの処理を行う)</span>
-</span><span class='line'>
-</span><span class='line'>            <span class="k">break</span><span class="p">;</span>
-</span><span class='line'>        <span class="k">case</span> <span class="nl">MFMailComposeResultSent:</span>
-</span><span class='line'>            <span class="c1">// 送信成功 (ここでアラート表示するなど何らかの処理を行う)</span>
-</span><span class='line'>
-</span><span class='line'>            <span class="k">break</span><span class="p">;</span>
-</span><span class='line'>        <span class="k">case</span> <span class="nl">MFMailComposeResultFailed:</span>
-</span><span class='line'>            <span class="c1">// 送信失敗 (ここでアラート表示するなど何らかの処理を行う)</span>
-</span><span class='line'>
-</span><span class='line'>            <span class="k">break</span><span class="p">;</span>
-</span><span class='line'>        <span class="k">default</span><span class="o">:</span>
-</span><span class='line'>            <span class="k">break</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="nl">dismissViewControllerAnimated:</span><span class="n">YES</span> <span class="nl">completion:</span><span class="nb">nil</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-01-09T14:43:00+09:00" pubdate data-updated="true">Jan 9<span>th</span>, 2014</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/classes/'>Classes</a>, <a class='category' href='/blog/categories/download/'>Download</a>, <a class='category' href='/blog/categories/mfcomposeviewcontroller/'>MFComposeViewController</a>, <a class='category' href='/blog/categories/objective-c/'>Objective-C</a>
-
-
-</div>
-	
-</div>
-</article>
-
 <nav id="pagenavi">
     
     
@@ -1461,7 +1846,7 @@
   <div class="information-box-wide">
 <section>
   <h1>Tag Cloud</h1>
-  <p id="tag-cloud"><a href='/blog/categories/actionscript' style='font-size: 102.53521126760563%'>ActionScript(9)</a> <a href='/blog/categories/actionscript3' style='font-size: 101.97183098591549%'>ActionScript3(7)</a> <a href='/blog/categories/admob' style='font-size: 100.84507042253522%'>AdMob(3)</a> <a href='/blog/categories/animation' style='font-size: 104.78873239436619%'>Animation(17)</a> <a href='/blog/categories/appdelegate' style='font-size: 100.84507042253522%'>AppDelegate(3)</a> <a href='/blog/categories/arc' style='font-size: 100.28169014084507%'>ARC(1)</a> <a href='/blog/categories/avaudioplayer' style='font-size: 101.12676056338029%'>AVAudioPlayer(4)</a> <a href='/blog/categories/avaudiosession' style='font-size: 100.28169014084507%'>AVAudioSession(1)</a> <a href='/blog/categories/avfoundation' style='font-size: 100.84507042253522%'>AVFoundation(3)</a> <a href='/blog/categories/banner' style='font-size: 101.12676056338029%'>Banner(4)</a> <a href='/blog/categories/camera' style='font-size: 101.12676056338029%'>Camera(4)</a> <a href='/blog/categories/cgaffinetransform' style='font-size: 101.12676056338029%'>CGAffineTransform(4)</a> <a href='/blog/categories/cgblendmode' style='font-size: 100.56338028169014%'>CGBlendMode(2)</a> <a href='/blog/categories/cgcontextref' style='font-size: 100.28169014084507%'>CGContextRef(1)</a> <a href='/blog/categories/cgimageref' style='font-size: 100.28169014084507%'>CGImageRef(1)</a> <a href='/blog/categories/classes' style='font-size: 112.67605633802818%'>Classes(45)</a> <a href='/blog/categories/cllocationmanager' style='font-size: 100.28169014084507%'>CLLocationManager(1)</a> <a href='/blog/categories/corelocation' style='font-size: 100.56338028169014%'>CoreLocation(2)</a> <a href='/blog/categories/delegate' style='font-size: 100.84507042253522%'>Delegate(3)</a> <a href='/blog/categories/device' style='font-size: 101.97183098591549%'>Device(7)</a> <a href='/blog/categories/download' style='font-size: 124.22535211267606%'>Download(86)</a> <a href='/blog/categories/facebook' style='font-size: 101.69014084507042%'>Facebook(6)</a> <a href='/blog/categories/foundation' style='font-size: 120.28169014084507%'>Foundation(72)</a> <a href='/blog/categories/framework' style='font-size: 100.56338028169014%'>Framework(2)</a> <a href='/blog/categories/iad' style='font-size: 101.69014084507042%'>iAd(6)</a> <a href='/blog/categories/inapppurchase' style='font-size: 100.56338028169014%'>InAppPurchase(2)</a> <a href='/blog/categories/ios' style='font-size: 103.38028169014085%'>iOS(12)</a> <a href='/blog/categories/ios-7' style='font-size: 104.22535211267606%'>iOS 7(15)</a> <a href='/blog/categories/ipad' style='font-size: 101.97183098591549%'>iPad(7)</a> <a href='/blog/categories/iphone' style='font-size: 102.8169014084507%'>iPhone(10)</a> <a href='/blog/categories/javascript' style='font-size: 100.56338028169014%'>JavaScript(2)</a> <a href='/blog/categories/line' style='font-size: 101.12676056338029%'>LINE(4)</a> <a href='/blog/categories/mfcomposeviewcontroller' style='font-size: 100.28169014084507%'>MFComposeViewController(1)</a> <a href='/blog/categories/nend' style='font-size: 100.84507042253522%'>Nend(3)</a> <a href='/blog/categories/nsarray' style='font-size: 106.19718309859155%'>NSArray(22)</a> <a href='/blog/categories/nscalendar' style='font-size: 100.84507042253522%'>NSCalendar(3)</a> <a href='/blog/categories/nsdata' style='font-size: 100.56338028169014%'>NSData(2)</a> <a href='/blog/categories/nsdate' style='font-size: 101.69014084507042%'>NSDate(6)</a> <a href='/blog/categories/nsdatecomponents' style='font-size: 100.56338028169014%'>NSDateComponents(2)</a> <a href='/blog/categories/nsdateformatter' style='font-size: 100.28169014084507%'>NSDateFormatter(1)</a> <a href='/blog/categories/nsdictionary' style='font-size: 103.38028169014085%'>NSDictionary(12)</a> <a href='/blog/categories/nsenumerator' style='font-size: 100.28169014084507%'>NSEnumerator(1)</a> <a href='/blog/categories/nsindexset' style='font-size: 100.28169014084507%'>NSIndexSet(1)</a> <a href='/blog/categories/nsinteger' style='font-size: 101.69014084507042%'>NSInteger(6)</a> <a href='/blog/categories/nsmutablearray' style='font-size: 104.50704225352112%'>NSMutableArray(16)</a> <a href='/blog/categories/nsmutabledictionary' style='font-size: 101.40845070422534%'>NSMutableDictionary(5)</a> <a href='/blog/categories/nsmutableorderedset' style='font-size: 101.97183098591549%'>NSMutableOrderedSet(7)</a> <a href='/blog/categories/nsmutablestring' style='font-size: 101.12676056338029%'>NSMutableString(4)</a> <a href='/blog/categories/nsmutableurlrequest' style='font-size: 100.28169014084507%'>NSMutableURLRequest(1)</a> <a href='/blog/categories/nsnotificationcenter' style='font-size: 100.28169014084507%'>NSNotificationCenter(1)</a> <a href='/blog/categories/nsnumber' style='font-size: 100.28169014084507%'>NSNumber(1)</a> <a href='/blog/categories/nsobject' style='font-size: 100.28169014084507%'>NSObject(1)</a> <a href='/blog/categories/nsorderedset' style='font-size: 101.97183098591549%'>NSOrderedSet(7)</a> <a href='/blog/categories/nsrange' style='font-size: 100.56338028169014%'>NSRange(2)</a> <a href='/blog/categories/nsselectorfromstring' style='font-size: 100.28169014084507%'>NSSelectorFromString(1)</a> <a href='/blog/categories/nsset' style='font-size: 101.69014084507042%'>NSSet(6)</a> <a href='/blog/categories/nsstring' style='font-size: 105.35211267605634%'>NSString(19)</a> <a href='/blog/categories/nstimer' style='font-size: 101.12676056338029%'>NSTimer(4)</a> <a href='/blog/categories/nstimezone' style='font-size: 100.28169014084507%'>NSTimeZone(1)</a> <a href='/blog/categories/nsurl' style='font-size: 101.97183098591549%'>NSURL(7)</a> <a href='/blog/categories/nsurlconnection' style='font-size: 100.28169014084507%'>NSURLConnection(1)</a> <a href='/blog/categories/nsurlrequest' style='font-size: 100.56338028169014%'>NSURLRequest(2)</a> <a href='/blog/categories/nsuserdefaults' style='font-size: 101.97183098591549%'>NSUserDefaults(7)</a> <a href='/blog/categories/nsxmlparser' style='font-size: 100.56338028169014%'>NSXMLParser(2)</a> <a href='/blog/categories/objective-c' style='font-size: 160.0%'>Objective-C(213)</a> <a href='/blog/categories/php' style='font-size: 100.28169014084507%'>PHP(1)</a> <a href='/blog/categories/products' style='font-size: 101.40845070422534%'>Products(5)</a> <a href='/blog/categories/quartzcore' style='font-size: 100.84507042253522%'>QuartzCore(3)</a> <a href='/blog/categories/rss' style='font-size: 100.56338028169014%'>RSS(2)</a> <a href='/blog/categories/sample' style='font-size: 114.36619718309859%'>Sample(51)</a> <a href='/blog/categories/screensaver' style='font-size: 102.53521126760563%'>Screensaver(9)</a> <a href='/blog/categories/sdk' style='font-size: 100.56338028169014%'>SDK(2)</a> <a href='/blog/categories/social' style='font-size: 102.8169014084507%'>Social(10)</a> <a href='/blog/categories/storekit' style='font-size: 100.84507042253522%'>StoreKit(3)</a> <a href='/blog/categories/twitter' style='font-size: 101.69014084507042%'>Twitter(6)</a> <a href='/blog/categories/uiaccelerometer' style='font-size: 100.84507042253522%'>UIAccelerometer(3)</a> <a href='/blog/categories/uiactionsheet' style='font-size: 100.28169014084507%'>UIActionSheet(1)</a> <a href='/blog/categories/uiactivityindicator' style='font-size: 100.28169014084507%'>UIActivityIndicator(1)</a> <a href='/blog/categories/uiactivityindicatorview' style='font-size: 100.84507042253522%'>UIActivityIndicatorView(3)</a> <a href='/blog/categories/uiactivityviewcontroller' style='font-size: 100.28169014084507%'>UIActivityViewController(1)</a> <a href='/blog/categories/uialertview' style='font-size: 101.40845070422534%'>UIAlertView(5)</a> <a href='/blog/categories/uiapplication' style='font-size: 101.97183098591549%'>UIApplication(7)</a> <a href='/blog/categories/uibutton' style='font-size: 101.12676056338029%'>UIButton(4)</a> <a href='/blog/categories/uicolor' style='font-size: 100.84507042253522%'>UIColor(3)</a> <a href='/blog/categories/uidatepicker' style='font-size: 101.12676056338029%'>UIDatePicker(4)</a> <a href='/blog/categories/uidevice' style='font-size: 101.40845070422534%'>UIDevice(5)</a> <a href='/blog/categories/uideviceorientation' style='font-size: 100.28169014084507%'>UIDeviceOrientation(1)</a> <a href='/blog/categories/uievent' style='font-size: 101.69014084507042%'>UIEvent(6)</a> <a href='/blog/categories/uiimage' style='font-size: 104.22535211267606%'>UIImage(15)</a> <a href='/blog/categories/uiimagepickercontroller' style='font-size: 101.12676056338029%'>UIImagePickerController(4)</a> <a href='/blog/categories/uiimageview' style='font-size: 103.38028169014085%'>UIImageView(12)</a> <a href='/blog/categories/uikit' style='font-size: 116.33802816901408%'>UIKit(58)</a> <a href='/blog/categories/uilabel' style='font-size: 101.97183098591549%'>UILabel(7)</a> <a href='/blog/categories/uinavigationbar' style='font-size: 101.12676056338029%'>UINavigationBar(4)</a> <a href='/blog/categories/uinavigationitem' style='font-size: 100.28169014084507%'>UINavigationItem(1)</a> <a href='/blog/categories/uipasteboard' style='font-size: 101.12676056338029%'>UIPasteboard(4)</a> <a href='/blog/categories/uiscreen' style='font-size: 100.28169014084507%'>UIScreen(1)</a> <a href='/blog/categories/uiscrollbar' style='font-size: 100.28169014084507%'>UIScrollBar(1)</a> <a href='/blog/categories/uiscrollview' style='font-size: 100.28169014084507%'>UIScrollView(1)</a> <a href='/blog/categories/uislider' style='font-size: 100.84507042253522%'>UISlider(3)</a> <a href='/blog/categories/uistoryboardsegue' style='font-size: 100.84507042253522%'>UIStoryboardSegue(3)</a> <a href='/blog/categories/uiswitch' style='font-size: 100.28169014084507%'>UISwitch(1)</a> <a href='/blog/categories/uitabbar' style='font-size: 100.84507042253522%'>UITabBar(3)</a> <a href='/blog/categories/uitableview' style='font-size: 100.84507042253522%'>UITableView(3)</a> <a href='/blog/categories/uitextfield' style='font-size: 100.56338028169014%'>UITextField(2)</a> <a href='/blog/categories/uiview' style='font-size: 103.09859154929578%'>UIView(11)</a> <a href='/blog/categories/uiviewanimationtransition' style='font-size: 100.28169014084507%'>UIViewAnimationTransition(1)</a> <a href='/blog/categories/uiviewcontroller' style='font-size: 101.12676056338029%'>UIViewController(4)</a> <a href='/blog/categories/uiwebview' style='font-size: 101.40845070422534%'>UIWebView(5)</a> <a href='/blog/categories/xcode' style='font-size: 112.3943661971831%'>Xcode(44)</a> </p>
+  <p id="tag-cloud"><a href='/blog/categories/actionscript' style='font-size: 102.5233644859813%'>ActionScript(9)</a> <a href='/blog/categories/actionscript3' style='font-size: 101.96261682242991%'>ActionScript3(7)</a> <a href='/blog/categories/admob' style='font-size: 100.8411214953271%'>AdMob(3)</a> <a href='/blog/categories/animation' style='font-size: 104.76635514018692%'>Animation(17)</a> <a href='/blog/categories/appdelegate' style='font-size: 100.8411214953271%'>AppDelegate(3)</a> <a href='/blog/categories/arc' style='font-size: 100.2803738317757%'>ARC(1)</a> <a href='/blog/categories/avaudioplayer' style='font-size: 101.1214953271028%'>AVAudioPlayer(4)</a> <a href='/blog/categories/avaudiosession' style='font-size: 100.2803738317757%'>AVAudioSession(1)</a> <a href='/blog/categories/avfoundation' style='font-size: 100.8411214953271%'>AVFoundation(3)</a> <a href='/blog/categories/banner' style='font-size: 101.1214953271028%'>Banner(4)</a> <a href='/blog/categories/camera' style='font-size: 101.1214953271028%'>Camera(4)</a> <a href='/blog/categories/cgaffinetransform' style='font-size: 101.1214953271028%'>CGAffineTransform(4)</a> <a href='/blog/categories/cgblendmode' style='font-size: 100.5607476635514%'>CGBlendMode(2)</a> <a href='/blog/categories/cgcontextref' style='font-size: 100.2803738317757%'>CGContextRef(1)</a> <a href='/blog/categories/cgimageref' style='font-size: 100.2803738317757%'>CGImageRef(1)</a> <a href='/blog/categories/classes' style='font-size: 112.89719626168224%'>Classes(46)</a> <a href='/blog/categories/cllocationmanager' style='font-size: 100.2803738317757%'>CLLocationManager(1)</a> <a href='/blog/categories/corelocation' style='font-size: 100.5607476635514%'>CoreLocation(2)</a> <a href='/blog/categories/delegate' style='font-size: 100.8411214953271%'>Delegate(3)</a> <a href='/blog/categories/device' style='font-size: 101.96261682242991%'>Device(7)</a> <a href='/blog/categories/download' style='font-size: 124.39252336448598%'>Download(87)</a> <a href='/blog/categories/facebook' style='font-size: 101.6822429906542%'>Facebook(6)</a> <a href='/blog/categories/foundation' style='font-size: 120.18691588785046%'>Foundation(72)</a> <a href='/blog/categories/framework' style='font-size: 100.5607476635514%'>Framework(2)</a> <a href='/blog/categories/iad' style='font-size: 101.6822429906542%'>iAd(6)</a> <a href='/blog/categories/inapppurchase' style='font-size: 100.5607476635514%'>InAppPurchase(2)</a> <a href='/blog/categories/ios' style='font-size: 103.3644859813084%'>iOS(12)</a> <a href='/blog/categories/ios-7' style='font-size: 104.20560747663552%'>iOS 7(15)</a> <a href='/blog/categories/ipad' style='font-size: 101.96261682242991%'>iPad(7)</a> <a href='/blog/categories/iphone' style='font-size: 102.80373831775701%'>iPhone(10)</a> <a href='/blog/categories/javascript' style='font-size: 100.5607476635514%'>JavaScript(2)</a> <a href='/blog/categories/line' style='font-size: 101.1214953271028%'>LINE(4)</a> <a href='/blog/categories/mfcomposeviewcontroller' style='font-size: 100.2803738317757%'>MFComposeViewController(1)</a> <a href='/blog/categories/nend' style='font-size: 100.8411214953271%'>Nend(3)</a> <a href='/blog/categories/nsarray' style='font-size: 106.16822429906541%'>NSArray(22)</a> <a href='/blog/categories/nscalendar' style='font-size: 100.8411214953271%'>NSCalendar(3)</a> <a href='/blog/categories/nsdata' style='font-size: 100.5607476635514%'>NSData(2)</a> <a href='/blog/categories/nsdate' style='font-size: 101.96261682242991%'>NSDate(7)</a> <a href='/blog/categories/nsdatecomponents' style='font-size: 100.5607476635514%'>NSDateComponents(2)</a> <a href='/blog/categories/nsdateformatter' style='font-size: 100.5607476635514%'>NSDateFormatter(2)</a> <a href='/blog/categories/nsdictionary' style='font-size: 103.3644859813084%'>NSDictionary(12)</a> <a href='/blog/categories/nsenumerator' style='font-size: 100.2803738317757%'>NSEnumerator(1)</a> <a href='/blog/categories/nsindexset' style='font-size: 100.2803738317757%'>NSIndexSet(1)</a> <a href='/blog/categories/nsinteger' style='font-size: 101.6822429906542%'>NSInteger(6)</a> <a href='/blog/categories/nsmutablearray' style='font-size: 104.48598130841121%'>NSMutableArray(16)</a> <a href='/blog/categories/nsmutabledictionary' style='font-size: 101.4018691588785%'>NSMutableDictionary(5)</a> <a href='/blog/categories/nsmutableorderedset' style='font-size: 101.96261682242991%'>NSMutableOrderedSet(7)</a> <a href='/blog/categories/nsmutablestring' style='font-size: 101.1214953271028%'>NSMutableString(4)</a> <a href='/blog/categories/nsmutableurlrequest' style='font-size: 100.2803738317757%'>NSMutableURLRequest(1)</a> <a href='/blog/categories/nsnotificationcenter' style='font-size: 100.2803738317757%'>NSNotificationCenter(1)</a> <a href='/blog/categories/nsnumber' style='font-size: 100.2803738317757%'>NSNumber(1)</a> <a href='/blog/categories/nsobject' style='font-size: 100.2803738317757%'>NSObject(1)</a> <a href='/blog/categories/nsorderedset' style='font-size: 101.96261682242991%'>NSOrderedSet(7)</a> <a href='/blog/categories/nsrange' style='font-size: 100.5607476635514%'>NSRange(2)</a> <a href='/blog/categories/nsselectorfromstring' style='font-size: 100.2803738317757%'>NSSelectorFromString(1)</a> <a href='/blog/categories/nsset' style='font-size: 101.6822429906542%'>NSSet(6)</a> <a href='/blog/categories/nsstring' style='font-size: 105.32710280373831%'>NSString(19)</a> <a href='/blog/categories/nstimer' style='font-size: 101.1214953271028%'>NSTimer(4)</a> <a href='/blog/categories/nstimezone' style='font-size: 100.2803738317757%'>NSTimeZone(1)</a> <a href='/blog/categories/nsurl' style='font-size: 101.96261682242991%'>NSURL(7)</a> <a href='/blog/categories/nsurlconnection' style='font-size: 100.2803738317757%'>NSURLConnection(1)</a> <a href='/blog/categories/nsurlrequest' style='font-size: 100.5607476635514%'>NSURLRequest(2)</a> <a href='/blog/categories/nsuserdefaults' style='font-size: 101.96261682242991%'>NSUserDefaults(7)</a> <a href='/blog/categories/nsxmlparser' style='font-size: 100.5607476635514%'>NSXMLParser(2)</a> <a href='/blog/categories/objective-c' style='font-size: 160.0%'>Objective-C(214)</a> <a href='/blog/categories/php' style='font-size: 100.2803738317757%'>PHP(1)</a> <a href='/blog/categories/products' style='font-size: 101.4018691588785%'>Products(5)</a> <a href='/blog/categories/quartzcore' style='font-size: 100.8411214953271%'>QuartzCore(3)</a> <a href='/blog/categories/rss' style='font-size: 100.5607476635514%'>RSS(2)</a> <a href='/blog/categories/sample' style='font-size: 114.29906542056075%'>Sample(51)</a> <a href='/blog/categories/screensaver' style='font-size: 102.5233644859813%'>Screensaver(9)</a> <a href='/blog/categories/sdk' style='font-size: 100.5607476635514%'>SDK(2)</a> <a href='/blog/categories/social' style='font-size: 102.80373831775701%'>Social(10)</a> <a href='/blog/categories/storekit' style='font-size: 100.8411214953271%'>StoreKit(3)</a> <a href='/blog/categories/twitter' style='font-size: 101.6822429906542%'>Twitter(6)</a> <a href='/blog/categories/uiaccelerometer' style='font-size: 100.8411214953271%'>UIAccelerometer(3)</a> <a href='/blog/categories/uiactionsheet' style='font-size: 100.2803738317757%'>UIActionSheet(1)</a> <a href='/blog/categories/uiactivityindicator' style='font-size: 100.2803738317757%'>UIActivityIndicator(1)</a> <a href='/blog/categories/uiactivityindicatorview' style='font-size: 100.8411214953271%'>UIActivityIndicatorView(3)</a> <a href='/blog/categories/uiactivityviewcontroller' style='font-size: 100.2803738317757%'>UIActivityViewController(1)</a> <a href='/blog/categories/uialertview' style='font-size: 101.4018691588785%'>UIAlertView(5)</a> <a href='/blog/categories/uiapplication' style='font-size: 101.96261682242991%'>UIApplication(7)</a> <a href='/blog/categories/uibutton' style='font-size: 101.1214953271028%'>UIButton(4)</a> <a href='/blog/categories/uicolor' style='font-size: 100.8411214953271%'>UIColor(3)</a> <a href='/blog/categories/uidatepicker' style='font-size: 101.4018691588785%'>UIDatePicker(5)</a> <a href='/blog/categories/uidevice' style='font-size: 101.4018691588785%'>UIDevice(5)</a> <a href='/blog/categories/uideviceorientation' style='font-size: 100.2803738317757%'>UIDeviceOrientation(1)</a> <a href='/blog/categories/uievent' style='font-size: 101.6822429906542%'>UIEvent(6)</a> <a href='/blog/categories/uiimage' style='font-size: 104.20560747663552%'>UIImage(15)</a> <a href='/blog/categories/uiimagepickercontroller' style='font-size: 101.1214953271028%'>UIImagePickerController(4)</a> <a href='/blog/categories/uiimageview' style='font-size: 103.3644859813084%'>UIImageView(12)</a> <a href='/blog/categories/uikit' style='font-size: 116.26168224299066%'>UIKit(58)</a> <a href='/blog/categories/uilabel' style='font-size: 101.96261682242991%'>UILabel(7)</a> <a href='/blog/categories/uinavigationbar' style='font-size: 101.1214953271028%'>UINavigationBar(4)</a> <a href='/blog/categories/uinavigationitem' style='font-size: 100.2803738317757%'>UINavigationItem(1)</a> <a href='/blog/categories/uipasteboard' style='font-size: 101.1214953271028%'>UIPasteboard(4)</a> <a href='/blog/categories/uiscreen' style='font-size: 100.2803738317757%'>UIScreen(1)</a> <a href='/blog/categories/uiscrollbar' style='font-size: 100.2803738317757%'>UIScrollBar(1)</a> <a href='/blog/categories/uiscrollview' style='font-size: 100.2803738317757%'>UIScrollView(1)</a> <a href='/blog/categories/uislider' style='font-size: 100.8411214953271%'>UISlider(3)</a> <a href='/blog/categories/uistoryboardsegue' style='font-size: 100.8411214953271%'>UIStoryboardSegue(3)</a> <a href='/blog/categories/uiswitch' style='font-size: 100.2803738317757%'>UISwitch(1)</a> <a href='/blog/categories/uitabbar' style='font-size: 100.8411214953271%'>UITabBar(3)</a> <a href='/blog/categories/uitableview' style='font-size: 100.8411214953271%'>UITableView(3)</a> <a href='/blog/categories/uitextfield' style='font-size: 100.5607476635514%'>UITextField(2)</a> <a href='/blog/categories/uiview' style='font-size: 103.08411214953271%'>UIView(11)</a> <a href='/blog/categories/uiviewanimationtransition' style='font-size: 100.2803738317757%'>UIViewAnimationTransition(1)</a> <a href='/blog/categories/uiviewcontroller' style='font-size: 101.1214953271028%'>UIViewController(4)</a> <a href='/blog/categories/uiwebview' style='font-size: 101.4018691588785%'>UIWebView(5)</a> <a href='/blog/categories/xcode' style='font-size: 112.33644859813084%'>Xcode(44)</a> </p>
 </section>
 
   </div>
@@ -1469,6 +1854,10 @@
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/01/15/download-objc-classes-dc-date3/">指定した日時からの経過時間を取得する「DCDate」クラス改訂版</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2014/01/11/objc-ui-table-view/">テーブルビューの使用方法まとめ</a>
@@ -1488,10 +1877,6 @@
     
       <li class="post">
         <a href="/blog/2014/01/09/download-objc-classes-dc-util3/">ユーティリティ機能をまとめた「DCUtil」クラス改訂版</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/01/05/objc-classes-dc-web-view/">ウェブビューに必要な機能を搭載した「DCWebView」クラス</a>
       </li>
     
   </ul>
