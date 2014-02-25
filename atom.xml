@@ -4,7 +4,7 @@
   <title><![CDATA[Dolice Lab]]></title>
   <link href="http://lab.dolice.net/atom.xml" rel="self"/>
   <link href="http://lab.dolice.net/"/>
-  <updated>2014-02-23T02:54:12+09:00</updated>
+  <updated>2014-02-25T13:41:09+09:00</updated>
   <id>http://lab.dolice.net/</id>
   <author>
     <name><![CDATA[Masaki Hirokawa]]></name>
@@ -12,6 +12,355 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[iPhoneアプリに AdMobのインタースティシャル広告を導入する方法]]></title>
+    <link href="http://lab.dolice.net/blog/2014/02/25/objc-admob-inters/"/>
+    <updated>2014-02-25T12:42:00+09:00</updated>
+    <id>http://lab.dolice.net/blog/2014/02/25/objc-admob-inters</id>
+    <content type="html"><![CDATA[<p><a href="https://apps.admob.com/" title="AdMob">AdMob</a>のインタースティシャル広告で無料アプリの収益が大幅にアップしたという事例を多く目にするようになりました。</p>
+
+<p>下記に <a href="https://developers.google.com/mobile-ads-sdk/docs/ios/advanced?hl=ja" title="AdMobインタースティシャル広告">AdMobインタースティシャル広告</a>の導入手順を記載します。</p>
+
+<p>実装サンプルも下記からダウンロードできますので、ご参考になれば幸いです。</p>
+
+<h2>ダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-admob-interstitial">https://github.com/masakihirokawa/objc-admob-interstitial</a></li>
+</ul>
+
+
+<h2>公式ドキュメント</h2>
+
+<ul>
+<li><a href="https://developers.google.com/mobile-ads-sdk/docs/ios/advanced?hl=ja">https://developers.google.com/mobile-ads-sdk/docs/ios/advanced?hl=ja</a></li>
+</ul>
+
+
+<h2>導入手順</h2>
+
+<h3>AdMobインタースティシャル広告ユニットの登録</h3>
+
+<h4>1. <a href="https://apps.admob.com/" title="AdMob">AdMob</a>のサイトにログインし、<strong>「収益化」</strong>メニューを開く</h4>
+
+<p><img src="http://lab.dolice.net/images/article/admob_inters/admob_inters_admob_scr1.jpg" alt="" /></p>
+
+<h4>2-a. アプリを収益化していない場合は、<strong>「新しいアプリを収益化」</strong>をクリック</h4>
+
+<p><img src="http://lab.dolice.net/images/article/admob_inters/admob_inters_admob_scr2_a.jpg" alt="" /></p>
+
+<h4>2-b. 既にアプリを収益化している場合は、該当のアプリを選択し、<strong>「新しい広告ユニット」</strong>をクリック</h4>
+
+<p><img src="http://lab.dolice.net/images/article/admob_inters/admob_inters_admob_scr2_b.jpg" alt="" /></p>
+
+<h4>3. <strong>「新しい広告ユニット」</strong>ページが開くので、<strong>「広告フォーマットの選択と広告ユニット名の設定」</strong>から <em>[インタースティシャル]</em>を選択し、広告ユニット名を任意の名前にする</h4>
+
+<p><img src="http://lab.dolice.net/images/article/admob_inters/admob_inters_admob_scr3.jpg" alt="" /></p>
+
+<h4>4. 保存すると <em>[広告ユニットID]</em>が表示されるので、手元に控えておく</h4>
+
+<p><img src="http://lab.dolice.net/images/article/admob_inters/admob_inters_admob_scr4.jpg" alt="" /></p>
+
+<h3>アプリにインタースティシャル広告を組み込み</h3>
+
+<h4>1. 必要なフレームワークをインポート</h4>
+
+<p>必要なフレームワークは下記の通りです。Xcodeからそれぞれインポートします。</p>
+
+<h5>必要なフレームワーク</h5>
+
+<ul>
+<li><strong>AVFoundation.framework</strong></li>
+<li><strong>MessageUI.framework</strong></li>
+<li><strong>AdSupport.framework</strong></li>
+<li><strong>AudioToolbox.framework</strong></li>
+<li><strong>StoreKit.framework</strong></li>
+<li><strong>SystemConfiguration.framework</strong></li>
+<li><strong>CoreTelephony.framework</strong></li>
+</ul>
+
+
+<h4>2. Xcodeで <em>[PROJECT]</em> → <em>[BuildSettings]</em>の順に開き、<strong>「Linking」</strong>メニューにある <em>[Other Linker Flags]</em>に <strong>-ObjC</strong>と入力</h4>
+
+<p><img src="http://lab.dolice.net/images/article/admob_inters/admob_inters_app_scr1.jpg" alt="" /></p>
+
+<h4>3. 実装</h4>
+
+<p>下記のサンプルは動作確認済みです。コードの <em>adUnitID</em>には、AdMobのサイトで控えておいた<em>[広告ユニットID]</em>を指定してください。</p>
+
+<h2>サンプルソースコード</h2>
+
+<h3>ViewController.h</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;UIKit/UIKit.h&gt;</span>
+</span><span class='line'><span class="cp">#import &quot;GADInterstitial.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> : <span class="nc">UIViewController</span> <span class="o">&lt;</span><span class="n">GADInterstitialDelegate</span><span class="o">&gt;</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">GADInterstitial</span> <span class="o">*</span><span class="n">interstitial_</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>ViewController.m</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;ViewController.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> <span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">ViewController</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark -</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
+</span><span class='line'>  
+</span><span class='line'>    <span class="c1">// AdMobのインタースティシャル広告読み込み</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="n">loadAdMobIntersBanner</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark - AdMob Inters Banner</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// AdMobのインタースティシャル広告読み込み</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">loadAdMobIntersBanner</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">interstitial_</span> <span class="o">=</span> <span class="p">[[</span><span class="n">GADInterstitial</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">interstitial_</span><span class="p">.</span><span class="n">adUnitID</span> <span class="o">=</span> <span class="s">@&quot;ca-app-pub-0667784050147760/7591603826&quot;</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">interstitial_</span><span class="p">.</span><span class="n">delegate</span> <span class="o">=</span> <span class="n">self</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">GADRequest</span> <span class="o">*</span><span class="n">request</span> <span class="o">=</span> <span class="p">[</span><span class="n">GADRequest</span> <span class="n">request</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">interstitial_</span> <span class="nl">loadRequest:</span><span class="n">request</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// AdMobのインタースティシャル広告表示</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">interstitialDidReceiveAd:</span><span class="p">(</span><span class="n">GADInterstitial</span> <span class="o">*</span><span class="p">)</span><span class="nv">ad</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">interstitial_</span> <span class="nl">presentFromRootViewController:</span><span class="n">self</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>以上で AdMobインタースティシャル広告の導入は完了になります。</p>
+
+<p><a href="https://developers.google.com/mobile-ads-sdk/docs/ios/advanced?hl=ja" title="公式ドキュメント">公式ドキュメント</a>にも、アプリの起動時にインタースティシャル広告を表示する手順や、デリゲートメソッドの一覧などが記載されていますので、そちらも参考にされると良いかもしれません。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Xcode 5でアプリを多言語対応するまでの全スクリーンショット]]></title>
+    <link href="http://lab.dolice.net/blog/2014/02/14/xcode5-localize+%E3%81%AE%E3%82%B3%E3%83%92%E3%82%9A%E3%83%BC/"/>
+    <updated>2014-02-14T16:09:00+09:00</updated>
+    <id>http://lab.dolice.net/blog/2014/02/14/xcode5-localize のコピー</id>
+    <content type="html"><![CDATA[<p>Xcode 5でアプリをローカライズするために必要な手順を記載したスクリーンショットとサンプルを以下に作成しました。</p>
+
+<p>アプリを多言語対応する際のお役に立てば幸いです。</p>
+
+<h2>ダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/xcode5-localize">https://github.com/masakihirokawa/xcode5-localize</a></li>
+</ul>
+
+
+<h2>スクリーンショット</h2>
+
+<h3>1. Info.plistとストーリーボードのローカライズ</h3>
+
+<p><img src="http://lab.dolice.net/images/article/xcode5_localize/xcode5_localize_scr1.jpg" alt="" /></p>
+
+<p><img src="http://lab.dolice.net/images/article/xcode5_localize/xcode5_localize_scr2.jpg" alt="" /></p>
+
+<p><img src="http://lab.dolice.net/images/article/xcode5_localize/xcode5_localize_scr3.jpg" alt="" /></p>
+
+<p><img src="http://lab.dolice.net/images/article/xcode5_localize/xcode5_localize_scr12.jpg" alt="" /></p>
+
+<h3>2. アプリアイコン名のローカライズ</h3>
+
+<p><img src="http://lab.dolice.net/images/article/xcode5_localize/xcode5_localize_scr4.jpg" alt="" /></p>
+
+<h3>3. アプリ内文言のローカライズ</h3>
+
+<p><img src="http://lab.dolice.net/images/article/xcode5_localize/xcode5_localize_scr5.jpg" alt="" /></p>
+
+<p><img src="http://lab.dolice.net/images/article/xcode5_localize/xcode5_localize_scr6.jpg" alt="" /></p>
+
+<p><img src="http://lab.dolice.net/images/article/xcode5_localize/xcode5_localize_scr7.jpg" alt="" /></p>
+
+<p><img src="http://lab.dolice.net/images/article/xcode5_localize/xcode5_localize_scr8a.jpg" alt="" /></p>
+
+<p><img src="http://lab.dolice.net/images/article/xcode5_localize/xcode5_localize_scr8b.jpg" alt="" /></p>
+
+<p><img src="http://lab.dolice.net/images/article/xcode5_localize/xcode5_localize_scr9.jpg" alt="" /></p>
+
+<p><img src="http://lab.dolice.net/images/article/xcode5_localize/xcode5_localize_scr10.jpg" alt="" /></p>
+
+<p><img src="http://lab.dolice.net/images/article/xcode5_localize/xcode5_localize_scr11.jpg" alt="" /></p>
+
+<h2>サンプルソースコード</h2>
+
+<h3>ローカライズされた文字列の取得</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">label</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">NSLocalizedString</span><span class="p">(</span><span class="s">@&quot;sampleText&quot;</span><span class="p">,</span> <span class="nb">nil</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">/**</span>
+</span><span class='line'><span class="cm"> * Localizable.strings (Japaniese)</span>
+</span><span class='line'><span class="cm"> * &quot;sampleText&quot; = &quot;サンプルテキスト&quot;;</span>
+</span><span class='line'><span class="cm"> * </span>
+</span><span class='line'><span class="cm"> * Localizable.strings (English)</span>
+</span><span class='line'><span class="cm"> * &quot;sampleText&quot; = &quot;Sample text&quot;;</span>
+</span><span class='line'><span class="cm"> */</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>ローカライズされた画像の取得</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">// ローカライズ画像配置</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setLocalizedImage</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">UIImageView</span> <span class="o">*</span><span class="n">localizedImage</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIImageView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">320</span><span class="p">,</span> <span class="mi">64</span><span class="p">)];</span>
+</span><span class='line'>    <span class="n">localizedImage</span><span class="p">.</span><span class="n">image</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="nl">getLocalizedImageWithName:</span><span class="s">@&quot;title&quot;</span> <span class="nl">ext:</span><span class="s">@&quot;png&quot;</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">localizedImage</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// ローカライズ画像取得（画像ファイル名の末尾が「_en」の場合）</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nf">getLocalizedImageWithName:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">name</span> <span class="nf">ext:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">ext</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">static</span> <span class="kt">BOOL</span> <span class="n">isJapanese</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">static</span> <span class="n">dispatch_once_t</span> <span class="n">onceToken</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">dispatch_once</span><span class="p">(</span><span class="o">&amp;</span><span class="n">onceToken</span><span class="p">,</span> <span class="o">^</span><span class="p">{</span>
+</span><span class='line'>        <span class="n">NSArray</span> <span class="o">*</span><span class="n">languages</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSLocale</span> <span class="n">preferredLanguages</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">NSString</span> <span class="o">*</span><span class="n">currentLanguage</span> <span class="o">=</span> <span class="p">[</span><span class="n">languages</span> <span class="nl">objectAtIndex:</span><span class="mi">0</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">isJapanese</span> <span class="o">=</span> <span class="p">[</span><span class="n">currentLanguage</span> <span class="nl">compare:</span><span class="s">@&quot;ja&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">NSOrderedSame</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">UIImage</span> <span class="o">*</span><span class="n">localizedImage</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">isJapanese</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">localizedImage</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIImage</span> <span class="nl">imageNamed:</span><span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">@&quot;%@.%@&quot;</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">ext</span><span class="p">]];</span>
+</span><span class='line'>    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">localizedImage</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIImage</span> <span class="nl">imageNamed:</span><span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">@&quot;%@%@.%@&quot;</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="s">@&quot;_en&quot;</span><span class="p">,</span> <span class="n">ext</span><span class="p">]];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">localizedImage</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>システム言語が日本語であるかの判別</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">isJapaneseLanguage</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">static</span> <span class="kt">BOOL</span> <span class="n">isJapanese</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">static</span> <span class="n">dispatch_once_t</span> <span class="n">onceToken</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">dispatch_once</span><span class="p">(</span><span class="o">&amp;</span><span class="n">onceToken</span><span class="p">,</span> <span class="o">^</span><span class="p">{</span>
+</span><span class='line'>        <span class="n">NSArray</span> <span class="o">*</span><span class="n">languages</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSLocale</span> <span class="n">preferredLanguages</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">NSString</span> <span class="o">*</span><span class="n">currentLanguage</span> <span class="o">=</span> <span class="p">[</span><span class="n">languages</span> <span class="nl">objectAtIndex:</span><span class="mi">0</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">isJapanese</span> <span class="o">=</span> <span class="p">[</span><span class="n">currentLanguage</span> <span class="nl">compare:</span><span class="s">@&quot;ja&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">NSOrderedSame</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">});</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">isJapanese</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Xcode 5でアプリを多言語対応するまでの全スクリーンショット]]></title>
@@ -3951,242 +4300,6 @@
 </span><span class='line'>        <span class="n">NSInteger</span> <span class="n">bannerY</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">frame</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">height</span> <span class="o">-</span> <span class="mi">50</span><span class="p">;</span>
 </span><span class='line'>        <span class="p">[[</span><span class="n">DCBanner</span> <span class="n">sharedManager</span><span class="p">]</span> <span class="nl">showAdBanner:</span><span class="n">self</span> <span class="nl">yPos:</span><span class="n">bannerY</span><span class="p">];</span>
 </span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[iOS 7以降か判定する方法]]></title>
-    <link href="http://lab.dolice.net/blog/2013/09/26/objc-ios7-decision-version/"/>
-    <updated>2013-09-26T08:36:00+09:00</updated>
-    <id>http://lab.dolice.net/blog/2013/09/26/objc-ios7-decision-version</id>
-    <content type="html"><![CDATA[<p>iOS 7とそれより前のバージョンでは、ステータスバーをはじめ UILabelや UISliderのレイアウトが微妙にずれる問題があったため、頻繁に処理を振り分ける必要がありました。</p>
-
-<p>Objective-Cで iOS 7以降か判別するコードを以下に記載します。</p>
-
-<h3>iOS 7以降であるかの判定</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">// iOS7以降であるか</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">isIOS7</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">NSString</span> <span class="o">*</span><span class="n">osversion</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIDevice</span> <span class="n">currentDevice</span><span class="p">].</span><span class="n">systemVersion</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">NSArray</span> <span class="o">*</span><span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="n">osversion</span> <span class="nl">componentsSeparatedByString:</span><span class="s">@&quot;.&quot;</span><span class="p">];</span>
-</span><span class='line'>    <span class="k">return</span> <span class="p">([(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)[</span><span class="n">a</span> <span class="nl">objectAtIndex:</span><span class="mi">0</span><span class="p">]</span> <span class="n">intValue</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">7</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>iOSのバージョンを取得するコードは下記になります。</p>
-
-<h3>iOSのバージョン取得</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">// iOSのバージョン取得</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">CGFloat</span><span class="p">)</span><span class="nf">iOSVersion</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="p">([[[</span><span class="n">UIDevice</span> <span class="n">currentDevice</span><span class="p">]</span> <span class="n">systemVersion</span><span class="p">]</span> <span class="n">floatValue</span><span class="p">]);</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[iOS 7でステータスバーを非表示にしたりスタイルを変更する方法]]></title>
-    <link href="http://lab.dolice.net/blog/2013/09/25/objc-ios7-status-bar/"/>
-    <updated>2013-09-25T10:12:00+09:00</updated>
-    <id>http://lab.dolice.net/blog/2013/09/25/objc-ios7-status-bar</id>
-    <content type="html"><![CDATA[<p>iOS 7でステータスバーを非表示にしたり、文字色の変更やアニメーションを指定する方法を以下に記載します。</p>
-
-<h2>前準備</h2>
-
-<p><strong>Info.plist</strong>ファイルで <strong>UIViewControllerBasedStatusBarAppearance</strong>の値を NOにする事で、コードでのステータスバーの変更が可能になります。または、<strong>Info.plist</strong>の <strong>View controller-based status bar appearance</strong>の値を YESでも問題ありません。</p>
-
-<p>下記にステータスバーを制御するコードを記載します。</p>
-
-<h3>ステータスバーの非表示</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// ステータスバーの表示/非表示メソッド呼び出し</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">([</span><span class="n">self</span> <span class="nl">respondsToSelector:</span><span class="k">@selector</span><span class="p">(</span><span class="n">setNeedsStatusBarAppearanceUpdate</span><span class="p">)])</span> <span class="p">{</span>
-</span><span class='line'>        <span class="c1">// iOS 7以降</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">self</span> <span class="n">prefersStatusBarHidden</span><span class="p">];</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">self</span> <span class="nl">performSelector:</span><span class="k">@selector</span><span class="p">(</span><span class="n">setNeedsStatusBarAppearanceUpdate</span><span class="p">)];</span>
-</span><span class='line'>    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-</span><span class='line'>        <span class="c1">// iOS 7未満</span>
-</span><span class='line'>        <span class="p">[[</span><span class="n">UIApplication</span> <span class="n">sharedApplication</span><span class="p">]</span> <span class="nl">setStatusBarHidden:</span><span class="n">YES</span> <span class="nl">withAnimation:</span><span class="n">UIStatusBarAnimationSlide</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// ステータスバーの非表示</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">prefersStatusBarHidden</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="k">return</span> <span class="n">YES</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>ステータスバーのスタイル変更</h2>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// ステータスバーのスタイル適用</span>
-</span><span class='line'>  <span class="k">if</span> <span class="p">([</span><span class="n">self</span> <span class="nl">respondsToSelector:</span><span class="k">@selector</span><span class="p">(</span><span class="n">setNeedsStatusBarAppearanceUpdate</span><span class="p">)])</span> <span class="p">{</span>
-</span><span class='line'>      <span class="p">[</span><span class="n">self</span> <span class="n">setNeedsStatusBarAppearanceUpdate</span><span class="p">];</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">UIStatusBarStyle</span><span class="p">)</span><span class="nf">preferredStatusBarStyle</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="c1">// ステータスバーの文字色を白に指定</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">UIStatusBarStyleLightContent</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>ステータスバーのスタイル一覧</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">typedef</span> <span class="nf">NS_ENUM</span><span class="p">(</span><span class="n">NSUInteger</span><span class="p">,</span> <span class="n">statusBarStyle</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>  <span class="n">UIStatusBarStyleDefault</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-</span><span class='line'>  <span class="n">UIStatusBarStyleLightContent</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
-</span><span class='line'>  <span class="n">UIStatusBarStyleBlackTranslucent</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
-</span><span class='line'>  <span class="n">UIStatusBarStyleBlackOpaque</span> <span class="o">=</span> <span class="mi">4</span>
-</span><span class='line'><span class="p">};</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>アニメーション指定</h2>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// ステータスバーのアニメーション呼び出し</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">floor</span><span class="p">(</span><span class="n">NSFoundationVersionNumber</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">NSFoundationVersionNumber_iOS_6_1</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="p">[[</span><span class="n">UIApplication</span> <span class="n">sharedApplication</span><span class="p">]</span> <span class="nl">setStatusBarHidden:</span><span class="n">YES</span> <span class="nl">withAnimation:</span><span class="n">UIStatusBarAnimationFade</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// ステータスバーのアニメーション</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">UIStatusBarAnimation</span><span class="p">)</span><span class="nf">preferredStatusBarUpdateAnimation</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="k">return</span> <span class="n">UIStatusBarAnimationFade</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>起動時を含め全画面からステータスバーを非表示</h2>
-
-<p><strong>Info.plist</strong>で <strong>Status bar is initially hidden</strong>という値を追加し YESを指定すると、起動時のスプラッシュ画面を含む全画面でステータスバーが非表示になります。</p>
-
-<h2>iOS 7以降であるかの判別</h2>
-
-<h3>フレームワークを参照する方法</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">if</span> <span class="p">(</span><span class="n">floor</span><span class="p">(</span><span class="n">NSFoundationVersionNumber</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">NSFoundationVersionNumber_iOS_6_1</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>  <span class="c1">// iOS 6.1以下</span>
-</span><span class='line'><span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-</span><span class='line'>  <span class="c1">// iOS 7以降</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>iOSのバージョンを取得し判別する方法</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">isIOS7</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">NSString</span> <span class="o">*</span><span class="n">osversion</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIDevice</span> <span class="n">currentDevice</span><span class="p">].</span><span class="n">systemVersion</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">NSArray</span> <span class="o">*</span><span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="n">osversion</span> <span class="nl">componentsSeparatedByString:</span><span class="s">@&quot;.&quot;</span><span class="p">];</span>
-</span><span class='line'>    <span class="k">return</span> <span class="p">([(</span><span class="n">NSString</span><span class="o">*</span><span class="p">)[</span><span class="n">a</span> <span class="nl">objectAtIndex:</span><span class="mi">0</span><span class="p">]</span> <span class="n">intValue</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">7</span><span class="p">);</span>
 </span><span class='line'><span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
