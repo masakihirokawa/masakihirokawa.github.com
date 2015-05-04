@@ -6,12 +6,12 @@
 	<title>Dolice Lab</title>
 
 
-	<meta name="description" content="HD画質の綺麗な壁紙を 10,000 枚以上、無料でダウンロードできます。壁紙は毎日追加・更新されます。 高品質な画像を1枚ずつ厳選しておりますので、ギャラリーアプリとしてもお楽しみいただけます。 特長 このアプリの特長は、壁紙の品質を重視し 1枚ずつ手作業で更新している点です。 &hellip;" />
+	<meta name="description" content="Androidアプリに AdMob のインタースティシャル広告を導入するサンプルを作成しました。 下記のサンプルでは、アプリがスリープ状態から復帰した際に全面広告が表示されます。 サンプルダウンロード https://github.com/masakihirokawa/android-admob &hellip;" />
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
     <meta property="og:locale" content="ja_JP" />
     <meta property="og:title" content="Dolice Lab" />
-    <meta property="og:description" content="HD画質の綺麗な壁紙を 10,000 枚以上、無料でダウンロードできます。壁紙は毎日追加・更新されます。 高品質な画像を1枚ずつ厳選しておりますので、ギャラリーアプリとしてもお楽しみいただけます。 特長 このアプリの特長は、壁紙の品質を重視し 1枚ずつ手作業で更新している点です。 &hellip;" />
+    <meta property="og:description" content="Androidアプリに AdMob のインタースティシャル広告を導入するサンプルを作成しました。 下記のサンプルでは、アプリがスリープ状態から復帰した際に全面広告が表示されます。 サンプルダウンロード https://github.com/masakihirokawa/android-admob &hellip;" />
     <meta property="og:url" content="http://lab.dolice.net/" />
     <meta property="og:image" content="/images/facebook-icon.jpg" />
     <meta property="og:author" content="Masaki Hirokawa" />
@@ -104,6 +104,330 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2015/05/04/android-admob-interstitial-ad/">
+		
+			Androidアプリへの AdMob インタースティシャル広告導入</a>
+	</h2>
+	<div class="entry-content">
+		<p>Androidアプリに <a href="https://apps.admob.com/" title="AdMob">AdMob</a> のインタースティシャル広告を導入するサンプルを作成しました。</p>
+
+<p>下記のサンプルでは、アプリがスリープ状態から復帰した際に全面広告が表示されます。</p>
+
+<h2>サンプルダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/android-admob-interstitial-ad">https://github.com/masakihirokawa/android-admob-interstitial-ad</a></li>
+</ul>
+
+
+<h2>公式ドキュメント</h2>
+
+<ul>
+<li><a href="https://developers.google.com/mobile-ads-sdk/docs/admob/android/interstitial?hl=ja">https://developers.google.com/mobile-ads-sdk/docs/admob/android/interstitial?hl=ja</a></li>
+</ul>
+
+
+<h2>導入手順</h2>
+
+<h3>1. Google Play Services SDK の読み込み</h3>
+
+<p><em>build.gradle</em> から <strong>Google Play Services SDK</strong> を読み込みます。バージョンは最新版を指定してください。</p>
+
+<blockquote><p>dependencies {</p>
+
+<pre><code>// 省略
+compile 'com.google.android.gms:play-services:7.3.0'
+</code></pre>
+
+<p>}</p></blockquote>
+
+<h3>2. AdMob 広告ユニットID の指定</h3>
+
+<p><em>AdMobIntersBanner.java</em> の14行目で AdMob インタースティシャル広告のユニットID を指定します。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">INTERS_AD_UNIT_ID</span> <span class="o">=</span> <span class="s">&quot;Your AdMob Ad unit ID&quot;</span><span class="o">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>3. デバッグモードの指定</h3>
+
+<p><em>AdMobIntersBanner.java</em> の15行目でデバッグモードをオンにしてください。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">boolean</span> <span class="n">DEBUG_MODE</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>4. テスト端末のデバイスID を指定</h3>
+
+<p><em>AdMobIntersBanner.java</em> の17行目でテスト端末のデバイスID を指定します。</p>
+
+<p>デバイスIDは、実機で一度広告を表示すると <em>LogCat</em> に表示されます。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span><span class="o">[]</span> <span class="n">DEBUG_DEVICE_ID</span> <span class="o">=</span> <span class="o">{</span>
+</span><span class='line'>    <span class="s">&quot;Your test device ID&quot;</span>
+</span><span class='line'><span class="o">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>5. 実装</h3>
+
+<p>下記に実装サンプルを記載しますので、参考になれば幸いです。</p>
+
+<h2>サンプルソースコード</h2>
+
+<h3>MainActivity.java</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kn">package</span> <span class="n">net</span><span class="o">.</span><span class="na">dolice</span><span class="o">.</span><span class="na">admobinterstitialadex</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kn">import</span> <span class="nn">android.app.Activity</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">android.os.Bundle</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kn">import</span> <span class="nn">net.dolice.ad.AdMobIntersBanner</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MainActivity</span> <span class="kd">extends</span> <span class="n">Activity</span> <span class="o">{</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="n">AdMobIntersBanner</span> <span class="n">mIntersAd</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nd">@Override</span>
+</span><span class='line'>    <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">onCreate</span><span class="o">(</span><span class="n">Bundle</span> <span class="n">savedInstanceState</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="kd">super</span><span class="o">.</span><span class="na">onCreate</span><span class="o">(</span><span class="n">savedInstanceState</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">setContentView</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">layout</span><span class="o">.</span><span class="na">activity_main</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// 全面広告の読み込み</span>
+</span><span class='line'>        <span class="n">preloadInterstitialAd</span><span class="o">();</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 全面広告の読み込み</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="kt">void</span> <span class="nf">preloadInterstitialAd</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">mIntersAd</span> <span class="o">=</span> <span class="k">new</span> <span class="n">AdMobIntersBanner</span><span class="o">();</span>
+</span><span class='line'>        <span class="n">mIntersAd</span><span class="o">.</span><span class="na">preload</span><span class="o">(</span><span class="k">this</span><span class="o">);</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 全面広告が読み込み完了していれば表示</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="kt">void</span> <span class="nf">showInterstitialAd</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="c1">// 全面広告表示</span>
+</span><span class='line'>        <span class="k">if</span> <span class="o">(</span><span class="n">mIntersAd</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>            <span class="n">mIntersAd</span><span class="o">.</span><span class="na">show</span><span class="o">();</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nd">@Override</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onRestart</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="kd">super</span><span class="o">.</span><span class="na">onRestart</span><span class="o">();</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// 全面広告が読み込み完了していれば表示</span>
+</span><span class='line'>        <span class="n">showInterstitialAd</span><span class="o">();</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>AdMobIntersBanner.java</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kn">package</span> <span class="n">net</span><span class="o">.</span><span class="na">dolice</span><span class="o">.</span><span class="na">ad</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kn">import</span> <span class="nn">android.content.Context</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kn">import</span> <span class="nn">com.google.android.gms.ads.AdRequest</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">com.google.android.gms.ads.InterstitialAd</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">/**</span>
+</span><span class='line'><span class="cm"> * Created by Dolice on 15/03/19.</span>
+</span><span class='line'><span class="cm"> */</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">AdMobIntersBanner</span> <span class="o">{</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="n">InterstitialAd</span> <span class="n">mIntersAd</span><span class="o">;</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">INTERS_AD_UNIT_ID</span> <span class="o">=</span> <span class="s">&quot;Your AdMob Ad unit ID&quot;</span><span class="o">;</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">boolean</span> <span class="n">DEBUG_MODE</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span><span class="o">[]</span> <span class="n">DEBUG_DEVICE_ID</span> <span class="o">=</span> <span class="o">{</span>
+</span><span class='line'>            <span class="s">&quot;Your test device ID&quot;</span>
+</span><span class='line'>    <span class="o">};</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="cm">/**</span>
+</span><span class='line'><span class="cm">     * 全面広告のプリロード</span>
+</span><span class='line'><span class="cm">     * @param context</span>
+</span><span class='line'><span class="cm">     */</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">preload</span><span class="o">(</span><span class="n">Context</span> <span class="n">context</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">mIntersAd</span> <span class="o">=</span> <span class="k">new</span> <span class="n">InterstitialAd</span><span class="o">(</span><span class="n">context</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">mIntersAd</span><span class="o">.</span><span class="na">setAdUnitId</span><span class="o">(</span><span class="n">INTERS_AD_UNIT_ID</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">mIntersAd</span><span class="o">.</span><span class="na">loadAd</span><span class="o">(</span><span class="n">getAdRequest</span><span class="o">());</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="cm">/**</span>
+</span><span class='line'><span class="cm">     * 全面広告の表示</span>
+</span><span class='line'><span class="cm">     */</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">show</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">if</span> <span class="o">(</span><span class="n">mIntersAd</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>            <span class="k">return</span><span class="o">;</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">if</span> <span class="o">(</span><span class="n">mIntersAd</span><span class="o">.</span><span class="na">isLoaded</span><span class="o">())</span> <span class="o">{</span>
+</span><span class='line'>            <span class="n">mIntersAd</span><span class="o">.</span><span class="na">show</span><span class="o">();</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="cm">/**</span>
+</span><span class='line'><span class="cm">     * 広告リクエストの取得</span>
+</span><span class='line'><span class="cm">     */</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="n">AdRequest</span> <span class="nf">getAdRequest</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">AdRequest</span> <span class="n">adRequest</span><span class="o">;</span>
+</span><span class='line'>        <span class="k">if</span> <span class="o">(</span><span class="n">DEBUG_MODE</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>            <span class="n">adRequest</span> <span class="o">=</span> <span class="k">new</span> <span class="n">AdRequest</span><span class="o">.</span><span class="na">Builder</span><span class="o">()</span>
+</span><span class='line'>                    <span class="o">.</span><span class="na">addTestDevice</span><span class="o">(</span><span class="n">AdRequest</span><span class="o">.</span><span class="na">DEVICE_ID_EMULATOR</span><span class="o">)</span>
+</span><span class='line'>                    <span class="c1">//.addTestDevice(DEBUG_DEVICE_ID[0])</span>
+</span><span class='line'>                    <span class="o">.</span><span class="na">build</span><span class="o">();</span>
+</span><span class='line'>        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+</span><span class='line'>            <span class="n">adRequest</span> <span class="o">=</span> <span class="k">new</span> <span class="n">AdRequest</span><span class="o">.</span><span class="na">Builder</span><span class="o">().</span><span class="na">build</span><span class="o">();</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">return</span> <span class="n">adRequest</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>以上で AdMob インタースティシャル広告の導入は完了になります。</p>
+
+<p><a href="https://developers.google.com/mobile-ads-sdk/docs/admob/android/interstitial?hl=ja" title="公式ドキュメント">公式ドキュメント</a>にも良質なサンプルが掲載されていますので、そちらも参考にされると良いかもしれません。</p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-05-04T10:13:00+09:00" pubdate data-updated="true">May 4<span>th</span>, 2015</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/admob/'>AdMob</a>, <a class='category' href='/blog/categories/android/'>Android</a>, <a class='category' href='/blog/categories/java/'>Java</a>
+
+
+</div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -405,160 +729,6 @@
 </div>
 </article>
 
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2014/10/24/ios-ukiyo-e-ja/">
-		
-			浮世絵壁紙HD 300枚無料 - iPhone/iPodアプリ</a>
-	</h2>
-	<div class="entry-content">
-		<div class="app_screenshot_container"><img src="http://dolice.net/mb/ios/marketing/images/ukiyo-e/screenshot/ja/screenshot1.jpg" class="app_screenshot" /></div>
-
-
-<p>iPhoneアプリ「<a href="https://itunes.apple.com/us/app/ukiyoe/id835559799?ls=1&amp;mt=8" title="浮世絵壁紙HD">浮世絵壁紙HD</a>」は、世界中で愛される葛飾北斎、歌川広重、東洲斎写楽などの作品を一枚一枚丁寧に、独自手法で鮮やかに加工して収録した無料アプリです。iPhone 6/ 6 Plus/ 5s/ 5c/ 5に対応。iOS 7と iOS 8の視差効果もサポートしています。</p>
-
-<p>古紙独特の皺や染みなども丹念に修復していますので、浮世絵の持つ目の覚めるような紅や藍の色合いを楽しめます。フランスの印象派やゴッホにも多大な影響を与えた名作の数々を、あなたの iPhoneに彩らせ和風にアレンジしましょう。</p>
-
-<p>美人画や水墨画、風景画の他、和風柄物の中でも趣のある作品を収録していますので、お気に入りがきっと見つかります。季節も秋から冬へ移り変わる時期、普段と少し気分を変えたいという方は、このアプリで iPhoneを和風にアレンジしてみてはいかがでしょうか。</p>
-
-<p>下記よりアプリをダウンロードできますので、是非ご利用ください。</p>
-
-<p><a href="https://itunes.apple.com/jp/app/fu-shi-hui-bi-zhihd-300mei/id835559799?mt=8&uo=4" target="itunes_store" style="display:inline-block;overflow:hidden;background:url(https://linkmaker.itunes.apple.com/htmlResources/assets/ja_jp//images/web/linkmaker/badge_appstore-lrg.png) no-repeat;width:135px;height:40px;@media only screen{background-image:url(https://linkmaker.itunes.apple.com/htmlResources/assets/ja_jp//images/web/linkmaker/badge_appstore-lrg.svg);}"></a></p>
-
-<h2>主な機能</h2>
-
-<ol>
-<li>シンプルな操作で壁紙を保存</li>
-<li>15種類以上のカテゴリ表示機能</li>
-<li>壁紙のお気に入り機能</li>
-<li>壁紙のサムネイル一覧表示機能</li>
-<li>壁紙のフルスクリーン表示機能</li>
-<li>壁紙のスライドショー機能</li>
-<li>LINE/ Facebook/ Twitter/ Instagram/ メールでの壁紙共有機能</li>
-<li>壁紙の更新をプッシュ通知でお知らせ</li>
-</ol>
-
-
-<h2>壁紙のサイズ</h2>
-
-<ul>
-<li>iPhone 6: 890 × 1590ピクセル</li>
-<li>iPhone 6 Plus: 1438 × 2592ピクセル</li>
-<li>iPhone 5s/ 5c/ 5: 744 × 1392ピクセル</li>
-</ul>
-
-
-<h2>価格</h2>
-
-<ul>
-<li>無料</li>
-</ul>
-
-
-<h2>対応言語</h2>
-
-<ul>
-<li>日本語</li>
-<li>英語</li>
-<li>ロシア語</li>
-<li>フランス語</li>
-</ul>
-
-
-<h2>著作権に関する注意事項</h2>
-
-<p>浮世絵は著作権フリー（著作権切れ）の作品のみを選別し、iPhone用の壁紙、または作品集として一枚ずつ丹念に加工・修復しています。</p>
-
-<h2>公式Facebookページ</h2>
-
-<ul>
-<li><a href="https://www.facebook.com/dolice.ukiyoe.ja">https://www.facebook.com/dolice.ukiyoe.ja</a></li>
-</ul>
-
-
-<h2>ユーザーの皆様の声</h2>
-
-<p>日本画、浮世絵、歴史が好きでこんな壁紙を探していたので凄く嬉しいです！今まで和風壁紙はありましたがデシタルの壁紙ばかりしか見当たらなかったのですが、リアル浮世絵が壁紙で使えるのがナイス！大正ロマンなのもあるし、そういうの好きな人にはお勧めします！</p>
-
-<hr />
-
-<p>美しい！和のテイストが素晴しい。どれを表に出しても自慢出来ます。むしろ全てを表に出したい。毎日異なる壁紙として楽しんでいます。</p>
-
-<hr />
-
-<p>浮世絵とひとくちに言ってもこんなにいろんな種類やジャンルがあったんだと驚きました
-どれも素敵でクオリティも高い！
-このアプリをきっかけに浮世絵の興味がかなり湧きました</p>
-
-<hr />
-
-<p>無料でこれだけ集まってる浮世絵集は他にはない！千代紙のようなテイストの画像もたくさんあって、壁紙を週替わりで変えていーんじゃないかっていうくらい贅沢なラインナップ。どれを保存しよ〜と嬉しい悩みが堪能できました。眺めてるだけで癒されます。</p>
-
-<hr />
-
-<p>クリアーで綺麗な発色で好きです！！
-浮世絵だけじゃなく、他の和風の壁紙も入っていて、和の壁紙を探している人にはバランスが良いと思います。桜の絵が気に入りました。</p>
-
-<hr />
-
-<p>たくさんの浮世絵がどれも綺麗で楽しいです！操作も簡単だしスムーズで分かりやすいです。
-欲をいえば、それぞれの浮世絵の名前・作者など、作品情報があるとありがたいです。気に入って毎日使っている浮世絵の名前とかは気になるので。</p>
-
-<hr />
-
-<p>タブレットが生まれ変わった。日本画を身近に感じてとても良いです。</p>
-
-<hr />
-
-<p>人だけでなく花、景色などどれも綺麗。無料とは信じ難い程。</p>
-
-<hr />
-
-<p>日本的な美しさがよく出ていると思いました。</p>
-
-<p><a href="https://itunes.apple.com/jp/app/fu-shi-hui-bi-zhihd-300mei/id835559799?mt=8&uo=4" target="itunes_store" style="display:inline-block;overflow:hidden;background:url(https://linkmaker.itunes.apple.com/htmlResources/assets/ja_jp//images/web/linkmaker/badge_appstore-lrg.png) no-repeat;width:135px;height:40px;@media only screen{background-image:url(https://linkmaker.itunes.apple.com/htmlResources/assets/ja_jp//images/web/linkmaker/badge_appstore-lrg.svg);}"></a></p>
-
-<h2>関連記事</h2>
-
-<ul>
-<li><strong><a href="/blog/2014/03/11/ios-beautiful-wallpaper-ja/" title="綺麗な壁紙HD 6000枚以上無料 - iPhone/iPodアプリ">綺麗な壁紙HD 6000枚以上無料 - iPhone/iPodアプリ</a></strong></li>
-<li><strong><a href="/blog/2014/03/11/ios-cool-wallpaper-ja/" title="クールな壁紙HD 6000枚以上無料 - iPhone/iPodアプリ">クールな壁紙HD 6000枚以上無料 - iPhone/iPodアプリ</a></strong></li>
-<li><strong><a href="/blog/2014/03/11/ios-illustration-wallpaper-ja/" title="アニメ・イラスト壁紙 4000枚以上無料 - iPhone/iPodアプリ">アニメ・イラスト壁紙 4000枚以上無料 - iPhone/iPodアプリ</a></strong></li>
-</ul>
-
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-10-24T18:28:00+09:00" pubdate data-updated="true">Oct 24<span>th</span>, 2014</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/download/'>Download</a>, <a class='category' href='/blog/categories/products/'>Products</a>, <a class='category' href='/blog/categories/iphone/'>iPhone</a>
-
-
-</div>
-	
-</div>
-</article>
-
 <nav id="pagenavi">
     
     
@@ -626,7 +796,7 @@
   <div class="information-box-wide">
 <section id="tag-cloud-container">
   <h1 id="tag-cloud-title">Tag Cloud</h1>
-  <p id="tag-cloud"><a href='/blog/categories/actionscript' style='font-size: 102.44343891402715%'>ActionScript(9)</a> <a href='/blog/categories/actionscript3' style='font-size: 101.90045248868778%'>ActionScript3(7)</a> <a href='/blog/categories/ad' style='font-size: 101.08597285067873%'>Ad(4)</a> <a href='/blog/categories/adfurikun' style='font-size: 100.54298642533936%'>Adfurikun(2)</a> <a href='/blog/categories/admob' style='font-size: 102.44343891402715%'>AdMob(9)</a> <a href='/blog/categories/android' style='font-size: 100.54298642533936%'>Android(2)</a> <a href='/blog/categories/animation' style='font-size: 104.61538461538461%'>Animation(17)</a> <a href='/blog/categories/appdelegate' style='font-size: 100.81447963800905%'>AppDelegate(3)</a> <a href='/blog/categories/arc' style='font-size: 100.27149321266968%'>ARC(1)</a> <a href='/blog/categories/avaudioplayer' style='font-size: 101.08597285067873%'>AVAudioPlayer(4)</a> <a href='/blog/categories/avaudiosession' style='font-size: 100.27149321266968%'>AVAudioSession(1)</a> <a href='/blog/categories/avfoundation' style='font-size: 100.81447963800905%'>AVFoundation(3)</a> <a href='/blog/categories/banner' style='font-size: 101.08597285067873%'>Banner(4)</a> <a href='/blog/categories/camera' style='font-size: 101.08597285067873%'>Camera(4)</a> <a href='/blog/categories/cgaffinetransform' style='font-size: 101.08597285067873%'>CGAffineTransform(4)</a> <a href='/blog/categories/cgblendmode' style='font-size: 100.54298642533936%'>CGBlendMode(2)</a> <a href='/blog/categories/cgcontextref' style='font-size: 100.27149321266968%'>CGContextRef(1)</a> <a href='/blog/categories/cgimageref' style='font-size: 100.27149321266968%'>CGImageRef(1)</a> <a href='/blog/categories/classes' style='font-size: 112.48868778280543%'>Classes(46)</a> <a href='/blog/categories/cllocationmanager' style='font-size: 100.27149321266968%'>CLLocationManager(1)</a> <a href='/blog/categories/corelocation' style='font-size: 100.54298642533936%'>CoreLocation(2)</a> <a href='/blog/categories/delegate' style='font-size: 100.81447963800905%'>Delegate(3)</a> <a href='/blog/categories/device' style='font-size: 101.90045248868778%'>Device(7)</a> <a href='/blog/categories/download' style='font-size: 127.6923076923077%'>Download(102)</a> <a href='/blog/categories/facebook' style='font-size: 101.6289592760181%'>Facebook(6)</a> <a href='/blog/categories/foundation' style='font-size: 119.5475113122172%'>Foundation(72)</a> <a href='/blog/categories/framework' style='font-size: 100.54298642533936%'>Framework(2)</a> <a href='/blog/categories/iad' style='font-size: 102.17194570135747%'>iAd(8)</a> <a href='/blog/categories/inapppurchase' style='font-size: 100.54298642533936%'>InAppPurchase(2)</a> <a href='/blog/categories/ios' style='font-size: 103.2579185520362%'>iOS(12)</a> <a href='/blog/categories/ios-7' style='font-size: 104.07239819004525%'>iOS 7(15)</a> <a href='/blog/categories/ios-7-dot-1' style='font-size: 100.81447963800905%'>iOS 7.1(3)</a> <a href='/blog/categories/ios-8' style='font-size: 100.27149321266968%'>iOS 8(1)</a> <a href='/blog/categories/ipad' style='font-size: 101.90045248868778%'>iPad(7)</a> <a href='/blog/categories/iphone' style='font-size: 105.42986425339366%'>iPhone(20)</a> <a href='/blog/categories/iphone-6' style='font-size: 101.08597285067873%'>iPhone 6(4)</a> <a href='/blog/categories/javascript' style='font-size: 100.54298642533936%'>JavaScript(2)</a> <a href='/blog/categories/line' style='font-size: 101.08597285067873%'>LINE(4)</a> <a href='/blog/categories/localize' style='font-size: 100.27149321266968%'>Localize(1)</a> <a href='/blog/categories/mfcomposeviewcontroller' style='font-size: 100.27149321266968%'>MFComposeViewController(1)</a> <a href='/blog/categories/nend' style='font-size: 100.81447963800905%'>Nend(3)</a> <a href='/blog/categories/nsarray' style='font-size: 105.97285067873304%'>NSArray(22)</a> <a href='/blog/categories/nscalendar' style='font-size: 100.81447963800905%'>NSCalendar(3)</a> <a href='/blog/categories/nsdata' style='font-size: 100.54298642533936%'>NSData(2)</a> <a href='/blog/categories/nsdate' style='font-size: 101.90045248868778%'>NSDate(7)</a> <a href='/blog/categories/nsdatecomponents' style='font-size: 100.54298642533936%'>NSDateComponents(2)</a> <a href='/blog/categories/nsdateformatter' style='font-size: 100.54298642533936%'>NSDateFormatter(2)</a> <a href='/blog/categories/nsdictionary' style='font-size: 103.2579185520362%'>NSDictionary(12)</a> <a href='/blog/categories/nsenumerator' style='font-size: 100.27149321266968%'>NSEnumerator(1)</a> <a href='/blog/categories/nsindexset' style='font-size: 100.27149321266968%'>NSIndexSet(1)</a> <a href='/blog/categories/nsinteger' style='font-size: 101.6289592760181%'>NSInteger(6)</a> <a href='/blog/categories/nsmutablearray' style='font-size: 104.34389140271493%'>NSMutableArray(16)</a> <a href='/blog/categories/nsmutabledictionary' style='font-size: 101.35746606334841%'>NSMutableDictionary(5)</a> <a href='/blog/categories/nsmutableorderedset' style='font-size: 101.90045248868778%'>NSMutableOrderedSet(7)</a> <a href='/blog/categories/nsmutablestring' style='font-size: 101.08597285067873%'>NSMutableString(4)</a> <a href='/blog/categories/nsmutableurlrequest' style='font-size: 100.27149321266968%'>NSMutableURLRequest(1)</a> <a href='/blog/categories/nsnotificationcenter' style='font-size: 100.27149321266968%'>NSNotificationCenter(1)</a> <a href='/blog/categories/nsnumber' style='font-size: 100.27149321266968%'>NSNumber(1)</a> <a href='/blog/categories/nsobject' style='font-size: 100.27149321266968%'>NSObject(1)</a> <a href='/blog/categories/nsorderedset' style='font-size: 101.90045248868778%'>NSOrderedSet(7)</a> <a href='/blog/categories/nsrange' style='font-size: 100.54298642533936%'>NSRange(2)</a> <a href='/blog/categories/nsselectorfromstring' style='font-size: 100.27149321266968%'>NSSelectorFromString(1)</a> <a href='/blog/categories/nsset' style='font-size: 101.6289592760181%'>NSSet(6)</a> <a href='/blog/categories/nsstring' style='font-size: 105.15837104072398%'>NSString(19)</a> <a href='/blog/categories/nstimer' style='font-size: 101.08597285067873%'>NSTimer(4)</a> <a href='/blog/categories/nstimezone' style='font-size: 100.27149321266968%'>NSTimeZone(1)</a> <a href='/blog/categories/nsurl' style='font-size: 101.90045248868778%'>NSURL(7)</a> <a href='/blog/categories/nsurlconnection' style='font-size: 100.27149321266968%'>NSURLConnection(1)</a> <a href='/blog/categories/nsurlrequest' style='font-size: 100.54298642533936%'>NSURLRequest(2)</a> <a href='/blog/categories/nsuserdefaults' style='font-size: 101.90045248868778%'>NSUserDefaults(7)</a> <a href='/blog/categories/nsxmlparser' style='font-size: 100.54298642533936%'>NSXMLParser(2)</a> <a href='/blog/categories/objective-c' style='font-size: 160.0%'>Objective-C(221)</a> <a href='/blog/categories/php' style='font-size: 100.27149321266968%'>PHP(1)</a> <a href='/blog/categories/products' style='font-size: 104.61538461538461%'>Products(17)</a> <a href='/blog/categories/quartzcore' style='font-size: 100.81447963800905%'>QuartzCore(3)</a> <a href='/blog/categories/rss' style='font-size: 100.54298642533936%'>RSS(2)</a> <a href='/blog/categories/sample' style='font-size: 113.84615384615384%'>Sample(51)</a> <a href='/blog/categories/screensaver' style='font-size: 102.44343891402715%'>Screensaver(9)</a> <a href='/blog/categories/sdk' style='font-size: 100.54298642533936%'>SDK(2)</a> <a href='/blog/categories/social' style='font-size: 102.71493212669684%'>Social(10)</a> <a href='/blog/categories/storekit' style='font-size: 100.81447963800905%'>StoreKit(3)</a> <a href='/blog/categories/twitter' style='font-size: 101.6289592760181%'>Twitter(6)</a> <a href='/blog/categories/uiaccelerometer' style='font-size: 100.81447963800905%'>UIAccelerometer(3)</a> <a href='/blog/categories/uiactionsheet' style='font-size: 100.27149321266968%'>UIActionSheet(1)</a> <a href='/blog/categories/uiactivityindicator' style='font-size: 100.27149321266968%'>UIActivityIndicator(1)</a> <a href='/blog/categories/uiactivityindicatorview' style='font-size: 100.81447963800905%'>UIActivityIndicatorView(3)</a> <a href='/blog/categories/uiactivityviewcontroller' style='font-size: 100.27149321266968%'>UIActivityViewController(1)</a> <a href='/blog/categories/uialertview' style='font-size: 101.35746606334841%'>UIAlertView(5)</a> <a href='/blog/categories/uiapplication' style='font-size: 101.90045248868778%'>UIApplication(7)</a> <a href='/blog/categories/uibutton' style='font-size: 101.08597285067873%'>UIButton(4)</a> <a href='/blog/categories/uicolor' style='font-size: 100.81447963800905%'>UIColor(3)</a> <a href='/blog/categories/uidatepicker' style='font-size: 101.35746606334841%'>UIDatePicker(5)</a> <a href='/blog/categories/uidevice' style='font-size: 101.6289592760181%'>UIDevice(6)</a> <a href='/blog/categories/uideviceorientation' style='font-size: 100.27149321266968%'>UIDeviceOrientation(1)</a> <a href='/blog/categories/uievent' style='font-size: 101.6289592760181%'>UIEvent(6)</a> <a href='/blog/categories/uiimage' style='font-size: 104.07239819004525%'>UIImage(15)</a> <a href='/blog/categories/uiimagepickercontroller' style='font-size: 101.08597285067873%'>UIImagePickerController(4)</a> <a href='/blog/categories/uiimageview' style='font-size: 103.2579185520362%'>UIImageView(12)</a> <a href='/blog/categories/uikit' style='font-size: 115.74660633484163%'>UIKit(58)</a> <a href='/blog/categories/uilabel' style='font-size: 101.90045248868778%'>UILabel(7)</a> <a href='/blog/categories/uinavigationbar' style='font-size: 101.08597285067873%'>UINavigationBar(4)</a> <a href='/blog/categories/uinavigationitem' style='font-size: 100.27149321266968%'>UINavigationItem(1)</a> <a href='/blog/categories/uipasteboard' style='font-size: 101.08597285067873%'>UIPasteboard(4)</a> <a href='/blog/categories/uiscreen' style='font-size: 100.27149321266968%'>UIScreen(1)</a> <a href='/blog/categories/uiscrollbar' style='font-size: 100.27149321266968%'>UIScrollBar(1)</a> <a href='/blog/categories/uiscrollview' style='font-size: 100.27149321266968%'>UIScrollView(1)</a> <a href='/blog/categories/uislider' style='font-size: 100.81447963800905%'>UISlider(3)</a> <a href='/blog/categories/uistoryboardsegue' style='font-size: 100.81447963800905%'>UIStoryboardSegue(3)</a> <a href='/blog/categories/uiswitch' style='font-size: 100.27149321266968%'>UISwitch(1)</a> <a href='/blog/categories/uitabbar' style='font-size: 100.81447963800905%'>UITabBar(3)</a> <a href='/blog/categories/uitableview' style='font-size: 100.81447963800905%'>UITableView(3)</a> <a href='/blog/categories/uitextfield' style='font-size: 100.54298642533936%'>UITextField(2)</a> <a href='/blog/categories/uiview' style='font-size: 102.98642533936652%'>UIView(11)</a> <a href='/blog/categories/uiviewanimationtransition' style='font-size: 100.27149321266968%'>UIViewAnimationTransition(1)</a> <a href='/blog/categories/uiviewcontroller' style='font-size: 101.08597285067873%'>UIViewController(4)</a> <a href='/blog/categories/uiwebview' style='font-size: 101.35746606334841%'>UIWebView(5)</a> <a href='/blog/categories/xcode' style='font-size: 113.03167420814479%'>Xcode(48)</a> <a href='/blog/categories/xcode-5' style='font-size: 102.17194570135747%'>Xcode 5(8)</a> <a href='/blog/categories/xcode-5-dot-1' style='font-size: 100.54298642533936%'>Xcode 5.1(2)</a> </p>
+  <p id="tag-cloud"><a href='/blog/categories/actionscript' style='font-size: 102.44343891402715%'>ActionScript(9)</a> <a href='/blog/categories/actionscript3' style='font-size: 101.90045248868778%'>ActionScript3(7)</a> <a href='/blog/categories/ad' style='font-size: 101.08597285067873%'>Ad(4)</a> <a href='/blog/categories/adfurikun' style='font-size: 100.54298642533936%'>Adfurikun(2)</a> <a href='/blog/categories/admob' style='font-size: 102.71493212669684%'>AdMob(10)</a> <a href='/blog/categories/android' style='font-size: 100.81447963800905%'>Android(3)</a> <a href='/blog/categories/animation' style='font-size: 104.61538461538461%'>Animation(17)</a> <a href='/blog/categories/appdelegate' style='font-size: 100.81447963800905%'>AppDelegate(3)</a> <a href='/blog/categories/arc' style='font-size: 100.27149321266968%'>ARC(1)</a> <a href='/blog/categories/avaudioplayer' style='font-size: 101.08597285067873%'>AVAudioPlayer(4)</a> <a href='/blog/categories/avaudiosession' style='font-size: 100.27149321266968%'>AVAudioSession(1)</a> <a href='/blog/categories/avfoundation' style='font-size: 100.81447963800905%'>AVFoundation(3)</a> <a href='/blog/categories/banner' style='font-size: 101.08597285067873%'>Banner(4)</a> <a href='/blog/categories/camera' style='font-size: 101.08597285067873%'>Camera(4)</a> <a href='/blog/categories/cgaffinetransform' style='font-size: 101.08597285067873%'>CGAffineTransform(4)</a> <a href='/blog/categories/cgblendmode' style='font-size: 100.54298642533936%'>CGBlendMode(2)</a> <a href='/blog/categories/cgcontextref' style='font-size: 100.27149321266968%'>CGContextRef(1)</a> <a href='/blog/categories/cgimageref' style='font-size: 100.27149321266968%'>CGImageRef(1)</a> <a href='/blog/categories/classes' style='font-size: 112.48868778280543%'>Classes(46)</a> <a href='/blog/categories/cllocationmanager' style='font-size: 100.27149321266968%'>CLLocationManager(1)</a> <a href='/blog/categories/corelocation' style='font-size: 100.54298642533936%'>CoreLocation(2)</a> <a href='/blog/categories/delegate' style='font-size: 100.81447963800905%'>Delegate(3)</a> <a href='/blog/categories/device' style='font-size: 101.90045248868778%'>Device(7)</a> <a href='/blog/categories/download' style='font-size: 127.6923076923077%'>Download(102)</a> <a href='/blog/categories/facebook' style='font-size: 101.6289592760181%'>Facebook(6)</a> <a href='/blog/categories/foundation' style='font-size: 119.5475113122172%'>Foundation(72)</a> <a href='/blog/categories/framework' style='font-size: 100.54298642533936%'>Framework(2)</a> <a href='/blog/categories/iad' style='font-size: 102.17194570135747%'>iAd(8)</a> <a href='/blog/categories/inapppurchase' style='font-size: 100.54298642533936%'>InAppPurchase(2)</a> <a href='/blog/categories/ios' style='font-size: 103.2579185520362%'>iOS(12)</a> <a href='/blog/categories/ios-7' style='font-size: 104.07239819004525%'>iOS 7(15)</a> <a href='/blog/categories/ios-7-dot-1' style='font-size: 100.81447963800905%'>iOS 7.1(3)</a> <a href='/blog/categories/ios-8' style='font-size: 100.27149321266968%'>iOS 8(1)</a> <a href='/blog/categories/ipad' style='font-size: 101.90045248868778%'>iPad(7)</a> <a href='/blog/categories/iphone' style='font-size: 105.42986425339366%'>iPhone(20)</a> <a href='/blog/categories/iphone-6' style='font-size: 101.08597285067873%'>iPhone 6(4)</a> <a href='/blog/categories/java' style='font-size: 100.27149321266968%'>Java(1)</a> <a href='/blog/categories/javascript' style='font-size: 100.54298642533936%'>JavaScript(2)</a> <a href='/blog/categories/line' style='font-size: 101.08597285067873%'>LINE(4)</a> <a href='/blog/categories/localize' style='font-size: 100.27149321266968%'>Localize(1)</a> <a href='/blog/categories/mfcomposeviewcontroller' style='font-size: 100.27149321266968%'>MFComposeViewController(1)</a> <a href='/blog/categories/nend' style='font-size: 100.81447963800905%'>Nend(3)</a> <a href='/blog/categories/nsarray' style='font-size: 105.97285067873304%'>NSArray(22)</a> <a href='/blog/categories/nscalendar' style='font-size: 100.81447963800905%'>NSCalendar(3)</a> <a href='/blog/categories/nsdata' style='font-size: 100.54298642533936%'>NSData(2)</a> <a href='/blog/categories/nsdate' style='font-size: 101.90045248868778%'>NSDate(7)</a> <a href='/blog/categories/nsdatecomponents' style='font-size: 100.54298642533936%'>NSDateComponents(2)</a> <a href='/blog/categories/nsdateformatter' style='font-size: 100.54298642533936%'>NSDateFormatter(2)</a> <a href='/blog/categories/nsdictionary' style='font-size: 103.2579185520362%'>NSDictionary(12)</a> <a href='/blog/categories/nsenumerator' style='font-size: 100.27149321266968%'>NSEnumerator(1)</a> <a href='/blog/categories/nsindexset' style='font-size: 100.27149321266968%'>NSIndexSet(1)</a> <a href='/blog/categories/nsinteger' style='font-size: 101.6289592760181%'>NSInteger(6)</a> <a href='/blog/categories/nsmutablearray' style='font-size: 104.34389140271493%'>NSMutableArray(16)</a> <a href='/blog/categories/nsmutabledictionary' style='font-size: 101.35746606334841%'>NSMutableDictionary(5)</a> <a href='/blog/categories/nsmutableorderedset' style='font-size: 101.90045248868778%'>NSMutableOrderedSet(7)</a> <a href='/blog/categories/nsmutablestring' style='font-size: 101.08597285067873%'>NSMutableString(4)</a> <a href='/blog/categories/nsmutableurlrequest' style='font-size: 100.27149321266968%'>NSMutableURLRequest(1)</a> <a href='/blog/categories/nsnotificationcenter' style='font-size: 100.27149321266968%'>NSNotificationCenter(1)</a> <a href='/blog/categories/nsnumber' style='font-size: 100.27149321266968%'>NSNumber(1)</a> <a href='/blog/categories/nsobject' style='font-size: 100.27149321266968%'>NSObject(1)</a> <a href='/blog/categories/nsorderedset' style='font-size: 101.90045248868778%'>NSOrderedSet(7)</a> <a href='/blog/categories/nsrange' style='font-size: 100.54298642533936%'>NSRange(2)</a> <a href='/blog/categories/nsselectorfromstring' style='font-size: 100.27149321266968%'>NSSelectorFromString(1)</a> <a href='/blog/categories/nsset' style='font-size: 101.6289592760181%'>NSSet(6)</a> <a href='/blog/categories/nsstring' style='font-size: 105.15837104072398%'>NSString(19)</a> <a href='/blog/categories/nstimer' style='font-size: 101.08597285067873%'>NSTimer(4)</a> <a href='/blog/categories/nstimezone' style='font-size: 100.27149321266968%'>NSTimeZone(1)</a> <a href='/blog/categories/nsurl' style='font-size: 101.90045248868778%'>NSURL(7)</a> <a href='/blog/categories/nsurlconnection' style='font-size: 100.27149321266968%'>NSURLConnection(1)</a> <a href='/blog/categories/nsurlrequest' style='font-size: 100.54298642533936%'>NSURLRequest(2)</a> <a href='/blog/categories/nsuserdefaults' style='font-size: 101.90045248868778%'>NSUserDefaults(7)</a> <a href='/blog/categories/nsxmlparser' style='font-size: 100.54298642533936%'>NSXMLParser(2)</a> <a href='/blog/categories/objective-c' style='font-size: 160.0%'>Objective-C(221)</a> <a href='/blog/categories/php' style='font-size: 100.27149321266968%'>PHP(1)</a> <a href='/blog/categories/products' style='font-size: 104.61538461538461%'>Products(17)</a> <a href='/blog/categories/quartzcore' style='font-size: 100.81447963800905%'>QuartzCore(3)</a> <a href='/blog/categories/rss' style='font-size: 100.54298642533936%'>RSS(2)</a> <a href='/blog/categories/sample' style='font-size: 113.84615384615384%'>Sample(51)</a> <a href='/blog/categories/screensaver' style='font-size: 102.44343891402715%'>Screensaver(9)</a> <a href='/blog/categories/sdk' style='font-size: 100.54298642533936%'>SDK(2)</a> <a href='/blog/categories/social' style='font-size: 102.71493212669684%'>Social(10)</a> <a href='/blog/categories/storekit' style='font-size: 100.81447963800905%'>StoreKit(3)</a> <a href='/blog/categories/twitter' style='font-size: 101.6289592760181%'>Twitter(6)</a> <a href='/blog/categories/uiaccelerometer' style='font-size: 100.81447963800905%'>UIAccelerometer(3)</a> <a href='/blog/categories/uiactionsheet' style='font-size: 100.27149321266968%'>UIActionSheet(1)</a> <a href='/blog/categories/uiactivityindicator' style='font-size: 100.27149321266968%'>UIActivityIndicator(1)</a> <a href='/blog/categories/uiactivityindicatorview' style='font-size: 100.81447963800905%'>UIActivityIndicatorView(3)</a> <a href='/blog/categories/uiactivityviewcontroller' style='font-size: 100.27149321266968%'>UIActivityViewController(1)</a> <a href='/blog/categories/uialertview' style='font-size: 101.35746606334841%'>UIAlertView(5)</a> <a href='/blog/categories/uiapplication' style='font-size: 101.90045248868778%'>UIApplication(7)</a> <a href='/blog/categories/uibutton' style='font-size: 101.08597285067873%'>UIButton(4)</a> <a href='/blog/categories/uicolor' style='font-size: 100.81447963800905%'>UIColor(3)</a> <a href='/blog/categories/uidatepicker' style='font-size: 101.35746606334841%'>UIDatePicker(5)</a> <a href='/blog/categories/uidevice' style='font-size: 101.6289592760181%'>UIDevice(6)</a> <a href='/blog/categories/uideviceorientation' style='font-size: 100.27149321266968%'>UIDeviceOrientation(1)</a> <a href='/blog/categories/uievent' style='font-size: 101.6289592760181%'>UIEvent(6)</a> <a href='/blog/categories/uiimage' style='font-size: 104.07239819004525%'>UIImage(15)</a> <a href='/blog/categories/uiimagepickercontroller' style='font-size: 101.08597285067873%'>UIImagePickerController(4)</a> <a href='/blog/categories/uiimageview' style='font-size: 103.2579185520362%'>UIImageView(12)</a> <a href='/blog/categories/uikit' style='font-size: 115.74660633484163%'>UIKit(58)</a> <a href='/blog/categories/uilabel' style='font-size: 101.90045248868778%'>UILabel(7)</a> <a href='/blog/categories/uinavigationbar' style='font-size: 101.08597285067873%'>UINavigationBar(4)</a> <a href='/blog/categories/uinavigationitem' style='font-size: 100.27149321266968%'>UINavigationItem(1)</a> <a href='/blog/categories/uipasteboard' style='font-size: 101.08597285067873%'>UIPasteboard(4)</a> <a href='/blog/categories/uiscreen' style='font-size: 100.27149321266968%'>UIScreen(1)</a> <a href='/blog/categories/uiscrollbar' style='font-size: 100.27149321266968%'>UIScrollBar(1)</a> <a href='/blog/categories/uiscrollview' style='font-size: 100.27149321266968%'>UIScrollView(1)</a> <a href='/blog/categories/uislider' style='font-size: 100.81447963800905%'>UISlider(3)</a> <a href='/blog/categories/uistoryboardsegue' style='font-size: 100.81447963800905%'>UIStoryboardSegue(3)</a> <a href='/blog/categories/uiswitch' style='font-size: 100.27149321266968%'>UISwitch(1)</a> <a href='/blog/categories/uitabbar' style='font-size: 100.81447963800905%'>UITabBar(3)</a> <a href='/blog/categories/uitableview' style='font-size: 100.81447963800905%'>UITableView(3)</a> <a href='/blog/categories/uitextfield' style='font-size: 100.54298642533936%'>UITextField(2)</a> <a href='/blog/categories/uiview' style='font-size: 102.98642533936652%'>UIView(11)</a> <a href='/blog/categories/uiviewanimationtransition' style='font-size: 100.27149321266968%'>UIViewAnimationTransition(1)</a> <a href='/blog/categories/uiviewcontroller' style='font-size: 101.08597285067873%'>UIViewController(4)</a> <a href='/blog/categories/uiwebview' style='font-size: 101.35746606334841%'>UIWebView(5)</a> <a href='/blog/categories/xcode' style='font-size: 113.03167420814479%'>Xcode(48)</a> <a href='/blog/categories/xcode-5' style='font-size: 102.17194570135747%'>Xcode 5(8)</a> <a href='/blog/categories/xcode-5-dot-1' style='font-size: 100.54298642533936%'>Xcode 5.1(2)</a> </p>
 </section>
 
   </div>
@@ -634,6 +804,10 @@
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/05/04/android-admob-interstitial-ad/">Androidアプリへの AdMob インタースティシャル広告導入</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2015/05/03/android-beautiful-wallpapers-ja/">綺麗な高画質壁紙 - Androidアプリ</a>
@@ -677,10 +851,6 @@
     
       <li class="post">
         <a href="/blog/2014/07/30/admob-optimization/">AdMobの広告収益をアップする5つのポイント</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/05/22/ios-law-of-attraction/">iPhoneアプリ「望みが叶う！引き寄せの法則アプリ」リリース</a>
       </li>
     
   </ul>

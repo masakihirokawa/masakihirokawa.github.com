@@ -4,7 +4,7 @@
   <title><![CDATA[Dolice Lab]]></title>
   <link href="http://lab.dolice.net/atom.xml" rel="self"/>
   <link href="http://lab.dolice.net/"/>
-  <updated>2015-05-03T12:58:47+09:00</updated>
+  <updated>2015-05-04T11:04:55+09:00</updated>
   <id>http://lab.dolice.net/</id>
   <author>
     <name><![CDATA[Masaki Hirokawa]]></name>
@@ -12,6 +12,298 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Androidアプリへの AdMob インタースティシャル広告導入]]></title>
+    <link href="http://lab.dolice.net/blog/2015/05/04/android-admob-interstitial-ad/"/>
+    <updated>2015-05-04T10:13:00+09:00</updated>
+    <id>http://lab.dolice.net/blog/2015/05/04/android-admob-interstitial-ad</id>
+    <content type="html"><![CDATA[<p>Androidアプリに <a href="https://apps.admob.com/" title="AdMob">AdMob</a> のインタースティシャル広告を導入するサンプルを作成しました。</p>
+
+<p>下記のサンプルでは、アプリがスリープ状態から復帰した際に全面広告が表示されます。</p>
+
+<h2>サンプルダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/android-admob-interstitial-ad">https://github.com/masakihirokawa/android-admob-interstitial-ad</a></li>
+</ul>
+
+
+<h2>公式ドキュメント</h2>
+
+<ul>
+<li><a href="https://developers.google.com/mobile-ads-sdk/docs/admob/android/interstitial?hl=ja">https://developers.google.com/mobile-ads-sdk/docs/admob/android/interstitial?hl=ja</a></li>
+</ul>
+
+
+<h2>導入手順</h2>
+
+<h3>1. Google Play Services SDK の読み込み</h3>
+
+<p><em>build.gradle</em> から <strong>Google Play Services SDK</strong> を読み込みます。バージョンは最新版を指定してください。</p>
+
+<blockquote><p>dependencies {</p>
+
+<pre><code>// 省略
+compile 'com.google.android.gms:play-services:7.3.0'
+</code></pre>
+
+<p>}</p></blockquote>
+
+<h3>2. AdMob 広告ユニットID の指定</h3>
+
+<p><em>AdMobIntersBanner.java</em> の14行目で AdMob インタースティシャル広告のユニットID を指定します。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">INTERS_AD_UNIT_ID</span> <span class="o">=</span> <span class="s">&quot;Your AdMob Ad unit ID&quot;</span><span class="o">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>3. デバッグモードの指定</h3>
+
+<p><em>AdMobIntersBanner.java</em> の15行目でデバッグモードをオンにしてください。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">boolean</span> <span class="n">DEBUG_MODE</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>4. テスト端末のデバイスID を指定</h3>
+
+<p><em>AdMobIntersBanner.java</em> の17行目でテスト端末のデバイスID を指定します。</p>
+
+<p>デバイスIDは、実機で一度広告を表示すると <em>LogCat</em> に表示されます。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span><span class="o">[]</span> <span class="n">DEBUG_DEVICE_ID</span> <span class="o">=</span> <span class="o">{</span>
+</span><span class='line'>    <span class="s">&quot;Your test device ID&quot;</span>
+</span><span class='line'><span class="o">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>5. 実装</h3>
+
+<p>下記に実装サンプルを記載しますので、参考になれば幸いです。</p>
+
+<h2>サンプルソースコード</h2>
+
+<h3>MainActivity.java</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kn">package</span> <span class="n">net</span><span class="o">.</span><span class="na">dolice</span><span class="o">.</span><span class="na">admobinterstitialadex</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kn">import</span> <span class="nn">android.app.Activity</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">android.os.Bundle</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kn">import</span> <span class="nn">net.dolice.ad.AdMobIntersBanner</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MainActivity</span> <span class="kd">extends</span> <span class="n">Activity</span> <span class="o">{</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="n">AdMobIntersBanner</span> <span class="n">mIntersAd</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nd">@Override</span>
+</span><span class='line'>    <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">onCreate</span><span class="o">(</span><span class="n">Bundle</span> <span class="n">savedInstanceState</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="kd">super</span><span class="o">.</span><span class="na">onCreate</span><span class="o">(</span><span class="n">savedInstanceState</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">setContentView</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">layout</span><span class="o">.</span><span class="na">activity_main</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// 全面広告の読み込み</span>
+</span><span class='line'>        <span class="n">preloadInterstitialAd</span><span class="o">();</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 全面広告の読み込み</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="kt">void</span> <span class="nf">preloadInterstitialAd</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">mIntersAd</span> <span class="o">=</span> <span class="k">new</span> <span class="n">AdMobIntersBanner</span><span class="o">();</span>
+</span><span class='line'>        <span class="n">mIntersAd</span><span class="o">.</span><span class="na">preload</span><span class="o">(</span><span class="k">this</span><span class="o">);</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 全面広告が読み込み完了していれば表示</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="kt">void</span> <span class="nf">showInterstitialAd</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="c1">// 全面広告表示</span>
+</span><span class='line'>        <span class="k">if</span> <span class="o">(</span><span class="n">mIntersAd</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>            <span class="n">mIntersAd</span><span class="o">.</span><span class="na">show</span><span class="o">();</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nd">@Override</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onRestart</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="kd">super</span><span class="o">.</span><span class="na">onRestart</span><span class="o">();</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// 全面広告が読み込み完了していれば表示</span>
+</span><span class='line'>        <span class="n">showInterstitialAd</span><span class="o">();</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>AdMobIntersBanner.java</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kn">package</span> <span class="n">net</span><span class="o">.</span><span class="na">dolice</span><span class="o">.</span><span class="na">ad</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kn">import</span> <span class="nn">android.content.Context</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kn">import</span> <span class="nn">com.google.android.gms.ads.AdRequest</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">com.google.android.gms.ads.InterstitialAd</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">/**</span>
+</span><span class='line'><span class="cm"> * Created by Dolice on 15/03/19.</span>
+</span><span class='line'><span class="cm"> */</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">AdMobIntersBanner</span> <span class="o">{</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="n">InterstitialAd</span> <span class="n">mIntersAd</span><span class="o">;</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">INTERS_AD_UNIT_ID</span> <span class="o">=</span> <span class="s">&quot;Your AdMob Ad unit ID&quot;</span><span class="o">;</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">boolean</span> <span class="n">DEBUG_MODE</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span><span class="o">[]</span> <span class="n">DEBUG_DEVICE_ID</span> <span class="o">=</span> <span class="o">{</span>
+</span><span class='line'>            <span class="s">&quot;Your test device ID&quot;</span>
+</span><span class='line'>    <span class="o">};</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="cm">/**</span>
+</span><span class='line'><span class="cm">     * 全面広告のプリロード</span>
+</span><span class='line'><span class="cm">     * @param context</span>
+</span><span class='line'><span class="cm">     */</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">preload</span><span class="o">(</span><span class="n">Context</span> <span class="n">context</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">mIntersAd</span> <span class="o">=</span> <span class="k">new</span> <span class="n">InterstitialAd</span><span class="o">(</span><span class="n">context</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">mIntersAd</span><span class="o">.</span><span class="na">setAdUnitId</span><span class="o">(</span><span class="n">INTERS_AD_UNIT_ID</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">mIntersAd</span><span class="o">.</span><span class="na">loadAd</span><span class="o">(</span><span class="n">getAdRequest</span><span class="o">());</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="cm">/**</span>
+</span><span class='line'><span class="cm">     * 全面広告の表示</span>
+</span><span class='line'><span class="cm">     */</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">show</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">if</span> <span class="o">(</span><span class="n">mIntersAd</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>            <span class="k">return</span><span class="o">;</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">if</span> <span class="o">(</span><span class="n">mIntersAd</span><span class="o">.</span><span class="na">isLoaded</span><span class="o">())</span> <span class="o">{</span>
+</span><span class='line'>            <span class="n">mIntersAd</span><span class="o">.</span><span class="na">show</span><span class="o">();</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="cm">/**</span>
+</span><span class='line'><span class="cm">     * 広告リクエストの取得</span>
+</span><span class='line'><span class="cm">     */</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="n">AdRequest</span> <span class="nf">getAdRequest</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">AdRequest</span> <span class="n">adRequest</span><span class="o">;</span>
+</span><span class='line'>        <span class="k">if</span> <span class="o">(</span><span class="n">DEBUG_MODE</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>            <span class="n">adRequest</span> <span class="o">=</span> <span class="k">new</span> <span class="n">AdRequest</span><span class="o">.</span><span class="na">Builder</span><span class="o">()</span>
+</span><span class='line'>                    <span class="o">.</span><span class="na">addTestDevice</span><span class="o">(</span><span class="n">AdRequest</span><span class="o">.</span><span class="na">DEVICE_ID_EMULATOR</span><span class="o">)</span>
+</span><span class='line'>                    <span class="c1">//.addTestDevice(DEBUG_DEVICE_ID[0])</span>
+</span><span class='line'>                    <span class="o">.</span><span class="na">build</span><span class="o">();</span>
+</span><span class='line'>        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+</span><span class='line'>            <span class="n">adRequest</span> <span class="o">=</span> <span class="k">new</span> <span class="n">AdRequest</span><span class="o">.</span><span class="na">Builder</span><span class="o">().</span><span class="na">build</span><span class="o">();</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">return</span> <span class="n">adRequest</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>以上で AdMob インタースティシャル広告の導入は完了になります。</p>
+
+<p><a href="https://developers.google.com/mobile-ads-sdk/docs/admob/android/interstitial?hl=ja" title="公式ドキュメント">公式ドキュメント</a>にも良質なサンプルが掲載されていますので、そちらも参考にされると良いかもしれません。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[綺麗な高画質壁紙 - Androidアプリ]]></title>
@@ -1404,193 +1696,6 @@ I find the app incredibly easy and enjoyable to browse through. I really like al
 <ul>
 <li><strong><a href="http://lab.dolice.net/blog/2014/03/11/ios-beautiful-wallpaper-en/" title="Beautiful Wallpapers HD 15,000+ sheets - Free iPhone/iPod app">Beautiful Wallpapers HD 15,000+ sheets - Free iPhone/iPod app</a></strong></li>
 <li><strong><a href="http://lab.dolice.net/blog/2014/03/11/ios-cool-wallpaper-en/" title="Cool Wallpapers HD 15,000+ sheets - Free iPhone/iPod app">Cool Wallpapers HD 15,000+ sheets - Free iPhone/iPod app</a></strong></li>
-</ul>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[アニメ・イラスト壁紙 12,000枚以上無料 - iPhone/iPodアプリ]]></title>
-    <link href="http://lab.dolice.net/blog/2014/03/11/ios-illustration-wallpaper-ja/"/>
-    <updated>2014-03-11T14:00:00+09:00</updated>
-    <id>http://lab.dolice.net/blog/2014/03/11/ios-illustration-wallpaper-ja</id>
-    <content type="html"><![CDATA[<div class="app_screenshot_container"><img src="http://dolice.net/mb/ios/marketing/images/illustration_wallpapers/screenshot/ja/screenshot6.jpg" class="app_screenshot" /></div>
-
-
-<p>iPhone 6/6 Plus/5s/5c/5に対応したアニメやゲームなどのイラスト壁紙を 12,000枚以上、無料でダウンロードできます。模様やタイポグラフィ、アート性の高い手描きイラストも多数揃えています。</p>
-
-<p>壁紙は毎日追加・更新されます。高画質な壁紙を1枚ずつ厳選しており、iOS 7と iOS 8の視差効果もサポートしています。</p>
-
-<p><a href="https://itunes.apple.com/jp/app/irasuto-bi-zhihd-800+-wu-liao/id815371940?mt=8&uo=4" target="itunes_store" style="display:inline-block;overflow:hidden;background:url(https://linkmaker.itunes.apple.com/htmlResources/assets/ja_jp//images/web/linkmaker/badge_appstore-lrg.png) no-repeat;width:135px;height:40px;@media only screen{background-image:url(https://linkmaker.itunes.apple.com/htmlResources/assets/ja_jp//images/web/linkmaker/badge_appstore-lrg.svg);}"></a></p>
-
-<h2>特徴</h2>
-
-<p>他の壁紙アプリとの大きな違いは、壁紙の品質を重視し 1枚ずつ加工を施しながら手作業で更新している点です。好みは人それぞれかもしれませんが、使いたくなる壁紙がより多く見つかるよう配慮しています。</p>
-
-<div class="app_screenshot_container mt12"><img src="http://dolice.net/mb/ios/marketing/images/illustration_wallpapers/screenshot/ja/screenshot1.jpg" class="app_screenshot" /></div>
-
-
-<h2>シンプルかつ豊富な機能</h2>
-
-<p>簡単操作でお気に入りの壁紙を保存し、ホーム画面とロック画面に設定できます。</p>
-
-<p>最新の壁紙や人気の壁紙も一覧でき、「アニメ」「ゲーム」「アート」「3D」等のカテゴリも12種類以上ご用意しています。</p>
-
-<div class="app_screenshot_container mt12"><img src="http://dolice.net/mb/ios/marketing/images/illustration_wallpapers/screenshot/ja/screenshot2.jpg" class="app_screenshot" /></div>
-
-
-<h2>お気に入り機能</h2>
-
-<p>壁紙をお気に入りに追加することで、いつでも好きな壁紙を一覧できます。</p>
-
-<div class="app_screenshot_container mt12"><img src="http://dolice.net/mb/ios/marketing/images/illustration_wallpapers/screenshot/ja/screenshot4.jpg" class="app_screenshot" /></div>
-
-
-<h2>見易いサムネイル機能</h2>
-
-<p>お気に入りの壁紙を見つけやすいよう、サムネイルを見易く作成しました。</p>
-
-<p>壁紙のスライドショーやフルスクリーン表示等のギャラリー機能も充実しています。</p>
-
-<div class="app_screenshot_container mt12"><img src="http://dolice.net/mb/ios/marketing/images/illustration_wallpapers/screenshot/ja/screenshot3.jpg" class="app_screenshot" /></div>
-
-
-<h2>壁紙の共有機能</h2>
-
-<p>Facebook、Twitter、LINE、Instagram、メールで壁紙を共有するプレゼント機能も搭載しています。</p>
-
-<div class="app_screenshot_container mt12"><img src="http://dolice.net/mb/ios/marketing/images/illustration_wallpapers/screenshot/ja/screenshot5.jpg" class="app_screenshot" /></div>
-
-
-<h2>いつもの画面を彩りましょう</h2>
-
-<p>iPhone用の壁紙や LINEのトーク背景をお探しの方は、是非このアプリをお試しください。綺麗なイラスト壁紙を厳選していますので、お気に入りがきっと見つかります。</p>
-
-<p>このアプリでホーム画面とロック画面を彩りましょう。</p>
-
-<h2>主な収録作品</h2>
-
-<h3>アニメ</h3>
-
-<ul>
-<li>ドラゴンボール</li>
-<li>ONE PIECE -ワンピース-</li>
-<li>NARUTO -ナルト-</li>
-<li>銀魂</li>
-<li>黒子のバスケ</li>
-<li>進撃の巨人</li>
-<li>東京喰種トーキョーグール</li>
-<li>新世紀エヴァンゲリオン</li>
-<li>けいおん!</li>
-<li>ラブライブ！</li>
-<li>アイドルマスター</li>
-<li>夜ノヤッターマン</li>
-</ul>
-
-
-<h3>ゲーム</h3>
-
-<ul>
-<li>ソードアート・オンライン</li>
-<li>艦隊これくしょん〜艦これ〜</li>
-<li>東方Project</li>
-<li>ファイナルファンタジーシリーズ</li>
-<li>デビルメイクライシリーズ</li>
-<li>アサシン クリード</li>
-</ul>
-
-
-<h3>海外コミック</h3>
-
-<ul>
-<li>スーパーマン</li>
-<li>バットマン</li>
-<li>アイアンマン</li>
-<li>スパイダーマン</li>
-<li>ミュータント・タートルズ</li>
-</ul>
-
-
-<h3>その他</h3>
-
-<ul>
-<li>初音ミク（ボーカロイド）</li>
-</ul>
-
-
-<h2>主な機能</h2>
-
-<ol>
-<li>シンプルな操作で壁紙を保存</li>
-<li>壁紙は随時追加・更新</li>
-<li>最新や人気の壁紙の一覧機能</li>
-<li>12種類以上のカテゴリ表示機能</li>
-<li>壁紙のお気に入り機能</li>
-<li>壁紙のサムネイル一覧表示機能</li>
-<li>壁紙のフルスクリーン表示機能</li>
-<li>壁紙のスライドショー機能</li>
-<li>LINE / Facebook / Twitter / Instagram / メールでの壁紙共有機能</li>
-<li>壁紙の更新をプッシュ通知でお知らせ</li>
-</ol>
-
-
-<h2>壁紙のサイズ</h2>
-
-<ul>
-<li>iPhone 6: 890 × 1590ピクセル</li>
-<li>iPhone 6 Plus: 1438 × 2592ピクセル</li>
-<li>iPhone 5s/5c/5: 744 × 1392ピクセル</li>
-</ul>
-
-
-<h2>価格</h2>
-
-<ul>
-<li>無料</li>
-</ul>
-
-
-<h2>対応言語</h2>
-
-<ul>
-<li>日本語</li>
-<li>英語</li>
-<li>ロシア語</li>
-<li>フランス語</li>
-</ul>
-
-
-<h2>著作権に関する注意事項</h2>
-
-<p>当アプリは壁紙のダウンロードアプリです。壁紙の著作権はコンテンツの提供元に属します。</p>
-
-<h2>公式Facebookページ</h2>
-
-<ul>
-<li><a href="https://www.facebook.com/dolice.anime.wallpapers.ja">https://www.facebook.com/dolice.anime.wallpapers.ja</a></li>
-</ul>
-
-
-<h2>ユーザーの皆様の声</h2>
-
-<p>フリックで壁紙をめくり、気に入ったものがあればタップひとつでカメラロールに保存できる。操作が簡単なところがイイ。無料版で十分かな？</p>
-
-<hr />
-
-<p>見ていて楽しいイラストが沢山あって気に入っています。</p>
-
-<hr />
-
-<p>お洒落なものばかりで、どの壁紙にしようか迷っちゃいます(<sup>_<sup>)</sup></sup></p>
-
-<p><a href="https://itunes.apple.com/jp/app/irasuto-bi-zhihd-800+-wu-liao/id815371940?mt=8&uo=4" target="itunes_store" style="display:inline-block;overflow:hidden;background:url(https://linkmaker.itunes.apple.com/htmlResources/assets/ja_jp//images/web/linkmaker/badge_appstore-lrg.png) no-repeat;width:135px;height:40px;@media only screen{background-image:url(https://linkmaker.itunes.apple.com/htmlResources/assets/ja_jp//images/web/linkmaker/badge_appstore-lrg.svg);}"></a></p>
-
-<h2>関連記事</h2>
-
-<ul>
-<li><strong><a href="http://lab.dolice.net/blog/2014/03/11/ios-beautiful-wallpaper-ja/" title="綺麗な壁紙HD 15,000枚以上無料 - iPhone/iPodアプリ">綺麗な壁紙HD 15,000枚以上無料 - iPhone/iPodアプリ</a></strong></li>
-<li><strong><a href="http://lab.dolice.net/blog/2014/03/11/ios-cool-wallpaper-ja/" title="クールな壁紙HD 15,000枚以上無料 - iPhone/iPodアプリ">クールな壁紙HD 15,000枚以上無料 - iPhone/iPodアプリ</a></strong></li>
-<li><strong><a href="http://lab.dolice.net/blog/2014/10/24/ios-ukiyo-e-ja/" title="浮世絵壁紙HD 300枚無料 - iPhone/iPodアプリ">浮世絵壁紙HD 300枚無料 - iPhone/iPodアプリ</a></strong></li>
 </ul>
 
 ]]></content>
