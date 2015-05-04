@@ -3,7 +3,7 @@
   <title><![CDATA[Category: AdMob | Dolice Lab]]></title>
   <link href="http://lab.dolice.net/blog/categories/admob/atom.xml" rel="self"/>
   <link href="http://lab.dolice.net/"/>
-  <updated>2015-05-04T13:52:13+09:00</updated>
+  <updated>2015-05-04T21:41:29+09:00</updated>
   <id>http://lab.dolice.net/</id>
   <author>
     <name><![CDATA[Masaki Hirokawa]]></name>
@@ -19,7 +19,7 @@
     <id>http://lab.dolice.net/blog/2015/05/04/android-admob-interstitial-ad</id>
     <content type="html"><![CDATA[<p>Androidアプリに <a href="https://apps.admob.com/" title="AdMob">AdMob</a> のインタースティシャル広告を導入するサンプルを作成しました。</p>
 
-<p>下記のサンプルでは、アプリがスリープ状態から復帰した際に全面広告が表示されます。</p>
+<p>下記のサンプルでは、アプリがスリープ状態から復帰した時と、画面が再度読み込まれた時に全面広告が表示されます。</p>
 
 <h2>サンプルダウンロード</h2>
 
@@ -41,17 +41,14 @@
 
 <p><em>build.gradle</em> から <strong>Google Play Services SDK</strong> を読み込みます。バージョンは最新版を指定してください。</p>
 
-<blockquote><p>dependencies {</p>
-
-<pre><code>// 省略
+<blockquote><p>dependencies {
+// 省略
 compile 'com.google.android.gms:play-services:7.3.0'
-</code></pre>
-
-<p>}</p></blockquote>
+}</p></blockquote>
 
 <h3>2. AdMob 広告ユニットID の指定</h3>
 
-<p><em>AdMobIntersBanner.java</em> の14行目で AdMob インタースティシャル広告のユニットID を指定します。</p>
+<p><em>AdMobIntersBanner.java</em> の14行目で広告ユニットID を指定します。</p>
 
 <p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">INTERS_AD_UNIT_ID</span> <span class="o">=</span> <span class="s">&quot;Your AdMob Ad unit ID&quot;</span><span class="o">;</span>
@@ -85,9 +82,29 @@ compile 'com.google.android.gms:play-services:7.3.0'
 </span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;};</span>
 </span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
-<h3>5. 実装</h3>
+<h3>5. テスト端末の追加</h3>
 
-<p>下記に実装サンプルを記載しますので、参考になれば幸いです。</p>
+<p><em>AdMobIntersBanner.java</em> の51行目にあるコメントアウトを外し、テスト端末を追加します。</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">adRequest</span> <span class="o">=</span> <span class="k">new</span> <span class="n">AdRequest</span><span class="o">.</span><span class="na">Builder</span><span class="o">()&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span>    <span class="o">.</span><span class="na">addTestDevice</span><span class="o">(</span><span class="n">AdRequest</span><span class="o">.</span><span class="na">DEVICE_ID_EMULATOR</span><span class="o">)</span>
+</span><span class='line'>    <span class="o">.</span><span class="na">addTestDevice</span><span class="o">(</span><span class="n">DEBUG_DEVICE_ID</span><span class="o">[</span><span class="mi">0</span><span class="o">])</span>
+</span><span class='line'>    <span class="o">.</span><span class="na">build</span><span class="o">();</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>下記に実装サンプルを記載します。導入の際のご参考になれば幸いです。</p>
 
 <h2>サンプルソースコード</h2>
 
@@ -313,7 +330,7 @@ compile 'com.google.android.gms:play-services:7.3.0'
 
 <p>以上で AdMob インタースティシャル広告の導入は完了になります。</p>
 
-<p><a href="https://developers.google.com/mobile-ads-sdk/docs/admob/android/interstitial?hl=ja" title="公式ドキュメント">公式ドキュメント</a>にも良質なサンプルが掲載されていますので、そちらも参考にされると良いかもしれません。</p>
+<p><a href="https://developers.google.com/mobile-ads-sdk/docs/admob/android/interstitial?hl=ja" title="公式ドキュメント">公式ドキュメント</a>に解りやすくサンプルが掲載されていますので、そちらも参考にされると良いかもしれません。</p>
 ]]></content>
   </entry>
   
