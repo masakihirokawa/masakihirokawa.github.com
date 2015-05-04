@@ -4,7 +4,7 @@
   <title><![CDATA[Dolice Lab]]></title>
   <link href="http://lab.dolice.net/atom.xml" rel="self"/>
   <link href="http://lab.dolice.net/"/>
-  <updated>2015-05-04T11:04:55+09:00</updated>
+  <updated>2015-05-04T13:41:43+09:00</updated>
   <id>http://lab.dolice.net/</id>
   <author>
     <name><![CDATA[Masaki Hirokawa]]></name>
@@ -302,6 +302,252 @@ compile 'com.google.android.gms:play-services:7.3.0'
 <p>以上で AdMob インタースティシャル広告の導入は完了になります。</p>
 
 <p><a href="https://developers.google.com/mobile-ads-sdk/docs/admob/android/interstitial?hl=ja" title="公式ドキュメント">公式ドキュメント</a>にも良質なサンプルが掲載されていますので、そちらも参考にされると良いかもしれません。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[ネットワーク接続の有無を取得する]]></title>
+    <link href="http://lab.dolice.net/blog/2015/05/04/android-network-manager/"/>
+    <updated>2015-05-04T09:00:00+09:00</updated>
+    <id>http://lab.dolice.net/blog/2015/05/04/android-network-manager</id>
+    <content type="html"><![CDATA[<p>Androidアプリでネットワーク接続の有無を判定するサンプルを作成しました。</p>
+
+<p>下記よりサンプルをダウンロードできます。</p>
+
+<h2>サンプルダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/android-network-manager">https://github.com/masakihirokawa/android-network-manager</a></li>
+</ul>
+
+
+<h2>導入手順</h2>
+
+<h3>1. パーミッションの追加</h3>
+
+<p><em>AndroidManifest.xml</em> にネットワーク接続の取得を許可するための権限を追加します。</p>
+
+<blockquote><p><uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /></p></blockquote>
+
+<h3>2. NetworkManager クラスの組み込み</h3>
+
+<p>ネットワーク状態を判定するクラス <em>NetworkManager.java</em> を「<em>/app/src/main/java/net/dolice/connection/</em>」ディレクトリに配置します。</p>
+
+<h3>3. 実装</h3>
+
+<p>下記に実装サンプルを記載します。</p>
+
+<p>サンプルでは、ネットワーク状態をチェックしテキストビューに表示しています。オフラインの時はアラートが表示されます。</p>
+
+<h2>サンプルソースコード</h2>
+
+<h3>MainActivity.java</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kn">package</span> <span class="n">net</span><span class="o">.</span><span class="na">dolice</span><span class="o">.</span><span class="na">networkmanagerex</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kn">import</span> <span class="nn">android.app.Activity</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">android.app.AlertDialog</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">android.os.Bundle</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">android.util.Log</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">android.widget.TextView</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kn">import</span> <span class="nn">net.dolice.connection.NetworkManager</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MainActivity</span> <span class="kd">extends</span> <span class="n">Activity</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nd">@Override</span>
+</span><span class='line'>    <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">onCreate</span><span class="o">(</span><span class="n">Bundle</span> <span class="n">savedInstanceState</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="kd">super</span><span class="o">.</span><span class="na">onCreate</span><span class="o">(</span><span class="n">savedInstanceState</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">setContentView</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">layout</span><span class="o">.</span><span class="na">activity_main</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// ネットワーク状態をチェックし状態をテキストビューに表示</span>
+</span><span class='line'>        <span class="n">TextView</span> <span class="n">networkStatus</span> <span class="o">=</span> <span class="o">(</span><span class="n">TextView</span><span class="o">)</span><span class="n">findViewById</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">network_status</span><span class="o">);</span>
+</span><span class='line'>        <span class="k">if</span> <span class="o">(</span><span class="n">isConnected</span><span class="o">())</span> <span class="o">{</span>
+</span><span class='line'>            <span class="n">networkStatus</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="s">&quot;オンラインです&quot;</span><span class="o">);</span>
+</span><span class='line'>        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+</span><span class='line'>            <span class="n">networkStatus</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="s">&quot;オフラインです&quot;</span><span class="o">);</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// ネットワーク状態のチェック</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="kt">boolean</span> <span class="nf">isConnected</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">if</span> <span class="o">(!</span><span class="n">NetworkManager</span><span class="o">.</span><span class="na">isConnected</span><span class="o">(</span><span class="k">this</span><span class="o">))</span> <span class="o">{</span>
+</span><span class='line'>            <span class="n">showAlert</span><span class="o">(</span><span class="s">&quot;お知らせ&quot;</span><span class="o">,</span> <span class="s">&quot;ネットワーク接続が確立されていません&quot;</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// アラートの表示</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="kt">void</span> <span class="nf">showAlert</span><span class="o">(</span><span class="n">String</span> <span class="n">title</span><span class="o">,</span> <span class="n">String</span> <span class="n">message</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">try</span> <span class="o">{</span>
+</span><span class='line'>            <span class="n">AlertDialog</span><span class="o">.</span><span class="na">Builder</span> <span class="n">alertDialogBuilder</span> <span class="o">=</span> <span class="k">new</span> <span class="n">AlertDialog</span><span class="o">.</span><span class="na">Builder</span><span class="o">(</span><span class="n">MainActivity</span><span class="o">.</span><span class="na">this</span><span class="o">);</span>
+</span><span class='line'>            <span class="n">alertDialogBuilder</span><span class="o">.</span><span class="na">setTitle</span><span class="o">(</span><span class="n">title</span><span class="o">);</span>
+</span><span class='line'>            <span class="n">alertDialogBuilder</span><span class="o">.</span><span class="na">setMessage</span><span class="o">(</span><span class="n">message</span><span class="o">);</span>
+</span><span class='line'>            <span class="n">alertDialogBuilder</span><span class="o">.</span><span class="na">setPositiveButton</span><span class="o">(</span><span class="s">&quot;OK&quot;</span><span class="o">,</span> <span class="kc">null</span><span class="o">);</span>
+</span><span class='line'>            <span class="n">alertDialogBuilder</span><span class="o">.</span><span class="na">setCancelable</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="n">AlertDialog</span> <span class="n">alertDialog</span> <span class="o">=</span> <span class="n">alertDialogBuilder</span><span class="o">.</span><span class="na">create</span><span class="o">();</span>
+</span><span class='line'>            <span class="n">alertDialog</span><span class="o">.</span><span class="na">show</span><span class="o">();</span>
+</span><span class='line'>        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Error</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>            <span class="n">Log</span><span class="o">.</span><span class="na">e</span><span class="o">(</span><span class="s">&quot;MainActivity&quot;</span><span class="o">,</span> <span class="s">&quot;showAlert: &quot;</span> <span class="o">+</span> <span class="n">e</span><span class="o">);</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>NetworkManager.java</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kn">package</span> <span class="n">net</span><span class="o">.</span><span class="na">dolice</span><span class="o">.</span><span class="na">connection</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kn">import</span> <span class="nn">android.content.Context</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">android.net.ConnectivityManager</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">android.net.NetworkInfo</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">/**</span>
+</span><span class='line'><span class="cm"> * Created by Dolice on 15/03/16.</span>
+</span><span class='line'><span class="cm"> */</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">NetworkManager</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="cm">/**</span>
+</span><span class='line'><span class="cm">     * ネットワーク接続が確立されているか</span>
+</span><span class='line'><span class="cm">     * @param context</span>
+</span><span class='line'><span class="cm">     * @return</span>
+</span><span class='line'><span class="cm">     */</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">boolean</span> <span class="nf">isConnected</span><span class="o">(</span><span class="n">Context</span> <span class="n">context</span><span class="o">){</span>
+</span><span class='line'>        <span class="n">ConnectivityManager</span> <span class="n">connectivityManager</span> <span class="o">=</span> <span class="o">(</span><span class="n">ConnectivityManager</span><span class="o">)</span><span class="n">context</span><span class="o">.</span><span class="na">getSystemService</span><span class="o">(</span><span class="n">Context</span><span class="o">.</span><span class="na">CONNECTIVITY_SERVICE</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">NetworkInfo</span> <span class="n">networkInfo</span> <span class="o">=</span> <span class="n">connectivityManager</span><span class="o">.</span><span class="na">getActiveNetworkInfo</span><span class="o">();</span>
+</span><span class='line'>        <span class="k">if</span><span class="o">(</span><span class="n">networkInfo</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">){</span>
+</span><span class='line'>            <span class="k">return</span> <span class="n">connectivityManager</span><span class="o">.</span><span class="na">getActiveNetworkInfo</span><span class="o">().</span><span class="na">isConnected</span><span class="o">();</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[指定した時間後に処理を遅延実行する]]></title>
+    <link href="http://lab.dolice.net/blog/2015/05/04/android-handler-post-delayed/"/>
+    <updated>2015-05-04T08:00:00+09:00</updated>
+    <id>http://lab.dolice.net/blog/2015/05/04/android-handler-post-delayed</id>
+    <content type="html"><![CDATA[<p>Androidアプリで指定した時間後に処理を実行するコードです。</p>
+
+<p>例えばフェードアウト後にメモリを解放したい際などに使用します。</p>
+
+<p>下記のコードでは、3秒後に処理を実行するよう指定しています。「3秒」の場合は「3000」のようにミリ秒単位で指定します。</p>
+
+<h2>サンプルソースコード</h2>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="c1">// 3秒後に処理を実行する</span>
+</span><span class='line'><span class="k">new</span> <span class="nf">Handler</span><span class="o">().</span><span class="na">postDelayed</span><span class="o">(</span><span class="k">new</span> <span class="n">Runnable</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>    <span class="nd">@Override</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="c1">// TODO: ここで処理を実行する</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">},</span> <span class="mi">3000</span><span class="o">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
 ]]></content>
   </entry>
   
@@ -1539,165 +1785,6 @@ Cocos2d-xを利用したスマートフォン向け3Dゲーム開発の手法を
 
 <p><strong><a href="http://www.amazon.co.jp/gp/product/4798136050/ref=as_li_qf_sp_asin_tl?ie=UTF8&camp=247&creative=1211&creativeASIN=4798136050&linkCode=as2&tag=pinocchio-22">Cocos2d-xスマートフォン2Dゲーム開発講座 Cocos2d-x 3対応</a></strong><img src="http://ir-jp.amazon-adsystem.com/e/ir?t=pinocchio-22&l=as2&o=9&a=4798136050" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" /><br />
 Cocos2d-xを利用したスマートフォン向け3Dゲーム開発の手法を、サンプルを基に作りながら学ぶ事ができます。実際に遊べるゲームサンプルが4種収録されており、iOS / Android両対応のゲームを開発したい方には必見の一冊になっています。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[AdMobのメディエーションを最適化する方法]]></title>
-    <link href="http://lab.dolice.net/blog/2014/03/12/admob-mediation/"/>
-    <updated>2014-03-12T14:00:00+09:00</updated>
-    <id>http://lab.dolice.net/blog/2014/03/12/admob-mediation</id>
-    <content type="html"><![CDATA[<p><a href="https://apps.admob.com/" title="AdMob">AdMob</a>のメディエーションを最適化する方法を以下に記載します。</p>
-
-<p>メディエーションに設定しているアドネットワークの eCPMを入力することで、クリック率の高い広告が優先的に表示され、広告収益アップに繋がります。</p>
-
-<p>下記に <a href="https://apps.admob.com/" title="AdMob">AdMob</a>のメディエーション最適化方法を記載します。</p>
-
-<h2>最適化手順</h2>
-
-<h3>1. <a href="https://apps.admob.com/" title="AdMob">AdMob</a>のサイトにログインし、「収益化」メニューを開く</h3>
-
-<p><img src="http://lab.dolice.net/images/article/admob_mediation/admob_mediation_scr1.jpg" alt="" /></p>
-
-<h3>2. 「すべてのアプリ」をクリックし、メディエーションを編集したいアプリを選択</h3>
-
-<p><img src="http://lab.dolice.net/images/article/admob_mediation/admob_mediation_scr2.jpg" alt="" /></p>
-
-<h3>3. 「メディエーションを編集」リンクを開く</h3>
-
-<p><img src="http://lab.dolice.net/images/article/admob_mediation/admob_mediation_scr3.jpg" alt="" /></p>
-
-<h3>4. 「AdMob ネットワークを最適化する」にチェックを入れ、各アドネットワークの eCPMの値を $単位で入力</h3>
-
-<p><img src="http://lab.dolice.net/images/article/admob_mediation/admob_mediation_scr4.jpg" alt="" /></p>
-
-<h3>5. 「保存」ボタンを押して完了</h3>
-
-<h2>関連記事</h2>
-
-<ul>
-<li><strong><a href="http://lab.dolice.net/blog/2014/03/02/objc-adfurikun-admob-mediation/" title="iPhoneアプリへのアドフリくん導入（AdMobメディエーション編）">iPhoneアプリへのアドフリくん導入（AdMobメディエーション編）</a></strong></li>
-<li><strong><a href="http://lab.dolice.net/blog/2014/03/02/objc-adfurikun-interstitial-ads/" title="iPhoneアプリへのアドフリくん導入（インタースティシャル広告編）">iPhoneアプリへのアドフリくん導入（インタースティシャル広告編）</a></strong></li>
-<li><strong><a href="http://lab.dolice.net/blog/2014/02/25/objc-admob-inters/" title="iPhoneアプリに AdMobのインタースティシャル広告を導入する方法">iPhoneアプリに AdMobのインタースティシャル広告を導入する方法</a></strong></li>
-</ul>
-
-
-<h2>お薦めの参考書</h2>
-
-<p><strong><a href="http://www.amazon.co.jp/gp/product/4798136050/ref=as_li_qf_sp_asin_tl?ie=UTF8&camp=247&creative=1211&creativeASIN=4798136050&linkCode=as2&tag=pinocchio-22">Cocos2d-xスマートフォン2Dゲーム開発講座 Cocos2d-x 3対応</a></strong><img src="http://ir-jp.amazon-adsystem.com/e/ir?t=pinocchio-22&l=as2&o=9&a=4798136050" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" /><br />
-Cocos2d-xを利用したスマートフォン向け3Dゲーム開発の手法を、サンプルを基に作りながら学ぶ事ができます。実際に遊べるゲームサンプルが4種収録されており、iOS / Android両対応のゲームを開発したい方には必見の一冊になっています。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Anime Wallpapers 12,000+ sheets - Free iPhone/iPod app]]></title>
-    <link href="http://lab.dolice.net/blog/2014/03/11/ios-illustration-wallpaper-en/"/>
-    <updated>2014-03-11T14:30:00+09:00</updated>
-    <id>http://lab.dolice.net/blog/2014/03/11/ios-illustration-wallpaper-en</id>
-    <content type="html"><![CDATA[<div class="app_screenshot_container"><img src="http://dolice.net/mb/ios/marketing/images/illustration_wallpapers/screenshot/en/screenshot6.jpg" class="app_screenshot" /></div>
-
-
-<p>There&#8217;s no reason you need to settle for a standard-looking lock screen or home screen on your mobile device when instead you could customize it. The Anime Wallpapers 4,000+ sheets for iPhone 6/6 Plus/5s/5c/5 app can be used on your iPod touch, iPad, and iPhone to completely change up how your device looks. Use these on your lock and/or home screen and what&#8217;s really cool is that the app is updated daily with new exciting choices.</p>
-
-<p><a href="https://itunes.apple.com/us/app/800+-hd-illustration-wallpapers/id815371940?mt=8&uo=4" target="itunes_store" style="display:inline-block;overflow:hidden;background:url(https://linkmaker.itunes.apple.com/htmlResources/assets/en_us//images/web/linkmaker/badge_appstore-lrg.png) no-repeat;width:135px;height:40px;@media only screen{background-image:url(https://linkmaker.itunes.apple.com/htmlResources/assets/en_us//images/web/linkmaker/badge_appstore-lrg.svg);}"></a></p>
-
-<h2>A Huge Selection of Free Options</h2>
-
-<p>This app provides you with more than 12,000 free wallpapers that you can download and then save to your device. What&#8217;s great is that it has also been optimized to work with iOS 7 and iOS 8&#8217;s parallax effect. There are 12 categories of wallpapers to choose from, which also makes it easy to find what you&#8217;re looking for. During your browsing just add wallpapers to your favorites folder so they are there when you want to use them. As you view the wallpapers in the gallery you&#8217;ll find that they are displayed as full screen and they are shown as a slideshow. If you come across ones that you think are perfect for your family and friends why not share them through Twitter, Facebook, email, and Instagram.
-There has been a pretty extensive update recently that basically gives users a whole lot more of everything. There are more wallpapers, they are now updated daily, the favorites list is all new, the wallpaper categories are all new, the ability to share on Instagram is new, minor bugs have been fixed, and so much more. The app scores quite high with users getting four out of five stars from them.</p>
-
-<div class="app_screenshot_container mt12"><img src="http://dolice.net/mb/ios/marketing/images/illustration_wallpapers/screenshot/en/screenshot1.jpg" class="app_screenshot" /></div>
-
-
-<h2>The User Experience</h2>
-
-<p>Despite the fact that you have such a wide selection available to you the app itself remains incredibly easy to use. You can view the wallpapers in full screen as mentioned or as a thumbnail if you&#8217;d rather. You can enable the push notification to get information whenever updates are made, and there is a list function so that you can check out the most popular and the latest wallpapers.
-I find the app incredibly easy and enjoyable to browse through. I really like all the anime, game and other illustration wallpapers you can discover and the category groupings make navigation much easier. The only downfall for me is the ad banner that appears across the bottom of the screen as it can be a bit distracting.</p>
-
-<div class="app_screenshot_container mt12"><img src="http://dolice.net/mb/ios/marketing/images/illustration_wallpapers/screenshot/en/screenshot2.jpg" class="app_screenshot" /></div>
-
-
-<h2>Pros and Cons</h2>
-
-<h3>Pros</h3>
-
-<ul>
-<li>There are more than 12,000 wallpapers and more are constantly being added</li>
-<li>Mark wallpapers as favorites</li>
-<li>Share wallpaper with friends and family by email, Instagram, Twitter, and Facebook</li>
-<li>Wallpapers are grouped into 12 categories to help you find what you want</li>
-<li>There is a most popular and latest list available</li>
-</ul>
-
-
-<h3>Cons</h3>
-
-<ul>
-<li>The ad banner across the bottom of the screen can be distracting</li>
-</ul>
-
-
-<div class="app_screenshot_container mt12"><img src="http://dolice.net/mb/ios/marketing/images/illustration_wallpapers/screenshot/en/screenshot5.jpg" class="app_screenshot" /></div>
-
-
-<h2>Final Words</h2>
-
-<p>The Anime Wallpapers 4,000+ sheets for iPhone 6/6 Plus/5s/5c/5 app is a beautiful offering that gives you a huge free selection of wallpapers to use for your lock and home screen.</p>
-
-<p><em>Article source: <a href="http://www.apppicker.com/" title="AppPicker.com">AppPicker.com</a></em></p>
-
-<h2>Main functions</h2>
-
-<ol>
-<li>Browse pages and save wallpapers</li>
-<li>Wallpapers are added and updated daily</li>
-<li>List functions for the latest and popular wallpapers</li>
-<li>Display over 12 wallpaper categories</li>
-<li>Wallpaper favorites function</li>
-<li>View a list of wallpaper thumbnails</li>
-<li>Display wallpapers full screen</li>
-<li>Wallpaper slideshow function</li>
-<li>Share wallpapers via Facebook / Twitter / Instagram / email</li>
-<li>Learn about wallpaper updates through push notifications</li>
-</ol>
-
-
-<h2>Wallpaper sizes</h2>
-
-<ul>
-<li>iPhone 6: 890 × 1590 pixel</li>
-<li>iPhone 6 Plus: 1438 × 2592 pixel</li>
-<li>iPhone 5s/5c/5: 744 × 1392 pixel</li>
-</ul>
-
-
-<h2>Price</h2>
-
-<ul>
-<li>Free</li>
-</ul>
-
-
-<h2>Official Facebook Page</h2>
-
-<ul>
-<li><a href="https://www.facebook.com/dolice.anime.wallpapers">https://www.facebook.com/dolice.anime.wallpapers</a></li>
-</ul>
-
-
-<h2>Copyright display</h2>
-
-<p>This app is a wallpaper download app. The wallpaper copyrights belong to the content providers.</p>
-
-<p><a href="https://itunes.apple.com/us/app/800+-hd-illustration-wallpapers/id815371940?mt=8&uo=4" target="itunes_store" style="display:inline-block;overflow:hidden;background:url(https://linkmaker.itunes.apple.com/htmlResources/assets/en_us//images/web/linkmaker/badge_appstore-lrg.png) no-repeat;width:135px;height:40px;@media only screen{background-image:url(https://linkmaker.itunes.apple.com/htmlResources/assets/en_us//images/web/linkmaker/badge_appstore-lrg.svg);}"></a></p>
-
-<h2>Related article</h2>
-
-<ul>
-<li><strong><a href="http://lab.dolice.net/blog/2014/03/11/ios-beautiful-wallpaper-en/" title="Beautiful Wallpapers HD 15,000+ sheets - Free iPhone/iPod app">Beautiful Wallpapers HD 15,000+ sheets - Free iPhone/iPod app</a></strong></li>
-<li><strong><a href="http://lab.dolice.net/blog/2014/03/11/ios-cool-wallpaper-en/" title="Cool Wallpapers HD 15,000+ sheets - Free iPhone/iPod app">Cool Wallpapers HD 15,000+ sheets - Free iPhone/iPod app</a></strong></li>
-</ul>
-
 ]]></content>
   </entry>
   
