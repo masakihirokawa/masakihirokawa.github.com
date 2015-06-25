@@ -3,7 +3,7 @@
   <title><![CDATA[Category: Android | Dolice Lab]]></title>
   <link href="http://lab.dolice.net/blog/categories/android/atom.xml" rel="self"/>
   <link href="http://lab.dolice.net/"/>
-  <updated>2015-06-24T13:45:10+09:00</updated>
+  <updated>2015-06-25T12:18:52+09:00</updated>
   <id>http://lab.dolice.net/</id>
   <author>
     <name><![CDATA[Masaki Hirokawa]]></name>
@@ -11,6 +11,288 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[配列のループ化（iOS/Android）]]></title>
+    <link href="http://lab.dolice.net/blog/2015/06/25/ios-android-array-loop/"/>
+    <updated>2015-06-25T10:45:00+09:00</updated>
+    <id>http://lab.dolice.net/blog/2015/06/25/ios-android-array-loop</id>
+    <content type="html"><![CDATA[<p>iOS/Androidアプリで配列をループ化し取得する方法を以下に記載します。</p>
+
+<p>下記のサンプルでは、配列を指定したインデックスを先頭に、それより前の要素を後ろの方に追加することでループ化しています。</p>
+
+<h2>サンプルソースコード</h2>
+
+<h3>iOS</h3>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSArray</span> <span class="o">&lt;</span><span class="n">em</span><span class="o">&gt;</span><span class="p">)</span><span class="nf">loopArray:</span><span class="p">(</span><span class="n">NSArray</span> <span class="o">&lt;/</span><span class="n">em</span><span class="o">&gt;</span><span class="p">)</span><span class="nv">list</span> <span class="nf">index:</span><span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="nv">index</span>
+</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">NSMutableArray</span> <span class="o">*</span><span class="n">loopList</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSMutableArray</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithArray:</span><span class="n">list</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 指定したインデックスより前のリストを保持</span>
+</span><span class='line'><span class="n">NSMutableArray</span> <span class="o">*</span><span class="n">frontList</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSMutableArray</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'><span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="n">index</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">frontList</span> <span class="nl">addObject:</span><span class="n">loopList</span><span class="p">[</span><span class="n">i</span><span class="p">]];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 新しいリストを生成</span>
+</span><span class='line'><span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="p">[</span><span class="n">frontList</span> <span class="n">count</span><span class="p">];</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">loopList</span> <span class="nl">removeObjectAtIndex:</span><span class="mi">0</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">loopList</span> <span class="nl">addObject:</span><span class="n">frontList</span><span class="p">[</span><span class="n">i</span><span class="p">]];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">return</span> <span class="n">loopList</span><span class="p">;</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h4>使用方法</h4>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">// 基の配列を生成</span>
+</span><span class='line'><span class="n">NSArray</span> <span class="o">*</span><span class="n">originalList</span> <span class="o">=</span> <span class="err">@</span><span class="p">[</span><span class="err">@</span><span class="mi">111</span><span class="p">,</span> <span class="err">@</span><span class="mi">222</span><span class="p">,</span> <span class="err">@</span><span class="mi">333</span><span class="p">,</span> <span class="err">@</span><span class="mi">444</span><span class="p">,</span> <span class="err">@</span><span class="mi">555</span><span class="p">,</span> <span class="err">@</span><span class="mi">666</span><span class="p">,</span> <span class="err">@</span><span class="mi">777</span><span class="p">,</span> <span class="err">@</span><span class="mi">888</span><span class="p">,</span> <span class="err">@</span><span class="mi">999</span><span class="p">];</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">// 配列をループ化し取得</span>
+</span><span class='line'><span class="n">NSArray</span> <span class="o">*</span><span class="n">loopList</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="nl">loopArray:</span><span class="n">originalList</span> <span class="nl">index:</span><span class="mi">4</span><span class="p">];</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">// 出力</span>
+</span><span class='line'><span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;%@&quot;</span><span class="p">,</span> <span class="n">loopList</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h4>出力結果</h4>
+
+<blockquote><p>555, 666, 777, 888, 999, 111, 222, 333, 444</p></blockquote>
+
+<h3>Android</h3>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="nf">getLoopIntegerList</span><span class="o">(</span><span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">list</span><span class="o">,</span> <span class="kt">int</span> <span class="n">index</span><span class="o">)</span> <span class="o">{&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="c1">// 指定したインデックスより前のリストを保持</span>
+</span><span class='line'><span class="n">ArrayList</span><span class="o">&amp;</span><span class="n">lt</span><span class="o">;</span><span class="n">Integer</span><span class="o">&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="n">frontList</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&amp;</span><span class="n">lt</span><span class="o">;</span><span class="n">Integer</span><span class="o">&amp;</span><span class="n">gt</span><span class="o">;();</span>
+</span><span class='line'><span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&amp;</span><span class="n">lt</span><span class="o">;</span> <span class="n">index</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+</span><span class='line'>    <span class="n">frontList</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">list</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">i</span><span class="o">));</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 新しいリストを生成</span>
+</span><span class='line'><span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&amp;</span><span class="n">lt</span><span class="o">;</span> <span class="n">frontList</span><span class="o">.</span><span class="na">size</span><span class="o">();</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+</span><span class='line'>    <span class="n">list</span><span class="o">.</span><span class="na">remove</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
+</span><span class='line'>    <span class="n">list</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">frontList</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">i</span><span class="o">));</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">return</span> <span class="n">list</span><span class="o">;</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h4>使用方法</h4>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="c1">// 基の配列を生成</span>
+</span><span class='line'><span class="n">Int</span><span class="o">[]</span> <span class="n">intList</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Int</span><span class="o">[]</span> <span class="o">{</span> <span class="mi">111</span><span class="o">,</span> <span class="mi">222</span><span class="o">,</span> <span class="mi">333</span><span class="o">,</span> <span class="mi">444</span><span class="o">,</span> <span class="mi">555</span><span class="o">,</span> <span class="mi">666</span><span class="o">,</span> <span class="mi">777</span><span class="o">,</span> <span class="mi">888</span><span class="o">,</span> <span class="mi">999</span> <span class="o">};</span>
+</span><span class='line'><span class="n">Integer</span><span class="o">[]</span> <span class="n">integerList</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Integer</span><span class="o">[</span><span class="n">intList</span><span class="o">.</span><span class="na">length</span><span class="o">];</span>
+</span><span class='line'><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+</span><span class='line'><span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">value</span> <span class="o">:</span> <span class="n">intList</span><span class="o">)</span> <span class="o">{&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">integerList</span><span class="o">[</span><span class="n">i</span><span class="o">++]</span> <span class="o">=</span> <span class="n">value</span><span class="o">;</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;}</span>
+</span><span class='line'><span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">originalList</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;(</span><span class="n">Arrays</span><span class="o">.</span><span class="na">asList</span><span class="o">(</span><span class="n">integerList</span><span class="o">));&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">// 配列をループ化し取得</span>
+</span><span class='line'><span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">loopList</span> <span class="o">=</span> <span class="n">getLoopIntegerList</span><span class="o">(</span><span class="n">originalList</span><span class="o">,</span> <span class="mi">4</span><span class="o">);&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">// 出力</span>
+</span><span class='line'><span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">value</span> <span class="o">:</span> <span class="n">loopList</span><span class="o">)</span> <span class="o">{&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">Log</span><span class="o">.</span><span class="na">d</span><span class="o">(</span><span class="s">&quot;loopList&quot;</span><span class="o">,</span> <span class="s">&quot;&quot;</span> <span class="o">+</span> <span class="n">value</span><span class="o">);</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h4>出力結果</h4>
+
+<blockquote><p>555, 666, 777, 888, 999, 111, 222, 333, 444</p></blockquote>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Androidアプリで画像とテキストを共有する方法]]></title>
+    <link href="http://lab.dolice.net/blog/2015/06/25/android-share-compat/"/>
+    <updated>2015-06-25T10:20:00+09:00</updated>
+    <id>http://lab.dolice.net/blog/2015/06/25/android-share-compat</id>
+    <content type="html"><![CDATA[<p>Androidアプリで画像とテキストを共有する方法を以下に記載します。</p>
+
+<p>下記のサンプルでは、<em>ShareCompat</em> を使用して画像とテキストを共有しています。</p>
+
+<p>画像を共有する場合は画像の URIを指定する必要があり、URIの取得方法については後日別の記事で解説します。</p>
+
+<h2>サンプルソースコード</h2>
+
+<h3>テキストの共有</h3>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kt">void</span> <span class="nf">shareText</span><span class="o">(</span><span class="n">Activity</span> <span class="n">activity</span><span class="o">,</span> <span class="n">String</span> <span class="n">chooserTitle</span><span class="o">,</span> <span class="n">String</span> <span class="n">subject</span><span class="o">,</span> <span class="n">String</span> <span class="n">text</span><span class="o">)</span> <span class="o">{&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">ShareCompat</span><span class="o">.</span><span class="na">IntentBuilder</span> <span class="n">builder</span> <span class="o">=</span> <span class="n">ShareCompat</span><span class="o">.</span><span class="na">IntentBuilder</span><span class="o">.</span><span class="na">from</span><span class="o">(</span><span class="n">activity</span><span class="o">);</span>
+</span><span class='line'><span class="n">builder</span><span class="o">.</span><span class="na">setChooserTitle</span><span class="o">(</span><span class="n">chooserTitle</span><span class="o">);</span>
+</span><span class='line'><span class="n">builder</span><span class="o">.</span><span class="na">setSubject</span><span class="o">(</span><span class="n">subject</span><span class="o">);</span>
+</span><span class='line'><span class="n">builder</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="n">text</span><span class="o">);</span>
+</span><span class='line'><span class="n">builder</span><span class="o">.</span><span class="na">setType</span><span class="o">(</span><span class="s">&quot;text/plain&quot;</span><span class="o">);</span>
+</span><span class='line'><span class="n">builder</span><span class="o">.</span><span class="na">startChooser</span><span class="o">();</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">shareText</span><span class="o">(</span><span class="n">MainActivity</span><span class="o">.</span><span class="na">this</span><span class="o">,</span> <span class="s">&quot;共有枠のタイトル&quot;</span><span class="o">,</span> <span class="s">&quot;共有タイトル&quot;</span><span class="o">,</span> <span class="s">&quot;共有テキスト&quot;</span><span class="o">);</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h3>画像の共有</h3>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kt">void</span> <span class="nf">shareImage</span><span class="o">(</span><span class="n">Activity</span> <span class="n">activity</span><span class="o">,</span> <span class="n">String</span> <span class="n">chooserTitle</span><span class="o">,</span> <span class="n">String</span> <span class="n">subject</span><span class="o">,</span> <span class="n">Uri</span> <span class="n">uri</span><span class="o">)</span> <span class="o">{&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">ShareCompat</span><span class="o">.</span><span class="na">IntentBuilder</span> <span class="n">builder</span> <span class="o">=</span> <span class="n">ShareCompat</span><span class="o">.</span><span class="na">IntentBuilder</span><span class="o">.</span><span class="na">from</span><span class="o">(</span><span class="n">activity</span><span class="o">);</span>
+</span><span class='line'><span class="n">builder</span><span class="o">.</span><span class="na">setChooserTitle</span><span class="o">(</span><span class="n">chooserTitle</span><span class="o">);</span>
+</span><span class='line'><span class="n">builder</span><span class="o">.</span><span class="na">setSubject</span><span class="o">(</span><span class="n">subject</span><span class="o">);</span>
+</span><span class='line'><span class="n">builder</span><span class="o">.</span><span class="na">setStream</span><span class="o">(</span><span class="n">uri</span><span class="o">);</span>
+</span><span class='line'><span class="n">builder</span><span class="o">.</span><span class="na">setType</span><span class="o">(</span><span class="s">&quot;image/jpeg&quot;</span><span class="o">);</span>
+</span><span class='line'><span class="n">builder</span><span class="o">.</span><span class="na">startChooser</span><span class="o">();</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">shareImage</span><span class="o">(</span><span class="n">MainActivity</span><span class="o">.</span><span class="na">this</span><span class="o">,</span> <span class="s">&quot;共有枠のタイトル&quot;</span><span class="o">,</span> <span class="s">&quot;共有タイトル&quot;</span><span class="o">,</span> <span class="err">ビットマップ画像の</span><span class="n">URI</span><span class="o">);</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h3>画像とテキストの共有</h3>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kt">void</span> <span class="nf">shareImageAndText</span><span class="o">(</span><span class="n">Activity</span> <span class="n">activity</span><span class="o">,</span> <span class="n">String</span> <span class="n">chooserTitle</span><span class="o">,</span> <span class="n">String</span> <span class="n">subject</span><span class="o">,</span> <span class="n">String</span> <span class="n">text</span><span class="o">,</span> <span class="n">Uri</span> <span class="n">uri</span><span class="o">)</span> <span class="o">{&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">ShareCompat</span><span class="o">.</span><span class="na">IntentBuilder</span> <span class="n">builder</span> <span class="o">=</span> <span class="n">ShareCompat</span><span class="o">.</span><span class="na">IntentBuilder</span><span class="o">.</span><span class="na">from</span><span class="o">(</span><span class="n">activity</span><span class="o">);</span>
+</span><span class='line'><span class="n">builder</span><span class="o">.</span><span class="na">setChooserTitle</span><span class="o">(</span><span class="n">chooserTitle</span><span class="o">);</span>
+</span><span class='line'><span class="n">builder</span><span class="o">.</span><span class="na">setSubject</span><span class="o">(</span><span class="n">subject</span><span class="o">);</span>
+</span><span class='line'><span class="n">builder</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="n">text</span><span class="o">);</span>
+</span><span class='line'><span class="n">builder</span><span class="o">.</span><span class="na">setStream</span><span class="o">(</span><span class="n">uri</span><span class="o">);</span>
+</span><span class='line'><span class="n">builder</span><span class="o">.</span><span class="na">setType</span><span class="o">(</span><span class="s">&quot;image/jpeg&quot;</span><span class="o">);</span>
+</span><span class='line'><span class="n">builder</span><span class="o">.</span><span class="na">startChooser</span><span class="o">();</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">shareImageAndText</span><span class="o">(</span><span class="n">MainActivity</span><span class="o">.</span><span class="na">this</span><span class="o">,</span> <span class="s">&quot;共有枠のタイトル&quot;</span><span class="o">,</span> <span class="s">&quot;共有タイトル&quot;</span><span class="o">,</span> <span class="s">&quot;共有テキスト&quot;</span><span class="o">,</span> <span class="err">ビットマップ画像の</span><span class="n">URI</span><span class="o">);</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[タブレット端末の判定]]></title>
@@ -960,287 +1242,6 @@
 </span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
 </span><span class='line'>
 </span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[ネットワーク接続の有無を取得する]]></title>
-    <link href="http://lab.dolice.net/blog/2015/05/04/android-network-manager/"/>
-    <updated>2015-05-04T09:00:00+09:00</updated>
-    <id>http://lab.dolice.net/blog/2015/05/04/android-network-manager</id>
-    <content type="html"><![CDATA[<p>Androidアプリでネットワーク接続の有無を判定するサンプルを作成しました。</p>
-
-<p>下記よりサンプルをダウンロードできます。</p>
-
-<h2>サンプルダウンロード</h2>
-
-<ul>
-<li><a href="https://github.com/masakihirokawa/android-network-manager">https://github.com/masakihirokawa/android-network-manager</a></li>
-</ul>
-
-
-<h2>導入手順</h2>
-
-<h3>1. パーミッションの追加</h3>
-
-<p><em>AndroidManifest.xml</em> にネットワーク接続の取得を許可するための権限を追加します。</p>
-
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;uses-permission</span> <span class="na">android:name=</span><span class="s">&quot;android.permission.ACCESS_NETWORK_STATE&quot;</span> <span class="nt">/&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
-
-<h3>2. NetworkManager クラスの組み込み</h3>
-
-<p>ネットワーク状態を判定するクラス <em>NetworkManager.java</em> を「<em>/app/src/main/java/net/dolice/connection/</em>」ディレクトリに配置します。</p>
-
-<h3>3. オンライン状態のチェック</h3>
-
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="c1">// 引数に Context を渡し判定します</span>
-</span><span class='line'><span class="k">if</span> <span class="o">(</span><span class="n">NetworkManager</span><span class="o">.</span><span class="na">isConnected</span><span class="o">(</span><span class="k">this</span><span class="o">))</span> <span class="o">{&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">Log</span><span class="o">.</span><span class="na">d</span><span class="o">(</span><span class="s">&quot;オンラインです&quot;</span><span class="o">);</span>
-</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;}</span> <span class="k">else</span> <span class="o">{&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">Log</span><span class="o">.</span><span class="na">d</span><span class="o">(</span><span class="s">&quot;オフラインです&quot;</span><span class="o">);</span>
-</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
-
-<p>下記に実装サンプルを記載します。</p>
-
-<p>サンプルでは、ネットワーク状態をチェックした結果をテキストビューに表示しています。オフラインの時はアラートが表示されます。</p>
-
-<h2>サンプルソースコード</h2>
-
-<h3>MainActivity.java</h3>
-
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kn">package</span> <span class="n">net</span><span class="o">.</span><span class="na">dolice</span><span class="o">.</span><span class="na">networkmanagerex</span><span class="o">;&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="kn">import</span> <span class="nn">android.app.Activity</span><span class="o">;</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">android.app.AlertDialog</span><span class="o">;</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">android.os.Bundle</span><span class="o">;</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">android.util.Log</span><span class="o">;</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">android.widget.TextView</span><span class="o">;&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="kn">import</span> <span class="nn">net.dolice.connection.NetworkManager</span><span class="o">;&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MainActivity</span> <span class="kd">extends</span> <span class="n">Activity</span> <span class="o">{&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="nd">@Override</span>
-</span><span class='line'><span class="kd">protected</span> <span class="kt">void</span> <span class="nf">onCreate</span><span class="o">(</span><span class="n">Bundle</span> <span class="n">savedInstanceState</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>    <span class="kd">super</span><span class="o">.</span><span class="na">onCreate</span><span class="o">(</span><span class="n">savedInstanceState</span><span class="o">);</span>
-</span><span class='line'>    <span class="n">setContentView</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">layout</span><span class="o">.</span><span class="na">activity_main</span><span class="o">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// ネットワーク状態をチェックし状態をテキストビューに表示</span>
-</span><span class='line'>    <span class="n">TextView</span> <span class="n">networkStatus</span> <span class="o">=</span> <span class="o">(</span><span class="n">TextView</span><span class="o">)</span><span class="n">findViewById</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">network_status</span><span class="o">);</span>
-</span><span class='line'>    <span class="k">if</span> <span class="o">(</span><span class="n">isConnected</span><span class="o">())</span> <span class="o">{</span>
-</span><span class='line'>        <span class="n">networkStatus</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="s">&quot;オンラインです&quot;</span><span class="o">);</span>
-</span><span class='line'>    <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
-</span><span class='line'>        <span class="n">networkStatus</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="s">&quot;オフラインです&quot;</span><span class="o">);</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'><span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// ネットワーク状態のチェック</span>
-</span><span class='line'><span class="kd">private</span> <span class="kt">boolean</span> <span class="nf">isConnected</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>    <span class="k">if</span> <span class="o">(!</span><span class="n">NetworkManager</span><span class="o">.</span><span class="na">isConnected</span><span class="o">(</span><span class="k">this</span><span class="o">))</span> <span class="o">{</span>
-</span><span class='line'>        <span class="n">showAlert</span><span class="o">(</span><span class="s">&quot;お知らせ&quot;</span><span class="o">,</span> <span class="s">&quot;ネットワーク接続が確立されていません&quot;</span><span class="o">);</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
-</span><span class='line'><span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// アラートの表示</span>
-</span><span class='line'><span class="kd">private</span> <span class="kt">void</span> <span class="nf">showAlert</span><span class="o">(</span><span class="n">String</span> <span class="n">title</span><span class="o">,</span> <span class="n">String</span> <span class="n">message</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>    <span class="k">try</span> <span class="o">{</span>
-</span><span class='line'>        <span class="n">AlertDialog</span><span class="o">.</span><span class="na">Builder</span> <span class="n">alertDialogBuilder</span> <span class="o">=</span> <span class="k">new</span> <span class="n">AlertDialog</span><span class="o">.</span><span class="na">Builder</span><span class="o">(</span><span class="n">MainActivity</span><span class="o">.</span><span class="na">this</span><span class="o">);</span>
-</span><span class='line'>        <span class="n">alertDialogBuilder</span><span class="o">.</span><span class="na">setTitle</span><span class="o">(</span><span class="n">title</span><span class="o">);</span>
-</span><span class='line'>        <span class="n">alertDialogBuilder</span><span class="o">.</span><span class="na">setMessage</span><span class="o">(</span><span class="n">message</span><span class="o">);</span>
-</span><span class='line'>        <span class="n">alertDialogBuilder</span><span class="o">.</span><span class="na">setPositiveButton</span><span class="o">(</span><span class="s">&quot;OK&quot;</span><span class="o">,</span> <span class="kc">null</span><span class="o">);</span>
-</span><span class='line'>        <span class="n">alertDialogBuilder</span><span class="o">.</span><span class="na">setCancelable</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="n">AlertDialog</span> <span class="n">alertDialog</span> <span class="o">=</span> <span class="n">alertDialogBuilder</span><span class="o">.</span><span class="na">create</span><span class="o">();</span>
-</span><span class='line'>        <span class="n">alertDialog</span><span class="o">.</span><span class="na">show</span><span class="o">();</span>
-</span><span class='line'>    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Error</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="n">Log</span><span class="o">.</span><span class="na">e</span><span class="o">(</span><span class="s">&quot;MainActivity&quot;</span><span class="o">,</span> <span class="s">&quot;showAlert: &quot;</span> <span class="o">+</span> <span class="n">e</span><span class="o">);</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'><span class="o">}</span>
-</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
-
-<h3>NetworkManager.java</h3>
-
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kn">package</span> <span class="n">net</span><span class="o">.</span><span class="na">dolice</span><span class="o">.</span><span class="na">connection</span><span class="o">;&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="kn">import</span> <span class="nn">android.content.Context</span><span class="o">;</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">android.net.ConnectivityManager</span><span class="o">;</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">android.net.NetworkInfo</span><span class="o">;&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;/&lt;</span><span class="n">em</span><span class="o">&gt;*</span>
-</span><span class='line'> <span class="o">*</span> <span class="n">Created</span> <span class="n">by</span> <span class="n">Dolice</span> <span class="n">on</span> <span class="mi">15</span><span class="o">/</span><span class="mi">03</span><span class="o">/</span><span class="mi">16</span><span class="o">.</span>
-</span><span class='line'> <span class="o">&lt;/</span><span class="n">em</span><span class="o">&gt;/&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">NetworkManager</span> <span class="o">{&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="cm">/**</span>
-</span><span class='line'><span class="cm"> * ネットワーク接続が確立されているか</span>
-</span><span class='line'><span class="cm"> * @param context</span>
-</span><span class='line'><span class="cm"> * @return</span>
-</span><span class='line'><span class="cm"> */</span>
-</span><span class='line'><span class="kd">public</span> <span class="kd">static</span> <span class="kt">boolean</span> <span class="nf">isConnected</span><span class="o">(</span><span class="n">Context</span> <span class="n">context</span><span class="o">){</span>
-</span><span class='line'>    <span class="n">ConnectivityManager</span> <span class="n">connectivityManager</span> <span class="o">=</span> <span class="o">(</span><span class="n">ConnectivityManager</span><span class="o">)</span><span class="n">context</span><span class="o">.</span><span class="na">getSystemService</span><span class="o">(</span><span class="n">Context</span><span class="o">.</span><span class="na">CONNECTIVITY_SERVICE</span><span class="o">);</span>
-</span><span class='line'>    <span class="n">NetworkInfo</span> <span class="n">networkInfo</span> <span class="o">=</span> <span class="n">connectivityManager</span><span class="o">.</span><span class="na">getActiveNetworkInfo</span><span class="o">();</span>
-</span><span class='line'>    <span class="k">if</span><span class="o">(</span><span class="n">networkInfo</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">){</span>
-</span><span class='line'>        <span class="k">return</span> <span class="n">connectivityManager</span><span class="o">.</span><span class="na">getActiveNetworkInfo</span><span class="o">().</span><span class="na">isConnected</span><span class="o">();</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
-</span><span class='line'><span class="o">}</span>
-</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[指定した時間後に処理を遅延実行する]]></title>
-    <link href="http://lab.dolice.net/blog/2015/05/04/android-handler-post-delayed/"/>
-    <updated>2015-05-04T08:00:00+09:00</updated>
-    <id>http://lab.dolice.net/blog/2015/05/04/android-handler-post-delayed</id>
-    <content type="html"><![CDATA[<p>Androidアプリで指定した時間後に処理を実行するコードです。</p>
-
-<p>例えばフェードアウトアニメーション後にメモリを解放したい際などに使用します。</p>
-
-<p>下記のコードでは、3秒後に処理を実行するよう指定しています（<em>3秒</em>の場合は <em>3000</em>のようにミリ秒単位で指定します）。</p>
-
-<h2>サンプルソースコード</h2>
-
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="c1">// 3秒後に処理を実行する</span>
-</span><span class='line'><span class="k">new</span> <span class="nf">Handler</span><span class="o">().</span><span class="na">postDelayed</span><span class="o">(</span><span class="k">new</span> <span class="n">Runnable</span><span class="o">()</span> <span class="o">{&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="nd">@Override</span>
-</span><span class='line'><span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>    <span class="c1">// TODO: ここで処理を実行する</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">}</span>
-</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;},</span> <span class="mi">3000</span><span class="o">);</span>
 </span></code></pre></td></tr></table></div></figure></notextile></div></p>
 ]]></content>
   </entry>

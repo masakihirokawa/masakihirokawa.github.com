@@ -3,7 +3,7 @@
   <title><![CDATA[Category: NSArray | Dolice Lab]]></title>
   <link href="http://lab.dolice.net/blog/categories/nsarray/atom.xml" rel="self"/>
   <link href="http://lab.dolice.net/"/>
-  <updated>2015-06-24T13:45:10+09:00</updated>
+  <updated>2015-06-25T12:18:52+09:00</updated>
   <id>http://lab.dolice.net/</id>
   <author>
     <name><![CDATA[Masaki Hirokawa]]></name>
@@ -11,6 +11,181 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[配列のループ化（iOS/Android）]]></title>
+    <link href="http://lab.dolice.net/blog/2015/06/25/ios-android-array-loop/"/>
+    <updated>2015-06-25T10:45:00+09:00</updated>
+    <id>http://lab.dolice.net/blog/2015/06/25/ios-android-array-loop</id>
+    <content type="html"><![CDATA[<p>iOS/Androidアプリで配列をループ化し取得する方法を以下に記載します。</p>
+
+<p>下記のサンプルでは、配列を指定したインデックスを先頭に、それより前の要素を後ろの方に追加することでループ化しています。</p>
+
+<h2>サンプルソースコード</h2>
+
+<h3>iOS</h3>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSArray</span> <span class="o">&lt;</span><span class="n">em</span><span class="o">&gt;</span><span class="p">)</span><span class="nf">loopArray:</span><span class="p">(</span><span class="n">NSArray</span> <span class="o">&lt;/</span><span class="n">em</span><span class="o">&gt;</span><span class="p">)</span><span class="nv">list</span> <span class="nf">index:</span><span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="nv">index</span>
+</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">NSMutableArray</span> <span class="o">*</span><span class="n">loopList</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSMutableArray</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithArray:</span><span class="n">list</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 指定したインデックスより前のリストを保持</span>
+</span><span class='line'><span class="n">NSMutableArray</span> <span class="o">*</span><span class="n">frontList</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSMutableArray</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'><span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="n">index</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">frontList</span> <span class="nl">addObject:</span><span class="n">loopList</span><span class="p">[</span><span class="n">i</span><span class="p">]];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 新しいリストを生成</span>
+</span><span class='line'><span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="p">[</span><span class="n">frontList</span> <span class="n">count</span><span class="p">];</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">loopList</span> <span class="nl">removeObjectAtIndex:</span><span class="mi">0</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">loopList</span> <span class="nl">addObject:</span><span class="n">frontList</span><span class="p">[</span><span class="n">i</span><span class="p">]];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">return</span> <span class="n">loopList</span><span class="p">;</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h4>使用方法</h4>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">// 基の配列を生成</span>
+</span><span class='line'><span class="n">NSArray</span> <span class="o">*</span><span class="n">originalList</span> <span class="o">=</span> <span class="err">@</span><span class="p">[</span><span class="err">@</span><span class="mi">111</span><span class="p">,</span> <span class="err">@</span><span class="mi">222</span><span class="p">,</span> <span class="err">@</span><span class="mi">333</span><span class="p">,</span> <span class="err">@</span><span class="mi">444</span><span class="p">,</span> <span class="err">@</span><span class="mi">555</span><span class="p">,</span> <span class="err">@</span><span class="mi">666</span><span class="p">,</span> <span class="err">@</span><span class="mi">777</span><span class="p">,</span> <span class="err">@</span><span class="mi">888</span><span class="p">,</span> <span class="err">@</span><span class="mi">999</span><span class="p">];</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">// 配列をループ化し取得</span>
+</span><span class='line'><span class="n">NSArray</span> <span class="o">*</span><span class="n">loopList</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="nl">loopArray:</span><span class="n">originalList</span> <span class="nl">index:</span><span class="mi">4</span><span class="p">];</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">// 出力</span>
+</span><span class='line'><span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;%@&quot;</span><span class="p">,</span> <span class="n">loopList</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h4>出力結果</h4>
+
+<blockquote><p>555, 666, 777, 888, 999, 111, 222, 333, 444</p></blockquote>
+
+<h3>Android</h3>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="nf">getLoopIntegerList</span><span class="o">(</span><span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">list</span><span class="o">,</span> <span class="kt">int</span> <span class="n">index</span><span class="o">)</span> <span class="o">{&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="c1">// 指定したインデックスより前のリストを保持</span>
+</span><span class='line'><span class="n">ArrayList</span><span class="o">&amp;</span><span class="n">lt</span><span class="o">;</span><span class="n">Integer</span><span class="o">&amp;</span><span class="n">gt</span><span class="o">;</span> <span class="n">frontList</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&amp;</span><span class="n">lt</span><span class="o">;</span><span class="n">Integer</span><span class="o">&amp;</span><span class="n">gt</span><span class="o">;();</span>
+</span><span class='line'><span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&amp;</span><span class="n">lt</span><span class="o">;</span> <span class="n">index</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+</span><span class='line'>    <span class="n">frontList</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">list</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">i</span><span class="o">));</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 新しいリストを生成</span>
+</span><span class='line'><span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&amp;</span><span class="n">lt</span><span class="o">;</span> <span class="n">frontList</span><span class="o">.</span><span class="na">size</span><span class="o">();</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+</span><span class='line'>    <span class="n">list</span><span class="o">.</span><span class="na">remove</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
+</span><span class='line'>    <span class="n">list</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">frontList</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">i</span><span class="o">));</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">return</span> <span class="n">list</span><span class="o">;</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h4>使用方法</h4>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="c1">// 基の配列を生成</span>
+</span><span class='line'><span class="n">Int</span><span class="o">[]</span> <span class="n">intList</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Int</span><span class="o">[]</span> <span class="o">{</span> <span class="mi">111</span><span class="o">,</span> <span class="mi">222</span><span class="o">,</span> <span class="mi">333</span><span class="o">,</span> <span class="mi">444</span><span class="o">,</span> <span class="mi">555</span><span class="o">,</span> <span class="mi">666</span><span class="o">,</span> <span class="mi">777</span><span class="o">,</span> <span class="mi">888</span><span class="o">,</span> <span class="mi">999</span> <span class="o">};</span>
+</span><span class='line'><span class="n">Integer</span><span class="o">[]</span> <span class="n">integerList</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Integer</span><span class="o">[</span><span class="n">intList</span><span class="o">.</span><span class="na">length</span><span class="o">];</span>
+</span><span class='line'><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+</span><span class='line'><span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">value</span> <span class="o">:</span> <span class="n">intList</span><span class="o">)</span> <span class="o">{&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">integerList</span><span class="o">[</span><span class="n">i</span><span class="o">++]</span> <span class="o">=</span> <span class="n">value</span><span class="o">;</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;}</span>
+</span><span class='line'><span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">originalList</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;(</span><span class="n">Arrays</span><span class="o">.</span><span class="na">asList</span><span class="o">(</span><span class="n">integerList</span><span class="o">));&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">// 配列をループ化し取得</span>
+</span><span class='line'><span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">loopList</span> <span class="o">=</span> <span class="n">getLoopIntegerList</span><span class="o">(</span><span class="n">originalList</span><span class="o">,</span> <span class="mi">4</span><span class="o">);&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">// 出力</span>
+</span><span class='line'><span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">value</span> <span class="o">:</span> <span class="n">loopList</span><span class="o">)</span> <span class="o">{&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">Log</span><span class="o">.</span><span class="na">d</span><span class="o">(</span><span class="s">&quot;loopList&quot;</span><span class="o">,</span> <span class="s">&quot;&quot;</span> <span class="o">+</span> <span class="n">value</span><span class="o">);</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h4>出力結果</h4>
+
+<blockquote><p>555, 666, 777, 888, 999, 111, 222, 333, 444</p></blockquote>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[タイムゾーンの一覧を取得する]]></title>
@@ -275,80 +450,6 @@ Objective-Cの基礎から応用までしっかりカバーされています。
 
 <p><strong><a href="http://www.amazon.co.jp/gp/product/4839953538/ref=as_li_qf_sp_asin_tl?ie=UTF8&camp=247&creative=1211&creativeASIN=4839953538&linkCode=as2&tag=pinocchio-22">Swiftではじめる iPhoneアプリ開発の教科書 【iOS 8&amp;Xcode 6対応】</a></strong><img src="http://ir-jp.amazon-adsystem.com/e/ir?t=pinocchio-22&l=as2&o=9&a=4839953538" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" /><br />
 この参考書の通りに実践サンプルを作成することで、確実に力を養うことができます。サンプルコードもサイトからダウンロード出来るようになっており、特に広告の貼り方などが参考になりました。Swiftで何が出来るかを知ることができ、入門用にお薦めの1冊です。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[配列に数値を挿入する]]></title>
-    <link href="http://lab.dolice.net/blog/2013/03/30/objc-number-with-int/"/>
-    <updated>2013-03-30T17:37:00+09:00</updated>
-    <id>http://lab.dolice.net/blog/2013/03/30/objc-number-with-int</id>
-    <content type="html"><![CDATA[<p>配列に数値を代入する方法を以下に記載します。</p>
-
-<h2>サンプルダウンロード</h2>
-
-<ul>
-<li><a href="https://github.com/masakihirokawa/objc-number-with-int">https://github.com/masakihirokawa/objc-number-with-int</a></li>
-</ul>
-
-
-<h2>ソースコード</h2>
-
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">main</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="c1">//配列に数値をセット</span>
-</span><span class='line'>  <span class="n">NSArray</span> <span class="o">*</span><span class="n">myArray</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSArray</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithObjects:</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span>                  <span class="p">[</span><span class="n">NSNumber</span> <span class="nl">numberWithInt:</span><span class="mi">0</span><span class="p">],</span>
-</span><span class='line'>                  <span class="p">[</span><span class="n">NSNumber</span> <span class="nl">numberWithInt:</span><span class="mi">0</span><span class="p">],</span>
-</span><span class='line'>                  <span class="p">[</span><span class="n">NSNumber</span> <span class="nl">numberWithInt:</span><span class="mi">320</span><span class="p">],</span>
-</span><span class='line'>                  <span class="p">[</span><span class="n">NSNumber</span> <span class="nl">numberWithInt:</span><span class="mi">568</span><span class="p">],</span>
-</span><span class='line'>                  <span class="nb">nil</span><span class="p">];</span>
-</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;myArray: %@&quot;</span><span class="p">,</span> <span class="n">myArray</span><span class="p">);</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>  <span class="c1">//変更可能な配列に数値を挿入</span>
-</span><span class='line'>  <span class="n">NSMutableArray</span> <span class="o">*</span><span class="n">rectangle</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSMutableArray</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">rectangle</span> <span class="nl">addObject:</span><span class="p">[</span><span class="n">NSNumber</span> <span class="nl">numberWithInt:</span><span class="mi">0</span><span class="p">]];</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">rectangle</span> <span class="nl">addObject:</span><span class="p">[</span><span class="n">NSNumber</span> <span class="nl">numberWithInt:</span><span class="mi">0</span><span class="p">]];</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">rectangle</span> <span class="nl">addObject:</span><span class="p">[</span><span class="n">NSNumber</span> <span class="nl">numberWithInt:</span><span class="mi">320</span><span class="p">]];</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">rectangle</span> <span class="nl">addObject:</span><span class="p">[</span><span class="n">NSNumber</span> <span class="nl">numberWithInt:</span><span class="mi">568</span><span class="p">]];</span>
-</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;rectangle: %@&quot;</span><span class="p">,</span> <span class="n">rectangle</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
-
-<h2>出力結果</h2>
-
-<blockquote><p>myArray: (0, 0, 320, 568)<br />
-rectangle: (0, 0, 320, 568 )</p></blockquote>
-
-<h2>お薦めの参考書</h2>
-
-<p><strong><a href="http://www.amazon.co.jp/gp/product/4861009499/ref=as_li_qf_sp_asin_tl?ie=UTF8&camp=247&creative=1211&creativeASIN=4861009499&linkCode=as2&tag=pinocchio-22">たのしいSwiftプログラミング―[iOS 8&amp;Xcode 6対応]</a></strong><img src="http://ir-jp.amazon-adsystem.com/e/ir?t=pinocchio-22&l=as2&o=9&a=4861009499" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" /><br />
-Swiftについて知りたい開発者の方のみならず、プログラミング未経験者の方にも参考になる内容になっています。Swiftの基礎を一から丁寧に解説されており、この書籍があればネットで調べる手間をかなり省くことができると思います。</p>
 ]]></content>
   </entry>
   
