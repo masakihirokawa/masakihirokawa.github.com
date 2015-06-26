@@ -3,7 +3,7 @@
   <title><![CDATA[Category: iPhone | Dolice Lab]]></title>
   <link href="http://lab.dolice.net/blog/categories/iphone/atom.xml" rel="self"/>
   <link href="http://lab.dolice.net/"/>
-  <updated>2015-06-25T12:18:52+09:00</updated>
+  <updated>2015-06-26T13:21:06+09:00</updated>
   <id>http://lab.dolice.net/</id>
   <author>
     <name><![CDATA[Masaki Hirokawa]]></name>
@@ -11,6 +11,329 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[iOSアプリへの Google Analytics 導入方法]]></title>
+    <link href="http://lab.dolice.net/blog/2015/06/26/ios-google-analytics/"/>
+    <updated>2015-06-26T12:53:00+09:00</updated>
+    <id>http://lab.dolice.net/blog/2015/06/26/ios-google-analytics</id>
+    <content type="html"><![CDATA[<p>iOSアプリに Google Analytics を導入する方法を以下に記載します。</p>
+
+<p>当記事では、カスタムクラスを使用してスクリーントラッキングとイベントトラッキングを行っています。</p>
+
+<h2>導入手順</h2>
+
+<h3>1. Google Analytics SDKのダウンロード</h3>
+
+<p><a href="%22https://developers.google.com/analytics/devguides/collection/ios/resources?hl=ja%22%20Downloads%20-%20iOS%20SDK%20|%20Google%20Analytics%20|%20Google%20Developers">Downloads - iOS SDK | Google Analytics | Google Developers</a> より最新のSDKをダウンロードし、プロジェクトに追加します。</p>
+
+<ul>
+<li><a href="https://developers.google.com/analytics/devguides/collection/ios/resources?hl=ja">https://developers.google.com/analytics/devguides/collection/ios/resources?hl=ja</a></li>
+</ul>
+
+
+<h3>2. フレームワークの追加</h3>
+
+<p>下記 5つのフレームワークをプロジェクトに追加します。</p>
+
+<ul>
+<li>libsqlite3.0.dylib</li>
+<li>libz.dylib</li>
+<li>SystemConfiguration.framework</li>
+<li>CoreData.framework</li>
+<li>AdSupport.framework</li>
+</ul>
+
+
+<h3>3. カスタムクラスの追加</h3>
+
+<p>下記のカスタムクラスをプロジェクトに追加します。</p>
+
+<h4>TrackingManager.h</h4>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">import</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">Foundation</span><span class="o">/</span><span class="n">Foundation</span><span class="p">.</span><span class="n">h</span><span class="o">&gt;&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">import</span> <span class="s">&quot;GAI.h&quot;</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">import</span> <span class="s">&quot;GAIFields.h&quot;</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">import</span> <span class="s">&quot;GAIDictionaryBuilder.h&quot;</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">@interface</span> <span class="nc">TrackingManager</span> : <span class="nc">NSObject</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">pragma</span> <span class="n">mark</span> <span class="o">-</span> <span class="n">public</span> <span class="n">method</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">ul</span><span class="o">&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="n">li</span><span class="o">&gt;</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">sendScreenTracking:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="n">screenName</span><span class="p">;</span><span class="o">&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="n">li</span><span class="o">&gt;</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">sendEventTracking:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">&lt;</span><span class="n">em</span><span class="o">&gt;</span><span class="p">)</span><span class="n">category</span> <span class="nl">action:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">&lt;/</span><span class="n">em</span><span class="o">&gt;</span><span class="p">)</span><span class="n">action</span> <span class="nl">label:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">&lt;</span><span class="n">em</span><span class="o">&gt;</span><span class="p">)</span><span class="n">label</span> <span class="nl">value:</span><span class="p">(</span><span class="n">NSNumber</span> <span class="o">&lt;/</span><span class="n">em</span><span class="o">&gt;</span><span class="p">)</span><span class="n">value</span> <span class="nl">screen:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="n">screen</span><span class="p">;</span><span class="o">&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">ul</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h4>TrackingManager.m</h4>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">import</span> <span class="s">&quot;TrackingManager.h&quot;</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">@implementation</span> <span class="nc">TrackingManager</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">// スクリーン名を GoogleAnalyticsに送信する</span>
+</span><span class='line'><span class="o">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">sendScreenTracking:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="n">screenName</span>
+</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="kt">id</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">GAITracker</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="n">tracker</span> <span class="o">=</span> <span class="p">[[</span><span class="n">GAI</span> <span class="n">sharedInstance</span><span class="p">]</span> <span class="n">defaultTracker</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// スクリーン名を設定</span>
+</span><span class='line'><span class="p">[</span><span class="n">tracker</span> <span class="nl">set:</span><span class="n">kGAIScreenName</span> <span class="nl">value:</span><span class="n">screenName</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// トラッキング情報を送信する</span>
+</span><span class='line'><span class="p">[</span><span class="n">tracker</span> <span class="nl">send:</span><span class="p">[[</span><span class="n">GAIDictionaryBuilder</span> <span class="n">createScreenView</span><span class="p">]</span> <span class="n">build</span><span class="p">]];</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 送信が終わったらtrackerに設定されているスクリーン名を初期化する</span>
+</span><span class='line'><span class="p">[</span><span class="n">tracker</span> <span class="nl">set:</span><span class="n">kGAIScreenName</span> <span class="nl">value:</span><span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">// イベントを GoogleAnalyticsに送信する</span>
+</span><span class='line'><span class="o">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">sendEventTracking:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">&lt;</span><span class="n">em</span><span class="o">&gt;</span><span class="p">)</span><span class="n">category</span> <span class="nl">action:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">&lt;/</span><span class="n">em</span><span class="o">&gt;</span><span class="p">)</span><span class="n">action</span> <span class="nl">label:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">&lt;</span><span class="n">em</span><span class="o">&gt;</span><span class="p">)</span><span class="n">label</span> <span class="nl">value:</span><span class="p">(</span><span class="n">NSNumber</span> <span class="o">&lt;/</span><span class="n">em</span><span class="o">&gt;</span><span class="p">)</span><span class="n">value</span> <span class="nl">screen:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="n">screen</span>
+</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="kt">id</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">GAITracker</span><span class="o">&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="n">tracker</span> <span class="o">=</span> <span class="p">[[</span><span class="n">GAI</span> <span class="n">sharedInstance</span><span class="p">]</span> <span class="n">defaultTracker</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// スクリーン名を設定</span>
+</span><span class='line'><span class="p">[</span><span class="n">tracker</span> <span class="nl">set:</span><span class="n">kGAIScreenName</span> <span class="nl">value:</span><span class="n">screen</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// イベントのトラッキング情報を送信する</span>
+</span><span class='line'><span class="p">[</span><span class="n">tracker</span> <span class="nl">send:</span><span class="p">[[</span><span class="n">GAIDictionaryBuilder</span> <span class="nl">createEventWithCategory:</span><span class="n">category</span> <span class="nl">action:</span><span class="n">action</span> <span class="nl">label:</span><span class="n">label</span> <span class="nl">value:</span><span class="n">value</span><span class="p">]</span> <span class="n">build</span><span class="p">]];</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h3>4. 初期化</h3>
+
+<p><em>AppDelegate</em> のヘッダファイルに <em>GAI.h</em> をインポートし、実装ファイルのアプリケーション起動時の部分でトラッキングIDを指定し初期化します。</p>
+
+<h4>AppDelegate.h</h4>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">import</span> <span class="s">&quot;GAI.h&quot;</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">@interface</span> <span class="nc">AppDelegate</span> : <span class="nc">UIResponder</span> <span class="o">&lt;</span><span class="n">UIApplicationDelegate</span><span class="o">&gt;&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h4>AppDelegate.m</h4>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">application:</span><span class="p">(</span><span class="n">UIApplication</span> <span class="o">&lt;</span><span class="n">em</span><span class="o">&gt;</span><span class="p">)</span><span class="nv">application</span> <span class="nf">didFinishLaunchingWithOptions:</span><span class="p">(</span><span class="n">NSDictionary</span> <span class="o">&lt;/</span><span class="n">em</span><span class="o">&gt;</span><span class="p">)</span><span class="nv">launchOptions</span>
+</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="c1">// Optional: automatically send uncaught exceptions to Google Analytics.</span>
+</span><span class='line'><span class="p">[</span><span class="n">GAI</span> <span class="n">sharedInstance</span><span class="p">].</span><span class="n">trackUncaughtExceptions</span> <span class="o">=</span> <span class="n">YES</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// Optional: set Google Analytics dispatch interval to e.g. 20 seconds.</span>
+</span><span class='line'><span class="p">[</span><span class="n">GAI</span> <span class="n">sharedInstance</span><span class="p">].</span><span class="n">dispatchInterval</span> <span class="o">=</span> <span class="mi">20</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// Optional: set Logger to VERBOSE for debug information.</span>
+</span><span class='line'><span class="p">[[[</span><span class="n">GAI</span> <span class="n">sharedInstance</span><span class="p">]</span> <span class="n">logger</span><span class="p">]</span> <span class="nl">setLogLevel:</span><span class="n">kGAILogLevelNone</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// Initialize tracker. Replace with your tracking ID.</span>
+</span><span class='line'><span class="p">[[</span><span class="n">GAI</span> <span class="n">sharedInstance</span><span class="p">]</span> <span class="nl">trackerWithTrackingId:</span><span class="s">@&quot;Your Tracking ID&quot;</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">return</span> <span class="n">YES</span><span class="p">;</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h2>使用方法</h2>
+
+<h3>1. カスタムクラスの読み込み</h3>
+
+<p>ビューコントローラのヘッダファイルに <em>TrackingManager.h</em> をインポートします。</p>
+
+<h4>SampleViewController.h</h4>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">import</span> <span class="s">&quot;TrackingManager.h&quot;</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">@interface</span> <span class="nc">SampleViewController</span> : <span class="nc">UIViewController</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h3>2-a. スクリーントラッキング</h3>
+
+<p>実装ファイルの <em>viewWillAppear</em> 内でスクリーントラッキングを行います。</p>
+
+<h4>SampleViewController.m</h4>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewWillAppear:</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nv">animated</span>
+</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="p">[</span><span class="n">super</span> <span class="nl">viewWillAppear:</span><span class="n">animated</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// Google Analytics スクリーントラッキング</span>
+</span><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="n">screenName</span> <span class="o">=</span> <span class="n">NSStringFromClass</span><span class="p">([</span><span class="n">self</span> <span class="n">class</span><span class="p">]);</span>
+</span><span class='line'><span class="p">[</span><span class="n">TrackingManager</span> <span class="nl">sendScreenTracking:</span><span class="n">screenName</span><span class="p">];</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h3>2-b. イベントトラッキング</h3>
+
+<p>例えばボタンをタップした際などにイベントトラッキングを行います。</p>
+
+<p>指定できるのは「カテゴリ」「アクション」「ラベル」「値」「スクリーン名」の 5つで、詳細を正確に指定することにより、コンバージョンの設定が容易になります。</p>
+
+<h4>SampleViewController.m</h4>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">buttonTapEvent:</span><span class="p">(</span><span class="n">UIButton</span> <span class="o">*</span><span class="p">)</span><span class="nv">button</span>
+</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="c1">// Google Analytics イベントトラッキング</span>
+</span><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="n">screenName</span> <span class="o">=</span> <span class="n">NSStringFromClass</span><span class="p">([</span><span class="n">self</span> <span class="n">class</span><span class="p">]);</span>
+</span><span class='line'><span class="p">[</span><span class="n">TrackingManager</span> <span class="nl">sendEventTracking:</span><span class="s">@&quot;Button&quot;</span> <span class="nl">action:</span><span class="s">@&quot;Tap&quot;</span>
+</span><span class='line'>                             <span class="nl">label:</span><span class="s">@&quot;Label&quot;</span> <span class="nl">value:</span><span class="mi">1</span> <span class="nl">screen:</span><span class="n">screenName</span><span class="p">];</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>以上で iOSアプリへの Google Analytics 導入は完了になります。</p>
+
+<h2>補足</h2>
+
+<p>もし正常に動作しない場合は、ビルド設定の <em>Other Linker Flags</em> に「<em>-ObjC</em>」を追加してください。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[浮世絵壁紙HD 300枚無料 - iPhone/iPodアプリ]]></title>
@@ -276,131 +599,6 @@
 
 <ul>
 <li><strong><a href="http://bit.ly/1q0FIWt" title="iPhone壁紙特集記事 No.15 - たのしいiPhone！ AppBank">iPhone壁紙特集記事 No.15 - たのしいiPhone！ AppBank</a></strong></li>
-</ul>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Anime Wallpapers 15,000+ sheets - Free iPhone/iPod app]]></title>
-    <link href="http://lab.dolice.net/blog/2014/03/11/ios-illustration-wallpaper-en/"/>
-    <updated>2014-03-11T14:30:00+09:00</updated>
-    <id>http://lab.dolice.net/blog/2014/03/11/ios-illustration-wallpaper-en</id>
-    <content type="html"><![CDATA[<div class="app_screenshot_container"><img src="http://dolice.net/mb/ios/marketing/images/illustration_wallpapers/screenshot/en/screenshot6.jpg" class="app_screenshot" /></div>
-
-
-<p>There's no reason you need to settle for a standard-looking lock screen or home screen on your mobile device when instead you could customize it. The Anime Wallpapers 15,000+ sheets for iPhone 6/6 Plus/5s/5c/5 app can be used on your iPod touch, iPad, and iPhone to completely change up how your device looks. Use these on your lock and/or home screen and what's really cool is that the app is updated daily with new exciting choices.</p>
-
-<p><a href="https://itunes.apple.com/us/app/800+-hd-illustration-wallpapers/id815371940?mt=8&uo=4" target="itunes_store" style="display:inline-block;overflow:hidden;background:url(https://linkmaker.itunes.apple.com/htmlResources/assets/en_us//images/web/linkmaker/badge_appstore-lrg.png) no-repeat;width:135px;height:40px;@media only screen{background-image:url(https://linkmaker.itunes.apple.com/htmlResources/assets/en_us//images/web/linkmaker/badge_appstore-lrg.svg);}"></a></p>
-
-<h2>A Huge Selection of Free Options</h2>
-
-<p>This app provides you with more than 15,000 free wallpapers that you can download and then save to your device. What's great is that it has also been optimized to work with iOS 7 and iOS 8's parallax effect. There are 12 categories of wallpapers to choose from, which also makes it easy to find what you're looking for. During your browsing just add wallpapers to your favorites folder so they are there when you want to use them. As you view the wallpapers in the gallery you'll find that they are displayed as full screen and they are shown as a slideshow. If you come across ones that you think are perfect for your family and friends why not share them through Twitter, Facebook, email, and Instagram.
-There has been a pretty extensive update recently that basically gives users a whole lot more of everything. There are more wallpapers, they are now updated daily, the favorites list is all new, the wallpaper categories are all new, the ability to share on Instagram is new, minor bugs have been fixed, and so much more. The app scores quite high with users getting four out of five stars from them.</p>
-
-<div class="app_screenshot_container mt12"><img src="http://dolice.net/mb/ios/marketing/images/illustration_wallpapers/screenshot/en/screenshot1.jpg" class="app_screenshot" /></div>
-
-
-<h2>The User Experience</h2>
-
-<p>Despite the fact that you have such a wide selection available to you the app itself remains incredibly easy to use. You can view the wallpapers in full screen as mentioned or as a thumbnail if you'd rather. You can enable the push notification to get information whenever updates are made, and there is a list function so that you can check out the most popular and the latest wallpapers.
-I find the app incredibly easy and enjoyable to browse through. I really like all the anime, game and other illustration wallpapers you can discover and the category groupings make navigation much easier. The only downfall for me is the ad banner that appears across the bottom of the screen as it can be a bit distracting.</p>
-
-<div class="app_screenshot_container mt12"><img src="http://dolice.net/mb/ios/marketing/images/illustration_wallpapers/screenshot/en/screenshot2.jpg" class="app_screenshot" /></div>
-
-
-<h2>Pros and Cons</h2>
-
-<h3>Pros</h3>
-
-<ul>
-<li>There are more than 15,000 wallpapers and more are constantly being added</li>
-<li>Mark wallpapers as favorites</li>
-<li>Share wallpaper with friends and family by email, Instagram, Twitter, and Facebook</li>
-<li>Wallpapers are grouped into 12 categories to help you find what you want</li>
-<li>There is a most popular and latest list available</li>
-</ul>
-
-
-<h3>Cons</h3>
-
-<ul>
-<li>The ad banner across the bottom of the screen can be distracting</li>
-</ul>
-
-
-<div class="app_screenshot_container mt12"><img src="http://dolice.net/mb/ios/marketing/images/illustration_wallpapers/screenshot/en/screenshot5.jpg" class="app_screenshot" /></div>
-
-
-<h2>Final Words</h2>
-
-<p>The Anime Wallpapers 15,000+ sheets for iPhone 6/6 Plus/5s/5c/5 app is a beautiful offering that gives you a huge free selection of wallpapers to use for your lock and home screen.</p>
-
-<p><em>Article source: <a href="http://www.apppicker.com/" title="AppPicker.com">AppPicker.com</a></em></p>
-
-<h2>Anime categories</h2>
-
-<ul>
-<li>Japanese Animation</li>
-<li>Dragon Ball</li>
-<li>One Piece</li>
-<li>Naruto Shippūden</li>
-<li>Gintama</li>
-<li>Kuroko's Basketball</li>
-<li>Attack on Titan</li>
-<li>Tokyo Ghoul</li>
-<li>Neon Genesis Evangelion</li>
-<li>Hatsune Miku</li>
-<li>American Comics</li>
-</ul>
-
-
-<h2>Main functions</h2>
-
-<ol>
-<li>Browse pages and save wallpapers</li>
-<li>Wallpapers are added and updated daily</li>
-<li>List functions for the latest and popular wallpapers</li>
-<li>Display over 12 wallpaper categories</li>
-<li>Wallpaper favorites function</li>
-<li>View a list of wallpaper thumbnails</li>
-<li>Display wallpapers full screen</li>
-<li>Wallpaper slideshow function</li>
-<li>Share wallpapers via Facebook / Twitter / Instagram / email</li>
-<li>Learn about wallpaper updates through push notifications</li>
-</ol>
-
-
-<h2>Wallpaper sizes</h2>
-
-<ul>
-<li>iPhone 6: 890 × 1590 pixel</li>
-<li>iPhone 6 Plus: 1438 × 2592 pixel</li>
-<li>iPhone 5s/5c/5: 744 × 1392 pixel</li>
-</ul>
-
-
-<h2>Price</h2>
-
-<ul>
-<li>Free</li>
-</ul>
-
-
-<h2>Official Facebook Page</h2>
-
-<ul>
-<li><a href="https://www.facebook.com/dolice.anime.wallpapers">https://www.facebook.com/dolice.anime.wallpapers</a></li>
-</ul>
-
-
-<p><a href="https://itunes.apple.com/us/app/800+-hd-illustration-wallpapers/id815371940?mt=8&uo=4" target="itunes_store" style="display:inline-block;overflow:hidden;background:url(https://linkmaker.itunes.apple.com/htmlResources/assets/en_us//images/web/linkmaker/badge_appstore-lrg.png) no-repeat;width:135px;height:40px;@media only screen{background-image:url(https://linkmaker.itunes.apple.com/htmlResources/assets/en_us//images/web/linkmaker/badge_appstore-lrg.svg);}"></a></p>
-
-<h2>Related article</h2>
-
-<ul>
-<li><strong><a href="/blog/2014/03/11/ios-beautiful-wallpaper-en/" title="Beautiful Wallpapers HD 20,000+ sheets - Free iPhone/iPod app">Beautiful Wallpapers HD 20,000+ sheets - Free iPhone/iPod app</a></strong></li>
-<li><strong><a href="/blog/2014/03/11/ios-cool-wallpaper-en/" title="Cool Wallpapers HD 20,000+ sheets - Free iPhone/iPod app">Cool Wallpapers HD 20,000+ sheets - Free iPhone/iPod app</a></strong></li>
 </ul>
 
 ]]></content>
