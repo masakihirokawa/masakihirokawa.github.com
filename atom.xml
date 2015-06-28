@@ -4,7 +4,7 @@
   <title><![CDATA[Dolice Lab]]></title>
   <link href="http://lab.dolice.net/atom.xml" rel="self"/>
   <link href="http://lab.dolice.net/"/>
-  <updated>2015-06-26T13:21:06+09:00</updated>
+  <updated>2015-06-28T13:17:05+09:00</updated>
   <id>http://lab.dolice.net/</id>
   <author>
     <name><![CDATA[Masaki Hirokawa]]></name>
@@ -12,6 +12,103 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[iOSのアプリ内課金クラス「DCInAppPurchase」]]></title>
+    <link href="http://lab.dolice.net/blog/2015/06/28/objc-classes-dc-in-app-purchase/"/>
+    <updated>2015-06-28T12:55:00+09:00</updated>
+    <id>http://lab.dolice.net/blog/2015/06/28/objc-classes-dc-in-app-purchase</id>
+    <content type="html"><![CDATA[<p>iOSでアプリ内課金をする「<a href="%22DCInAppPurchase%22%20https://github.com/masakihirokawa/objc-classes-dc-in-app-purchase">DCInAppPurchase</a>」クラスを GitHub に公開しました。</p>
+
+<p>購入対象のプロダクトIDと、呼び出し元のビューを渡して購入／リストア処理を行います。</p>
+
+<p>このクラスの使用には、<em>StoreKit</em> フレームワークが必要になります。</p>
+
+<h2>ダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-classes-dc-in-app-purchase">https://github.com/masakihirokawa/objc-classes-dc-in-app-purchase</a></li>
+</ul>
+
+
+<h2>導入手順</h2>
+
+<h3>1. グローバル定義</h3>
+
+<p>プロジェクトの <em>*.pch</em> ファイルでクラスのインスタンスを定義し、どこからでも呼び出せるようグローバル化します。</p>
+
+<h4>*.pch</h4>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;DCInAppPurchase.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">DCInAppPurchase</span> <span class="o">*</span><span class="n">inAppPurchase</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>2. 初期化</h3>
+
+<p><em>AppDelegate.m</em> でアプリ起動時に初期化します。</p>
+
+<h4>AppDelegate.m</h4>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">application:</span><span class="p">(</span><span class="n">UIApplication</span> <span class="o">*</span><span class="p">)</span><span class="nv">application</span> <span class="nf">didFinishLaunchingWithOptions:</span><span class="p">(</span><span class="n">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nv">launchOptions</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">inAppPurchase</span> <span class="o">=</span> <span class="p">[[</span><span class="n">DCInAppPurchase</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>3. アイテム付与部分の実装</h3>
+
+<p><em>DCInAppPurchase.m</em> の 137〜142行目にある <em>provideContent</em> 内に購入完了時の処理を記述します。</p>
+
+<h4>DCInAppPurchase.m</h4>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">provideContent:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">productIdentifier</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// TODO: ここでアイテム付与を行う</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>使用方法</h2>
+
+<h3>アイテムの購入</h3>
+
+<p>アイテムのプロダクトIDを渡してアイテムの購入処理を開始します。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">[</span><span class="n">inAppPurchase</span> <span class="nl">startPurchase:</span><span class="s">@&quot;Product ID&quot;</span> <span class="nl">view:</span><span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>アイテムのリストア</h3>
+
+<p>アイテムのプロダクトIDを渡してアイテムのリストア処理を開始します。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">[</span><span class="n">inAppPurchase</span> <span class="nl">restorePurchase:</span><span class="s">@&quot;Product ID&quot;</span> <span class="nl">view:</span><span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>以上が導入から使用までの流れになります。</p>
+
+<p>2013年に作成したもののため大雑把な造りですが、現在リリース中のアプリで動作確認済みです。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[iOSアプリへの Google Analytics 導入方法]]></title>
@@ -2653,62 +2750,6 @@ Swiftについて知りたい開発者の方のみならず、プログラミン
 
 <p><strong><a href="http://www.amazon.co.jp/gp/product/4861009499/ref=as_li_qf_sp_asin_tl?ie=UTF8&camp=247&creative=1211&creativeASIN=4861009499&linkCode=as2&tag=pinocchio-22">たのしいSwiftプログラミング―[iOS 8&amp;Xcode 6対応]</a></strong><img src="http://ir-jp.amazon-adsystem.com/e/ir?t=pinocchio-22&l=as2&o=9&a=4861009499" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" /><br />
 Swiftについて知りたい開発者の方のみならず、プログラミング未経験者の方にも参考になる内容になっています。Swiftの基礎を一から丁寧に解説されており、この書籍があればネットで調べる手間をかなり省くことができると思います。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[iPhoneアプリ「望みが叶う！引き寄せの法則アプリ」リリース]]></title>
-    <link href="http://lab.dolice.net/blog/2014/05/22/ios-law-of-attraction/"/>
-    <updated>2014-05-22T10:19:00+09:00</updated>
-    <id>http://lab.dolice.net/blog/2014/05/22/ios-law-of-attraction</id>
-    <content type="html"><![CDATA[<p><img src="http://lab.dolice.net/images/article/law_of_attraction.jpg" title="iPhone App: 望みが叶う！引き寄せの法則アプリ" alt="iPhone App: 望みが叶う！引き寄せの法則アプリ" /></p>
-
-<p>引き寄せの法則を無理なく効果的に実践できる iPhoneアプリ「<a href="https://itunes.apple.com/us/app/law-of-attraction-free/id841157677?ls=1&amp;mt=8" title="望みが叶う！引き寄せの法則アプリ">望みが叶う！引き寄せの法則アプリ</a>」をリリースしました。</p>
-
-<p>西洋では20世紀初頭から引き寄せの法則について書かれた著書が出版され、現代でもナポレオン・ヒル氏の名著「Think and Grow Rich」（邦題:「思考は現実化する」）で知られるこの法則ですが、国内ではまだ認知度は低く、一部の方に知られるのみとなっています。</p>
-
-<p>絶大な効果があるにも関わらず科学的な根拠が明確ではないことから、未だ如何わしく宗教的なイメージがあるのも事実です。しかし、個人的には「魔法にも何らかの科学的根拠がある」と思っており、この法則を実践し自分の望みを何度か実現させれば、理性も納得し次から次へと望みを引き寄せられるようになります。自分もこの法則の恩恵を受け、完全な経済的自立とクリエイティブな毎日を実現しました。</p>
-
-<p>ただ、正しい望みの作成法や、引き寄せの習慣化の面で挫折してしまう方も多いのではないかと思い、このアプリには効果的な望みのサンプル文を200パターン以上用意し、自分の好きな時間に引き寄せのタイミングを知らせる「プッシュ通知機能」を搭載しました。また、プライバシー性の高いアプリであることから「パスワードロック機能」を搭載し、大事なデータを失わないよう「iCloudへのバックアップ機能」も搭載しています。</p>
-
-<p>開発には相応の労力と時間を費やしましたが、自分にとって大切な技術資産ができました。そして、このアプリで今より幸福になる方が増えれば世の中に少しでも貢献できるのではないかと思い、それを励みに頑張ることができました。このアプリを切っ掛けに引き寄せの法則を実践し、自分の望みを実現する方が1人でも多く増えるよう祈っています。</p>
-
-<p>下記から無料でアプリをダウンロードできますので、是非ご利用ください。</p>
-
-<p><a href="https://itunes.apple.com/jp/app/wangmiga-yeu!-yinki-jiseno/id841157677?mt=8&uo=4" target="itunes_store" style="display:inline-block;overflow:hidden;background:url(https://linkmaker.itunes.apple.com/htmlResources/assets/ja_jp//images/web/linkmaker/badge_appstore-lrg.png) no-repeat;width:135px;height:40px;@media only screen{background-image:url(https://linkmaker.itunes.apple.com/htmlResources/assets/ja_jp//images/web/linkmaker/badge_appstore-lrg.svg);}"></a></p>
-
-<h2>主な機能</h2>
-
-<ul>
-<li>直感的な操作で美しい「望み」を引き寄せ</li>
-<li>豊富なサンプル文から自分好みの「望み」を作成</li>
-<li>引き寄せの時間を忘れないようプッシュ通知を設定</li>
-<li>アプリ起動時のパスワードロック機能</li>
-<li>iCloudへのバックアップ機能</li>
-</ul>
-
-
-<h2>価格</h2>
-
-<ul>
-<li>無料</li>
-</ul>
-
-
-<h2>対応言語</h2>
-
-<ul>
-<li>日本語</li>
-<li>英語</li>
-</ul>
-
-
-<h2>公式Facebookページ</h2>
-
-<ul>
-<li><a href="https://www.facebook.com/dolice.law.of.attraction">https://www.facebook.com/dolice.law.of.attraction</a></li>
-</ul>
-
 ]]></content>
   </entry>
   

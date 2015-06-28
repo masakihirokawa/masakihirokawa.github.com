@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title><![CDATA[Category: In-AppPurchase | Dolice Lab]]></title>
+  <link href="http://lab.dolice.net/blog/categories/in-apppurchase/atom.xml" rel="self"/>
+  <link href="http://lab.dolice.net/"/>
+  <updated>2015-06-28T13:17:05+09:00</updated>
+  <id>http://lab.dolice.net/</id>
+  <author>
+    <name><![CDATA[Masaki Hirokawa]]></name>
+    <email><![CDATA[info@dolice.net]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[iOSのアプリ内課金クラス「DCInAppPurchase」]]></title>
+    <link href="http://lab.dolice.net/blog/2015/06/28/objc-classes-dc-in-app-purchase/"/>
+    <updated>2015-06-28T12:55:00+09:00</updated>
+    <id>http://lab.dolice.net/blog/2015/06/28/objc-classes-dc-in-app-purchase</id>
+    <content type="html"><![CDATA[<p>iOSでアプリ内課金をする「<a href="%22DCInAppPurchase%22%20https://github.com/masakihirokawa/objc-classes-dc-in-app-purchase">DCInAppPurchase</a>」クラスを GitHub に公開しました。</p>
+
+<p>購入対象のプロダクトIDと、呼び出し元のビューを渡して購入／リストア処理を行います。</p>
+
+<p>このクラスの使用には、<em>StoreKit</em> フレームワークが必要になります。</p>
+
+<h2>ダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-classes-dc-in-app-purchase">https://github.com/masakihirokawa/objc-classes-dc-in-app-purchase</a></li>
+</ul>
+
+
+<h2>導入手順</h2>
+
+<h3>1. グローバル定義</h3>
+
+<p>プロジェクトの <em>*.pch</em> ファイルでクラスのインスタンスを定義し、どこからでも呼び出せるようグローバル化します。</p>
+
+<h4>*.pch</h4>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">import</span> <span class="s">&quot;DCInAppPurchase.h&quot;</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="n">DCInAppPurchase</span> <span class="o">*</span><span class="n">inAppPurchase</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h3>2. 初期化</h3>
+
+<p><em>AppDelegate.m</em> でアプリ起動時に初期化します。</p>
+
+<h4>AppDelegate.m</h4>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">application:</span><span class="p">(</span><span class="n">UIApplication</span> <span class="o">&lt;</span><span class="n">em</span><span class="o">&gt;</span><span class="p">)</span><span class="nv">application</span> <span class="nf">didFinishLaunchingWithOptions:</span><span class="p">(</span><span class="n">NSDictionary</span> <span class="o">&lt;/</span><span class="n">em</span><span class="o">&gt;</span><span class="p">)</span><span class="nv">launchOptions</span>
+</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">inAppPurchase</span> <span class="o">=</span> <span class="p">[[</span><span class="n">DCInAppPurchase</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h3>3. アイテム付与部分の実装</h3>
+
+<p><em>DCInAppPurchase.m</em> の 137〜142行目にある <em>provideContent</em> 内に購入完了時の処理を記述します。</p>
+
+<h4>DCInAppPurchase.m</h4>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">provideContent:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">productIdentifier</span>
+</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="c1">// TODO: ここでアイテム付与を行う</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h2>使用方法</h2>
+
+<h3>アイテムの購入</h3>
+
+<p>アイテムのプロダクトIDを渡してアイテムの購入処理を開始します。</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">[</span><span class="n">inAppPurchase</span> <span class="nl">startPurchase:</span><span class="s">@&quot;Product ID&quot;</span> <span class="nl">view:</span><span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h3>アイテムのリストア</h3>
+
+<p>アイテムのプロダクトIDを渡してアイテムのリストア処理を開始します。</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">[</span><span class="n">inAppPurchase</span> <span class="nl">restorePurchase:</span><span class="s">@&quot;Product ID&quot;</span> <span class="nl">view:</span><span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>以上が導入から使用までの流れになります。</p>
+
+<p>2013年に作成したもののため大雑把な造りですが、現在リリース中のアプリで動作確認済みです。</p>
+]]></content>
+  </entry>
+  
+</feed>
