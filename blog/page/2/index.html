@@ -6,12 +6,38 @@
 	<title>Dolice Lab</title>
 
 
-	<meta name="description" content="Androidアプリで画像とテキストを共有する方法を以下に記載します。 下記のサンプルでは、ShareCompat を使用して画像とテキストを共有しています。 画像を共有する場合は画像の URIを指定する必要があり、URIの取得方法については後日別の記事で解説します。 サンプルソースコード &hellip;" />
+	<meta name="description" content="iOS/Androidアプリで配列をループ化し取得する方法を以下に記載します。 下記のサンプルでは、配列を指定したインデックスを先頭に、それより前の要素を後ろの方に追加することでループ化しています。 サンプルソースコード iOS 1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14 &hellip;" />
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
     <meta property="og:locale" content="ja_JP" />
     <meta property="og:title" content="Dolice Lab" />
-    <meta property="og:description" content="Androidアプリで画像とテキストを共有する方法を以下に記載します。 下記のサンプルでは、ShareCompat を使用して画像とテキストを共有しています。 画像を共有する場合は画像の URIを指定する必要があり、URIの取得方法については後日別の記事で解説します。 サンプルソースコード &hellip;" />
+    <meta property="og:description" content="iOS/Androidアプリで配列をループ化し取得する方法を以下に記載します。 下記のサンプルでは、配列を指定したインデックスを先頭に、それより前の要素を後ろの方に追加することでループ化しています。 サンプルソースコード iOS 1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14 &hellip;" />
     <meta property="og:url" content="http://lab.dolice.net/blog/page/2/" />
     <meta property="og:image" content="/images/facebook-icon.jpg" />
     <meta property="og:author" content="Masaki Hirokawa" />
@@ -104,6 +130,193 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2015/06/25/ios-android-array-loop/">
+		
+			配列のループ化（iOS/Android）</a>
+	</h2>
+	<div class="entry-content">
+		<p>iOS/Androidアプリで配列をループ化し取得する方法を以下に記載します。</p>
+
+<p>下記のサンプルでは、配列を指定したインデックスを先頭に、それより前の要素を後ろの方に追加することでループ化しています。</p>
+
+<h2>サンプルソースコード</h2>
+
+<h3>iOS</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSArray</span> <span class="o">*</span><span class="p">)</span><span class="nf">loopArray:</span><span class="p">(</span><span class="n">NSArray</span> <span class="o">*</span><span class="p">)</span><span class="nv">list</span> <span class="nf">index:</span><span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="nv">index</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">NSMutableArray</span> <span class="o">*</span><span class="n">loopList</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSMutableArray</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithArray:</span><span class="n">list</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 指定したインデックスより前のリストを保持</span>
+</span><span class='line'>    <span class="n">NSMutableArray</span> <span class="o">*</span><span class="n">frontList</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSMutableArray</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">index</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">frontList</span> <span class="nl">addObject:</span><span class="n">loopList</span><span class="p">[</span><span class="n">i</span><span class="p">]];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 新しいリストを生成</span>
+</span><span class='line'>    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="p">[</span><span class="n">frontList</span> <span class="n">count</span><span class="p">];</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">loopList</span> <span class="nl">removeObjectAtIndex:</span><span class="mi">0</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">loopList</span> <span class="nl">addObject:</span><span class="n">frontList</span><span class="p">[</span><span class="n">i</span><span class="p">]];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="n">loopList</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>使用方法</h4>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">// 基の配列を生成</span>
+</span><span class='line'><span class="n">NSArray</span> <span class="o">*</span><span class="n">originalList</span> <span class="o">=</span> <span class="err">@</span><span class="p">[</span><span class="err">@</span><span class="mi">111</span><span class="p">,</span> <span class="err">@</span><span class="mi">222</span><span class="p">,</span> <span class="err">@</span><span class="mi">333</span><span class="p">,</span> <span class="err">@</span><span class="mi">444</span><span class="p">,</span> <span class="err">@</span><span class="mi">555</span><span class="p">,</span> <span class="err">@</span><span class="mi">666</span><span class="p">,</span> <span class="err">@</span><span class="mi">777</span><span class="p">,</span> <span class="err">@</span><span class="mi">888</span><span class="p">,</span> <span class="err">@</span><span class="mi">999</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 配列をループ化し取得</span>
+</span><span class='line'><span class="n">NSArray</span> <span class="o">*</span><span class="n">loopList</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="nl">loopArray:</span><span class="n">originalList</span> <span class="nl">index:</span><span class="mi">4</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 出力</span>
+</span><span class='line'><span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;%@&quot;</span><span class="p">,</span> <span class="n">loopList</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>出力結果</h4>
+
+<blockquote><p>555, 666, 777, 888, 999, 111, 222, 333, 444</p></blockquote>
+
+<h3>Android</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="nf">getLoopIntegerList</span><span class="o">(</span><span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">list</span><span class="o">,</span> <span class="kt">int</span> <span class="n">index</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>    <span class="c1">// 指定したインデックスより前のリストを保持</span>
+</span><span class='line'>    <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">frontList</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;();</span>
+</span><span class='line'>    <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">index</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">frontList</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">list</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">i</span><span class="o">));</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 新しいリストを生成</span>
+</span><span class='line'>    <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">frontList</span><span class="o">.</span><span class="na">size</span><span class="o">();</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">list</span><span class="o">.</span><span class="na">remove</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">list</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">frontList</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">i</span><span class="o">));</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="n">list</span><span class="o">;</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>使用方法</h4>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="c1">// 基の配列を生成</span>
+</span><span class='line'><span class="n">Int</span><span class="o">[]</span> <span class="n">intList</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Int</span><span class="o">[]</span> <span class="o">{</span> <span class="mi">111</span><span class="o">,</span> <span class="mi">222</span><span class="o">,</span> <span class="mi">333</span><span class="o">,</span> <span class="mi">444</span><span class="o">,</span> <span class="mi">555</span><span class="o">,</span> <span class="mi">666</span><span class="o">,</span> <span class="mi">777</span><span class="o">,</span> <span class="mi">888</span><span class="o">,</span> <span class="mi">999</span> <span class="o">};</span>
+</span><span class='line'><span class="n">Integer</span><span class="o">[]</span> <span class="n">integerList</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Integer</span><span class="o">[</span><span class="n">intList</span><span class="o">.</span><span class="na">length</span><span class="o">];</span>
+</span><span class='line'><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+</span><span class='line'><span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">value</span> <span class="o">:</span> <span class="n">intList</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>    <span class="n">integerList</span><span class="o">[</span><span class="n">i</span><span class="o">++]</span> <span class="o">=</span> <span class="n">value</span><span class="o">;</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'><span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">originalList</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;(</span><span class="n">Arrays</span><span class="o">.</span><span class="na">asList</span><span class="o">(</span><span class="n">integerList</span><span class="o">));</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 配列をループ化し取得</span>
+</span><span class='line'><span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">loopList</span> <span class="o">=</span> <span class="n">getLoopIntegerList</span><span class="o">(</span><span class="n">originalList</span><span class="o">,</span> <span class="mi">4</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 出力</span>
+</span><span class='line'><span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">value</span> <span class="o">:</span> <span class="n">loopList</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>    <span class="n">Log</span><span class="o">.</span><span class="na">d</span><span class="o">(</span><span class="s">&quot;loopList&quot;</span><span class="o">,</span> <span class="s">&quot;&quot;</span> <span class="o">+</span> <span class="n">value</span><span class="o">);</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>出力結果</h4>
+
+<blockquote><p>555, 666, 777, 888, 999, 111, 222, 333, 444</p></blockquote>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-06-25T10:45:00+09:00" pubdate data-updated="true">Jun 25<span>th</span>, 2015</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/android/'>Android</a>, <a class='category' href='/blog/categories/arraylist/'>ArrayList</a>, <a class='category' href='/blog/categories/java/'>Java</a>, <a class='category' href='/blog/categories/nsarray/'>NSArray</a>, <a class='category' href='/blog/categories/nsmutablearray/'>NSMutableArray</a>, <a class='category' href='/blog/categories/objective-c/'>Objective-C</a>
+
+
+</div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -316,346 +529,6 @@
 </div>
 </article>
 
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2015/05/04/android-admob-interstitial-ad/">
-		
-			Androidアプリへの AdMob インタースティシャル広告導入</a>
-	</h2>
-	<div class="entry-content">
-		<p>Androidアプリに <a href="https://apps.admob.com/" title="AdMob">AdMob</a> のインタースティシャル広告を導入するサンプルを作成しました。</p>
-
-<p>下記のサンプルでは、アプリがスリープ状態から復帰した時と、画面が再度読み込まれた時に全面広告が表示されます。</p>
-
-<h2>サンプルダウンロード</h2>
-
-<ul>
-<li><a href="https://github.com/masakihirokawa/android-admob-interstitial-ad">https://github.com/masakihirokawa/android-admob-interstitial-ad</a></li>
-</ul>
-
-
-<h2>公式ドキュメント</h2>
-
-<ul>
-<li><a href="https://developers.google.com/mobile-ads-sdk/docs/admob/android/interstitial?hl=ja">https://developers.google.com/mobile-ads-sdk/docs/admob/android/interstitial?hl=ja</a></li>
-</ul>
-
-
-<h2>導入手順</h2>
-
-<h3>1. Google Play Services SDK の読み込み</h3>
-
-<p><em>build.gradle</em> から <strong>Google Play Services SDK</strong> を読み込みます。バージョンは最新版を指定してください。</p>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='text'><span class='line'>dependencies {
-</span><span class='line'>    // 省略
-</span><span class='line'>    compile &#39;com.google.android.gms:play-services:7.3.0&#39;
-</span><span class='line'>}
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>2. AdMob 広告ユニットID の指定</h3>
-
-<p><em>AdMobIntersBanner.java</em> の14行目で広告ユニットID を指定します。</p>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">INTERS_AD_UNIT_ID</span> <span class="o">=</span> <span class="s">&quot;Your AdMob Ad unit ID&quot;</span><span class="o">;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>3. デバッグモードの指定</h3>
-
-<p><em>AdMobIntersBanner.java</em> の15行目でデバッグモードをオンにしてください。</p>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">boolean</span> <span class="n">DEBUG_MODE</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>4. テスト端末のデバイスID を指定</h3>
-
-<p><em>AdMobIntersBanner.java</em> の17行目でテスト端末のデバイスID を指定します。</p>
-
-<p>デバイスIDは、実機で一度広告を表示すると Android Studio の <em>LogCat</em> に表示されます。</p>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span><span class="o">[]</span> <span class="n">DEBUG_DEVICE_ID</span> <span class="o">=</span> <span class="o">{</span>
-</span><span class='line'>    <span class="s">&quot;Your test device ID&quot;</span>
-</span><span class='line'><span class="o">};</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>5. テスト端末の追加</h3>
-
-<p><em>AdMobIntersBanner.java</em> の51行目にあるコメントアウトを外し、テスト端末を追加します。</p>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">adRequest</span> <span class="o">=</span> <span class="k">new</span> <span class="n">AdRequest</span><span class="o">.</span><span class="na">Builder</span><span class="o">()</span>
-</span><span class='line'>        <span class="o">.</span><span class="na">addTestDevice</span><span class="o">(</span><span class="n">AdRequest</span><span class="o">.</span><span class="na">DEVICE_ID_EMULATOR</span><span class="o">)</span>
-</span><span class='line'>        <span class="o">.</span><span class="na">addTestDevice</span><span class="o">(</span><span class="n">DEBUG_DEVICE_ID</span><span class="o">[</span><span class="mi">0</span><span class="o">])</span>
-</span><span class='line'>        <span class="o">.</span><span class="na">build</span><span class="o">();</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>下記に実装サンプルを記載します。導入の際のご参考になれば幸いです。</p>
-
-<h2>サンプルソースコード</h2>
-
-<h3>MainActivity.java</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kn">package</span> <span class="n">net</span><span class="o">.</span><span class="na">dolice</span><span class="o">.</span><span class="na">admobinterstitialadex</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kn">import</span> <span class="nn">android.app.Activity</span><span class="o">;</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">android.os.Bundle</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kn">import</span> <span class="nn">net.dolice.ad.AdMobIntersBanner</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MainActivity</span> <span class="kd">extends</span> <span class="n">Activity</span> <span class="o">{</span>
-</span><span class='line'>    <span class="kd">private</span> <span class="n">AdMobIntersBanner</span> <span class="n">mIntersAd</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nd">@Override</span>
-</span><span class='line'>    <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">onCreate</span><span class="o">(</span><span class="n">Bundle</span> <span class="n">savedInstanceState</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="kd">super</span><span class="o">.</span><span class="na">onCreate</span><span class="o">(</span><span class="n">savedInstanceState</span><span class="o">);</span>
-</span><span class='line'>        <span class="n">setContentView</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">layout</span><span class="o">.</span><span class="na">activity_main</span><span class="o">);</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="c1">// 全面広告の読み込み</span>
-</span><span class='line'>        <span class="n">preloadInterstitialAd</span><span class="o">();</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 全面広告の読み込み</span>
-</span><span class='line'>    <span class="kd">private</span> <span class="kt">void</span> <span class="nf">preloadInterstitialAd</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>        <span class="n">mIntersAd</span> <span class="o">=</span> <span class="k">new</span> <span class="n">AdMobIntersBanner</span><span class="o">();</span>
-</span><span class='line'>        <span class="n">mIntersAd</span><span class="o">.</span><span class="na">preload</span><span class="o">(</span><span class="k">this</span><span class="o">);</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// 全面広告が読み込み完了していれば表示</span>
-</span><span class='line'>    <span class="kd">private</span> <span class="kt">void</span> <span class="nf">showInterstitialAd</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>        <span class="c1">// 全面広告表示</span>
-</span><span class='line'>        <span class="k">if</span> <span class="o">(</span><span class="n">mIntersAd</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>            <span class="n">mIntersAd</span><span class="o">.</span><span class="na">show</span><span class="o">();</span>
-</span><span class='line'>        <span class="o">}</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nd">@Override</span>
-</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onRestart</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>        <span class="kd">super</span><span class="o">.</span><span class="na">onRestart</span><span class="o">();</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="c1">// 全面広告が読み込み完了していれば表示</span>
-</span><span class='line'>        <span class="n">showInterstitialAd</span><span class="o">();</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>AdMobIntersBanner.java</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kn">package</span> <span class="n">net</span><span class="o">.</span><span class="na">dolice</span><span class="o">.</span><span class="na">ad</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kn">import</span> <span class="nn">android.content.Context</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kn">import</span> <span class="nn">com.google.android.gms.ads.AdRequest</span><span class="o">;</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">com.google.android.gms.ads.InterstitialAd</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="cm">/**</span>
-</span><span class='line'><span class="cm"> * Created by Dolice on 15/03/19.</span>
-</span><span class='line'><span class="cm"> */</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">AdMobIntersBanner</span> <span class="o">{</span>
-</span><span class='line'>    <span class="kd">private</span> <span class="n">InterstitialAd</span> <span class="n">mIntersAd</span><span class="o">;</span>
-</span><span class='line'>    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">INTERS_AD_UNIT_ID</span> <span class="o">=</span> <span class="s">&quot;Your AdMob Ad unit ID&quot;</span><span class="o">;</span>
-</span><span class='line'>    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">boolean</span> <span class="n">DEBUG_MODE</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
-</span><span class='line'>    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span><span class="o">[]</span> <span class="n">DEBUG_DEVICE_ID</span> <span class="o">=</span> <span class="o">{</span>
-</span><span class='line'>            <span class="s">&quot;Your test device ID&quot;</span>
-</span><span class='line'>    <span class="o">};</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="cm">/**</span>
-</span><span class='line'><span class="cm">     * 全面広告のプリロード</span>
-</span><span class='line'><span class="cm">     * @param context</span>
-</span><span class='line'><span class="cm">     */</span>
-</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">preload</span><span class="o">(</span><span class="n">Context</span> <span class="n">context</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="n">mIntersAd</span> <span class="o">=</span> <span class="k">new</span> <span class="n">InterstitialAd</span><span class="o">(</span><span class="n">context</span><span class="o">);</span>
-</span><span class='line'>        <span class="n">mIntersAd</span><span class="o">.</span><span class="na">setAdUnitId</span><span class="o">(</span><span class="n">INTERS_AD_UNIT_ID</span><span class="o">);</span>
-</span><span class='line'>        <span class="n">mIntersAd</span><span class="o">.</span><span class="na">loadAd</span><span class="o">(</span><span class="n">getAdRequest</span><span class="o">());</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="cm">/**</span>
-</span><span class='line'><span class="cm">     * 全面広告の表示</span>
-</span><span class='line'><span class="cm">     */</span>
-</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">show</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>        <span class="k">if</span> <span class="o">(</span><span class="n">mIntersAd</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>            <span class="k">return</span><span class="o">;</span>
-</span><span class='line'>        <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="k">if</span> <span class="o">(</span><span class="n">mIntersAd</span><span class="o">.</span><span class="na">isLoaded</span><span class="o">())</span> <span class="o">{</span>
-</span><span class='line'>            <span class="n">mIntersAd</span><span class="o">.</span><span class="na">show</span><span class="o">();</span>
-</span><span class='line'>        <span class="o">}</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="cm">/**</span>
-</span><span class='line'><span class="cm">     * 広告リクエストの取得</span>
-</span><span class='line'><span class="cm">     */</span>
-</span><span class='line'>    <span class="kd">private</span> <span class="n">AdRequest</span> <span class="nf">getAdRequest</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>        <span class="n">AdRequest</span> <span class="n">adRequest</span><span class="o">;</span>
-</span><span class='line'>        <span class="k">if</span> <span class="o">(</span><span class="n">DEBUG_MODE</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>            <span class="n">adRequest</span> <span class="o">=</span> <span class="k">new</span> <span class="n">AdRequest</span><span class="o">.</span><span class="na">Builder</span><span class="o">()</span>
-</span><span class='line'>                    <span class="o">.</span><span class="na">addTestDevice</span><span class="o">(</span><span class="n">AdRequest</span><span class="o">.</span><span class="na">DEVICE_ID_EMULATOR</span><span class="o">)</span>
-</span><span class='line'>                    <span class="c1">//.addTestDevice(DEBUG_DEVICE_ID[0])</span>
-</span><span class='line'>                    <span class="o">.</span><span class="na">build</span><span class="o">();</span>
-</span><span class='line'>        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
-</span><span class='line'>            <span class="n">adRequest</span> <span class="o">=</span> <span class="k">new</span> <span class="n">AdRequest</span><span class="o">.</span><span class="na">Builder</span><span class="o">().</span><span class="na">build</span><span class="o">();</span>
-</span><span class='line'>        <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="k">return</span> <span class="n">adRequest</span><span class="o">;</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>以上で AdMob インタースティシャル広告の導入は完了になります。</p>
-
-<p><a href="https://developers.google.com/mobile-ads-sdk/docs/admob/android/interstitial?hl=ja" title="公式ドキュメント">公式ドキュメント</a>に解りやすくサンプルが掲載されていますので、そちらも参考にされると良いかもしれません。</p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2015-05-04T10:13:00+09:00" pubdate data-updated="true">May 4<span>th</span>, 2015</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/admob/'>AdMob</a>, <a class='category' href='/blog/categories/android/'>Android</a>, <a class='category' href='/blog/categories/java/'>Java</a>
-
-
-</div>
-	
-</div>
-</article>
-
 <nav id="pagenavi">
     
         <a href="/" class="prev">Prev</a>
@@ -735,6 +608,10 @@
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2015/08/13/ios-relaxing-healing/">iPhoneアプリ「リラックス・ヒーリング」アップデート</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2015/06/28/objc-classes-dc-in-app-purchase/">iOSでアプリ内課金をする「DCInAppPurchase」クラス</a>
       </li>
     
@@ -776,10 +653,6 @@
     
       <li class="post">
         <a href="/blog/2015/05/03/android-beautiful-wallpapers-en/">Beautiful Wallpapers HD - Android app</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/10/24/ios-ukiyo-e-ja/">浮世絵壁紙HD 300枚無料 - iPhone/iPodアプリ</a>
       </li>
     
   </ul>
