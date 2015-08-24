@@ -6,12 +6,12 @@
 	<title>Dolice Lab</title>
 
 
-	<meta name="description" content="UITabBarを使用した画面で、タブメニュー外のボタンから画面遷移する方法を以下に記載します。 UITabBarControllerの selectedViewControllerの値に遷移先 ViewControllerのインデックスIDを渡して実行します。 &hellip;" />
+	<meta name="description" content="Objective-Cで Photoshopのように画像を合成して表示する「DCBlendImage」クラスを作成しました。 ベース画像とブレンド画像、ブレンドモード、アルファ値、画像の寸法を指定して使用します。 下記よりファイルのダウンロードが行えます。 ダウンロード https:// &hellip;" />
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
     <meta property="og:locale" content="ja_JP" />
     <meta property="og:title" content="Dolice Lab" />
-    <meta property="og:description" content="UITabBarを使用した画面で、タブメニュー外のボタンから画面遷移する方法を以下に記載します。 UITabBarControllerの selectedViewControllerの値に遷移先 ViewControllerのインデックスIDを渡して実行します。 &hellip;" />
+    <meta property="og:description" content="Objective-Cで Photoshopのように画像を合成して表示する「DCBlendImage」クラスを作成しました。 ベース画像とブレンド画像、ブレンドモード、アルファ値、画像の寸法を指定して使用します。 下記よりファイルのダウンロードが行えます。 ダウンロード https:// &hellip;" />
     <meta property="og:url" content="http://lab.dolice.net/blog/page/23/" />
     <meta property="og:image" content="/images/facebook-icon.jpg" />
     <meta property="og:author" content="Masaki Hirokawa" />
@@ -103,6 +103,635 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/09/09/objc-classes-dc-blend-image/">
+		
+			画像をブレンド加工する「DCBlendImage」クラス</a>
+	</h2>
+	<div class="entry-content">
+		<p>Objective-Cで Photoshopのように画像を合成して表示する「DCBlendImage」クラスを作成しました。</p>
+
+<p>ベース画像とブレンド画像、ブレンドモード、アルファ値、画像の寸法を指定して使用します。</p>
+
+<p>下記よりファイルのダウンロードが行えます。</p>
+
+<h2>ダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-classes-dc-blend-image">https://github.com/masakihirokawa/objc-classes-dc-blend-image</a></li>
+</ul>
+
+
+<h2>使用する画像</h2>
+
+<p><img src="/images/article/blend_mode/Asymmetry_640_1136.jpg" title="元画像" alt="元画像" /></p>
+
+<p><img src="/images/article/blend_mode/blend_image.png" title="重ねて表示する画像" alt="重ねて表示する画像" /></p>
+
+<p><img src="/images/article/blend_mode/result.jpg" title="結果画像（ブレンドモード: スクリーン）" alt="結果画像（ブレンドモード: スクリーン）" /></p>
+
+<h2>使用方法</h2>
+
+<h3>合成された UIImageを取得し画面に追加</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">UIImage</span> <span class="o">*</span><span class="n">compositeImage</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCBlendImage</span> <span class="nl">blendImage:</span><span class="err">＜ベース画像の</span> <span class="n">UIImage</span><span class="err">＞</span> <span class="nl">blendImage:</span><span class="err">＜ブレンド画像の</span> <span class="n">UIImage</span><span class="err">＞</span>
+</span><span class='line'>                                         <span class="nl">blendMode:</span><span class="n">kCGBlendModeScreen</span><span class="err">（ブレンドモード）</span> <span class="nl">blendAlpha:</span><span class="err">＜ブレンド画像のアルファ値＞</span>
+</span><span class='line'>                                              <span class="nl">rect:</span><span class="err">＜画像のレクタングル＞</span><span class="p">];</span>
+</span><span class='line'><span class="n">UIImageView</span> <span class="o">*</span><span class="n">compositeImageView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIImageView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithImage:</span><span class="n">compositeImage</span><span class="p">];</span>
+</span><span class='line'><span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">compositeImageView</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>合成された UIImageViewを取得し画面に追加</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">UIImageView</span> <span class="o">*</span><span class="n">compositeImageView</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCBlendImage</span> <span class="nl">blendImageView:</span><span class="err">＜ベース画像の</span> <span class="n">UIImage</span><span class="err">＞</span> <span class="nl">blendImage:</span><span class="err">＜ブレンド画像の</span> <span class="n">UIImage</span><span class="err">＞</span>
+</span><span class='line'>                                                     <span class="nl">blendMode:</span><span class="n">kCGBlendModeScreen</span><span class="err">（ブレンドモード）</span> <span class="nl">blendAlpha:</span><span class="err">＜ブレンド画像のアルファ値＞</span>
+</span><span class='line'>                                              <span class="nl">rect:</span><span class="err">＜画像のレクタングル＞</span><span class="p">];</span>
+</span><span class='line'><span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">compositeImageView</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>ブレンドモードの種類</h2>
+
+<table>
+<thead>
+<tr>
+<th align="left"> CGBlendMode </th>
+<th align="left"> 説明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">kCGBlendModeMultiply</td>
+<td align="left">乗算</td>
+</tr>
+<tr>
+<td align="left">kCGBlendModeScreen</td>
+<td align="left">スクリーン</td>
+</tr>
+<tr>
+<td align="left">kCGBlendModeOverlay</td>
+<td align="left">オーバーレイ</td>
+</tr>
+<tr>
+<td align="left">kCGBlendModeDarken</td>
+<td align="left">比較（暗）</td>
+</tr>
+<tr>
+<td align="left">kCGBlendModeLighten</td>
+<td align="left">比較（明）</td>
+</tr>
+<tr>
+<td align="left">kCGBlendModeColorDodge</td>
+<td align="left">覆い焼きカラー</td>
+</tr>
+<tr>
+<td align="left">kCGBlendModeColorBurn</td>
+<td align="left">焼きこみカラー</td>
+</tr>
+<tr>
+<td align="left">kCGBlendModeSoftLight</td>
+<td align="left">ソフトライト</td>
+</tr>
+<tr>
+<td align="left">kCGBlendModeHardLight</td>
+<td align="left">ハードライト</td>
+</tr>
+<tr>
+<td align="left">kCGBlendModeDifference</td>
+<td align="left">差の絶対値</td>
+</tr>
+<tr>
+<td align="left">kCGBlendModeExclusion</td>
+<td align="left">除外</td>
+</tr>
+<tr>
+<td align="left">kCGBlendModeHue</td>
+<td align="left">色相</td>
+</tr>
+<tr>
+<td align="left">kCGBlendModeSaturation</td>
+<td align="left">彩度</td>
+</tr>
+<tr>
+<td align="left">kCGBlendModeColor</td>
+<td align="left">カラー</td>
+</tr>
+<tr>
+<td align="left">kCGBlendModeLuminosity</td>
+<td align="left">輝度</td>
+</tr>
+<tr>
+<td align="left">kCGBlendModeClear</td>
+<td align="left">透明色で描画</td>
+</tr>
+</tbody>
+</table>
+
+
+<h2>ソースコード</h2>
+
+<h3>DCBlendImage.h</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;UIKit/UIKit.h&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">DCBlendImage</span> : <span class="nc">UIImage</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark - public method</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nf">blendImage:</span><span class="p">(</span><span class="n">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nv">baseImage</span> <span class="nf">blendImage:</span><span class="p">(</span><span class="n">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nv">blendImage</span> <span class="nf">blendMode:</span><span class="p">(</span><span class="n">CGBlendMode</span><span class="p">)</span><span class="nv">blendMode</span> <span class="nf">blendAlpha:</span><span class="p">(</span><span class="n">CGFloat</span><span class="p">)</span><span class="nv">blendAlpha</span> <span class="nf">rect:</span><span class="p">(</span><span class="n">CGRect</span><span class="p">)</span><span class="nv">rect</span><span class="p">;</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">UIImageView</span> <span class="o">*</span><span class="p">)</span><span class="nf">blendImageView:</span><span class="p">(</span><span class="n">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nv">baseImage</span> <span class="nf">blendImage:</span><span class="p">(</span><span class="n">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nv">blendImage</span> <span class="nf">blendMode:</span><span class="p">(</span><span class="n">CGBlendMode</span><span class="p">)</span><span class="nv">blendMode</span> <span class="nf">blendAlpha:</span><span class="p">(</span><span class="n">CGFloat</span><span class="p">)</span><span class="nv">blendAlpha</span> <span class="nf">rect:</span><span class="p">(</span><span class="n">CGRect</span><span class="p">)</span><span class="nv">rect</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>DCBlendImage.m</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;DCBlendImage.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">DCBlendImage</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark - Blend Image</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 合成された UIImage取得</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nf">blendImage:</span><span class="p">(</span><span class="n">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nv">baseImage</span> <span class="nf">blendImage:</span><span class="p">(</span><span class="n">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nv">blendImage</span> <span class="nf">blendMode:</span><span class="p">(</span><span class="n">CGBlendMode</span><span class="p">)</span><span class="nv">blendMode</span> <span class="nf">blendAlpha:</span><span class="p">(</span><span class="n">CGFloat</span><span class="p">)</span><span class="nv">blendAlpha</span> <span class="nf">rect:</span><span class="p">(</span><span class="n">CGRect</span><span class="p">)</span><span class="nv">rect</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">UIGraphicsBeginImageContext</span><span class="p">(</span><span class="n">rect</span><span class="p">.</span><span class="n">size</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">[</span><span class="n">baseImage</span> <span class="nl">drawInRect:</span><span class="n">rect</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">blendImage</span> <span class="nl">drawInRect:</span><span class="n">rect</span> <span class="nl">blendMode:</span><span class="n">blendMode</span> <span class="nl">alpha:</span><span class="n">blendAlpha</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">UIImage</span> <span class="o">*</span><span class="n">compositeImage</span> <span class="o">=</span> <span class="n">UIGraphicsGetImageFromCurrentImageContext</span><span class="p">();</span>
+</span><span class='line'>    <span class="n">UIGraphicsEndImageContext</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="n">compositeImage</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark - Blend Image View</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 合成された UIImageView取得</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">UIImageView</span> <span class="o">*</span><span class="p">)</span><span class="nf">blendImageView:</span><span class="p">(</span><span class="n">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nv">baseImage</span> <span class="nf">blendImage:</span><span class="p">(</span><span class="n">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nv">blendImage</span> <span class="nf">blendMode:</span><span class="p">(</span><span class="n">CGBlendMode</span><span class="p">)</span><span class="nv">blendMode</span> <span class="nf">blendAlpha:</span><span class="p">(</span><span class="n">CGFloat</span><span class="p">)</span><span class="nv">blendAlpha</span> <span class="nf">rect:</span><span class="p">(</span><span class="n">CGRect</span><span class="p">)</span><span class="nv">rect</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">UIGraphicsBeginImageContext</span><span class="p">(</span><span class="n">rect</span><span class="p">.</span><span class="n">size</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">[</span><span class="n">baseImage</span> <span class="nl">drawInRect:</span><span class="n">rect</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">blendImage</span> <span class="nl">drawInRect:</span><span class="n">rect</span> <span class="nl">blendMode:</span><span class="n">blendMode</span> <span class="nl">alpha:</span><span class="n">blendAlpha</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">UIImage</span> <span class="o">*</span><span class="n">compositeImage</span> <span class="o">=</span> <span class="n">UIGraphicsGetImageFromCurrentImageContext</span><span class="p">();</span>
+</span><span class='line'>    <span class="n">UIGraphicsEndImageContext</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">UIImageView</span> <span class="o">*</span><span class="n">compositeImageView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIImageView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithImage:</span><span class="n">compositeImage</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="n">compositeImageView</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>サンプルソースコード</h2>
+
+<h3>ViewController.h</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#define BASE_IMG_NAME  @&quot;Asymmetry_640_1136&quot;</span>
+</span><span class='line'><span class="cp">#define BASE_IMG_EXT   @&quot;jpg&quot;</span>
+</span><span class='line'><span class="cp">#define BLEND_IMG_NAME @&quot;blend_image&quot;</span>
+</span><span class='line'><span class="cp">#define BLEND_IMG_EXT  @&quot;png&quot;</span>
+</span><span class='line'><span class="cp">#define BLEND_ALPHA    1.0</span>
+</span><span class='line'><span class="cp">#define IMG_RECT       CGRectMake(0, 0, 320, 568)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>ViewController.m</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//合成された UIImageを取得し画面に追加</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setCompositeImage</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">UIImage</span> <span class="o">*</span><span class="n">baseImage</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="nl">getUIImageFromResources:</span><span class="n">BASE_IMG_NAME</span> <span class="nl">ext:</span><span class="n">BASE_IMG_EXT</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">UIImage</span> <span class="o">*</span><span class="n">blendImage</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="nl">getUIImageFromResources:</span><span class="n">BLEND_IMG_NAME</span> <span class="nl">ext:</span><span class="n">BLEND_IMG_EXT</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">UIImage</span> <span class="o">*</span><span class="n">compositeImage</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCBlendImage</span> <span class="nl">blendImage:</span><span class="n">baseImage</span> <span class="nl">blendImage:</span><span class="n">blendImage</span>
+</span><span class='line'>                                             <span class="nl">blendMode:</span><span class="n">kCGBlendModeScreen</span> <span class="nl">blendAlpha:</span><span class="n">BLEND_ALPHA</span>
+</span><span class='line'>                                                  <span class="nl">rect:</span><span class="n">IMG_RECT</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">UIImageView</span> <span class="o">*</span><span class="n">compositeImageView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIImageView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithImage:</span><span class="n">compositeImage</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">compositeImageView</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//合成された UIImageViewを取得し画面に追加</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setCompositeImageView</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">UIImage</span> <span class="o">*</span><span class="n">baseImage</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="nl">getUIImageFromResources:</span><span class="n">BASE_IMG_NAME</span> <span class="nl">ext:</span><span class="n">BASE_IMG_EXT</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">UIImage</span> <span class="o">*</span><span class="n">blendImage</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="nl">getUIImageFromResources:</span><span class="n">BLEND_IMG_NAME</span> <span class="nl">ext:</span><span class="n">BLEND_IMG_EXT</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">UIImageView</span> <span class="o">*</span><span class="n">compositeImageView</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCBlendImage</span> <span class="nl">blendImageView:</span><span class="n">baseImage</span> <span class="nl">blendImage:</span><span class="n">blendImage</span>
+</span><span class='line'>                                                         <span class="nl">blendMode:</span><span class="n">kCGBlendModeScreen</span> <span class="nl">blendAlpha:</span><span class="n">BLEND_ALPHA</span>
+</span><span class='line'>                                                              <span class="nl">rect:</span><span class="n">IMG_RECT</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">compositeImageView</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//画像ファイル取得</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nf">getUIImageFromResources:</span><span class="p">(</span><span class="n">NSString</span><span class="o">*</span><span class="p">)</span><span class="nv">fileName</span> <span class="nf">ext:</span><span class="p">(</span><span class="n">NSString</span><span class="o">*</span><span class="p">)</span><span class="nv">ext</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">NSString</span> <span class="o">*</span><span class="n">path</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSBundle</span> <span class="n">mainBundle</span><span class="p">]</span> <span class="nl">pathForResource:</span><span class="n">fileName</span> <span class="nl">ofType:</span><span class="n">ext</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">UIImage</span> <span class="o">*</span><span class="n">img</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIImage</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithContentsOfFile:</span><span class="n">path</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">(</span><span class="n">img</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>お薦めの参考書</h2>
+
+<p><strong><a href="http://www.amazon.co.jp/gp/product/4798136050/ref=as_li_qf_sp_asin_tl?ie=UTF8&camp=247&creative=1211&creativeASIN=4798136050&linkCode=as2&tag=pinocchio-22">Cocos2d-xスマートフォン2Dゲーム開発講座 Cocos2d-x 3対応</a></strong><img src="http://ir-jp.amazon-adsystem.com/e/ir?t=pinocchio-22&l=as2&o=9&a=4798136050" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" /><br />
+Cocos2d-xを利用したスマートフォン向け3Dゲーム開発の手法を、サンプルを基に作りながら学ぶ事ができます。実際に遊べるゲームサンプルが4種収録されており、iOS / Android両対応のゲームを開発したい方には必見の一冊になっています。</p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-09-09T23:30:00+09:00" pubdate data-updated="true">Sep 9<span>th</span>, 2013</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/cgblendmode/'>CGBlendMode</a>, <a class='category' href='/blog/categories/classes/'>Classes</a>, <a class='category' href='/blog/categories/download/'>Download</a>, <a class='category' href='/blog/categories/objective-c/'>Objective-C</a>, <a class='category' href='/blog/categories/uiimage/'>UIImage</a>
+
+
+</div>
+	
+</div>
+</article>
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/09/09/download-objc-classes-dc-randomize/">
+		
+			乱数の生成や配列のシャッフルを行う「DCRandomize」クラス</a>
+	</h2>
+	<div class="entry-content">
+		<p>Objective-Cで乱数の生成や配列のシャッフルを行う「DCRandomize」クラスを作成しました。</p>
+
+<p>下記よりソースコードのダウンロードが行えます。</p>
+
+<h2>ダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-classes-dc-randomize">https://github.com/masakihirokawa/objc-classes-dc-randomize</a></li>
+</ul>
+
+
+<p>主な機能は下記の4つです。</p>
+
+<h2>主な機能</h2>
+
+<ol>
+<li>配列をシャッフルして取得</li>
+<li>指定した範囲内の数値をシャッフルして配列取得</li>
+<li>指定した数値と異なる乱数を取得</li>
+<li>指定した範囲内の乱数を取得</li>
+</ol>
+
+
+<h2>使用方法</h2>
+
+<h3>配列をシャッフルして取得</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">NSMutableArray</span> <span class="o">*</span><span class="n">array</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSMutableArray</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithArray:</span><span class="err">@</span><span class="p">[</span><span class="err">@</span><span class="mi">1</span><span class="p">,</span> <span class="err">@</span><span class="mi">2</span><span class="p">,</span> <span class="err">@</span><span class="mi">3</span><span class="p">,</span> <span class="err">@</span><span class="mi">4</span><span class="p">,</span> <span class="err">@</span><span class="mi">5</span><span class="p">,</span> <span class="err">@</span><span class="mi">6</span><span class="p">,</span> <span class="err">@</span><span class="mi">7</span><span class="p">,</span> <span class="err">@</span><span class="mi">8</span><span class="p">,</span> <span class="err">@</span><span class="mi">9</span><span class="p">,</span> <span class="err">@</span><span class="mi">10</span><span class="p">]];</span>
+</span><span class='line'><span class="p">[</span><span class="n">DCRandomize</span> <span class="nl">shuffleArray:</span><span class="n">array</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>1〜10の数値をシャッフルして配列取得</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">[</span><span class="n">DCRandomize</span> <span class="nl">shuffle:</span><span class="mi">1</span> <span class="nl">max:</span><span class="mi">10</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>5〜10の範囲で 9以外の乱数を取得</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">[</span><span class="n">DCRandomize</span> <span class="nl">exact:</span><span class="mi">5</span> <span class="nl">max:</span><span class="mi">10</span> <span class="nl">exceptId:</span><span class="mi">9</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>5〜10の範囲の乱数を取得</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">[</span><span class="n">DCRandomize</span> <span class="nl">range:</span><span class="mi">5</span> <span class="nl">max:</span><span class="mi">10</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>ソースコード</h2>
+
+<h3>DCRandomize.h</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;Foundation/Foundation.h&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">DCRandomize</span> : <span class="nc">NSObject</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark - public method</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSMutableArray</span> <span class="o">*</span><span class="p">)</span><span class="nf">shuffleArray:</span><span class="p">(</span><span class="n">NSMutableArray</span> <span class="o">*</span><span class="p">)</span><span class="nv">array</span><span class="p">;</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSMutableArray</span> <span class="o">*</span><span class="p">)</span><span class="nf">shuffle:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">min</span> <span class="nf">max:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">max</span><span class="p">;</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nf">exact:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">min</span> <span class="nf">max:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">max</span> <span class="nf">exceptId:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">exceptId</span><span class="p">;</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nf">range:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">min</span> <span class="nf">max:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">max</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>DCRandomize.m</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;DCRandomize.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">DCRandomize</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark - Shuffle Array</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 配列をシャッフルして取得</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSMutableArray</span> <span class="o">*</span><span class="p">)</span><span class="nf">shuffleArray:</span><span class="p">(</span><span class="n">NSMutableArray</span> <span class="o">*</span><span class="p">)</span><span class="nv">array</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">NSMutableArray</span> <span class="o">*</span><span class="n">resultList</span> <span class="o">=</span> <span class="n">array</span><span class="p">;</span>
+</span><span class='line'>    <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="p">[</span><span class="n">resultList</span> <span class="n">count</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">while</span> <span class="p">(</span><span class="o">--</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="n">rand</span><span class="p">()</span> <span class="o">%</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">resultList</span> <span class="nl">exchangeObjectAtIndex:</span><span class="n">i</span> <span class="nl">withObjectAtIndex:</span><span class="n">j</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">[</span><span class="n">NSMutableArray</span> <span class="nl">arrayWithArray:</span><span class="n">resultList</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark - Shuffle</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 指定した範囲内の数値をシャッフルして配列取得</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSMutableArray</span> <span class="o">*</span><span class="p">)</span><span class="nf">shuffle:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">min</span> <span class="nf">max:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">max</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">NSMutableArray</span> <span class="o">*</span><span class="n">tmpList</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSMutableArray</span> <span class="n">array</span><span class="p">];</span>
+</span><span class='line'>    <span class="kt">int</span> <span class="n">num</span> <span class="o">=</span> <span class="p">(</span><span class="n">max</span> <span class="o">-</span> <span class="n">min</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">num</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">tmpList</span> <span class="nl">insertObject:</span><span class="p">[</span><span class="n">NSNumber</span> <span class="nl">numberWithInt:</span><span class="n">i</span> <span class="o">+</span> <span class="n">min</span><span class="p">]</span> <span class="nl">atIndex:</span><span class="n">i</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">[</span><span class="n">DCRandomize</span> <span class="nl">shuffleArray:</span><span class="n">tmpList</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark - Exact</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 指定した数値と異なる乱数を取得</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nf">exact:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">min</span> <span class="nf">max:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">max</span> <span class="nf">exceptId:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">exceptId</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">NSInteger</span> <span class="n">tmpId</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">do</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">tmpId</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCRandomize</span> <span class="nl">range:</span><span class="n">min</span> <span class="nl">max:</span><span class="n">max</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span> <span class="k">while</span> <span class="p">(</span><span class="n">tmpId</span> <span class="o">==</span> <span class="n">exceptId</span><span class="p">);</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">tmpId</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark - Range</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 指定した範囲内の乱数を取得</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nf">range:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">min</span> <span class="nf">max:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">max</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">min</span> <span class="o">+</span> <span class="n">arc4random_uniform</span><span class="p">((</span><span class="n">max</span> <span class="o">-</span> <span class="n">min</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>サンプルソースコード</h2>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//配列をシャッフルしてログ出力</span>
+</span><span class='line'><span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;DCRandomize.shuffleArray: %@&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">DCRandomize</span> <span class="nl">shuffleArray:</span><span class="n">_array</span><span class="p">]);</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//指定した範囲内の数値をシャッフルしてログ出力</span>
+</span><span class='line'><span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;DCRandomize.shuffle: %@&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">DCRandomize</span> <span class="nl">shuffle:</span><span class="n">MIN_ID</span> <span class="nl">max:</span><span class="n">MAX_ID</span><span class="p">]);</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//指定したIDと異なる乱数をログ出力 (exceptId以外の数値を出力)</span>
+</span><span class='line'><span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;DCRandomize.exact: %d&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">DCRandomize</span> <span class="nl">exact:</span><span class="n">MIN_ID</span> <span class="nl">max:</span><span class="n">MAX_ID</span> <span class="nl">exceptId:</span><span class="n">EXCEPT_ID</span><span class="p">]);</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//指定した範囲内の乱数をログ出力</span>
+</span><span class='line'><span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;DCRandomize.range: %d&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">DCRandomize</span> <span class="nl">range:</span><span class="n">MIN_ID</span> <span class="nl">max:</span><span class="n">MAX_ID</span><span class="p">]);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>お薦めの参考書</h2>
+
+<p><strong><a href="http://www.amazon.co.jp/gp/product/4797368276/ref=as_li_qf_sp_asin_tl?ie=UTF8&camp=247&creative=1211&creativeASIN=4797368276&linkCode=as2&tag=pinocchio-22">詳解 Objective-C 2.0 第3版</a></strong><img src="http://ir-jp.amazon-adsystem.com/e/ir?t=pinocchio-22&l=as2&o=9&a=4797368276" width="1" height="1" alt="" style="border:none !important; margin:0px !important;" /><br />
+Objective-Cの基礎から応用までしっかりカバーされています。サンプルを打ち込んで動作させる入門書とは違いますが、Objective-C の全体像を掴むことができます。この本で基礎をしっかり固めることで、アプリのクオリティも大きく上がると思います。</p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-09-09T22:47:00+09:00" pubdate data-updated="true">Sep 9<span>th</span>, 2013</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/classes/'>Classes</a>, <a class='category' href='/blog/categories/download/'>Download</a>, <a class='category' href='/blog/categories/foundation/'>Foundation</a>, <a class='category' href='/blog/categories/objective-c/'>Objective-C</a>
+
+
+</div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -408,699 +1037,6 @@ UIKitに特化した内容になっています。アプリのデザインを設
 </div>
 </article>
 
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/09/05/objc-ui-tab-bar-custom/">
-		
-			Objective-Cで UITabBarをカスタマイズする方法</a>
-	</h2>
-	<div class="entry-content">
-		<p><img src="/images/article/ui-tab-bar-custom.png" alt="" /></p>
-
-<p>Objective-Cで画像を使用し UITabBarをカスタマイズする方法を以下に記載します。</p>
-
-<p>下記よりソースコードのダウンロードが行えます。</p>
-
-<h2>ダウンロード</h2>
-
-<ul>
-<li><a href="https://github.com/masakihirokawa/objc-ui-tab-bar-custom">https://github.com/masakihirokawa/objc-ui-tab-bar-custom</a></li>
-</ul>
-
-
-<h2>必要な画像の寸法 (Retina用と標準解像度用の2種類必要)</h2>
-
-<ol>
-<li>背景画像: W640<em>H98px (W320</em>H49px) ※サンプル画像: tab_background@2x.png</li>
-<li>アイコン画像: W60<em>H60px (W30</em>H30px) ※サンプル画像: tab_icon1-o@2x.png</li>
-<li>選択中のアイコン背景画像: W128<em>H98px (W64</em>H49px) ※サンプル画像: tab_selection_indicator@2x.png
-この画像はメニューの数に応じて横幅が変わります。例えばメニューが4個の場合は、W160pxになります。</li>
-</ol>
-
-
-<h2>画像の指定方法</h2>
-
-<p><img src="/images/article/ui-tab-bar-custom-parts.png" alt="" /></p>
-
-<h3>背景画像の変更</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">[[</span><span class="n">UITabBar</span> <span class="n">appearance</span><span class="p">]</span> <span class="nl">setBackgroundImage:</span><span class="p">[</span><span class="n">UIImage</span> <span class="nl">imageNamed:</span><span class="s">@&quot;tab_background.png&quot;</span><span class="p">]];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>選択中背景画像の変更</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">[[</span><span class="n">UITabBar</span> <span class="n">appearance</span><span class="p">]</span> <span class="nl">setSelectionIndicatorImage:</span><span class="p">[</span><span class="n">UIImage</span> <span class="nl">imageNamed:</span><span class="s">@&quot;tab_selection_indicator.png&quot;</span><span class="p">]];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>アイコンの指定方法</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">[</span><span class="n">tabFirstVC</span><span class="p">.</span><span class="n">tabBarItem</span> <span class="nl">setFinishedSelectedImage:</span><span class="p">[</span><span class="n">UIImage</span> <span class="nl">imageNamed:</span><span class="s">@&quot;tab_icon1-o.png&quot;</span><span class="p">]</span>
-</span><span class='line'>                    <span class="nl">withFinishedUnselectedImage:</span><span class="p">[</span><span class="n">UIImage</span> <span class="nl">imageNamed:</span><span class="s">@&quot;tab_icon1.png&quot;</span><span class="p">]];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>タイトルの指定方法</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">[</span><span class="n">tabFirstVC</span> <span class="nl">setTitle:</span><span class="s">@&quot;First&quot;</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>タイトル位置(オフセット)の指定方法</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">[[</span><span class="n">UITabBarItem</span> <span class="n">appearance</span><span class="p">]</span> <span class="nl">setTitlePositionAdjustment:</span><span class="n">UIOffsetMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>タイトル色の指定方法</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">[[</span><span class="n">UITabBarItem</span> <span class="n">appearance</span><span class="p">]</span> <span class="nl">setTitleTextAttributes:</span><span class="p">[</span><span class="n">NSDictionary</span> <span class="nl">dictionaryWithObjectsAndKeys:</span><span class="p">[</span><span class="n">UIColor</span> <span class="n">whiteColor</span><span class="p">],</span> <span class="n">UITextAttributeTextColor</span><span class="p">,</span><span class="nb">nil</span><span class="p">]</span> <span class="nl">forState:</span><span class="n">UIControlStateNormal</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>選択中タイトル色の指定方法</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">[[</span><span class="n">UITabBarItem</span> <span class="n">appearance</span><span class="p">]</span> <span class="nl">setTitleTextAttributes:</span><span class="p">[</span><span class="n">NSDictionary</span> <span class="nl">dictionaryWithObjectsAndKeys:</span><span class="p">[</span><span class="n">UIColor</span> <span class="nl">colorWithRed:</span><span class="mf">0.91f</span> <span class="nl">green:</span><span class="mf">1.0f</span> <span class="nl">blue:</span><span class="mf">0.74f</span> <span class="nl">alpha:</span><span class="mf">1.0f</span><span class="p">],</span> <span class="n">UITextAttributeTextColor</span><span class="p">,</span><span class="nb">nil</span><span class="p">]</span> <span class="nl">forState:</span><span class="n">UIControlStateSelected</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>ソースコード</h2>
-
-<h3>AppDelegate.h</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;FirstViewController.h&quot;</span>
-</span><span class='line'><span class="cp">#import &quot;SecondViewController.h&quot;</span>
-</span><span class='line'><span class="cp">#import &quot;ThirdViewController.h&quot;</span>
-</span><span class='line'><span class="cp">#import &quot;FourthViewController.h&quot;</span>
-</span><span class='line'><span class="cp">#import &quot;FifthViewController.h&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@interface</span> <span class="nc">AppDelegate</span> : <span class="nc">UIResponder</span> <span class="o">&lt;</span><span class="n">UIApplicationDelegate</span><span class="o">&gt;</span> <span class="p">{</span>
-</span><span class='line'>    <span class="n">UITabBarController</span> <span class="o">*</span><span class="n">tabBarController_</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#pragma mark property prototype</span>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">strong</span><span class="p">,</span> <span class="n">nonatomic</span><span class="p">)</span> <span class="n">UIWindow</span> <span class="o">*</span><span class="n">window</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#pragma mark method prototype</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">switchTabBarController:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">selectedViewIndex</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>AppDelegate.m</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-<span class='line-number'>65</span>
-<span class='line-number'>66</span>
-<span class='line-number'>67</span>
-<span class='line-number'>68</span>
-<span class='line-number'>69</span>
-<span class='line-number'>70</span>
-<span class='line-number'>71</span>
-<span class='line-number'>72</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">application:</span><span class="p">(</span><span class="n">UIApplication</span> <span class="o">*</span><span class="p">)</span><span class="nv">application</span> <span class="nf">didFinishLaunchingWithOptions:</span><span class="p">(</span><span class="n">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nv">launchOptions</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="c1">//window初期化</span>
-</span><span class='line'>    <span class="n">CGRect</span> <span class="n">bounds</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIScreen</span> <span class="n">mainScreen</span><span class="p">]</span> <span class="n">bounds</span><span class="p">];</span>
-</span><span class='line'>    <span class="n">_window</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIWindow</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame:</span><span class="n">bounds</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//UITabBarController初期化</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="n">initTabBarController</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">return</span> <span class="n">YES</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//UITabBarController初期化</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">initTabBarController</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="c1">//基点となる Controller生成</span>
-</span><span class='line'>    <span class="n">tabBarController_</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UITabBarController</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//タブの背景画像と選択時の背景画像を設定</span>
-</span><span class='line'>    <span class="p">[[</span><span class="n">UITabBar</span> <span class="n">appearance</span><span class="p">]</span> <span class="nl">setBackgroundImage:</span><span class="p">[</span><span class="n">UIImage</span> <span class="nl">imageNamed:</span><span class="s">@&quot;tab_background.png&quot;</span><span class="p">]];</span>
-</span><span class='line'>    <span class="p">[[</span><span class="n">UITabBar</span> <span class="n">appearance</span><span class="p">]</span> <span class="nl">setSelectionIndicatorImage:</span><span class="p">[</span><span class="n">UIImage</span> <span class="nl">imageNamed:</span><span class="s">@&quot;tab_selection_indicator.png&quot;</span><span class="p">]];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//タブメニュー選択時のビュー生成</span>
-</span><span class='line'>    <span class="n">FirstViewController</span>  <span class="o">*</span><span class="n">tabFirstVC</span>  <span class="o">=</span> <span class="p">[[</span><span class="n">FirstViewController</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'>    <span class="n">SecondViewController</span> <span class="o">*</span><span class="n">tabSecondVC</span> <span class="o">=</span> <span class="p">[[</span><span class="n">SecondViewController</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'>    <span class="n">ThirdViewController</span>  <span class="o">*</span><span class="n">tabThirdVC</span>  <span class="o">=</span> <span class="p">[[</span><span class="n">ThirdViewController</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'>    <span class="n">FourthViewController</span> <span class="o">*</span><span class="n">tabFourthVC</span> <span class="o">=</span> <span class="p">[[</span><span class="n">FourthViewController</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'>    <span class="n">FifthViewController</span>  <span class="o">*</span><span class="n">tabFifthVC</span>  <span class="o">=</span> <span class="p">[[</span><span class="n">FifthViewController</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//タブのアイコン指定</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">tabFirstVC</span><span class="p">.</span><span class="n">tabBarItem</span> <span class="nl">setFinishedSelectedImage:</span><span class="p">[</span><span class="n">UIImage</span> <span class="nl">imageNamed:</span><span class="s">@&quot;tab_icon1-o.png&quot;</span><span class="p">]</span>
-</span><span class='line'>                        <span class="nl">withFinishedUnselectedImage:</span><span class="p">[</span><span class="n">UIImage</span> <span class="nl">imageNamed:</span><span class="s">@&quot;tab_icon1.png&quot;</span><span class="p">]];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">tabSecondVC</span><span class="p">.</span><span class="n">tabBarItem</span> <span class="nl">setFinishedSelectedImage:</span><span class="p">[</span><span class="n">UIImage</span> <span class="nl">imageNamed:</span><span class="s">@&quot;tab_icon2-o.png&quot;</span><span class="p">]</span>
-</span><span class='line'>                         <span class="nl">withFinishedUnselectedImage:</span><span class="p">[</span><span class="n">UIImage</span> <span class="nl">imageNamed:</span><span class="s">@&quot;tab_icon2.png&quot;</span><span class="p">]];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">tabThirdVC</span><span class="p">.</span><span class="n">tabBarItem</span> <span class="nl">setFinishedSelectedImage:</span><span class="p">[</span><span class="n">UIImage</span> <span class="nl">imageNamed:</span><span class="s">@&quot;tab_icon3-o.png&quot;</span><span class="p">]</span>
-</span><span class='line'>                        <span class="nl">withFinishedUnselectedImage:</span><span class="p">[</span><span class="n">UIImage</span> <span class="nl">imageNamed:</span><span class="s">@&quot;tab_icon3.png&quot;</span><span class="p">]];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">tabFourthVC</span><span class="p">.</span><span class="n">tabBarItem</span> <span class="nl">setFinishedSelectedImage:</span><span class="p">[</span><span class="n">UIImage</span> <span class="nl">imageNamed:</span><span class="s">@&quot;tab_icon4-o.png&quot;</span><span class="p">]</span>
-</span><span class='line'>                         <span class="nl">withFinishedUnselectedImage:</span><span class="p">[</span><span class="n">UIImage</span> <span class="nl">imageNamed:</span><span class="s">@&quot;tab_icon4.png&quot;</span><span class="p">]];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">tabFifthVC</span><span class="p">.</span><span class="n">tabBarItem</span> <span class="nl">setFinishedSelectedImage:</span><span class="p">[</span><span class="n">UIImage</span> <span class="nl">imageNamed:</span><span class="s">@&quot;tab_icon5-o.png&quot;</span><span class="p">]</span>
-</span><span class='line'>                        <span class="nl">withFinishedUnselectedImage:</span><span class="p">[</span><span class="n">UIImage</span> <span class="nl">imageNamed:</span><span class="s">@&quot;tab_icon5.png&quot;</span><span class="p">]];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//タブのタイトル指定</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">tabFirstVC</span> <span class="nl">setTitle:</span><span class="s">@&quot;First&quot;</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">tabSecondVC</span> <span class="nl">setTitle:</span><span class="s">@&quot;Second&quot;</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">tabThirdVC</span> <span class="nl">setTitle:</span><span class="s">@&quot;Third&quot;</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">tabFourthVC</span> <span class="nl">setTitle:</span><span class="s">@&quot;Fourth&quot;</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">tabFifthVC</span> <span class="nl">setTitle:</span><span class="s">@&quot;Fifth&quot;</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//タブのタイトル位置設定</span>
-</span><span class='line'>    <span class="p">[[</span><span class="n">UITabBarItem</span> <span class="n">appearance</span><span class="p">]</span> <span class="nl">setTitlePositionAdjustment:</span><span class="n">UIOffsetMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//タブのタイトル色指定</span>
-</span><span class='line'>    <span class="p">[[</span><span class="n">UITabBarItem</span> <span class="n">appearance</span><span class="p">]</span> <span class="nl">setTitleTextAttributes:</span><span class="p">[</span><span class="n">NSDictionary</span> <span class="nl">dictionaryWithObjectsAndKeys:</span><span class="p">[</span><span class="n">UIColor</span> <span class="n">whiteColor</span><span class="p">],</span> <span class="n">UITextAttributeTextColor</span><span class="p">,</span><span class="nb">nil</span><span class="p">]</span> <span class="nl">forState:</span><span class="n">UIControlStateNormal</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//タブのタイトル色指定(選択中)</span>
-</span><span class='line'>    <span class="p">[[</span><span class="n">UITabBarItem</span> <span class="n">appearance</span><span class="p">]</span> <span class="nl">setTitleTextAttributes:</span><span class="p">[</span><span class="n">NSDictionary</span> <span class="nl">dictionaryWithObjectsAndKeys:</span><span class="p">[</span><span class="n">UIColor</span> <span class="nl">colorWithRed:</span><span class="mf">0.91f</span> <span class="nl">green:</span><span class="mf">1.0f</span> <span class="nl">blue:</span><span class="mf">0.74f</span> <span class="nl">alpha:</span><span class="mf">1.0f</span><span class="p">],</span> <span class="n">UITextAttributeTextColor</span><span class="p">,</span><span class="nb">nil</span><span class="p">]</span> <span class="nl">forState:</span><span class="n">UIControlStateSelected</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//ビューを Controllerに追加</span>
-</span><span class='line'>    <span class="n">NSArray</span> <span class="o">*</span><span class="n">controllers</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSArray</span> <span class="nl">arrayWithObjects:</span><span class="n">tabFirstVC</span><span class="p">,</span> <span class="n">tabSecondVC</span><span class="p">,</span> <span class="n">tabThirdVC</span><span class="p">,</span> <span class="n">tabFourthVC</span><span class="p">,</span> <span class="n">tabFifthVC</span><span class="p">,</span> <span class="nb">nil</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[(</span><span class="n">UITabBarController</span> <span class="o">*</span><span class="p">)</span><span class="n">tabBarController_</span> <span class="nl">setViewControllers:</span><span class="n">controllers</span> <span class="nl">animated:</span><span class="n">NO</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//windowに Controllerのビュー追加</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">_window</span> <span class="nl">addSubview:</span><span class="n">tabBarController_</span><span class="p">.</span><span class="n">view</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">_window</span> <span class="n">makeKeyAndVisible</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//タブ切り替え</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">switchTabBarController:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">selectedViewIndex</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">UITabBarController</span> <span class="o">*</span><span class="n">controller</span> <span class="o">=</span> <span class="p">(</span><span class="n">UITabBarController</span> <span class="o">*</span><span class="p">)</span><span class="n">tabBarController_</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">controller</span><span class="p">.</span><span class="n">selectedViewController</span> <span class="o">=</span> <span class="p">[</span><span class="n">controller</span><span class="p">.</span><span class="n">viewControllers</span> <span class="nl">objectAtIndex:</span><span class="n">selectedViewIndex</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>関連記事</h2>
-
-<ul>
-<li><strong><a href="/blog/2013/12/30/objc-ios7-ui-tab-bar-custom/" title="UITabBarのデザインカスタマイズ方法（iOS 7/iOS 6.1両対応）">UITabBarのデザインカスタマイズ方法（iOS 7/iOS 6.1両対応）</a></strong></li>
-</ul>
-
-
-<h2>お薦めの参考書</h2>
-
-<p><strong><a href="http://www.amazon.co.jp/gp/product/4897978440/ref=as_li_qf_sp_asin_tl?ie=UTF8&camp=247&creative=1211&creativeASIN=4897978440&linkCode=as2&tag=pinocchio-22">iPhoneプログラミングUIKit詳解リファレンス</a></strong><img src="http://ir-jp.amazon-adsystem.com/e/ir?t=pinocchio-22&l=as2&o=9&a=4897978440" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" /><br />
-UIKitに特化した内容になっています。アプリのデザインを設計する上で、あまり知られていない必要なことが書かれており、とても参考になります。読み物としても使用できますし、辞書のような使い方もでき、アプリを作成するには必携の1冊です。</p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-09-05T19:17:00+09:00" pubdate data-updated="true">Sep 5<span>th</span>, 2013</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/objective-c/'>Objective-C</a>, <a class='category' href='/blog/categories/uiimage/'>UIImage</a>, <a class='category' href='/blog/categories/uikit/'>UIKit</a>, <a class='category' href='/blog/categories/uitabbar/'>UITabBar</a>
-
-
-</div>
-	
-</div>
-</article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/09/05/download-objc-classes-dc-clock/">
-		
-			秒数から時間とデジタル時計を取得する「DCClock」クラス</a>
-	</h2>
-	<div class="entry-content">
-		<p><img src="/images/article/dc-clock.png" alt="" /></p>
-
-<p>Objective-Cで指定した秒数から時・分・秒数を取得する「DCClock」クラスを作成しました。</p>
-
-<p>秒数からデジタル時計形式の文字列取得も行えます。1桁の数字の桁数を増やして文字列として取得する機能も付属しています。</p>
-
-<p>主な機能は下記の3つです。</p>
-
-<h2>主な機能</h2>
-
-<ol>
-<li>指定した秒数から時・分・秒数を数値／文字列で取得</li>
-<li>デジタル時計形式で文字列を取得</li>
-<li>1桁の数字の桁数を指定した分だけ増やして文字列取得</li>
-</ol>
-
-
-<p>下記よりソースコードのダウンロードが行えます。</p>
-
-<h2>ダウンロード</h2>
-
-<ul>
-<li><a href="https://github.com/masakihirokawa/objc-classes-dc-clock">https://github.com/masakihirokawa/objc-classes-dc-clock</a></li>
-</ul>
-
-
-<h2>ソースコード</h2>
-
-<h3>DCClock.h</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;Foundation/Foundation.h&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#define MIN_SEC 60</span>
-</span><span class='line'><span class="cp">#define TEN_SEC 10</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@interface</span> <span class="nc">DCClock</span> : <span class="nc">NSObject</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#pragma mark - public method</span>
-</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nf">digitalClockTime:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">seconds</span><span class="p">;</span>
-</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nf">hour:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">seconds</span><span class="p">;</span>
-</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nf">min:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">seconds</span><span class="p">;</span>
-</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nf">sec:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">seconds</span><span class="p">;</span>
-</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nf">hourStr:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">seconds</span><span class="p">;</span>
-</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nf">minStr:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">seconds</span><span class="p">;</span>
-</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nf">secStr:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">seconds</span><span class="p">;</span>
-</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nf">increaseDigits:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">value</span> <span class="nf">digits:</span><span class="p">(</span><span class="n">NSUInteger</span><span class="p">)</span><span class="nv">digits</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>DCClock.m</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-<span class='line-number'>65</span>
-<span class='line-number'>66</span>
-<span class='line-number'>67</span>
-<span class='line-number'>68</span>
-<span class='line-number'>69</span>
-<span class='line-number'>70</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;DCClock.h&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@implementation</span> <span class="nc">DCClock</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#pragma mark - Digital Clock Time</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// デジタル時計の文字列取得</span>
-</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nf">digitalClockTime:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">seconds</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">NSString</span> <span class="o">*</span><span class="n">hour</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCClock</span> <span class="nl">increaseDigits:</span><span class="p">[</span><span class="n">DCClock</span> <span class="nl">hour:</span><span class="n">seconds</span><span class="p">]</span> <span class="nl">digits:</span><span class="mi">1</span><span class="p">];</span>
-</span><span class='line'>    <span class="n">NSString</span> <span class="o">*</span><span class="n">min</span>  <span class="o">=</span> <span class="p">[</span><span class="n">DCClock</span> <span class="nl">increaseDigits:</span><span class="p">[</span><span class="n">DCClock</span> <span class="nl">min:</span><span class="n">seconds</span><span class="p">]</span> <span class="nl">digits:</span><span class="mi">1</span><span class="p">];</span>
-</span><span class='line'>    <span class="n">NSString</span> <span class="o">*</span><span class="n">sec</span>  <span class="o">=</span> <span class="p">[</span><span class="n">DCClock</span> <span class="nl">increaseDigits:</span><span class="p">[</span><span class="n">DCClock</span> <span class="nl">sec:</span><span class="n">seconds</span><span class="p">]</span> <span class="nl">digits:</span><span class="mi">1</span><span class="p">];</span>
-</span><span class='line'>    <span class="k">return</span> <span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">@&quot;%@:%@:%@&quot;</span><span class="p">,</span> <span class="n">hour</span><span class="p">,</span> <span class="n">min</span><span class="p">,</span> <span class="n">sec</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#pragma mark - Integer Time</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// 時間を取得</span>
-</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nf">hour:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">seconds</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">floor</span><span class="p">((</span><span class="n">seconds</span> <span class="o">/</span> <span class="n">MIN_SEC</span><span class="p">)</span> <span class="o">/</span> <span class="n">MIN_SEC</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// 分数を取得</span>
-</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nf">min:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">seconds</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">floor</span><span class="p">((</span><span class="n">seconds</span> <span class="o">/</span> <span class="n">MIN_SEC</span><span class="p">)</span> <span class="o">%</span> <span class="n">MIN_SEC</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// 病数を取得</span>
-</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nf">sec:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">seconds</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">floor</span><span class="p">(</span><span class="n">seconds</span> <span class="o">%</span> <span class="n">MIN_SEC</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#pragma mark - String Time</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// 時間の文字列を取得</span>
-</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nf">hourStr:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">seconds</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">@&quot;%d&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">DCClock</span> <span class="nl">hour:</span><span class="n">seconds</span><span class="p">]];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// 分数の文字列を取得</span>
-</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nf">minStr:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">seconds</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">@&quot;%d&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">DCClock</span> <span class="nl">min:</span><span class="n">seconds</span><span class="p">]];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// 秒数の文字列を取得</span>
-</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nf">secStr:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">seconds</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">@&quot;%d&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">DCClock</span> <span class="nl">sec:</span><span class="n">seconds</span><span class="p">]];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#pragma mark - Util</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// 桁数を増やす</span>
-</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nf">increaseDigits:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">value</span> <span class="nf">digits:</span><span class="p">(</span><span class="n">NSUInteger</span><span class="p">)</span><span class="nv">digits</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">NSString</span> <span class="o">*</span><span class="n">valueStr</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">@&quot;%d&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">];</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">value</span> <span class="o">&lt;</span> <span class="n">TEN_SEC</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="n">digits</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>            <span class="n">valueStr</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">@&quot;%@%@&quot;</span><span class="p">,</span> <span class="s">@&quot;0&quot;</span><span class="p">,</span> <span class="n">valueStr</span><span class="p">];</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>    <span class="k">return</span> <span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">@&quot;%@&quot;</span><span class="p">,</span> <span class="n">valueStr</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>サンプルソースコード</h2>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;ViewController.h&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> <span class="p">()</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@property</span> <span class="n">NSInteger</span> <span class="n">countdownSec</span><span class="p">;</span>
-</span><span class='line'><span class="k">@property</span> <span class="n">UILabel</span>   <span class="o">*</span><span class="n">countdownLabel</span><span class="p">;</span>
-</span><span class='line'><span class="k">@property</span> <span class="n">NSTimer</span>   <span class="o">*</span><span class="n">countdownTimer</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@implementation</span> <span class="nc">ViewController</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//背景指定</span>
-</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIColor</span> <span class="n">underPageBackgroundColor</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//カウントダウン秒数 (初期値)</span>
-</span><span class='line'>    <span class="n">_countdownSec</span> <span class="o">=</span> <span class="mi">4000</span><span class="p">;</span>
-</span><span class='line'>  
-</span><span class='line'>    <span class="c1">//カウントダウンラベル配置</span>
-</span><span class='line'>    <span class="n">_countdownLabel</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCLabel</span> <span class="nl">planeLabel:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">320</span><span class="p">,</span> <span class="mi">48</span><span class="p">)</span>
-</span><span class='line'>                                             <span class="nl">text:</span><span class="p">[</span><span class="n">DCClock</span> <span class="nl">digitalClockTime:</span><span class="n">_countdownSec</span><span class="p">]</span>
-</span><span class='line'>                                             <span class="nl">font:</span><span class="p">[</span><span class="n">UIFont</span> <span class="nl">fontWithName:</span><span class="s">@&quot;Helvetica&quot;</span> <span class="nl">size:</span><span class="mi">20</span><span class="p">]</span>
-</span><span class='line'>                                        <span class="nl">textColor:</span><span class="p">[</span><span class="n">UIColor</span> <span class="n">whiteColor</span><span class="p">]</span> <span class="nl">textAlignment:</span><span class="n">NSTextAlignmentCenter</span>
-</span><span class='line'>                                  <span class="nl">backgroundColor:</span><span class="p">[</span><span class="n">UIColor</span> <span class="nl">colorWithRed:</span><span class="mf">0.0f</span> <span class="nl">green:</span><span class="mf">0.0f</span> <span class="nl">blue:</span><span class="mf">0.0f</span> <span class="nl">alpha:</span><span class="mf">0.5f</span><span class="p">]];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">_countdownLabel</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//カウントダウンタイマー定義</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">DCTimer</span> <span class="nl">setTimer:</span><span class="mf">1.0f</span> <span class="nl">delegate:</span><span class="n">self</span> <span class="nl">selector:</span><span class="k">@selector</span><span class="p">(</span><span class="nl">countdownTimerEvent:</span><span class="p">)</span> <span class="nl">userInfo:</span><span class="nb">nil</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//カウントダウンタイマーイベント</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">countdownTimerEvent:</span><span class="p">(</span><span class="n">NSTimer</span> <span class="o">*</span><span class="p">)</span><span class="nv">timer</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">_countdownSec</span><span class="o">--</span><span class="p">;</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">_countdownSec</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">DCTimer</span> <span class="n">clearTimer</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="nl">updateCountdownLabel:</span><span class="p">[</span><span class="n">DCClock</span> <span class="nl">digitalClockTime:</span><span class="n">_countdownSec</span><span class="p">]];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//カウントダウンラベル更新</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">updateCountdownLabel:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">remainingTime</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">_countdownLabel</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">remainingTime</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>関連記事</h2>
-
-<ul>
-<li><strong><a href="/blog/2013/06/06/download-objc-classes-dc-timer/" title="シンプルな記述でタイマーイベントを呼び出す「DCTimer」クラス">シンプルな記述でタイマーイベントを呼び出す「DCTimer」クラス</a></strong></li>
-<li><strong><a href="/blog/2013/05/30/download-objc-classes-dc-animation2/" title="7種類のアニメーションを実行する「DCAnimation」クラス">7種類のアニメーションを実行する「DCAnimation」クラス</a></strong></li>
-<li><strong><a href="/blog/2013/05/14/download-objc-classes-dc-animation/" title="5種類のアニメーションを実行する「DCAnimationLite」クラス">5種類のアニメーションを実行する「DCAnimationLite」クラス</a></strong></li>
-</ul>
-
-
-<h2>お薦めの参考書</h2>
-
-<p><strong><a href="http://www.amazon.co.jp/gp/product/4861009499/ref=as_li_qf_sp_asin_tl?ie=UTF8&camp=247&creative=1211&creativeASIN=4861009499&linkCode=as2&tag=pinocchio-22">たのしいSwiftプログラミング―[iOS 8&amp;Xcode 6対応]</a></strong><img src="http://ir-jp.amazon-adsystem.com/e/ir?t=pinocchio-22&l=as2&o=9&a=4861009499" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" /><br />
-Swiftについて知りたい開発者の方のみならず、プログラミング未経験者の方にも参考になる内容になっています。Swiftの基礎を一から丁寧に解説されており、この書籍があればネットで調べる手間をかなり省くことができると思います。</p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-09-05T15:14:00+09:00" pubdate data-updated="true">Sep 5<span>th</span>, 2013</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/classes/'>Classes</a>, <a class='category' href='/blog/categories/download/'>Download</a>, <a class='category' href='/blog/categories/nsinteger/'>NSInteger</a>, <a class='category' href='/blog/categories/nsstring/'>NSString</a>, <a class='category' href='/blog/categories/objective-c/'>Objective-C</a>
-
-
-</div>
-	
-</div>
-</article>
-
 <nav id="pagenavi">
     
         <a href="/blog/page/22/" class="prev">Prev</a>
@@ -1169,7 +1105,7 @@ Swiftについて知りたい開発者の方のみならず、プログラミン
   <div class="information-box-wide">
 <section id="tag-cloud-container">
   <h1 id="tag-cloud-title">Tag Cloud</h1>
-  <p id="tag-cloud"><a href='/blog/categories/actionscript' style='font-size: 102.45454545454545%'>ActionScript(9)</a> <a href='/blog/categories/actionscript3' style='font-size: 101.9090909090909%'>ActionScript3(7)</a> <a href='/blog/categories/ad' style='font-size: 101.0909090909091%'>Ad(4)</a> <a href='/blog/categories/adfurikun' style='font-size: 100.54545454545455%'>Adfurikun(2)</a> <a href='/blog/categories/admob' style='font-size: 102.18181818181819%'>AdMob(8)</a> <a href='/blog/categories/android' style='font-size: 102.45454545454545%'>Android(9)</a> <a href='/blog/categories/animation' style='font-size: 104.63636363636364%'>Animation(17)</a> <a href='/blog/categories/appdelegate' style='font-size: 100.81818181818181%'>AppDelegate(3)</a> <a href='/blog/categories/arc' style='font-size: 100.27272727272727%'>ARC(1)</a> <a href='/blog/categories/arraylist' style='font-size: 100.27272727272727%'>ArrayList(1)</a> <a href='/blog/categories/avaudioplayer' style='font-size: 101.0909090909091%'>AVAudioPlayer(4)</a> <a href='/blog/categories/avaudiosession' style='font-size: 100.27272727272727%'>AVAudioSession(1)</a> <a href='/blog/categories/avfoundation' style='font-size: 100.81818181818181%'>AVFoundation(3)</a> <a href='/blog/categories/banner' style='font-size: 100.54545454545455%'>Banner(2)</a> <a href='/blog/categories/bitmap' style='font-size: 100.27272727272727%'>Bitmap(1)</a> <a href='/blog/categories/camera' style='font-size: 101.0909090909091%'>Camera(4)</a> <a href='/blog/categories/cgaffinetransform' style='font-size: 101.0909090909091%'>CGAffineTransform(4)</a> <a href='/blog/categories/cgblendmode' style='font-size: 100.54545454545455%'>CGBlendMode(2)</a> <a href='/blog/categories/cgcontextref' style='font-size: 100.27272727272727%'>CGContextRef(1)</a> <a href='/blog/categories/cgimageref' style='font-size: 100.27272727272727%'>CGImageRef(1)</a> <a href='/blog/categories/classes' style='font-size: 111.72727272727272%'>Classes(43)</a> <a href='/blog/categories/cllocationmanager' style='font-size: 100.27272727272727%'>CLLocationManager(1)</a> <a href='/blog/categories/connectivitymanager' style='font-size: 100.27272727272727%'>ConnectivityManager(1)</a> <a href='/blog/categories/contentresolver' style='font-size: 100.27272727272727%'>ContentResolver(1)</a> <a href='/blog/categories/corelocation' style='font-size: 100.54545454545455%'>CoreLocation(2)</a> <a href='/blog/categories/delegate' style='font-size: 100.81818181818181%'>Delegate(3)</a> <a href='/blog/categories/device' style='font-size: 101.9090909090909%'>Device(7)</a> <a href='/blog/categories/display' style='font-size: 100.27272727272727%'>Display(1)</a> <a href='/blog/categories/displaymetrics' style='font-size: 100.27272727272727%'>DisplayMetrics(1)</a> <a href='/blog/categories/download' style='font-size: 126.72727272727272%'>Download(98)</a> <a href='/blog/categories/facebook' style='font-size: 101.63636363636364%'>Facebook(6)</a> <a href='/blog/categories/foundation' style='font-size: 119.63636363636364%'>Foundation(72)</a> <a href='/blog/categories/framework' style='font-size: 100.54545454545455%'>Framework(2)</a> <a href='/blog/categories/google-analytics' style='font-size: 100.27272727272727%'>Google Analytics(1)</a> <a href='/blog/categories/handler' style='font-size: 100.27272727272727%'>Handler(1)</a> <a href='/blog/categories/iad' style='font-size: 101.63636363636364%'>iAd(6)</a> <a href='/blog/categories/imageview' style='font-size: 100.27272727272727%'>ImageView(1)</a> <a href='/blog/categories/in-apppurchase' style='font-size: 100.27272727272727%'>In-AppPurchase(1)</a> <a href='/blog/categories/ios' style='font-size: 103.27272727272727%'>iOS(12)</a> <a href='/blog/categories/ios-7' style='font-size: 104.0909090909091%'>iOS 7(15)</a> <a href='/blog/categories/ios-7-dot-1' style='font-size: 100.81818181818181%'>iOS 7.1(3)</a> <a href='/blog/categories/ios-8' style='font-size: 100.27272727272727%'>iOS 8(1)</a> <a href='/blog/categories/ipad' style='font-size: 101.9090909090909%'>iPad(7)</a> <a href='/blog/categories/iphone' style='font-size: 105.45454545454545%'>iPhone(20)</a> <a href='/blog/categories/iphone-6' style='font-size: 101.0909090909091%'>iPhone 6(4)</a> <a href='/blog/categories/java' style='font-size: 101.9090909090909%'>Java(7)</a> <a href='/blog/categories/javascript' style='font-size: 100.54545454545455%'>JavaScript(2)</a> <a href='/blog/categories/line' style='font-size: 101.0909090909091%'>LINE(4)</a> <a href='/blog/categories/localize' style='font-size: 100.27272727272727%'>Localize(1)</a> <a href='/blog/categories/mediastore' style='font-size: 100.27272727272727%'>MediaStore(1)</a> <a href='/blog/categories/mfcomposeviewcontroller' style='font-size: 100.27272727272727%'>MFComposeViewController(1)</a> <a href='/blog/categories/nend' style='font-size: 100.27272727272727%'>Nend(1)</a> <a href='/blog/categories/networkinfo' style='font-size: 100.27272727272727%'>NetworkInfo(1)</a> <a href='/blog/categories/nsarray' style='font-size: 106.27272727272727%'>NSArray(23)</a> <a href='/blog/categories/nscalendar' style='font-size: 100.81818181818181%'>NSCalendar(3)</a> <a href='/blog/categories/nsdata' style='font-size: 100.54545454545455%'>NSData(2)</a> <a href='/blog/categories/nsdate' style='font-size: 101.9090909090909%'>NSDate(7)</a> <a href='/blog/categories/nsdatecomponents' style='font-size: 100.54545454545455%'>NSDateComponents(2)</a> <a href='/blog/categories/nsdateformatter' style='font-size: 100.54545454545455%'>NSDateFormatter(2)</a> <a href='/blog/categories/nsdictionary' style='font-size: 103.27272727272727%'>NSDictionary(12)</a> <a href='/blog/categories/nsenumerator' style='font-size: 100.27272727272727%'>NSEnumerator(1)</a> <a href='/blog/categories/nsindexset' style='font-size: 100.27272727272727%'>NSIndexSet(1)</a> <a href='/blog/categories/nsinteger' style='font-size: 101.63636363636364%'>NSInteger(6)</a> <a href='/blog/categories/nsmutablearray' style='font-size: 104.63636363636364%'>NSMutableArray(17)</a> <a href='/blog/categories/nsmutabledictionary' style='font-size: 101.36363636363636%'>NSMutableDictionary(5)</a> <a href='/blog/categories/nsmutableorderedset' style='font-size: 101.9090909090909%'>NSMutableOrderedSet(7)</a> <a href='/blog/categories/nsmutablestring' style='font-size: 101.0909090909091%'>NSMutableString(4)</a> <a href='/blog/categories/nsmutableurlrequest' style='font-size: 100.27272727272727%'>NSMutableURLRequest(1)</a> <a href='/blog/categories/nsnotificationcenter' style='font-size: 100.27272727272727%'>NSNotificationCenter(1)</a> <a href='/blog/categories/nsnumber' style='font-size: 100.27272727272727%'>NSNumber(1)</a> <a href='/blog/categories/nsobject' style='font-size: 100.27272727272727%'>NSObject(1)</a> <a href='/blog/categories/nsorderedset' style='font-size: 101.9090909090909%'>NSOrderedSet(7)</a> <a href='/blog/categories/nsrange' style='font-size: 100.54545454545455%'>NSRange(2)</a> <a href='/blog/categories/nsselectorfromstring' style='font-size: 100.27272727272727%'>NSSelectorFromString(1)</a> <a href='/blog/categories/nsset' style='font-size: 101.63636363636364%'>NSSet(6)</a> <a href='/blog/categories/nsstring' style='font-size: 105.18181818181819%'>NSString(19)</a> <a href='/blog/categories/nstimer' style='font-size: 101.0909090909091%'>NSTimer(4)</a> <a href='/blog/categories/nstimezone' style='font-size: 100.27272727272727%'>NSTimeZone(1)</a> <a href='/blog/categories/nsurl' style='font-size: 101.9090909090909%'>NSURL(7)</a> <a href='/blog/categories/nsurlconnection' style='font-size: 100.27272727272727%'>NSURLConnection(1)</a> <a href='/blog/categories/nsurlrequest' style='font-size: 100.54545454545455%'>NSURLRequest(2)</a> <a href='/blog/categories/nsuserdefaults' style='font-size: 101.9090909090909%'>NSUserDefaults(7)</a> <a href='/blog/categories/nsxmlparser' style='font-size: 100.54545454545455%'>NSXMLParser(2)</a> <a href='/blog/categories/objective-c' style='font-size: 160.0%'>Objective-C(220)</a> <a href='/blog/categories/php' style='font-size: 100.27272727272727%'>PHP(1)</a> <a href='/blog/categories/products' style='font-size: 103.27272727272727%'>Products(12)</a> <a href='/blog/categories/quartzcore' style='font-size: 100.81818181818181%'>QuartzCore(3)</a> <a href='/blog/categories/rss' style='font-size: 100.54545454545455%'>RSS(2)</a> <a href='/blog/categories/runnable' style='font-size: 100.27272727272727%'>Runnable(1)</a> <a href='/blog/categories/sample' style='font-size: 113.9090909090909%'>Sample(51)</a> <a href='/blog/categories/screensaver' style='font-size: 102.45454545454545%'>Screensaver(9)</a> <a href='/blog/categories/sdk' style='font-size: 100.54545454545455%'>SDK(2)</a> <a href='/blog/categories/sharecompat' style='font-size: 100.27272727272727%'>ShareCompat(1)</a> <a href='/blog/categories/social' style='font-size: 102.72727272727273%'>Social(10)</a> <a href='/blog/categories/storekit' style='font-size: 100.27272727272727%'>StoreKit(1)</a> <a href='/blog/categories/twitter' style='font-size: 101.63636363636364%'>Twitter(6)</a> <a href='/blog/categories/uiaccelerometer' style='font-size: 100.81818181818181%'>UIAccelerometer(3)</a> <a href='/blog/categories/uiactionsheet' style='font-size: 100.27272727272727%'>UIActionSheet(1)</a> <a href='/blog/categories/uiactivityindicator' style='font-size: 100.27272727272727%'>UIActivityIndicator(1)</a> <a href='/blog/categories/uiactivityindicatorview' style='font-size: 100.81818181818181%'>UIActivityIndicatorView(3)</a> <a href='/blog/categories/uiactivityviewcontroller' style='font-size: 100.27272727272727%'>UIActivityViewController(1)</a> <a href='/blog/categories/uialertview' style='font-size: 101.36363636363636%'>UIAlertView(5)</a> <a href='/blog/categories/uiapplication' style='font-size: 101.9090909090909%'>UIApplication(7)</a> <a href='/blog/categories/uibutton' style='font-size: 101.0909090909091%'>UIButton(4)</a> <a href='/blog/categories/uicolor' style='font-size: 100.81818181818181%'>UIColor(3)</a> <a href='/blog/categories/uidatepicker' style='font-size: 101.36363636363636%'>UIDatePicker(5)</a> <a href='/blog/categories/uidevice' style='font-size: 101.63636363636364%'>UIDevice(6)</a> <a href='/blog/categories/uideviceorientation' style='font-size: 100.27272727272727%'>UIDeviceOrientation(1)</a> <a href='/blog/categories/uievent' style='font-size: 101.63636363636364%'>UIEvent(6)</a> <a href='/blog/categories/uiimage' style='font-size: 104.0909090909091%'>UIImage(15)</a> <a href='/blog/categories/uiimagepickercontroller' style='font-size: 101.0909090909091%'>UIImagePickerController(4)</a> <a href='/blog/categories/uiimageview' style='font-size: 103.27272727272727%'>UIImageView(12)</a> <a href='/blog/categories/uikit' style='font-size: 115.81818181818181%'>UIKit(58)</a> <a href='/blog/categories/uilabel' style='font-size: 101.9090909090909%'>UILabel(7)</a> <a href='/blog/categories/uinavigationbar' style='font-size: 101.0909090909091%'>UINavigationBar(4)</a> <a href='/blog/categories/uinavigationitem' style='font-size: 100.27272727272727%'>UINavigationItem(1)</a> <a href='/blog/categories/uipasteboard' style='font-size: 101.0909090909091%'>UIPasteboard(4)</a> <a href='/blog/categories/uiscreen' style='font-size: 100.27272727272727%'>UIScreen(1)</a> <a href='/blog/categories/uiscrollbar' style='font-size: 100.27272727272727%'>UIScrollBar(1)</a> <a href='/blog/categories/uiscrollview' style='font-size: 100.27272727272727%'>UIScrollView(1)</a> <a href='/blog/categories/uislider' style='font-size: 100.81818181818181%'>UISlider(3)</a> <a href='/blog/categories/uistoryboardsegue' style='font-size: 100.81818181818181%'>UIStoryboardSegue(3)</a> <a href='/blog/categories/uiswitch' style='font-size: 100.27272727272727%'>UISwitch(1)</a> <a href='/blog/categories/uitabbar' style='font-size: 100.81818181818181%'>UITabBar(3)</a> <a href='/blog/categories/uitableview' style='font-size: 100.81818181818181%'>UITableView(3)</a> <a href='/blog/categories/uitextfield' style='font-size: 100.54545454545455%'>UITextField(2)</a> <a href='/blog/categories/uiview' style='font-size: 103.0%'>UIView(11)</a> <a href='/blog/categories/uiviewanimationtransition' style='font-size: 100.27272727272727%'>UIViewAnimationTransition(1)</a> <a href='/blog/categories/uiviewcontroller' style='font-size: 101.0909090909091%'>UIViewController(4)</a> <a href='/blog/categories/uiwebview' style='font-size: 101.36363636363636%'>UIWebView(5)</a> <a href='/blog/categories/windowmanager' style='font-size: 100.27272727272727%'>WindowManager(1)</a> <a href='/blog/categories/xcode' style='font-size: 113.0909090909091%'>Xcode(48)</a> <a href='/blog/categories/xcode-5' style='font-size: 102.18181818181819%'>Xcode 5(8)</a> <a href='/blog/categories/xcode-5-dot-1' style='font-size: 100.54545454545455%'>Xcode 5.1(2)</a> </p>
+  <p id="tag-cloud"><a href='/blog/categories/actionscript' style='font-size: 102.45454545454545%'>ActionScript(9)</a> <a href='/blog/categories/actionscript3' style='font-size: 101.9090909090909%'>ActionScript3(7)</a> <a href='/blog/categories/ad' style='font-size: 101.0909090909091%'>Ad(4)</a> <a href='/blog/categories/adfurikun' style='font-size: 100.54545454545455%'>Adfurikun(2)</a> <a href='/blog/categories/admob' style='font-size: 102.18181818181819%'>AdMob(8)</a> <a href='/blog/categories/android' style='font-size: 102.45454545454545%'>Android(9)</a> <a href='/blog/categories/animation' style='font-size: 104.63636363636364%'>Animation(17)</a> <a href='/blog/categories/appdelegate' style='font-size: 100.81818181818181%'>AppDelegate(3)</a> <a href='/blog/categories/arc' style='font-size: 100.27272727272727%'>ARC(1)</a> <a href='/blog/categories/arraylist' style='font-size: 100.27272727272727%'>ArrayList(1)</a> <a href='/blog/categories/avaudioplayer' style='font-size: 101.0909090909091%'>AVAudioPlayer(4)</a> <a href='/blog/categories/avaudiosession' style='font-size: 100.27272727272727%'>AVAudioSession(1)</a> <a href='/blog/categories/avfoundation' style='font-size: 100.81818181818181%'>AVFoundation(3)</a> <a href='/blog/categories/banner' style='font-size: 100.54545454545455%'>Banner(2)</a> <a href='/blog/categories/bitmap' style='font-size: 100.27272727272727%'>Bitmap(1)</a> <a href='/blog/categories/camera' style='font-size: 101.0909090909091%'>Camera(4)</a> <a href='/blog/categories/cgaffinetransform' style='font-size: 101.0909090909091%'>CGAffineTransform(4)</a> <a href='/blog/categories/cgblendmode' style='font-size: 100.54545454545455%'>CGBlendMode(2)</a> <a href='/blog/categories/cgcontextref' style='font-size: 100.27272727272727%'>CGContextRef(1)</a> <a href='/blog/categories/cgimageref' style='font-size: 100.27272727272727%'>CGImageRef(1)</a> <a href='/blog/categories/classes' style='font-size: 111.72727272727272%'>Classes(43)</a> <a href='/blog/categories/cllocationmanager' style='font-size: 100.27272727272727%'>CLLocationManager(1)</a> <a href='/blog/categories/connectivitymanager' style='font-size: 100.27272727272727%'>ConnectivityManager(1)</a> <a href='/blog/categories/contentresolver' style='font-size: 100.27272727272727%'>ContentResolver(1)</a> <a href='/blog/categories/corelocation' style='font-size: 100.54545454545455%'>CoreLocation(2)</a> <a href='/blog/categories/delegate' style='font-size: 100.81818181818181%'>Delegate(3)</a> <a href='/blog/categories/device' style='font-size: 101.9090909090909%'>Device(7)</a> <a href='/blog/categories/display' style='font-size: 100.27272727272727%'>Display(1)</a> <a href='/blog/categories/displaymetrics' style='font-size: 100.27272727272727%'>DisplayMetrics(1)</a> <a href='/blog/categories/download' style='font-size: 127.27272727272728%'>Download(100)</a> <a href='/blog/categories/facebook' style='font-size: 101.63636363636364%'>Facebook(6)</a> <a href='/blog/categories/foundation' style='font-size: 119.63636363636364%'>Foundation(72)</a> <a href='/blog/categories/framework' style='font-size: 100.54545454545455%'>Framework(2)</a> <a href='/blog/categories/google-analytics' style='font-size: 100.27272727272727%'>Google Analytics(1)</a> <a href='/blog/categories/handler' style='font-size: 100.27272727272727%'>Handler(1)</a> <a href='/blog/categories/iad' style='font-size: 101.63636363636364%'>iAd(6)</a> <a href='/blog/categories/imageview' style='font-size: 100.27272727272727%'>ImageView(1)</a> <a href='/blog/categories/in-apppurchase' style='font-size: 100.27272727272727%'>In-AppPurchase(1)</a> <a href='/blog/categories/ios' style='font-size: 103.27272727272727%'>iOS(12)</a> <a href='/blog/categories/ios-7' style='font-size: 104.0909090909091%'>iOS 7(15)</a> <a href='/blog/categories/ios-7-dot-1' style='font-size: 100.81818181818181%'>iOS 7.1(3)</a> <a href='/blog/categories/ios-8' style='font-size: 100.27272727272727%'>iOS 8(1)</a> <a href='/blog/categories/ipad' style='font-size: 101.9090909090909%'>iPad(7)</a> <a href='/blog/categories/iphone' style='font-size: 106.0%'>iPhone(22)</a> <a href='/blog/categories/iphone-6' style='font-size: 101.0909090909091%'>iPhone 6(4)</a> <a href='/blog/categories/java' style='font-size: 101.9090909090909%'>Java(7)</a> <a href='/blog/categories/javascript' style='font-size: 100.54545454545455%'>JavaScript(2)</a> <a href='/blog/categories/line' style='font-size: 101.0909090909091%'>LINE(4)</a> <a href='/blog/categories/localize' style='font-size: 100.27272727272727%'>Localize(1)</a> <a href='/blog/categories/mediastore' style='font-size: 100.27272727272727%'>MediaStore(1)</a> <a href='/blog/categories/mfcomposeviewcontroller' style='font-size: 100.27272727272727%'>MFComposeViewController(1)</a> <a href='/blog/categories/nend' style='font-size: 100.27272727272727%'>Nend(1)</a> <a href='/blog/categories/networkinfo' style='font-size: 100.27272727272727%'>NetworkInfo(1)</a> <a href='/blog/categories/nsarray' style='font-size: 106.27272727272727%'>NSArray(23)</a> <a href='/blog/categories/nscalendar' style='font-size: 100.81818181818181%'>NSCalendar(3)</a> <a href='/blog/categories/nsdata' style='font-size: 100.54545454545455%'>NSData(2)</a> <a href='/blog/categories/nsdate' style='font-size: 101.9090909090909%'>NSDate(7)</a> <a href='/blog/categories/nsdatecomponents' style='font-size: 100.54545454545455%'>NSDateComponents(2)</a> <a href='/blog/categories/nsdateformatter' style='font-size: 100.54545454545455%'>NSDateFormatter(2)</a> <a href='/blog/categories/nsdictionary' style='font-size: 103.27272727272727%'>NSDictionary(12)</a> <a href='/blog/categories/nsenumerator' style='font-size: 100.27272727272727%'>NSEnumerator(1)</a> <a href='/blog/categories/nsindexset' style='font-size: 100.27272727272727%'>NSIndexSet(1)</a> <a href='/blog/categories/nsinteger' style='font-size: 101.63636363636364%'>NSInteger(6)</a> <a href='/blog/categories/nsmutablearray' style='font-size: 104.63636363636364%'>NSMutableArray(17)</a> <a href='/blog/categories/nsmutabledictionary' style='font-size: 101.36363636363636%'>NSMutableDictionary(5)</a> <a href='/blog/categories/nsmutableorderedset' style='font-size: 101.9090909090909%'>NSMutableOrderedSet(7)</a> <a href='/blog/categories/nsmutablestring' style='font-size: 101.0909090909091%'>NSMutableString(4)</a> <a href='/blog/categories/nsmutableurlrequest' style='font-size: 100.27272727272727%'>NSMutableURLRequest(1)</a> <a href='/blog/categories/nsnotificationcenter' style='font-size: 100.27272727272727%'>NSNotificationCenter(1)</a> <a href='/blog/categories/nsnumber' style='font-size: 100.27272727272727%'>NSNumber(1)</a> <a href='/blog/categories/nsobject' style='font-size: 100.27272727272727%'>NSObject(1)</a> <a href='/blog/categories/nsorderedset' style='font-size: 101.9090909090909%'>NSOrderedSet(7)</a> <a href='/blog/categories/nsrange' style='font-size: 100.54545454545455%'>NSRange(2)</a> <a href='/blog/categories/nsselectorfromstring' style='font-size: 100.27272727272727%'>NSSelectorFromString(1)</a> <a href='/blog/categories/nsset' style='font-size: 101.63636363636364%'>NSSet(6)</a> <a href='/blog/categories/nsstring' style='font-size: 105.18181818181819%'>NSString(19)</a> <a href='/blog/categories/nstimer' style='font-size: 101.0909090909091%'>NSTimer(4)</a> <a href='/blog/categories/nstimezone' style='font-size: 100.27272727272727%'>NSTimeZone(1)</a> <a href='/blog/categories/nsurl' style='font-size: 101.9090909090909%'>NSURL(7)</a> <a href='/blog/categories/nsurlconnection' style='font-size: 100.27272727272727%'>NSURLConnection(1)</a> <a href='/blog/categories/nsurlrequest' style='font-size: 100.54545454545455%'>NSURLRequest(2)</a> <a href='/blog/categories/nsuserdefaults' style='font-size: 101.9090909090909%'>NSUserDefaults(7)</a> <a href='/blog/categories/nsxmlparser' style='font-size: 100.54545454545455%'>NSXMLParser(2)</a> <a href='/blog/categories/objective-c' style='font-size: 160.0%'>Objective-C(220)</a> <a href='/blog/categories/php' style='font-size: 100.27272727272727%'>PHP(1)</a> <a href='/blog/categories/products' style='font-size: 103.81818181818181%'>Products(14)</a> <a href='/blog/categories/quartzcore' style='font-size: 100.81818181818181%'>QuartzCore(3)</a> <a href='/blog/categories/rss' style='font-size: 100.54545454545455%'>RSS(2)</a> <a href='/blog/categories/runnable' style='font-size: 100.27272727272727%'>Runnable(1)</a> <a href='/blog/categories/sample' style='font-size: 113.9090909090909%'>Sample(51)</a> <a href='/blog/categories/screensaver' style='font-size: 102.45454545454545%'>Screensaver(9)</a> <a href='/blog/categories/sdk' style='font-size: 100.54545454545455%'>SDK(2)</a> <a href='/blog/categories/sharecompat' style='font-size: 100.27272727272727%'>ShareCompat(1)</a> <a href='/blog/categories/social' style='font-size: 102.72727272727273%'>Social(10)</a> <a href='/blog/categories/storekit' style='font-size: 100.27272727272727%'>StoreKit(1)</a> <a href='/blog/categories/twitter' style='font-size: 101.63636363636364%'>Twitter(6)</a> <a href='/blog/categories/uiaccelerometer' style='font-size: 100.81818181818181%'>UIAccelerometer(3)</a> <a href='/blog/categories/uiactionsheet' style='font-size: 100.27272727272727%'>UIActionSheet(1)</a> <a href='/blog/categories/uiactivityindicator' style='font-size: 100.27272727272727%'>UIActivityIndicator(1)</a> <a href='/blog/categories/uiactivityindicatorview' style='font-size: 100.81818181818181%'>UIActivityIndicatorView(3)</a> <a href='/blog/categories/uiactivityviewcontroller' style='font-size: 100.27272727272727%'>UIActivityViewController(1)</a> <a href='/blog/categories/uialertview' style='font-size: 101.36363636363636%'>UIAlertView(5)</a> <a href='/blog/categories/uiapplication' style='font-size: 101.9090909090909%'>UIApplication(7)</a> <a href='/blog/categories/uibutton' style='font-size: 101.0909090909091%'>UIButton(4)</a> <a href='/blog/categories/uicolor' style='font-size: 100.81818181818181%'>UIColor(3)</a> <a href='/blog/categories/uidatepicker' style='font-size: 101.36363636363636%'>UIDatePicker(5)</a> <a href='/blog/categories/uidevice' style='font-size: 101.63636363636364%'>UIDevice(6)</a> <a href='/blog/categories/uideviceorientation' style='font-size: 100.27272727272727%'>UIDeviceOrientation(1)</a> <a href='/blog/categories/uievent' style='font-size: 101.63636363636364%'>UIEvent(6)</a> <a href='/blog/categories/uiimage' style='font-size: 104.0909090909091%'>UIImage(15)</a> <a href='/blog/categories/uiimagepickercontroller' style='font-size: 101.0909090909091%'>UIImagePickerController(4)</a> <a href='/blog/categories/uiimageview' style='font-size: 103.27272727272727%'>UIImageView(12)</a> <a href='/blog/categories/uikit' style='font-size: 115.81818181818181%'>UIKit(58)</a> <a href='/blog/categories/uilabel' style='font-size: 101.9090909090909%'>UILabel(7)</a> <a href='/blog/categories/uinavigationbar' style='font-size: 101.0909090909091%'>UINavigationBar(4)</a> <a href='/blog/categories/uinavigationitem' style='font-size: 100.27272727272727%'>UINavigationItem(1)</a> <a href='/blog/categories/uipasteboard' style='font-size: 101.0909090909091%'>UIPasteboard(4)</a> <a href='/blog/categories/uiscreen' style='font-size: 100.27272727272727%'>UIScreen(1)</a> <a href='/blog/categories/uiscrollbar' style='font-size: 100.27272727272727%'>UIScrollBar(1)</a> <a href='/blog/categories/uiscrollview' style='font-size: 100.27272727272727%'>UIScrollView(1)</a> <a href='/blog/categories/uislider' style='font-size: 100.81818181818181%'>UISlider(3)</a> <a href='/blog/categories/uistoryboardsegue' style='font-size: 100.81818181818181%'>UIStoryboardSegue(3)</a> <a href='/blog/categories/uiswitch' style='font-size: 100.27272727272727%'>UISwitch(1)</a> <a href='/blog/categories/uitabbar' style='font-size: 100.81818181818181%'>UITabBar(3)</a> <a href='/blog/categories/uitableview' style='font-size: 100.81818181818181%'>UITableView(3)</a> <a href='/blog/categories/uitextfield' style='font-size: 100.54545454545455%'>UITextField(2)</a> <a href='/blog/categories/uiview' style='font-size: 103.0%'>UIView(11)</a> <a href='/blog/categories/uiviewanimationtransition' style='font-size: 100.27272727272727%'>UIViewAnimationTransition(1)</a> <a href='/blog/categories/uiviewcontroller' style='font-size: 101.0909090909091%'>UIViewController(4)</a> <a href='/blog/categories/uiwebview' style='font-size: 101.36363636363636%'>UIWebView(5)</a> <a href='/blog/categories/windowmanager' style='font-size: 100.27272727272727%'>WindowManager(1)</a> <a href='/blog/categories/xcode' style='font-size: 113.0909090909091%'>Xcode(48)</a> <a href='/blog/categories/xcode-5' style='font-size: 102.18181818181819%'>Xcode 5(8)</a> <a href='/blog/categories/xcode-5-dot-1' style='font-size: 100.54545454545455%'>Xcode 5.1(2)</a> </p>
 </section>
 
   </div>
