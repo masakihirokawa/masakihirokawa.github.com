@@ -4,7 +4,7 @@
   <title><![CDATA[Dolice Lab]]></title>
   <link href="https://lab.dolice.net/atom.xml" rel="self"/>
   <link href="https://lab.dolice.net/"/>
-  <updated>2016-09-03T10:30:38+09:00</updated>
+  <updated>2016-09-04T11:54:21+09:00</updated>
   <id>https://lab.dolice.net/</id>
   <author>
     <name><![CDATA[Masaki Hirokawa]]></name>
@@ -374,6 +374,318 @@
 
 <p><strong><a href="https://www.amazon.co.jp/gp/product/4797386258/ref=as_li_qf_sp_asin_tl?ie=UTF8&camp=247&creative=1211&creativeASIN=4797386258&linkCode=as2&tag=pinocchio-22">詳解 Swift 改訂版</a></strong><img src="https://ir-jp.amazon-adsystem.com/e/ir?t=pinocchio-22&l=as2&o=9&a=4797386258" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" /><br />
 Swiftのかなり入り込んだところまで解説しながら、実践コードを多数収録しています。応用本になりますので、入門書を読み終えて中級者から上級者に差し掛かる時に読むことをお勧めします。読み物としてだけではなくリファレンスとしても使用できます。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[iOSアプリに AdMobネイティブ広告を表示するクラスを作成しました]]></title>
+    <link href="https://lab.dolice.net/blog/2015/06/26/objc-classes-dc-admob-native-ads/"/>
+    <updated>2015-06-26T12:53:00+09:00</updated>
+    <id>https://lab.dolice.net/blog/2015/06/26/objc-classes-dc-admob-native-ads</id>
+    <content type="html"><![CDATA[<p>iOSアプリに AdMobネイティブ広告を表示する「<a href="https://github.com/masakihirokawa/objc-classes-dc-admob-native-ads" title="DCAdMobNativeAds">DCAdMobNativeAds</a>」クラスを作成しました。</p>
+
+<p>下記よりダウンロード出来ますので、実装の際のお役に立てば幸いです。</p>
+
+<h3>ダウンロード</h3>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-classes-dc-admob-native-ads">https://github.com/masakihirokawa/objc-classes-dc-admob-native-ads</a></li>
+</ul>
+
+
+<h2>使用方法</h2>
+
+<h3>A. ネイティブ広告を指定したビューに配置</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">CGFloat</span> <span class="k">const</span> <span class="n">nativeAdsWidth</span>  <span class="o">=</span> <span class="p">[[</span><span class="n">UIScreen</span> <span class="n">mainScreen</span><span class="p">]</span> <span class="n">bounds</span><span class="p">].</span><span class="n">size</span><span class="p">.</span><span class="n">width</span><span class="p">;</span>
+</span><span class='line'><span class="n">CGFloat</span> <span class="k">const</span> <span class="n">nativeAdsHeight</span> <span class="o">=</span> <span class="mf">80.0</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">UIView</span> <span class="o">*</span><span class="n">nativeAdsView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">nativeAdsWidth</span><span class="p">,</span> <span class="n">nativeAdsHeight</span><span class="p">)];</span>
+</span><span class='line'><span class="p">[[</span><span class="n">DCAdMobNativeAds</span> <span class="n">sharedManager</span><span class="p">]</span> <span class="nl">showNativeAd:</span><span class="n">self</span> <span class="nl">targetView:</span><span class="n">nativeAdsView</span>
+</span><span class='line'>                                         <span class="nl">frame:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">nativeAdsWidth</span><span class="p">,</span> <span class="n">nativeAdsHeight</span><span class="p">)];</span>
+</span><span class='line'><span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubView:</span><span class="n">nativeAdsView</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>B. ネイティブ広告を指定したビューに取得</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">CGFloat</span> <span class="k">const</span> <span class="n">nativeAdsWidth</span>  <span class="o">=</span> <span class="p">[[</span><span class="n">UIScreen</span> <span class="n">mainScreen</span><span class="p">]</span> <span class="n">bounds</span><span class="p">].</span><span class="n">size</span><span class="p">.</span><span class="n">width</span><span class="p">;</span>
+</span><span class='line'><span class="n">CGFloat</span> <span class="k">const</span> <span class="n">nativeAdsHeight</span> <span class="o">=</span> <span class="mf">80.0</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">UIView</span> <span class="o">*</span><span class="n">nativeAdsView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">nativeAdsWidth</span><span class="p">,</span> <span class="n">nativeAdsHeight</span><span class="p">)];</span>
+</span><span class='line'><span class="n">nativeAdsView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">DCAdMobNativeAds</span> <span class="n">sharedManager</span><span class="p">]</span> <span class="nl">nativeAd:</span><span class="n">self</span>
+</span><span class='line'>                                         <span class="nl">frame:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">nativeAdsWidth</span><span class="p">,</span> <span class="n">nativeAdsHeight</span><span class="p">)];</span>
+</span><span class='line'><span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubView:</span><span class="n">nativeAdsView</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>ネイティブ広告の寸法について</h2>
+
+<p>AdMobネイティブ広告の縦幅は、80dp 以上である必要があります。それ未満のサイズを指定するとエラー取得時のデリゲートメソッドが呼ばれ、広告は表示されません。</p>
+
+<p>横幅の最小値については未検証ですが、ネイティブ広告のユニット作成時にプレビューサイズを指定する際、280dp 以上である必要がありますので、恐らく 280dp が最小値だと思います。</p>
+
+<p>iPhoneは 4-inch/ 4.7-inch/ 5.5-inch で横幅が異なりますので、今回のサンプルでは横幅一杯に指定する方法を取っています。</p>
+
+<p>ネイティブ広告初期化の際、下記のように縦幅 80dp 以上のサイズを指定することで正常に表示されました。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">CGSize</span> <span class="k">const</span> <span class="n">nativeAdsSize</span> <span class="o">=</span> <span class="n">CGSizeMake</span><span class="p">([[</span><span class="n">UIScreen</span> <span class="n">mainScreen</span><span class="p">]</span> <span class="n">bounds</span><span class="p">].</span><span class="n">size</span><span class="p">.</span><span class="n">width</span><span class="p">,</span> <span class="mf">80.0</span><span class="p">);</span>
+</span><span class='line'><span class="n">self</span><span class="p">.</span><span class="n">nativeExpressAdView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">GADNativeExpressAdView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithAdSize:</span><span class="n">GADAdSizeFromCGSize</span><span class="p">(</span><span class="n">nativeAdsSize</span><span class="p">)</span>
+</span><span class='line'>                                                                       <span class="nl">origin:</span><span class="n">CGPointMake</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>ソースコード</h2>
+
+<h3>DCAdMobNativeAds.h</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;UIKit/UIKit.h&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="err">@</span><span class="n">import</span> <span class="n">GoogleMobileAds</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">DCAdMobNativeAds</span> : <span class="nc">NSObject</span> <span class="o">&lt;</span><span class="n">GADNativeExpressAdViewDelegate</span><span class="o">&gt;</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">GADNativeExpressAdView</span> <span class="o">*</span><span class="n">nativeExpressAdView</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark - property</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">strong</span><span class="p">)</span> <span class="n">GADNativeExpressAdView</span> <span class="o">*</span><span class="n">nativeExpressAdView</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark - public method</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">sharedManager</span><span class="p">;</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">showNativeAd:</span><span class="p">(</span><span class="n">UIViewController</span> <span class="o">*</span><span class="p">)</span><span class="nv">viewController</span> <span class="nf">targetView:</span><span class="p">(</span><span class="n">UIView</span> <span class="o">*</span><span class="p">)</span><span class="nv">targetView</span> <span class="nf">frame:</span><span class="p">(</span><span class="n">CGRect</span><span class="p">)</span><span class="nv">frame</span><span class="p">;</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">UIView</span> <span class="o">*</span><span class="p">)</span><span class="nf">nativeAd:</span><span class="p">(</span><span class="n">UIViewController</span> <span class="o">*</span><span class="p">)</span><span class="nv">viewController</span> <span class="nf">frame:</span><span class="p">(</span><span class="n">CGRect</span><span class="p">)</span><span class="nv">frame</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>DCAdMobNativeAds.m</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;DCAdMobNativeAds.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">DCAdMobNativeAds</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@synthesize</span> <span class="n">nativeExpressAdView</span> <span class="o">=</span> <span class="n">nativeExpressAdView</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">CGFloat</span> <span class="k">const</span> <span class="n">GAD_NATIVE_UNIT_ID</span> <span class="o">=</span> <span class="s">@&quot;Your Unit ID here&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="kt">BOOL</span>    <span class="k">const</span> <span class="n">GAD_TEST_MODE</span>      <span class="o">=</span> <span class="n">YES</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark - Shared Manager</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">static</span> <span class="kt">id</span> <span class="n">sharedInstance</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">sharedManager</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">@synchronized</span><span class="p">(</span><span class="n">self</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">sharedInstance</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="n">sharedInstance</span> <span class="o">=</span> <span class="p">[[</span><span class="n">self</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="n">sharedInstance</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark - public method</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">showNativeAd:</span><span class="p">(</span><span class="n">UIViewController</span> <span class="o">*</span><span class="p">)</span><span class="nv">viewController</span> <span class="nf">targetView:</span><span class="p">(</span><span class="n">UIView</span> <span class="o">*</span><span class="p">)</span><span class="nv">targetView</span> <span class="nf">frame:</span><span class="p">(</span><span class="n">CGRect</span><span class="p">)</span><span class="nv">frame</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">nativeExpressAdView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">GADNativeExpressAdView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithAdSize:</span><span class="n">GADAdSizeFromCGSize</span><span class="p">(</span><span class="n">frame</span><span class="p">.</span><span class="n">size</span><span class="p">)</span>
+</span><span class='line'>                                                                       <span class="nl">origin:</span><span class="n">frame</span><span class="p">.</span><span class="n">origin</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">nativeExpressAdView</span><span class="p">.</span><span class="n">adUnitID</span> <span class="o">=</span> <span class="n">GAD_NATIVE_UNIT_ID</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">nativeExpressAdView</span><span class="p">.</span><span class="n">rootViewController</span> <span class="o">=</span> <span class="n">viewController</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">nativeExpressAdView</span><span class="p">.</span><span class="n">delegate</span> <span class="o">=</span> <span class="n">self</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">targetView</span> <span class="nl">addSubview:</span><span class="n">self</span><span class="p">.</span><span class="n">nativeExpressAdView</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">GADRequest</span> <span class="o">*</span><span class="n">request</span> <span class="o">=</span> <span class="p">[</span><span class="n">GADRequest</span> <span class="n">request</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">GAD_TEST_MODE</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">request</span><span class="p">.</span><span class="n">testDevices</span> <span class="o">=</span> <span class="err">@</span><span class="p">[</span><span class="n">kGADSimulatorID</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">nativeExpressAdView</span> <span class="nl">loadRequest:</span><span class="n">request</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">UIView</span> <span class="o">*</span><span class="p">)</span><span class="nf">nativeAd:</span><span class="p">(</span><span class="n">UIViewController</span> <span class="o">*</span><span class="p">)</span><span class="nv">viewController</span> <span class="nf">frame:</span><span class="p">(</span><span class="n">CGRect</span><span class="p">)</span><span class="nv">frame</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">nativeExpressAdView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">GADNativeExpressAdView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithAdSize:</span><span class="n">GADAdSizeFromCGSize</span><span class="p">(</span><span class="n">frame</span><span class="p">.</span><span class="n">size</span><span class="p">)</span>
+</span><span class='line'>                                                                       <span class="nl">origin:</span><span class="n">frame</span><span class="p">.</span><span class="n">origin</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">nativeExpressAdView</span><span class="p">.</span><span class="n">adUnitID</span> <span class="o">=</span> <span class="n">GAD_NATIVE_UNIT_ID</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">nativeExpressAdView</span><span class="p">.</span><span class="n">rootViewController</span> <span class="o">=</span> <span class="n">viewController</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">nativeExpressAdView</span><span class="p">.</span><span class="n">delegate</span> <span class="o">=</span> <span class="n">self</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">GADRequest</span> <span class="o">*</span><span class="n">request</span> <span class="o">=</span> <span class="p">[</span><span class="n">GADRequest</span> <span class="n">request</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">GAD_TEST_MODE</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">request</span><span class="p">.</span><span class="n">testDevices</span> <span class="o">=</span> <span class="err">@</span><span class="p">[</span><span class="n">kGADSimulatorID</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">nativeExpressAdView</span> <span class="nl">loadRequest:</span><span class="n">request</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="n">self</span><span class="p">.</span><span class="n">nativeExpressAdView</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark - delegate method</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">nativeExpressAdViewDidReceiveAd:</span><span class="p">(</span><span class="n">GADNativeExpressAdView</span> <span class="o">*</span><span class="p">)</span><span class="nv">nativeExpressAdView</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">//NSLog(@&quot;nativeExpressAdViewDidReceiveAd&quot;);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">nativeExpressAdView:</span><span class="p">(</span><span class="n">GADNativeExpressAdView</span> <span class="o">*</span><span class="p">)</span><span class="nv">nativeExpressAdView</span> <span class="nf">didFailToReceiveAdWithError:</span><span class="p">(</span><span class="n">GADRequestError</span> <span class="o">*</span><span class="p">)</span><span class="nv">error</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">//NSLog(@&quot;nativeExpressAdView: didFailToReceiveAdWithError&quot;);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">nativeExpressAdViewWillPresentScreen:</span><span class="p">(</span><span class="n">GADNativeExpressAdView</span> <span class="o">*</span><span class="p">)</span><span class="nv">nativeExpressAdView</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">//NSLog(@&quot;nativeExpressAdViewWillPresentScreen&quot;);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">nativeExpressAdViewWillDismissScreen:</span><span class="p">(</span><span class="n">GADNativeExpressAdView</span> <span class="o">*</span><span class="p">)</span><span class="nv">nativeExpressAdView</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">//NSLog(@&quot;nativeExpressAdViewWillDismissScreen&quot;);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">nativeExpressAdViewDidDismissScreen:</span><span class="p">(</span><span class="n">GADNativeExpressAdView</span> <span class="o">*</span><span class="p">)</span><span class="nv">nativeExpressAdView</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">//NSLog(@&quot;nativeExpressAdViewDidDismissScreen&quot;);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">nativeExpressAdViewWillLeaveApplication:</span><span class="p">(</span><span class="n">GADNativeExpressAdView</span> <span class="o">*</span><span class="p">)</span><span class="nv">nativeExpressAdView</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">//NSLog(@&quot;nativeExpressAdViewWillLeaveApplication&quot;);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>お薦めの参考書</h2>
+
+<p><strong><a href="https://www.amazon.co.jp/gp/product/4797384514/ref=as_li_qf_sp_asin_tl?ie=UTF8&camp=247&creative=1211&creativeASIN=4797384514&linkCode=as2&tag=pinocchio-22">本気ではじめるiPhoneアプリ作り Xcode 7.x+Swift 2.x対応</a></strong><img src="https://ir-jp.amazon-adsystem.com/e/ir?t=pinocchio-22&l=as2&o=9&a=4797384514" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" /><br />
+iOSアプリ開発をこれから始める方に最もお薦めな一冊です。解り辛い点は図解入りで解説されており、プログラミングの動作の仕組みから詳しく知ることができます。基本から通信処理まで押さえられており、アプリ公開の手順についても解説されています。</p>
 ]]></content>
   </entry>
   
@@ -2772,58 +3084,6 @@ Swiftのかなり入り込んだところまで解説しながら、実践コー
 <li><strong><a href="https://lab.dolice.net/blog/2014/03/12/admob-mediation/" title="AdMobのメディエーションを最適化する方法">AdMobのメディエーションを最適化する方法</a></strong></li>
 <li><strong><a href="https://lab.dolice.net/blog/2014/02/25/objc-admob-inters/" title="iPhoneアプリに AdMobのインタースティシャル広告を導入する方法">iPhoneアプリに AdMobのインタースティシャル広告を導入する方法</a></strong></li>
 </ul>
-
-
-<h2>お薦めの参考書</h2>
-
-<p><strong><a href="https://www.amazon.co.jp/gp/product/4797386258/ref=as_li_qf_sp_asin_tl?ie=UTF8&camp=247&creative=1211&creativeASIN=4797386258&linkCode=as2&tag=pinocchio-22">詳解 Swift 改訂版</a></strong><img src="https://ir-jp.amazon-adsystem.com/e/ir?t=pinocchio-22&l=as2&o=9&a=4797386258" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" /><br />
-Swiftのかなり入り込んだところまで解説しながら、実践コードを多数収録しています。応用本になりますので、入門書を読み終えて中級者から上級者に差し掛かる時に読むことをお勧めします。読み物としてだけではなくリファレンスとしても使用できます。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[iOS 8端末であるかの判定方法]]></title>
-    <link href="https://lab.dolice.net/blog/2014/09/28/ios8-decision/"/>
-    <updated>2014-09-28T15:00:00+09:00</updated>
-    <id>https://lab.dolice.net/blog/2014/09/28/ios8-decision</id>
-    <content type="html"><![CDATA[<p>Objective-Cで iOS 8以降の端末であるか判定するコードを以下に記載します。</p>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">// iOS 8以降であるか</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">isIOS8</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">NSString</span> <span class="o">*</span><span class="n">osversion</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIDevice</span> <span class="n">currentDevice</span><span class="p">].</span><span class="n">systemVersion</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">NSArray</span>  <span class="o">*</span><span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="n">osversion</span> <span class="nl">componentsSeparatedByString:</span><span class="s">@&quot;.&quot;</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">return</span> <span class="p">([(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)[</span><span class="n">a</span> <span class="nl">objectAtIndex:</span><span class="mi">0</span><span class="p">]</span> <span class="n">intValue</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">8</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>マクロで判定する場合は以下のように記載します。</p>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#if __IPHONE_OS_VERSION_MAX_ALLOWED &gt;= 80000</span>
-</span><span class='line'>    <span class="c1">// iOSのバージョンが 8.0以降の場合の処理</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#else</span>
-</span><span class='line'>    <span class="c1">// それ以外の場合の処理</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#endif</span>
-</span></code></pre></td></tr></table></div></figure>
 
 
 <h2>お薦めの参考書</h2>
