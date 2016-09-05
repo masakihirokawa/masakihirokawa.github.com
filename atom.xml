@@ -4,7 +4,7 @@
   <title><![CDATA[Dolice Lab]]></title>
   <link href="https://lab.dolice.net/atom.xml" rel="self"/>
   <link href="https://lab.dolice.net/"/>
-  <updated>2016-09-04T12:16:08+09:00</updated>
+  <updated>2016-09-05T12:13:52+09:00</updated>
   <id>https://lab.dolice.net/</id>
   <author>
     <name><![CDATA[Masaki Hirokawa]]></name>
@@ -12,6 +12,756 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[iOSアプリのテーブルビューにネイティブ広告を表示するサンプル]]></title>
+    <link href="https://lab.dolice.net/blog/2016/09/05/objc-native-ads-in-ui-table-view/"/>
+    <updated>2016-09-05T12:13:00+09:00</updated>
+    <id>https://lab.dolice.net/blog/2016/09/05/objc-native-ads-in-ui-table-view</id>
+    <content type="html"><![CDATA[<p>iOSアプリのテーブルビューにネイティブ広告を表示するサンプルを作成しました。</p>
+
+<p>下記にサンプルを公開していますので、実装の際のお役に立てば幸いです。</p>
+
+<h2>サンプルのダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-native-ads-in-ui-table-view">https://github.com/masakihirokawa/objc-native-ads-in-ui-table-view</a></li>
+</ul>
+
+
+<h2>サンプルの解説</h2>
+
+<h3>1. ネイティブ広告の表示頻度と最大表示数を定義</h3>
+
+<p>まずネイティブ広告をリスト何件毎に表示するかと、画面に最大何個まで表示するか定義しています。</p>
+
+<p>下記の例では、リスト8件毎にネイティブ広告を表示し、画面に最大2個まで表示するよう指定しています。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="kt">int</span> <span class="k">const</span> <span class="n">NATIVE_ADS_PER</span>  <span class="o">=</span> <span class="mi">8</span><span class="p">;</span> <span class="c1">// ネイティブ広告をリスト何件毎に表示するか</span>
+</span><span class='line'><span class="kt">int</span> <span class="k">const</span> <span class="n">NATIVE_ADS_NUM</span>  <span class="o">=</span> <span class="mi">2</span><span class="p">;</span> <span class="c1">// ネイティブ広告を最大何個表示するか</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>2. ネイティブ広告の表示数によってセルの総数を補正</h3>
+
+<p>ネイティブ広告を表示する分だけセルの総数も補正しなければならないので、まず下記の「<em>nativeAdsNumPerScreen</em>」メソッドから画面に表示するネイティブ広告の総数を取得します。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">// 画面に表示するネイティブ広告の数を取得</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="nf">nativeAdsNumPerScreen:</span><span class="p">(</span><span class="n">NSUInteger</span><span class="p">)</span><span class="nv">comparisonNum</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">SHOW_NATIVE_ADS</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kt">int</span> <span class="k">const</span> <span class="n">maxDisplayPositionId</span> <span class="o">=</span> <span class="n">NATIVE_ADS_PER</span> <span class="o">*</span> <span class="n">NATIVE_ADS_NUM</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">comparisonNum</span> <span class="o">&gt;=</span> <span class="n">maxDisplayPositionId</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">NATIVE_ADS_NUM</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="n">roundf</span><span class="p">(</span><span class="n">comparisonNum</span> <span class="o">/</span> <span class="n">NATIVE_ADS_PER</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>そして本来のセルの総数にネイティブ広告の数を加え、テーブルビューのセル総数を定義しています。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">// セルの総数を指定</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nf">tableView:</span><span class="p">(</span><span class="n">UITableView</span> <span class="o">*</span><span class="p">)</span><span class="nv">tableView</span> <span class="nf">numberOfRowsInSection:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">section</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">CELL_NUM</span> <span class="o">+</span> <span class="p">[</span><span class="n">self</span> <span class="nl">nativeAdsNumPerScreen:</span><span class="n">CELL_NUM</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>3. ネイティブ広告を表示するセルの識別子を通常のセルと分けて定義</h3>
+
+<p>セルの識別子は通常のセルとネイティブ広告とで分ける必要があります。</p>
+
+<p>まず、下記の「<em>showNativeAdsByIndexId</em>」メソッドにセルのインデックス値を渡し、ネイティブ広告を表示するインデックス位置であるか取得します。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">// ネイティブ広告を表示するインデックス位置であるか取得</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">showNativeAdsByIndexId:</span><span class="p">(</span><span class="n">NSUInteger</span><span class="p">)</span><span class="nv">indexId</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">SHOW_NATIVE_ADS</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">NO</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">NSUInteger</span> <span class="k">const</span> <span class="n">positionId</span> <span class="o">=</span> <span class="p">(</span><span class="n">indexId</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
+</span><span class='line'>    <span class="kt">int</span> <span class="k">const</span> <span class="n">maxDisplayPositionId</span> <span class="o">=</span> <span class="n">NATIVE_ADS_NUM</span> <span class="o">*</span> <span class="n">NATIVE_ADS_PER</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">positionId</span> <span class="o">&gt;</span> <span class="n">maxDisplayPositionId</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">NO</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="n">positionId</span> <span class="o">%</span> <span class="n">NATIVE_ADS_PER</span> <span class="o">==</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>次に、ネイティブ広告を表示する位置である場合と通常のセルの場合とでセルの識別子を分けます。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">// セルの識別子定義</span>
+</span><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="k">const</span> <span class="n">CellIdentifier</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">@&quot;Cell%lu&quot;</span><span class="p">,</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">long</span><span class="p">)</span><span class="n">index</span><span class="p">];</span>
+</span><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="k">const</span> <span class="n">NativeAdsCellIdentifier</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">@&quot;NativeAds%lu&quot;</span><span class="p">,</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">long</span><span class="p">)</span><span class="n">index</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// ネイティブ広告を表示する位置であるか取得し、セルの識別子を渡す</span>
+</span><span class='line'><span class="n">UITableViewCell</span> <span class="o">*</span><span class="n">cell</span><span class="p">;</span>
+</span><span class='line'><span class="kt">BOOL</span> <span class="k">const</span> <span class="n">isNativeAdsPosition</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="nl">showNativeAdsByIndexId:</span><span class="n">index</span><span class="p">];</span>
+</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="n">isNativeAdsPosition</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">cell</span> <span class="o">=</span> <span class="p">[</span><span class="n">tableView</span> <span class="nl">dequeueReusableCellWithIdentifier:</span><span class="n">NativeAdsCellIdentifier</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">cell</span> <span class="o">=</span> <span class="p">[</span><span class="n">tableView</span> <span class="nl">dequeueReusableCellWithIdentifier:</span><span class="n">CellIdentifier</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>4. ネイティブ広告のセルと通常のセルとで描画処理を分ける</h3>
+
+<p>ネイティブ広告を表示するセルであれば広告を表示し、通常のセルであれば通常のセル内容を表示するよう処理を分けます。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">if</span> <span class="p">(</span><span class="n">cell</span> <span class="o">==</span> <span class="nb">nil</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">// ネイティブ広告を表示する位置であるか判定</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">isNativeAdsPosition</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">cell</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UITableViewCell</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithStyle:</span><span class="n">UITableViewCellStyleDefault</span> <span class="nl">reuseIdentifier:</span><span class="n">NativeAdsCellIdentifier</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// TODO: ネイティブ広告表示</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">cell</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UITableViewCell</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithStyle:</span><span class="n">UITableViewCellStyleDefault</span> <span class="nl">reuseIdentifier:</span><span class="n">CellIdentifier</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// TODO: 通常のセル表示</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>ここでセルのインデックス値を取得して処理を行う際、そのままの値を使用すると正しく処理できませんので、下記の「<em>correctedIndexId</em>」メソッドに本来のインデックス値を渡し、ネイティブ広告の表示によって生じるインデックス値を補正して受け取る必要があります。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">// ネイティブ広告の表示によって生じるインデックス補正値を取得</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="nf">nativeAdsCorrectionValue:</span><span class="p">(</span><span class="n">NSUInteger</span><span class="p">)</span><span class="nv">indexId</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">SHOW_NATIVE_ADS</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">NSUInteger</span> <span class="k">const</span> <span class="n">positionId</span> <span class="o">=</span> <span class="p">(</span><span class="n">indexId</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
+</span><span class='line'>    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">NATIVE_ADS_NUM</span><span class="p">;</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">--</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">positionId</span> <span class="o">&gt;</span> <span class="p">(</span><span class="n">i</span> <span class="o">*</span> <span class="n">NATIVE_ADS_PER</span><span class="p">))</span> <span class="p">{</span>
+</span><span class='line'>            <span class="k">return</span> <span class="n">i</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>ネイティブ広告を表示した分だけインデックス値に誤差が生じるため、通常は下記のようにインデックス値を補正して処理を行います。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">NSUInteger</span> <span class="k">const</span> <span class="n">corretedIndexId</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="nl">nativeAdsCorrectionValue:</span><span class="n">index</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>5. セルタップ時のイベントを分ける</h3>
+
+<p>セルをタップした時のイベントも下記のように分けます。下記の例では、ネイティブ広告の背景がタップされると選択を解除するよう指定しています。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">// セルタップ時のイベント</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">tableView:</span><span class="p">(</span><span class="n">UITableView</span> <span class="o">*</span><span class="p">)</span><span class="nv">tableView</span> <span class="nf">didSelectRowAtIndexPath:</span><span class="p">(</span><span class="n">NSIndexPath</span> <span class="o">*</span><span class="p">)</span><span class="nv">indexPath</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// インデックス値の保持</span>
+</span><span class='line'>    <span class="n">NSUInteger</span> <span class="k">const</span> <span class="n">index</span> <span class="o">=</span> <span class="p">[</span><span class="n">indexPath</span> <span class="nl">indexAtPosition:</span><span class="p">[</span><span class="n">indexPath</span> <span class="n">length</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// TODO: ネイティブ広告を表示した分だけインデックス値に誤差が生じるため、通常はこの値を使用して処理を行う</span>
+</span><span class='line'>    <span class="n">NSUInteger</span> <span class="k">const</span> <span class="n">corretedIndexId</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="nl">correctedIndexId:</span><span class="n">index</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// ネイティブ広告を表示する位置であるか取得し、タップ時の処理を分ける</span>
+</span><span class='line'>    <span class="kt">BOOL</span> <span class="k">const</span> <span class="n">isNativeAdsPosition</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="nl">showNativeAdsByIndexId:</span><span class="n">index</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">isNativeAdsPosition</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="c1">// TODO: ネイティブ広告セルの場合の処理</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// ネイティブ広告の背景はタップ禁止のため、セルの選択を解除する必要がある</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">tableView</span> <span class="nl">deselectRowAtIndexPath:</span><span class="n">indexPath</span> <span class="nl">animated:</span><span class="n">YES</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// デバッグ出力</span>
+</span><span class='line'>        <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;NativeAds&quot;</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>        <span class="c1">// TODO: 通常セルの場合の処理</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// デバッグ出力</span>
+</span><span class='line'>        <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;corretedIndexId: %lu&quot;</span><span class="p">,</span> <span class="n">corretedIndexId</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>以上でテーブルビューへのネイティブ広告の導入は完了です。</p>
+
+<p>まずネイティブ広告を表示する位置であるか判別し、通常のセルの描画を行う際には、ネイティブ広告の表示によって生じるインデックス値の誤差を埋めた補正値を使用して処理を行う点が重要です。</p>
+
+<p>解り辛い説明となりましたが、下記にサンプルソースコードを記載いたしますので、導入の際のご参考になれば幸いです。</p>
+
+<h2>サンプルソースコード</h2>
+
+<h3>ViewController.h</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;UIKit/UIKit.h&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> : <span class="nc">UIViewController</span> <span class="o">&lt;</span><span class="n">UITableViewDelegate</span><span class="p">,</span> <span class="n">UITableViewDataSource</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>ViewController.m</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+<span class='line-number'>102</span>
+<span class='line-number'>103</span>
+<span class='line-number'>104</span>
+<span class='line-number'>105</span>
+<span class='line-number'>106</span>
+<span class='line-number'>107</span>
+<span class='line-number'>108</span>
+<span class='line-number'>109</span>
+<span class='line-number'>110</span>
+<span class='line-number'>111</span>
+<span class='line-number'>112</span>
+<span class='line-number'>113</span>
+<span class='line-number'>114</span>
+<span class='line-number'>115</span>
+<span class='line-number'>116</span>
+<span class='line-number'>117</span>
+<span class='line-number'>118</span>
+<span class='line-number'>119</span>
+<span class='line-number'>120</span>
+<span class='line-number'>121</span>
+<span class='line-number'>122</span>
+<span class='line-number'>123</span>
+<span class='line-number'>124</span>
+<span class='line-number'>125</span>
+<span class='line-number'>126</span>
+<span class='line-number'>127</span>
+<span class='line-number'>128</span>
+<span class='line-number'>129</span>
+<span class='line-number'>130</span>
+<span class='line-number'>131</span>
+<span class='line-number'>132</span>
+<span class='line-number'>133</span>
+<span class='line-number'>134</span>
+<span class='line-number'>135</span>
+<span class='line-number'>136</span>
+<span class='line-number'>137</span>
+<span class='line-number'>138</span>
+<span class='line-number'>139</span>
+<span class='line-number'>140</span>
+<span class='line-number'>141</span>
+<span class='line-number'>142</span>
+<span class='line-number'>143</span>
+<span class='line-number'>144</span>
+<span class='line-number'>145</span>
+<span class='line-number'>146</span>
+<span class='line-number'>147</span>
+<span class='line-number'>148</span>
+<span class='line-number'>149</span>
+<span class='line-number'>150</span>
+<span class='line-number'>151</span>
+<span class='line-number'>152</span>
+<span class='line-number'>153</span>
+<span class='line-number'>154</span>
+<span class='line-number'>155</span>
+<span class='line-number'>156</span>
+<span class='line-number'>157</span>
+<span class='line-number'>158</span>
+<span class='line-number'>159</span>
+<span class='line-number'>160</span>
+<span class='line-number'>161</span>
+<span class='line-number'>162</span>
+<span class='line-number'>163</span>
+<span class='line-number'>164</span>
+<span class='line-number'>165</span>
+<span class='line-number'>166</span>
+<span class='line-number'>167</span>
+<span class='line-number'>168</span>
+<span class='line-number'>169</span>
+<span class='line-number'>170</span>
+<span class='line-number'>171</span>
+<span class='line-number'>172</span>
+<span class='line-number'>173</span>
+<span class='line-number'>174</span>
+<span class='line-number'>175</span>
+<span class='line-number'>176</span>
+<span class='line-number'>177</span>
+<span class='line-number'>178</span>
+<span class='line-number'>179</span>
+<span class='line-number'>180</span>
+<span class='line-number'>181</span>
+<span class='line-number'>182</span>
+<span class='line-number'>183</span>
+<span class='line-number'>184</span>
+<span class='line-number'>185</span>
+<span class='line-number'>186</span>
+<span class='line-number'>187</span>
+<span class='line-number'>188</span>
+<span class='line-number'>189</span>
+<span class='line-number'>190</span>
+<span class='line-number'>191</span>
+<span class='line-number'>192</span>
+<span class='line-number'>193</span>
+<span class='line-number'>194</span>
+<span class='line-number'>195</span>
+<span class='line-number'>196</span>
+<span class='line-number'>197</span>
+<span class='line-number'>198</span>
+<span class='line-number'>199</span>
+<span class='line-number'>200</span>
+<span class='line-number'>201</span>
+<span class='line-number'>202</span>
+<span class='line-number'>203</span>
+<span class='line-number'>204</span>
+<span class='line-number'>205</span>
+<span class='line-number'>206</span>
+<span class='line-number'>207</span>
+<span class='line-number'>208</span>
+<span class='line-number'>209</span>
+<span class='line-number'>210</span>
+<span class='line-number'>211</span>
+<span class='line-number'>212</span>
+<span class='line-number'>213</span>
+<span class='line-number'>214</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;ViewController.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> <span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@property</span> <span class="n">UITableView</span> <span class="o">*</span><span class="n">sampleList</span><span class="p">;</span> <span class="c1">// サンプルリスト</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">ViewController</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">CGFloat</span>    <span class="k">const</span> <span class="n">CELL_HEIGHT</span>     <span class="o">=</span> <span class="mi">80</span><span class="p">;</span>  <span class="c1">// セルの縦幅</span>
+</span><span class='line'><span class="n">NSUInteger</span> <span class="k">const</span> <span class="n">CELL_NUM</span>        <span class="o">=</span> <span class="mi">24</span><span class="p">;</span>  <span class="c1">// セルの総数</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">int</span>        <span class="k">const</span> <span class="n">NATIVE_ADS_PER</span>  <span class="o">=</span> <span class="mi">8</span><span class="p">;</span>   <span class="c1">// ネイティブ広告をリスト何件毎に表示するか</span>
+</span><span class='line'><span class="kt">int</span>        <span class="k">const</span> <span class="n">NATIVE_ADS_NUM</span>  <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>   <span class="c1">// ネイティブ広告を最大何個表示するか</span>
+</span><span class='line'><span class="kt">BOOL</span>       <span class="k">const</span> <span class="n">SHOW_NATIVE_ADS</span> <span class="o">=</span> <span class="n">YES</span><span class="p">;</span> <span class="c1">// ネイティブ広告を表示するか</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark -</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span> <span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// サンプルリスト配置</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="n">setSampleList</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark - Sample List</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// サンプルリスト配置</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setSampleList</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">CGFloat</span> <span class="k">const</span> <span class="n">sampleListWidth</span>  <span class="o">=</span> <span class="p">[[</span><span class="n">UIScreen</span> <span class="n">mainScreen</span><span class="p">]</span> <span class="n">bounds</span><span class="p">].</span><span class="n">size</span><span class="p">.</span><span class="n">width</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">CGFloat</span> <span class="k">const</span> <span class="n">sampleListHeight</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIScreen</span> <span class="n">mainScreen</span><span class="p">]</span> <span class="n">bounds</span><span class="p">].</span><span class="n">size</span><span class="p">.</span><span class="n">height</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">_sampleList</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UITableView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">sampleListWidth</span><span class="p">,</span> <span class="n">sampleListHeight</span><span class="p">)</span>
+</span><span class='line'>                                               <span class="nl">style:</span><span class="n">UITableViewStylePlain</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">_sampleList</span><span class="p">.</span><span class="n">delegate</span>        <span class="o">=</span> <span class="n">self</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">_sampleList</span><span class="p">.</span><span class="n">dataSource</span>      <span class="o">=</span> <span class="n">self</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">_sampleList</span><span class="p">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIColor</span> <span class="n">whiteColor</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">_sampleList</span><span class="p">.</span><span class="n">separatorStyle</span>  <span class="o">=</span> <span class="n">UITableViewCellSeparatorStyleNone</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">[</span><span class="n">_sampleList</span> <span class="nl">registerClass:</span><span class="p">[</span><span class="n">UITableViewCell</span> <span class="n">class</span><span class="p">]</span> <span class="nl">forCellReuseIdentifier:</span><span class="s">@&quot;Cell&quot;</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">_sampleList</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark - Table View</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">UITableViewCell</span> <span class="o">*</span><span class="p">)</span><span class="nf">tableView:</span><span class="p">(</span><span class="n">UITableView</span> <span class="o">*</span><span class="p">)</span><span class="nv">tableView</span> <span class="nf">cellForRowAtIndexPath:</span><span class="p">(</span><span class="n">NSIndexPath</span> <span class="o">*</span><span class="p">)</span><span class="nv">indexPath</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// インデックス値の保持</span>
+</span><span class='line'>    <span class="n">NSUInteger</span> <span class="k">const</span> <span class="n">index</span> <span class="o">=</span> <span class="p">[</span><span class="n">indexPath</span> <span class="nl">indexAtPosition:</span><span class="p">[</span><span class="n">indexPath</span> <span class="n">length</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// セルの識別子定義</span>
+</span><span class='line'>    <span class="n">NSString</span> <span class="o">*</span><span class="k">const</span> <span class="n">CellIdentifier</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">@&quot;Cell%lu&quot;</span><span class="p">,</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">long</span><span class="p">)</span><span class="n">index</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">NSString</span> <span class="o">*</span><span class="k">const</span> <span class="n">NativeAdsCellIdentifier</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">@&quot;NativeAds%lu&quot;</span><span class="p">,</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">long</span><span class="p">)</span><span class="n">index</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// ネイティブ広告を表示する位置であるか取得し、セルの識別子を渡す</span>
+</span><span class='line'>    <span class="n">UITableViewCell</span> <span class="o">*</span><span class="n">cell</span><span class="p">;</span>
+</span><span class='line'>    <span class="kt">BOOL</span> <span class="k">const</span> <span class="n">isNativeAdsPosition</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="nl">showNativeAdsByIndexId:</span><span class="n">index</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">isNativeAdsPosition</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">cell</span> <span class="o">=</span> <span class="p">[</span><span class="n">tableView</span> <span class="nl">dequeueReusableCellWithIdentifier:</span><span class="n">NativeAdsCellIdentifier</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">cell</span> <span class="o">=</span> <span class="p">[</span><span class="n">tableView</span> <span class="nl">dequeueReusableCellWithIdentifier:</span><span class="n">CellIdentifier</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">cell</span> <span class="o">==</span> <span class="nb">nil</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="c1">// サンプルラベルの座標と寸法定義</span>
+</span><span class='line'>        <span class="n">CGFloat</span> <span class="k">const</span> <span class="n">labelX</span>      <span class="o">=</span> <span class="mi">18</span><span class="p">;</span>
+</span><span class='line'>        <span class="n">CGFloat</span> <span class="k">const</span> <span class="n">labelWidth</span>  <span class="o">=</span> <span class="p">[[</span><span class="n">UIScreen</span> <span class="n">mainScreen</span><span class="p">]</span> <span class="n">bounds</span><span class="p">].</span><span class="n">size</span><span class="p">.</span><span class="n">width</span> <span class="o">-</span> <span class="n">labelX</span><span class="p">;</span>
+</span><span class='line'>        <span class="n">CGFloat</span> <span class="k">const</span> <span class="n">labelHeight</span> <span class="o">=</span> <span class="n">CELL_HEIGHT</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// ネイティブ広告を表示する位置であるか判定</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">isNativeAdsPosition</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="n">cell</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UITableViewCell</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithStyle:</span><span class="n">UITableViewCellStyleDefault</span> <span class="nl">reuseIdentifier:</span><span class="n">NativeAdsCellIdentifier</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="c1">// TODO: ネイティブ広告表示</span>
+</span><span class='line'>            <span class="n">UILabel</span> <span class="o">*</span><span class="n">label</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UILabel</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="n">labelX</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">labelWidth</span><span class="p">,</span> <span class="n">labelHeight</span><span class="p">)];</span>
+</span><span class='line'>            <span class="n">label</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="s">@&quot;NativeAds&quot;</span><span class="p">;</span>
+</span><span class='line'>            <span class="n">label</span><span class="p">.</span><span class="n">textColor</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIColor</span> <span class="n">blackColor</span><span class="p">];</span>
+</span><span class='line'>            <span class="n">label</span><span class="p">.</span><span class="n">textAlignment</span> <span class="o">=</span> <span class="n">NSTextAlignmentLeft</span><span class="p">;</span>
+</span><span class='line'>            <span class="n">label</span><span class="p">.</span><span class="n">numberOfLines</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>            <span class="n">label</span><span class="p">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIColor</span> <span class="n">clearColor</span><span class="p">];</span>
+</span><span class='line'>            <span class="p">[</span><span class="n">cell</span><span class="p">.</span><span class="n">contentView</span> <span class="nl">addSubview:</span><span class="n">label</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>            <span class="n">cell</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UITableViewCell</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithStyle:</span><span class="n">UITableViewCellStyleDefault</span> <span class="nl">reuseIdentifier:</span><span class="n">CellIdentifier</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="c1">// TODO: 通常のセル表示</span>
+</span><span class='line'>            <span class="n">UILabel</span> <span class="o">*</span><span class="n">label</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UILabel</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="n">labelX</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">labelWidth</span><span class="p">,</span> <span class="n">labelHeight</span><span class="p">)];</span>
+</span><span class='line'>            <span class="n">label</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">@&quot;List - %lu&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">self</span> <span class="nl">correctedIndexId:</span><span class="n">index</span><span class="p">]];</span>
+</span><span class='line'>            <span class="n">label</span><span class="p">.</span><span class="n">textColor</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIColor</span> <span class="n">blackColor</span><span class="p">];</span>
+</span><span class='line'>            <span class="n">label</span><span class="p">.</span><span class="n">textAlignment</span> <span class="o">=</span> <span class="n">NSTextAlignmentLeft</span><span class="p">;</span>
+</span><span class='line'>            <span class="n">label</span><span class="p">.</span><span class="n">numberOfLines</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>            <span class="n">label</span><span class="p">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIColor</span> <span class="n">clearColor</span><span class="p">];</span>
+</span><span class='line'>            <span class="p">[</span><span class="n">cell</span><span class="p">.</span><span class="n">contentView</span> <span class="nl">addSubview:</span><span class="n">label</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="n">cell</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// セルタップ時のイベント</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">tableView:</span><span class="p">(</span><span class="n">UITableView</span> <span class="o">*</span><span class="p">)</span><span class="nv">tableView</span> <span class="nf">didSelectRowAtIndexPath:</span><span class="p">(</span><span class="n">NSIndexPath</span> <span class="o">*</span><span class="p">)</span><span class="nv">indexPath</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// インデックス値の保持</span>
+</span><span class='line'>    <span class="n">NSUInteger</span> <span class="k">const</span> <span class="n">index</span> <span class="o">=</span> <span class="p">[</span><span class="n">indexPath</span> <span class="nl">indexAtPosition:</span><span class="p">[</span><span class="n">indexPath</span> <span class="n">length</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// TODO: ネイティブ広告を表示した分だけインデックス値に誤差が生じるため、通常はこの値を使用して処理を行う</span>
+</span><span class='line'>    <span class="n">NSUInteger</span> <span class="k">const</span> <span class="n">corretedIndexId</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="nl">correctedIndexId:</span><span class="n">index</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// ネイティブ広告を表示する位置であるか取得し、タップ時の処理を分ける</span>
+</span><span class='line'>    <span class="kt">BOOL</span> <span class="k">const</span> <span class="n">isNativeAdsPosition</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="nl">showNativeAdsByIndexId:</span><span class="n">index</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">isNativeAdsPosition</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="c1">// TODO: ネイティブ広告セルの場合の処理</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// ネイティブ広告の背景はタップ禁止のため、セルの選択を解除する必要がある</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">tableView</span> <span class="nl">deselectRowAtIndexPath:</span><span class="n">indexPath</span> <span class="nl">animated:</span><span class="n">YES</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// デバッグ出力</span>
+</span><span class='line'>        <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;NativeAds&quot;</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>        <span class="c1">// TODO: 通常セルの場合の処理</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// デバッグ出力</span>
+</span><span class='line'>        <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;corretedIndexId: %lu&quot;</span><span class="p">,</span> <span class="n">corretedIndexId</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// セルの総数を指定</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nf">tableView:</span><span class="p">(</span><span class="n">UITableView</span> <span class="o">*</span><span class="p">)</span><span class="nv">tableView</span> <span class="nf">numberOfRowsInSection:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">section</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">NSUInteger</span> <span class="k">const</span> <span class="n">cellNum</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="n">cellNum</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="n">cellNum</span> <span class="o">+</span> <span class="p">[</span><span class="n">self</span> <span class="nl">nativeAdsNumPerScreen:</span><span class="n">cellNum</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// セルの総数を返す</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSUInteger</span><span class="p">)</span><span class="nf">cellNum</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">CELL_NUM</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// セルのセクション数を設定</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nf">numberOfSectionsInTableView:</span><span class="p">(</span><span class="n">UITableView</span> <span class="o">*</span><span class="p">)</span><span class="nv">tableView</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// セル高さを設定</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">CGFloat</span><span class="p">)</span><span class="nf">tableView:</span><span class="p">(</span><span class="n">UITableView</span> <span class="o">*</span><span class="p">)</span><span class="nv">tableView</span> <span class="nf">heightForRowAtIndexPath:</span><span class="p">(</span><span class="n">NSIndexPath</span> <span class="o">*</span><span class="p">)</span><span class="nv">indexPath</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">CELL_HEIGHT</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// セルの背景色指定</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">tableView:</span><span class="p">(</span><span class="n">UITableView</span> <span class="o">*</span><span class="p">)</span><span class="nv">tableView</span>  <span class="nf">willDisplayCell:</span><span class="p">(</span><span class="n">UITableViewCell</span> <span class="o">*</span><span class="p">)</span><span class="nv">cell</span> <span class="nf">forRowAtIndexPath:</span><span class="p">(</span><span class="n">NSIndexPath</span> <span class="o">*</span><span class="p">)</span><span class="nv">indexPath</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">cell</span><span class="p">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIColor</span> <span class="n">whiteColor</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark - Native Ads</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// ネイティブ広告を表示するインデックス位置であるか取得</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">showNativeAdsByIndexId:</span><span class="p">(</span><span class="n">NSUInteger</span><span class="p">)</span><span class="nv">indexId</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">SHOW_NATIVE_ADS</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">NO</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">NSUInteger</span> <span class="k">const</span> <span class="n">positionId</span> <span class="o">=</span> <span class="p">(</span><span class="n">indexId</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
+</span><span class='line'>    <span class="kt">int</span> <span class="k">const</span> <span class="n">maxDisplayPositionId</span> <span class="o">=</span> <span class="n">NATIVE_ADS_NUM</span> <span class="o">*</span> <span class="n">NATIVE_ADS_PER</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">positionId</span> <span class="o">&gt;</span> <span class="n">maxDisplayPositionId</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">NO</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="n">positionId</span> <span class="o">%</span> <span class="n">NATIVE_ADS_PER</span> <span class="o">==</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// ネイティブ広告の表示分を補正したインデックス値の取得</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSUInteger</span><span class="p">)</span><span class="nf">correctedIndexId:</span><span class="p">(</span><span class="n">NSUInteger</span><span class="p">)</span><span class="nv">indexId</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">indexId</span> <span class="o">-</span> <span class="p">[</span><span class="n">self</span> <span class="nl">nativeAdsCorrectionValue:</span><span class="n">indexId</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// ネイティブ広告の表示によって生じるインデックス補正値を取得</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="nf">nativeAdsCorrectionValue:</span><span class="p">(</span><span class="n">NSUInteger</span><span class="p">)</span><span class="nv">indexId</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">SHOW_NATIVE_ADS</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">NSUInteger</span> <span class="k">const</span> <span class="n">positionId</span> <span class="o">=</span> <span class="p">(</span><span class="n">indexId</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
+</span><span class='line'>    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">NATIVE_ADS_NUM</span><span class="p">;</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">--</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">positionId</span> <span class="o">&gt;</span> <span class="p">(</span><span class="n">i</span> <span class="o">*</span> <span class="n">NATIVE_ADS_PER</span><span class="p">))</span> <span class="p">{</span>
+</span><span class='line'>            <span class="k">return</span> <span class="n">i</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 画面に表示するネイティブ広告の数を取得</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="nf">nativeAdsNumPerScreen:</span><span class="p">(</span><span class="n">NSUInteger</span><span class="p">)</span><span class="nv">comparisonNum</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">SHOW_NATIVE_ADS</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kt">int</span> <span class="k">const</span> <span class="n">maxDisplayPositionId</span> <span class="o">=</span> <span class="n">NATIVE_ADS_PER</span> <span class="o">*</span> <span class="n">NATIVE_ADS_NUM</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">comparisonNum</span> <span class="o">&gt;=</span> <span class="n">maxDisplayPositionId</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">NATIVE_ADS_NUM</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="n">roundf</span><span class="p">(</span><span class="n">comparisonNum</span> <span class="o">/</span> <span class="n">NATIVE_ADS_PER</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>お薦めの参考書</h2>
+
+<p><strong><a href="https://www.amazon.co.jp/gp/product/4797384514/ref=as_li_qf_sp_asin_tl?ie=UTF8&camp=247&creative=1211&creativeASIN=4797384514&linkCode=as2&tag=pinocchio-22">本気ではじめるiPhoneアプリ作り Xcode 7.x+Swift 2.x対応</a></strong><img src="https://ir-jp.amazon-adsystem.com/e/ir?t=pinocchio-22&l=as2&o=9&a=4797384514" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" /><br />
+iOSアプリ開発をこれから始める方に最もお薦めな一冊です。解り辛い点は図解入りで解説されており、プログラミングの動作の仕組みから詳しく知ることができます。基本から通信処理まで押さえられており、アプリ公開の手順についても解説されています。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[iOSアプリに AdMobネイティブ広告を表示するクラスを作成しました]]></title>
@@ -22,7 +772,7 @@
 
 <p>下記よりダウンロード出来ますので、実装の際のお役に立てば幸いです。</p>
 
-<h3>ダウンロード</h3>
+<h2>ダウンロード</h2>
 
 <ul>
 <li><a href="https://github.com/masakihirokawa/objc-classes-dc-admob-native-ads">https://github.com/masakihirokawa/objc-classes-dc-admob-native-ads</a></li>
@@ -3043,51 +3793,6 @@ Swiftのかなり入り込んだところまで解説しながら、実践コー
 
 <p><strong><a href="https://www.amazon.co.jp/gp/product/4839957037/ref=as_li_qf_sp_asin_tl?ie=UTF8&camp=247&creative=1211&creativeASIN=4839957037&linkCode=as2&tag=pinocchio-22">Swiftではじめる iPhoneアプリ開発の教科書 Swift 2 &amp; Xcode 7対応</a></strong><img src="https://ir-jp.amazon-adsystem.com/e/ir?t=pinocchio-22&l=as2&o=9&a=4839957037" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" /><br />
 この参考書の通りに実践サンプルを作成することで、確実に力を養うことができます。サンプルコードもサイトからダウンロード出来るようになっており、特に広告の貼り方などが参考になりました。Swiftで何が出来るかを知ることができ、入門用にお薦めの1冊です。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[AdMobバナー広告の iPhone 6/6 Plus対応]]></title>
-    <link href="https://lab.dolice.net/blog/2014/09/28/iphone6-admob/"/>
-    <updated>2014-09-28T16:00:00+09:00</updated>
-    <id>https://lab.dolice.net/blog/2014/09/28/iphone6-admob</id>
-    <content type="html"><![CDATA[<p>AdMobバナー広告を iPhone 6/6 Plus（4.7-inch/5.5-inch）で表示する際は、下記のようにバナーを初期化することで綺麗に表示されます。</p>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">GADBannerView</span> <span class="o">*</span><span class="n">gadView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">GADBannerView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithAdSize:</span>
-</span><span class='line'>                          <span class="n">GADAdSizeFullWidthPortraitWithHeight</span><span class="p">(</span><span class="n">GAD_SIZE_320x50</span><span class="p">.</span><span class="n">height</span><span class="p">)];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>バナーの横幅をフルサイズにして縦幅を自動調整する指定を行っています。</p>
-
-<p>テキスト広告については既に対応がされているようで、レスポンシブなデザインになっていました。</p>
-
-<h2>バナー表示クラスのダウンロード</h2>
-
-<p>下記に AdMobバナーを表示する「<a href="https://github.com/masakihirokawa/objc-classes-dc-admob-banner" title="DCAdMobBanner">DCAdMobBanner</a>」クラスを作成しました。</p>
-
-<ul>
-<li><a href="https://github.com/masakihirokawa/objc-classes-dc-admob-banner">https://github.com/masakihirokawa/objc-classes-dc-admob-banner</a></li>
-</ul>
-
-
-<p>実装ファイルの 53行目でアプリの広告ユニットIDを指定していますので、こちらを変更の上ご使用ください。</p>
-
-<h2>関連記事</h2>
-
-<ul>
-<li><strong><a href="https://lab.dolice.net/blog/2014/07/30/admob-optimization/" title="AdMobの広告収益をアップする5つのポイント">AdMobの広告収益をアップする5つのポイント</a></strong></li>
-<li><strong><a href="https://lab.dolice.net/blog/2014/03/12/admob-mediation/" title="AdMobのメディエーションを最適化する方法">AdMobのメディエーションを最適化する方法</a></strong></li>
-<li><strong><a href="https://lab.dolice.net/blog/2014/02/25/objc-admob-inters/" title="iPhoneアプリに AdMobのインタースティシャル広告を導入する方法">iPhoneアプリに AdMobのインタースティシャル広告を導入する方法</a></strong></li>
-</ul>
-
-
-<h2>お薦めの参考書</h2>
-
-<p><strong><a href="https://www.amazon.co.jp/gp/product/4797386258/ref=as_li_qf_sp_asin_tl?ie=UTF8&camp=247&creative=1211&creativeASIN=4797386258&linkCode=as2&tag=pinocchio-22">詳解 Swift 改訂版</a></strong><img src="https://ir-jp.amazon-adsystem.com/e/ir?t=pinocchio-22&l=as2&o=9&a=4797386258" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" /><br />
-Swiftのかなり入り込んだところまで解説しながら、実践コードを多数収録しています。応用本になりますので、入門書を読み終えて中級者から上級者に差し掛かる時に読むことをお勧めします。読み物としてだけではなくリファレンスとしても使用できます。</p>
 ]]></content>
   </entry>
   

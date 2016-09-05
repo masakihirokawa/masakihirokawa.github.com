@@ -6,12 +6,12 @@
 	<title>Dolice Lab</title>
 
 
-	<meta name="description" content="Objective-Cで動作する iOS用の目覚ましを作成しました。 アラームが開始されると自動スリープが無効になります。また、UserDefaultsで起床時間を保持します。 下記よりソースコードのダウンロードが行えます。 ダウンロード https://github.com/ &hellip;" />
+	<meta name="description" content="Objective-Cで指定した秒数から時・分・秒数を取得する「DCClock」クラスを作成しました。 秒数からデジタル時計形式の文字列取得も行えます。1桁の数字の桁数を増やして文字列として取得する機能も付属しています。 主な機能は下記の3つです。 主な機能 指定した秒数から時・分・秒数を数値／ &hellip;" />
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
     <meta property="og:locale" content="ja_JP" />
     <meta property="og:title" content="Dolice Lab" />
-    <meta property="og:description" content="Objective-Cで動作する iOS用の目覚ましを作成しました。 アラームが開始されると自動スリープが無効になります。また、UserDefaultsで起床時間を保持します。 下記よりソースコードのダウンロードが行えます。 ダウンロード https://github.com/ &hellip;" />
+    <meta property="og:description" content="Objective-Cで指定した秒数から時・分・秒数を取得する「DCClock」クラスを作成しました。 秒数からデジタル時計形式の文字列取得も行えます。1桁の数字の桁数を増やして文字列として取得する機能も付属しています。 主な機能は下記の3つです。 主な機能 指定した秒数から時・分・秒数を数値／ &hellip;" />
     <meta property="og:url" content="https://lab.dolice.net/blog/page/25/" />
     <meta property="og:image" content="/images/facebook-icon.jpg" />
     <meta property="og:author" content="Masaki Hirokawa" />
@@ -100,6 +100,380 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/09/05/download-objc-classes-dc-clock/">
+		
+			秒数から時間とデジタル時計を取得する「DCClock」クラス</a>
+	</h2>
+	<div class="entry-content">
+		<p><img src="/images/article/dc-clock.png" alt="" /></p>
+
+<p>Objective-Cで指定した秒数から時・分・秒数を取得する「DCClock」クラスを作成しました。</p>
+
+<p>秒数からデジタル時計形式の文字列取得も行えます。1桁の数字の桁数を増やして文字列として取得する機能も付属しています。</p>
+
+<p>主な機能は下記の3つです。</p>
+
+<h2>主な機能</h2>
+
+<ol>
+<li>指定した秒数から時・分・秒数を数値／文字列で取得</li>
+<li>デジタル時計形式で文字列を取得</li>
+<li>1桁の数字の桁数を指定した分だけ増やして文字列取得</li>
+</ol>
+
+
+<p>下記よりソースコードのダウンロードが行えます。</p>
+
+<h2>ダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-classes-dc-clock">https://github.com/masakihirokawa/objc-classes-dc-clock</a></li>
+</ul>
+
+
+<h2>ソースコード</h2>
+
+<h3>DCClock.h</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;Foundation/Foundation.h&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#define MIN_SEC 60</span>
+</span><span class='line'><span class="cp">#define TEN_SEC 10</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">DCClock</span> : <span class="nc">NSObject</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark - public method</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nf">digitalClockTime:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">seconds</span><span class="p">;</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nf">hour:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">seconds</span><span class="p">;</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nf">min:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">seconds</span><span class="p">;</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nf">sec:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">seconds</span><span class="p">;</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nf">hourStr:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">seconds</span><span class="p">;</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nf">minStr:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">seconds</span><span class="p">;</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nf">secStr:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">seconds</span><span class="p">;</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nf">increaseDigits:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">value</span> <span class="nf">digits:</span><span class="p">(</span><span class="n">NSUInteger</span><span class="p">)</span><span class="nv">digits</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>DCClock.m</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;DCClock.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">DCClock</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark - Digital Clock Time</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// デジタル時計の文字列取得</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nf">digitalClockTime:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">seconds</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">NSString</span> <span class="o">*</span><span class="n">hour</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCClock</span> <span class="nl">increaseDigits:</span><span class="p">[</span><span class="n">DCClock</span> <span class="nl">hour:</span><span class="n">seconds</span><span class="p">]</span> <span class="nl">digits:</span><span class="mi">1</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">NSString</span> <span class="o">*</span><span class="n">min</span>  <span class="o">=</span> <span class="p">[</span><span class="n">DCClock</span> <span class="nl">increaseDigits:</span><span class="p">[</span><span class="n">DCClock</span> <span class="nl">min:</span><span class="n">seconds</span><span class="p">]</span> <span class="nl">digits:</span><span class="mi">1</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">NSString</span> <span class="o">*</span><span class="n">sec</span>  <span class="o">=</span> <span class="p">[</span><span class="n">DCClock</span> <span class="nl">increaseDigits:</span><span class="p">[</span><span class="n">DCClock</span> <span class="nl">sec:</span><span class="n">seconds</span><span class="p">]</span> <span class="nl">digits:</span><span class="mi">1</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">@&quot;%@:%@:%@&quot;</span><span class="p">,</span> <span class="n">hour</span><span class="p">,</span> <span class="n">min</span><span class="p">,</span> <span class="n">sec</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark - Integer Time</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 時間を取得</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nf">hour:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">seconds</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">floor</span><span class="p">((</span><span class="n">seconds</span> <span class="o">/</span> <span class="n">MIN_SEC</span><span class="p">)</span> <span class="o">/</span> <span class="n">MIN_SEC</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 分数を取得</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nf">min:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">seconds</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">floor</span><span class="p">((</span><span class="n">seconds</span> <span class="o">/</span> <span class="n">MIN_SEC</span><span class="p">)</span> <span class="o">%</span> <span class="n">MIN_SEC</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 病数を取得</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nf">sec:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">seconds</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">floor</span><span class="p">(</span><span class="n">seconds</span> <span class="o">%</span> <span class="n">MIN_SEC</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark - String Time</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 時間の文字列を取得</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nf">hourStr:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">seconds</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">@&quot;%d&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">DCClock</span> <span class="nl">hour:</span><span class="n">seconds</span><span class="p">]];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 分数の文字列を取得</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nf">minStr:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">seconds</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">@&quot;%d&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">DCClock</span> <span class="nl">min:</span><span class="n">seconds</span><span class="p">]];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 秒数の文字列を取得</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nf">secStr:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">seconds</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">@&quot;%d&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">DCClock</span> <span class="nl">sec:</span><span class="n">seconds</span><span class="p">]];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark - Util</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 桁数を増やす</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nf">increaseDigits:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">value</span> <span class="nf">digits:</span><span class="p">(</span><span class="n">NSUInteger</span><span class="p">)</span><span class="nv">digits</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">NSString</span> <span class="o">*</span><span class="n">valueStr</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">@&quot;%d&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">value</span> <span class="o">&lt;</span> <span class="n">TEN_SEC</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="n">digits</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="n">valueStr</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">@&quot;%@%@&quot;</span><span class="p">,</span> <span class="s">@&quot;0&quot;</span><span class="p">,</span> <span class="n">valueStr</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">@&quot;%@&quot;</span><span class="p">,</span> <span class="n">valueStr</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>サンプルソースコード</h2>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;ViewController.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> <span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@property</span> <span class="n">NSInteger</span> <span class="n">countdownSec</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="n">UILabel</span>   <span class="o">*</span><span class="n">countdownLabel</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="n">NSTimer</span>   <span class="o">*</span><span class="n">countdownTimer</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">ViewController</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//背景指定</span>
+</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIColor</span> <span class="n">underPageBackgroundColor</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//カウントダウン秒数 (初期値)</span>
+</span><span class='line'>    <span class="n">_countdownSec</span> <span class="o">=</span> <span class="mi">4000</span><span class="p">;</span>
+</span><span class='line'>  
+</span><span class='line'>    <span class="c1">//カウントダウンラベル配置</span>
+</span><span class='line'>    <span class="n">_countdownLabel</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCLabel</span> <span class="nl">planeLabel:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">320</span><span class="p">,</span> <span class="mi">48</span><span class="p">)</span>
+</span><span class='line'>                                             <span class="nl">text:</span><span class="p">[</span><span class="n">DCClock</span> <span class="nl">digitalClockTime:</span><span class="n">_countdownSec</span><span class="p">]</span>
+</span><span class='line'>                                             <span class="nl">font:</span><span class="p">[</span><span class="n">UIFont</span> <span class="nl">fontWithName:</span><span class="s">@&quot;Helvetica&quot;</span> <span class="nl">size:</span><span class="mi">20</span><span class="p">]</span>
+</span><span class='line'>                                        <span class="nl">textColor:</span><span class="p">[</span><span class="n">UIColor</span> <span class="n">whiteColor</span><span class="p">]</span> <span class="nl">textAlignment:</span><span class="n">NSTextAlignmentCenter</span>
+</span><span class='line'>                                  <span class="nl">backgroundColor:</span><span class="p">[</span><span class="n">UIColor</span> <span class="nl">colorWithRed:</span><span class="mf">0.0f</span> <span class="nl">green:</span><span class="mf">0.0f</span> <span class="nl">blue:</span><span class="mf">0.0f</span> <span class="nl">alpha:</span><span class="mf">0.5f</span><span class="p">]];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">_countdownLabel</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//カウントダウンタイマー定義</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">DCTimer</span> <span class="nl">setTimer:</span><span class="mf">1.0f</span> <span class="nl">delegate:</span><span class="n">self</span> <span class="nl">selector:</span><span class="k">@selector</span><span class="p">(</span><span class="nl">countdownTimerEvent:</span><span class="p">)</span> <span class="nl">userInfo:</span><span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//カウントダウンタイマーイベント</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">countdownTimerEvent:</span><span class="p">(</span><span class="n">NSTimer</span> <span class="o">*</span><span class="p">)</span><span class="nv">timer</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">_countdownSec</span><span class="o">--</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">_countdownSec</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">DCTimer</span> <span class="n">clearTimer</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="nl">updateCountdownLabel:</span><span class="p">[</span><span class="n">DCClock</span> <span class="nl">digitalClockTime:</span><span class="n">_countdownSec</span><span class="p">]];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//カウントダウンラベル更新</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">updateCountdownLabel:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">remainingTime</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">_countdownLabel</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">remainingTime</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>関連記事</h2>
+
+<ul>
+<li><strong><a href="/blog/2013/06/06/download-objc-classes-dc-timer/" title="シンプルな記述でタイマーイベントを呼び出す「DCTimer」クラス">シンプルな記述でタイマーイベントを呼び出す「DCTimer」クラス</a></strong></li>
+<li><strong><a href="/blog/2013/05/30/download-objc-classes-dc-animation2/" title="7種類のアニメーションを実行する「DCAnimation」クラス">7種類のアニメーションを実行する「DCAnimation」クラス</a></strong></li>
+<li><strong><a href="/blog/2013/05/14/download-objc-classes-dc-animation/" title="5種類のアニメーションを実行する「DCAnimationLite」クラス">5種類のアニメーションを実行する「DCAnimationLite」クラス</a></strong></li>
+</ul>
+
+
+<h2>お薦めの参考書</h2>
+
+<p><strong><a href="https://www.amazon.co.jp/gp/product/4797384514/ref=as_li_qf_sp_asin_tl?ie=UTF8&camp=247&creative=1211&creativeASIN=4797384514&linkCode=as2&tag=pinocchio-22">本気ではじめるiPhoneアプリ作り Xcode 7.x+Swift 2.x対応</a></strong><img src="https://ir-jp.amazon-adsystem.com/e/ir?t=pinocchio-22&l=as2&o=9&a=4797384514" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" /><br />
+iOSアプリ開発をこれから始める方に最もお薦めな一冊です。解り辛い点は図解入りで解説されており、プログラミングの動作の仕組みから詳しく知ることができます。基本から通信処理まで押さえられており、アプリ公開の手順についても解説されています。</p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-09-05T15:14:00+09:00" pubdate data-updated="true">Sep 5<span>th</span>, 2013</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/classes/'>Classes</a>, <a class='category' href='/blog/categories/download/'>Download</a>, <a class='category' href='/blog/categories/nsinteger/'>NSInteger</a>, <a class='category' href='/blog/categories/nsstring/'>NSString</a>, <a class='category' href='/blog/categories/objective-c/'>Objective-C</a>
+
+
+</div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -1213,544 +1587,6 @@ iOSアプリ開発をこれから始める方に最もお薦めな一冊です�
 </div>
 </article>
 
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/09/04/download-objc-classes-dc-audio-player2/">
-		
-			音楽ファイルの再生停止などの制御をする「DCAudioPlayer」クラス改訂版</a>
-	</h2>
-	<div class="entry-content">
-		<p><img src="/images/article/dc-audio-player.png" alt="" /></p>
-
-<p>音楽ファイルの再生停止などの制御をする「DCAudioPlayer」クラスを改訂しました。</p>
-
-<p>オーディオの再生／停止／一時停止／再生状況の取得、ボリュームコントロールスライダーの生成などを行えます。</p>
-
-<p>このクラスの使用には AVFoundationフレームワークが必要になります。</p>
-
-<p>今回の変更内容は下記の通りです。</p>
-
-<h2>変更内容</h2>
-
-<ol>
-<li>オーディオ再生終了時のデリゲートメソッドを指定出来るよう変更しました (初期化時にデリゲート使用有無を指定)</li>
-<li>オーディオのバックグラウンド再生をサポートしました</li>
-</ol>
-
-
-<h2>バックグラウンド再生するために必要な手順</h2>
-
-<h3>info.plistファイルを編集</h3>
-
-<ol>
-<li>info.plistファイルを Xcode左側のプロジェクトメニューから開く</li>
-<li>Keyに Required background modesを追加</li>
-<li>Item 0 の Valueを App plays audio に指定</li>
-</ol>
-
-
-<p>下記よりサンプルとソースコードのダウンロードが行えます。</p>
-
-<h2>ダウンロード</h2>
-
-<ul>
-<li><a href="https://github.com/masakihirokawa/objc-classes-dc-audio-player2">https://github.com/masakihirokawa/objc-classes-dc-audio-player2</a></li>
-</ul>
-
-
-<h2>使用方法</h2>
-
-<h3>オーディオファイルを指定し初期化</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">_audioPlayer</span> <span class="o">=</span> <span class="p">[[</span><span class="n">DCAudioPlayer</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithAudio:</span><span class="n">AUDIO_RESOURCE_FILE_NAME</span>
-</span><span class='line'>                                                <span class="nl">ext:</span><span class="n">AUDIO_RESOURCE_FILE_EXT</span>
-</span><span class='line'>                                      <span class="nl">isUseDelegate:</span><span class="n">YES</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>再生</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">[</span><span class="n">_audioPlayer</span> <span class="n">play</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>停止</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">[</span><span class="n">_audioPlayer</span> <span class="n">stop</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>一時停止</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">[</span><span class="n">_audioPlayer</span> <span class="n">pause</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>ボリュームコントロールスライダーの取得</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">_audioVolumeSlider</span> <span class="o">=</span> <span class="p">[</span><span class="n">_audioPlayer</span> <span class="nl">volumeControlSlider:</span><span class="n">self</span>
-</span><span class='line'>                                                 <span class="nl">point:</span><span class="n">CGPointMake</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">150</span><span class="p">)</span>
-</span><span class='line'>                                          <span class="nl">defaultValue:</span><span class="mf">0.5f</span>
-</span><span class='line'>                                              <span class="nl">selector:</span><span class="k">@selector</span><span class="p">(</span><span class="nl">sliderValueChanged:</span><span class="p">)];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">sliderValueChanged:</span><span class="p">(</span><span class="n">UISlider</span> <span class="o">*</span><span class="p">)</span><span class="nv">slider</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">_audioPlayer</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">_audioPlayer</span> <span class="nl">setVolume:</span><span class="n">slider</span><span class="p">.</span><span class="n">value</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>音量の指定</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">[</span><span class="n">_audioPlayer</span> <span class="nl">setVolume:</span><span class="mf">0.5f</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>現在の再生フレームの指定</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">[</span><span class="n">_audioPlayer</span> <span class="nl">setCurrentTime:</span><span class="mi">0</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>再生ループ回数の指定</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">[</span><span class="n">_audioPlayer</span> <span class="nl">setNumberOfLoops:</span><span class="o">-</span><span class="mi">1</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>再生状況の取得</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="kt">BOOL</span> <span class="n">isPlaying</span> <span class="o">=</span> <span class="n">_audioPlayer</span><span class="p">.</span><span class="n">isPlaying</span><span class="p">;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>ソースコード</h2>
-
-<h3>DCAudioPlayer.h</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;AVFoundation/AVFoundation.h&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#define AUDIO_VOLUME_SLIDER_WIDTH  220</span>
-</span><span class='line'><span class="cp">#define AUDIO_VOLUME_SLIDER_HEIGHT 0</span>
-</span><span class='line'><span class="cp">#define AUDIO_MAX_VOLUME           1.0f</span>
-</span><span class='line'><span class="cp">#define AUDIO_MIN_VOLUME           0.0f</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@protocol</span> <span class="nc">DCAudioPlayerDelegate</span>;
-</span><span class='line'>
-</span><span class='line'><span class="k">@interface</span> <span class="nc">DCAudioPlayer</span> : <span class="nc">AVAudioPlayer</span> <span class="o">&lt;</span><span class="n">AVAudioPlayerDelegate</span><span class="o">&gt;</span> <span class="p">{</span>
-</span><span class='line'>    <span class="kt">id</span><span class="o">&lt;</span><span class="n">DCAudioPlayerDelegate</span><span class="o">&gt;</span> <span class="n">_ap_delegate</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#pragma mark - property</span>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">assign</span><span class="p">)</span>                 <span class="kt">id</span><span class="o">&lt;</span><span class="n">DCAudioPlayerDelegate</span><span class="o">&gt;</span> <span class="n">ap_delegate</span><span class="p">;</span>
-</span><span class='line'><span class="k">@property</span> <span class="n">AVAudioPlayer</span>                       <span class="o">*</span><span class="n">audioPlayer</span><span class="p">;</span>
-</span><span class='line'><span class="k">@property</span> <span class="n">NSTimeInterval</span>                      <span class="n">currentTime</span><span class="p">;</span>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">readonly</span><span class="p">)</span> <span class="n">NSData</span>                   <span class="o">*</span><span class="n">data</span><span class="p">;</span>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">assign</span><span class="p">)</span> <span class="kt">id</span> <span class="o">&lt;</span><span class="n">AVAudioPlayerDelegate</span><span class="o">&gt;</span> <span class="n">delegate</span><span class="p">;</span>
-</span><span class='line'><span class="k">@property</span> <span class="n">NSTimeInterval</span>                      <span class="n">duration</span><span class="p">;</span>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">getter</span><span class="o">=</span><span class="n">isMeteringEnabled</span><span class="p">)</span> <span class="kt">BOOL</span>     <span class="n">meteringEnabled</span><span class="p">;</span>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">readonly</span><span class="p">)</span> <span class="n">NSUInteger</span>               <span class="n">numberOfChannels</span><span class="p">;</span>
-</span><span class='line'><span class="k">@property</span> <span class="n">NSInteger</span>                           <span class="n">numberOfLoops</span><span class="p">;</span>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">readonly</span><span class="p">,</span> <span class="n">getter</span><span class="o">=</span><span class="n">isPlaying</span><span class="p">)</span> <span class="kt">BOOL</span>   <span class="n">playing</span><span class="p">;</span>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">readonly</span><span class="p">)</span> <span class="n">NSURL</span>                    <span class="o">*</span><span class="n">url</span><span class="p">;</span>
-</span><span class='line'><span class="k">@property</span> <span class="kt">float</span>                               <span class="n">volume</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#pragma mark - public method</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">initWithAudio:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">fileName</span> <span class="nf">ext:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">ext</span> <span class="nf">isUseDelegate:</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nv">isUseDelegate</span><span class="p">;</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">play</span><span class="p">;</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">pause</span><span class="p">;</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">stop</span><span class="p">;</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">UISlider</span> <span class="o">*</span><span class="p">)</span><span class="nf">volumeControlSlider:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">delegate</span> <span class="nf">point:</span><span class="p">(</span><span class="n">CGPoint</span><span class="p">)</span><span class="nv">point</span> <span class="nf">defaultValue:</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="nv">defaultValue</span> <span class="nf">selector:</span><span class="p">(</span><span class="kt">SEL</span><span class="p">)</span><span class="nv">selector</span><span class="p">;</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setVolume:</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="nv">volume</span><span class="p">;</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setCurrentTime:</span><span class="p">(</span><span class="n">NSTimeInterval</span><span class="p">)</span><span class="nv">currentTime</span><span class="p">;</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setNumberOfLoops:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">numberOfLoops</span><span class="p">;</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">isPlaying</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#pragma mark - delegate method</span>
-</span><span class='line'><span class="k">@protocol</span> <span class="nc">DCAudioPlayerDelegate</span> <span class="o">&lt;</span><span class="n">NSObject</span><span class="o">&gt;</span>
-</span><span class='line'><span class="k">@optional</span>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>DCAudioPlayer.m</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-<span class='line-number'>65</span>
-<span class='line-number'>66</span>
-<span class='line-number'>67</span>
-<span class='line-number'>68</span>
-<span class='line-number'>69</span>
-<span class='line-number'>70</span>
-<span class='line-number'>71</span>
-<span class='line-number'>72</span>
-<span class='line-number'>73</span>
-<span class='line-number'>74</span>
-<span class='line-number'>75</span>
-<span class='line-number'>76</span>
-<span class='line-number'>77</span>
-<span class='line-number'>78</span>
-<span class='line-number'>79</span>
-<span class='line-number'>80</span>
-<span class='line-number'>81</span>
-<span class='line-number'>82</span>
-<span class='line-number'>83</span>
-<span class='line-number'>84</span>
-<span class='line-number'>85</span>
-<span class='line-number'>86</span>
-<span class='line-number'>87</span>
-<span class='line-number'>88</span>
-<span class='line-number'>89</span>
-<span class='line-number'>90</span>
-<span class='line-number'>91</span>
-<span class='line-number'>92</span>
-<span class='line-number'>93</span>
-<span class='line-number'>94</span>
-<span class='line-number'>95</span>
-<span class='line-number'>96</span>
-<span class='line-number'>97</span>
-<span class='line-number'>98</span>
-<span class='line-number'>99</span>
-<span class='line-number'>100</span>
-<span class='line-number'>101</span>
-<span class='line-number'>102</span>
-<span class='line-number'>103</span>
-<span class='line-number'>104</span>
-<span class='line-number'>105</span>
-<span class='line-number'>106</span>
-<span class='line-number'>107</span>
-<span class='line-number'>108</span>
-<span class='line-number'>109</span>
-<span class='line-number'>110</span>
-<span class='line-number'>111</span>
-<span class='line-number'>112</span>
-<span class='line-number'>113</span>
-<span class='line-number'>114</span>
-<span class='line-number'>115</span>
-<span class='line-number'>116</span>
-<span class='line-number'>117</span>
-<span class='line-number'>118</span>
-<span class='line-number'>119</span>
-<span class='line-number'>120</span>
-<span class='line-number'>121</span>
-<span class='line-number'>122</span>
-<span class='line-number'>123</span>
-<span class='line-number'>124</span>
-<span class='line-number'>125</span>
-<span class='line-number'>126</span>
-<span class='line-number'>127</span>
-<span class='line-number'>128</span>
-<span class='line-number'>129</span>
-<span class='line-number'>130</span>
-<span class='line-number'>131</span>
-<span class='line-number'>132</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;DCAudioPlayer.h&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@implementation</span> <span class="nc">DCAudioPlayer</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@synthesize</span> <span class="n">ap_delegate</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// 初期化</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">initWithAudio:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">fileName</span> <span class="nf">ext:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">ext</span> <span class="nf">isUseDelegate:</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nv">isUseDelegate</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">self</span> <span class="o">=</span> <span class="p">[</span><span class="n">super</span> <span class="n">init</span><span class="p">])</span> <span class="p">{</span>
-</span><span class='line'>        <span class="c1">// オーディオプレイヤー初期化</span>
-</span><span class='line'>        <span class="n">NSBundle</span> <span class="o">*</span><span class="n">mainBundle</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSBundle</span> <span class="n">mainBundle</span><span class="p">];</span>
-</span><span class='line'>        <span class="n">NSString</span> <span class="o">*</span><span class="n">filePath</span> <span class="o">=</span> <span class="p">[</span><span class="n">mainBundle</span> <span class="nl">pathForResource:</span><span class="n">fileName</span>
-</span><span class='line'>                                                  <span class="nl">ofType:</span><span class="n">ext</span><span class="p">];</span>
-</span><span class='line'>        <span class="n">NSURL</span> <span class="o">*</span><span class="n">fileUrl</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSURL</span> <span class="nl">fileURLWithPath:</span><span class="n">filePath</span><span class="p">];</span>
-</span><span class='line'>        <span class="n">NSError</span> <span class="o">*</span><span class="n">error</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
-</span><span class='line'>        <span class="n">AVAudioPlayer</span> <span class="o">*</span><span class="n">audioPlayer</span> <span class="o">=</span> <span class="p">[[</span><span class="n">AVAudioPlayer</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithContentsOfURL:</span><span class="n">fileUrl</span> <span class="nl">error:</span><span class="o">&amp;</span><span class="n">error</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="c1">// バックグラウンド再生を許可</span>
-</span><span class='line'>        <span class="n">AVAudioSession</span> <span class="o">*</span><span class="n">audioSession</span> <span class="o">=</span> <span class="p">[</span><span class="n">AVAudioSession</span> <span class="n">sharedInstance</span><span class="p">];</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">audioSession</span> <span class="nl">setCategory:</span><span class="n">AVAudioSessionCategoryPlayback</span> <span class="nl">error:</span><span class="nb">nil</span><span class="p">];</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">audioSession</span> <span class="nl">setActive:</span><span class="n">YES</span> <span class="nl">error:</span><span class="nb">nil</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="c1">// エラーであれば処理しない</span>
-</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">error</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>            <span class="c1">// オーディオプレイヤー保持</span>
-</span><span class='line'>            <span class="n">_audioPlayer</span> <span class="o">=</span> <span class="n">audioPlayer</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>            <span class="c1">// デリゲート指定</span>
-</span><span class='line'>            <span class="k">if</span> <span class="p">(</span><span class="n">isUseDelegate</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>                <span class="p">[</span><span class="n">_audioPlayer</span> <span class="nl">setDelegate:</span><span class="n">self</span><span class="p">];</span>
-</span><span class='line'>            <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>            <span class="c1">// バッファを保持</span>
-</span><span class='line'>            <span class="p">[</span><span class="n">_audioPlayer</span> <span class="n">prepareToPlay</span><span class="p">];</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">self</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// 再生</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">play</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">_audioPlayer</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">_audioPlayer</span><span class="p">.</span><span class="n">isPlaying</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>            <span class="p">[</span><span class="n">_audioPlayer</span> <span class="n">prepareToPlay</span><span class="p">];</span>
-</span><span class='line'>            <span class="p">[</span><span class="n">_audioPlayer</span> <span class="n">play</span><span class="p">];</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// 一時停止</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">pause</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">_audioPlayer</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">_audioPlayer</span><span class="p">.</span><span class="n">isPlaying</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>            <span class="p">[</span><span class="n">_audioPlayer</span> <span class="n">pause</span><span class="p">];</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// 停止</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">stop</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">_audioPlayer</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">_audioPlayer</span><span class="p">.</span><span class="n">isPlaying</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>            <span class="p">[</span><span class="n">_audioPlayer</span> <span class="nl">setCurrentTime:</span><span class="mi">0</span><span class="p">];</span>
-</span><span class='line'>            <span class="p">[</span><span class="n">_audioPlayer</span> <span class="n">stop</span><span class="p">];</span>
-</span><span class='line'>            <span class="p">[</span><span class="n">_audioPlayer</span> <span class="n">prepareToPlay</span><span class="p">];</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// ボリュームコントロールスライダー</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">UISlider</span> <span class="o">*</span><span class="p">)</span><span class="nf">volumeControlSlider:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">delegate</span> <span class="nf">point:</span><span class="p">(</span><span class="n">CGPoint</span><span class="p">)</span><span class="nv">point</span> <span class="nf">defaultValue:</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="nv">defaultValue</span> <span class="nf">selector:</span><span class="p">(</span><span class="kt">SEL</span><span class="p">)</span><span class="nv">selector</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">UISlider</span> <span class="o">*</span><span class="n">audioVolumeSlider</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UISlider</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="n">point</span><span class="p">.</span><span class="n">x</span><span class="p">,</span>
-</span><span class='line'>                                                                             <span class="n">point</span><span class="p">.</span><span class="n">y</span><span class="p">,</span>
-</span><span class='line'>                                                                             <span class="n">AUDIO_VOLUME_SLIDER_WIDTH</span><span class="p">,</span>
-</span><span class='line'>                                                                             <span class="n">AUDIO_VOLUME_SLIDER_HEIGHT</span><span class="p">)];</span>
-</span><span class='line'>    <span class="n">audioVolumeSlider</span><span class="p">.</span><span class="n">minimumValue</span> <span class="o">=</span> <span class="n">AUDIO_MIN_VOLUME</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">audioVolumeSlider</span><span class="p">.</span><span class="n">maximumValue</span> <span class="o">=</span> <span class="n">AUDIO_MAX_VOLUME</span><span class="p">;</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">defaultValue</span> <span class="o">&gt;</span> <span class="n">AUDIO_MAX_VOLUME</span><span class="p">)</span> <span class="n">defaultValue</span> <span class="o">=</span> <span class="n">AUDIO_MAX_VOLUME</span><span class="p">;</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">defaultValue</span> <span class="o">&lt;</span> <span class="n">AUDIO_MIN_VOLUME</span><span class="p">)</span> <span class="n">defaultValue</span> <span class="o">=</span> <span class="n">AUDIO_MIN_VOLUME</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">audioVolumeSlider</span><span class="p">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">defaultValue</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">audioVolumeSlider</span> <span class="nl">addTarget:</span><span class="n">delegate</span>
-</span><span class='line'>                          <span class="nl">action:</span><span class="n">selector</span>
-</span><span class='line'>                <span class="nl">forControlEvents:</span><span class="n">UIControlEventValueChanged</span><span class="p">];</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">audioVolumeSlider</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// ボリューム指定</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setVolume:</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="nv">volume</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">_audioPlayer</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="n">_audioPlayer</span><span class="p">.</span><span class="n">volume</span> <span class="o">=</span> <span class="n">volume</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// 現在の再生フレーム指定</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setCurrentTime:</span><span class="p">(</span><span class="n">NSTimeInterval</span><span class="p">)</span><span class="nv">currentTime</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">_audioPlayer</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="n">_audioPlayer</span><span class="p">.</span><span class="n">currentTime</span> <span class="o">=</span> <span class="n">currentTime</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// ループ回数指定</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setNumberOfLoops:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">numberOfLoops</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">_audioPlayer</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="n">_audioPlayer</span><span class="p">.</span><span class="n">numberOfLoops</span> <span class="o">=</span> <span class="n">numberOfLoops</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// 再生状況の取得</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">isPlaying</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">_audioPlayer</span><span class="p">.</span><span class="n">playing</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#pragma mark - AVAudioPlayerDelegate</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">audioPlayerDidFinishPlaying:</span><span class="p">(</span><span class="n">AVAudioPlayer</span> <span class="o">*</span><span class="p">)</span><span class="nv">player</span> <span class="nf">successfully:</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nv">successfully</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">successfully</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="c1">// ここでデリゲートメソッドを指定する</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>お薦めの参考書</h2>
-
-<p><strong><a href="https://www.amazon.co.jp/gp/product/4797384514/ref=as_li_qf_sp_asin_tl?ie=UTF8&camp=247&creative=1211&creativeASIN=4797384514&linkCode=as2&tag=pinocchio-22">本気ではじめるiPhoneアプリ作り Xcode 7.x+Swift 2.x対応</a></strong><img src="https://ir-jp.amazon-adsystem.com/e/ir?t=pinocchio-22&l=as2&o=9&a=4797384514" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" /><br />
-iOSアプリ開発をこれから始める方に最もお薦めな一冊です。解り辛い点は図解入りで解説されており、プログラミングの動作の仕組みから詳しく知ることができます。基本から通信処理まで押さえられており、アプリ公開の手順についても解説されています。</p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-09-04T14:40:00+09:00" pubdate data-updated="true">Sep 4<span>th</span>, 2013</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/avaudioplayer/'>AVAudioPlayer</a>, <a class='category' href='/blog/categories/avfoundation/'>AVFoundation</a>, <a class='category' href='/blog/categories/classes/'>Classes</a>, <a class='category' href='/blog/categories/download/'>Download</a>, <a class='category' href='/blog/categories/objective-c/'>Objective-C</a>
-
-
-</div>
-	
-</div>
-</article>
-
 <nav id="pagenavi">
     
         <a href="/blog/page/24/" class="prev">Prev</a>
@@ -1822,7 +1658,7 @@ iOSアプリ開発をこれから始める方に最もお薦めな一冊です�
   <div class="information-box-wide">
 <section id="tag-cloud-container">
   <h1 id="tag-cloud-title">Tag Cloud</h1>
-  <p id="tag-cloud"><a href='/blog/categories/actionscript' style='font-size: 102.44343891402715%'>ActionScript(9)</a> <a href='/blog/categories/actionscript3' style='font-size: 101.90045248868778%'>ActionScript3(7)</a> <a href='/blog/categories/ad' style='font-size: 101.08597285067873%'>Ad(4)</a> <a href='/blog/categories/adfurikun' style='font-size: 100.54298642533936%'>Adfurikun(2)</a> <a href='/blog/categories/admob' style='font-size: 102.44343891402715%'>AdMob(9)</a> <a href='/blog/categories/android' style='font-size: 102.71493212669684%'>Android(10)</a> <a href='/blog/categories/animation' style='font-size: 104.61538461538461%'>Animation(17)</a> <a href='/blog/categories/appdelegate' style='font-size: 100.81447963800905%'>AppDelegate(3)</a> <a href='/blog/categories/arc' style='font-size: 100.27149321266968%'>ARC(1)</a> <a href='/blog/categories/arraylist' style='font-size: 100.27149321266968%'>ArrayList(1)</a> <a href='/blog/categories/avaudioplayer' style='font-size: 101.08597285067873%'>AVAudioPlayer(4)</a> <a href='/blog/categories/avaudiosession' style='font-size: 100.27149321266968%'>AVAudioSession(1)</a> <a href='/blog/categories/avfoundation' style='font-size: 100.81447963800905%'>AVFoundation(3)</a> <a href='/blog/categories/banner' style='font-size: 100.54298642533936%'>Banner(2)</a> <a href='/blog/categories/bitmap' style='font-size: 100.27149321266968%'>Bitmap(1)</a> <a href='/blog/categories/camera' style='font-size: 101.08597285067873%'>Camera(4)</a> <a href='/blog/categories/cgaffinetransform' style='font-size: 101.08597285067873%'>CGAffineTransform(4)</a> <a href='/blog/categories/cgblendmode' style='font-size: 100.54298642533936%'>CGBlendMode(2)</a> <a href='/blog/categories/cgcontextref' style='font-size: 100.27149321266968%'>CGContextRef(1)</a> <a href='/blog/categories/cgimageref' style='font-size: 100.27149321266968%'>CGImageRef(1)</a> <a href='/blog/categories/classes' style='font-size: 111.94570135746606%'>Classes(44)</a> <a href='/blog/categories/cllocationmanager' style='font-size: 100.27149321266968%'>CLLocationManager(1)</a> <a href='/blog/categories/connectivitymanager' style='font-size: 100.27149321266968%'>ConnectivityManager(1)</a> <a href='/blog/categories/contentresolver' style='font-size: 100.27149321266968%'>ContentResolver(1)</a> <a href='/blog/categories/corelocation' style='font-size: 100.54298642533936%'>CoreLocation(2)</a> <a href='/blog/categories/delegate' style='font-size: 100.81447963800905%'>Delegate(3)</a> <a href='/blog/categories/device' style='font-size: 101.90045248868778%'>Device(7)</a> <a href='/blog/categories/display' style='font-size: 100.27149321266968%'>Display(1)</a> <a href='/blog/categories/displaymetrics' style='font-size: 100.27149321266968%'>DisplayMetrics(1)</a> <a href='/blog/categories/download' style='font-size: 127.14932126696833%'>Download(100)</a> <a href='/blog/categories/facebook' style='font-size: 101.6289592760181%'>Facebook(6)</a> <a href='/blog/categories/foundation' style='font-size: 119.5475113122172%'>Foundation(72)</a> <a href='/blog/categories/framework' style='font-size: 100.54298642533936%'>Framework(2)</a> <a href='/blog/categories/google-analytics' style='font-size: 100.27149321266968%'>Google Analytics(1)</a> <a href='/blog/categories/handler' style='font-size: 100.27149321266968%'>Handler(1)</a> <a href='/blog/categories/iad' style='font-size: 101.6289592760181%'>iAd(6)</a> <a href='/blog/categories/imageview' style='font-size: 100.27149321266968%'>ImageView(1)</a> <a href='/blog/categories/in-apppurchase' style='font-size: 100.27149321266968%'>In-AppPurchase(1)</a> <a href='/blog/categories/ios' style='font-size: 103.2579185520362%'>iOS(12)</a> <a href='/blog/categories/ios-7' style='font-size: 104.07239819004525%'>iOS 7(15)</a> <a href='/blog/categories/ios-7-dot-1' style='font-size: 100.81447963800905%'>iOS 7.1(3)</a> <a href='/blog/categories/ios-8' style='font-size: 100.27149321266968%'>iOS 8(1)</a> <a href='/blog/categories/ipad' style='font-size: 101.90045248868778%'>iPad(7)</a> <a href='/blog/categories/iphone' style='font-size: 105.70135746606334%'>iPhone(21)</a> <a href='/blog/categories/iphone-6' style='font-size: 101.08597285067873%'>iPhone 6(4)</a> <a href='/blog/categories/java' style='font-size: 101.90045248868778%'>Java(7)</a> <a href='/blog/categories/javascript' style='font-size: 100.54298642533936%'>JavaScript(2)</a> <a href='/blog/categories/line' style='font-size: 101.08597285067873%'>LINE(4)</a> <a href='/blog/categories/localize' style='font-size: 100.27149321266968%'>Localize(1)</a> <a href='/blog/categories/magazine' style='font-size: 100.27149321266968%'>Magazine(1)</a> <a href='/blog/categories/mediastore' style='font-size: 100.27149321266968%'>MediaStore(1)</a> <a href='/blog/categories/mfcomposeviewcontroller' style='font-size: 100.27149321266968%'>MFComposeViewController(1)</a> <a href='/blog/categories/nend' style='font-size: 100.27149321266968%'>Nend(1)</a> <a href='/blog/categories/networkinfo' style='font-size: 100.27149321266968%'>NetworkInfo(1)</a> <a href='/blog/categories/nsarray' style='font-size: 106.24434389140272%'>NSArray(23)</a> <a href='/blog/categories/nscalendar' style='font-size: 100.81447963800905%'>NSCalendar(3)</a> <a href='/blog/categories/nsdata' style='font-size: 100.54298642533936%'>NSData(2)</a> <a href='/blog/categories/nsdate' style='font-size: 101.90045248868778%'>NSDate(7)</a> <a href='/blog/categories/nsdatecomponents' style='font-size: 100.54298642533936%'>NSDateComponents(2)</a> <a href='/blog/categories/nsdateformatter' style='font-size: 100.54298642533936%'>NSDateFormatter(2)</a> <a href='/blog/categories/nsdictionary' style='font-size: 103.2579185520362%'>NSDictionary(12)</a> <a href='/blog/categories/nsenumerator' style='font-size: 100.27149321266968%'>NSEnumerator(1)</a> <a href='/blog/categories/nsindexset' style='font-size: 100.27149321266968%'>NSIndexSet(1)</a> <a href='/blog/categories/nsinteger' style='font-size: 101.6289592760181%'>NSInteger(6)</a> <a href='/blog/categories/nsmutablearray' style='font-size: 104.61538461538461%'>NSMutableArray(17)</a> <a href='/blog/categories/nsmutabledictionary' style='font-size: 101.35746606334841%'>NSMutableDictionary(5)</a> <a href='/blog/categories/nsmutableorderedset' style='font-size: 101.90045248868778%'>NSMutableOrderedSet(7)</a> <a href='/blog/categories/nsmutablestring' style='font-size: 101.08597285067873%'>NSMutableString(4)</a> <a href='/blog/categories/nsmutableurlrequest' style='font-size: 100.27149321266968%'>NSMutableURLRequest(1)</a> <a href='/blog/categories/nsnotificationcenter' style='font-size: 100.27149321266968%'>NSNotificationCenter(1)</a> <a href='/blog/categories/nsnumber' style='font-size: 100.27149321266968%'>NSNumber(1)</a> <a href='/blog/categories/nsobject' style='font-size: 100.27149321266968%'>NSObject(1)</a> <a href='/blog/categories/nsorderedset' style='font-size: 101.90045248868778%'>NSOrderedSet(7)</a> <a href='/blog/categories/nsrange' style='font-size: 100.54298642533936%'>NSRange(2)</a> <a href='/blog/categories/nsselectorfromstring' style='font-size: 100.27149321266968%'>NSSelectorFromString(1)</a> <a href='/blog/categories/nsset' style='font-size: 101.6289592760181%'>NSSet(6)</a> <a href='/blog/categories/nsstring' style='font-size: 105.15837104072398%'>NSString(19)</a> <a href='/blog/categories/nstimer' style='font-size: 101.08597285067873%'>NSTimer(4)</a> <a href='/blog/categories/nstimezone' style='font-size: 100.27149321266968%'>NSTimeZone(1)</a> <a href='/blog/categories/nsurl' style='font-size: 101.90045248868778%'>NSURL(7)</a> <a href='/blog/categories/nsurlconnection' style='font-size: 100.27149321266968%'>NSURLConnection(1)</a> <a href='/blog/categories/nsurlrequest' style='font-size: 100.54298642533936%'>NSURLRequest(2)</a> <a href='/blog/categories/nsuserdefaults' style='font-size: 101.90045248868778%'>NSUserDefaults(7)</a> <a href='/blog/categories/nsxmlparser' style='font-size: 100.54298642533936%'>NSXMLParser(2)</a> <a href='/blog/categories/objective-c' style='font-size: 160.0%'>Objective-C(221)</a> <a href='/blog/categories/php' style='font-size: 100.27149321266968%'>PHP(1)</a> <a href='/blog/categories/products' style='font-size: 103.80090497737557%'>Products(14)</a> <a href='/blog/categories/quartzcore' style='font-size: 100.81447963800905%'>QuartzCore(3)</a> <a href='/blog/categories/rss' style='font-size: 100.54298642533936%'>RSS(2)</a> <a href='/blog/categories/runnable' style='font-size: 100.27149321266968%'>Runnable(1)</a> <a href='/blog/categories/sample' style='font-size: 113.84615384615384%'>Sample(51)</a> <a href='/blog/categories/screensaver' style='font-size: 102.44343891402715%'>Screensaver(9)</a> <a href='/blog/categories/sdk' style='font-size: 100.54298642533936%'>SDK(2)</a> <a href='/blog/categories/sharecompat' style='font-size: 100.27149321266968%'>ShareCompat(1)</a> <a href='/blog/categories/social' style='font-size: 102.71493212669684%'>Social(10)</a> <a href='/blog/categories/storekit' style='font-size: 100.27149321266968%'>StoreKit(1)</a> <a href='/blog/categories/twitter' style='font-size: 101.6289592760181%'>Twitter(6)</a> <a href='/blog/categories/uiaccelerometer' style='font-size: 100.81447963800905%'>UIAccelerometer(3)</a> <a href='/blog/categories/uiactionsheet' style='font-size: 100.27149321266968%'>UIActionSheet(1)</a> <a href='/blog/categories/uiactivityindicator' style='font-size: 100.27149321266968%'>UIActivityIndicator(1)</a> <a href='/blog/categories/uiactivityindicatorview' style='font-size: 100.81447963800905%'>UIActivityIndicatorView(3)</a> <a href='/blog/categories/uiactivityviewcontroller' style='font-size: 100.27149321266968%'>UIActivityViewController(1)</a> <a href='/blog/categories/uialertview' style='font-size: 101.35746606334841%'>UIAlertView(5)</a> <a href='/blog/categories/uiapplication' style='font-size: 101.90045248868778%'>UIApplication(7)</a> <a href='/blog/categories/uibutton' style='font-size: 101.08597285067873%'>UIButton(4)</a> <a href='/blog/categories/uicolor' style='font-size: 100.81447963800905%'>UIColor(3)</a> <a href='/blog/categories/uidatepicker' style='font-size: 101.35746606334841%'>UIDatePicker(5)</a> <a href='/blog/categories/uidevice' style='font-size: 101.6289592760181%'>UIDevice(6)</a> <a href='/blog/categories/uideviceorientation' style='font-size: 100.27149321266968%'>UIDeviceOrientation(1)</a> <a href='/blog/categories/uievent' style='font-size: 101.6289592760181%'>UIEvent(6)</a> <a href='/blog/categories/uiimage' style='font-size: 104.07239819004525%'>UIImage(15)</a> <a href='/blog/categories/uiimagepickercontroller' style='font-size: 101.08597285067873%'>UIImagePickerController(4)</a> <a href='/blog/categories/uiimageview' style='font-size: 103.2579185520362%'>UIImageView(12)</a> <a href='/blog/categories/uikit' style='font-size: 115.74660633484163%'>UIKit(58)</a> <a href='/blog/categories/uilabel' style='font-size: 101.90045248868778%'>UILabel(7)</a> <a href='/blog/categories/uinavigationbar' style='font-size: 101.08597285067873%'>UINavigationBar(4)</a> <a href='/blog/categories/uinavigationitem' style='font-size: 100.27149321266968%'>UINavigationItem(1)</a> <a href='/blog/categories/uipasteboard' style='font-size: 101.08597285067873%'>UIPasteboard(4)</a> <a href='/blog/categories/uiscreen' style='font-size: 100.27149321266968%'>UIScreen(1)</a> <a href='/blog/categories/uiscrollbar' style='font-size: 100.27149321266968%'>UIScrollBar(1)</a> <a href='/blog/categories/uiscrollview' style='font-size: 100.27149321266968%'>UIScrollView(1)</a> <a href='/blog/categories/uislider' style='font-size: 100.81447963800905%'>UISlider(3)</a> <a href='/blog/categories/uistoryboardsegue' style='font-size: 100.81447963800905%'>UIStoryboardSegue(3)</a> <a href='/blog/categories/uiswitch' style='font-size: 100.27149321266968%'>UISwitch(1)</a> <a href='/blog/categories/uitabbar' style='font-size: 100.81447963800905%'>UITabBar(3)</a> <a href='/blog/categories/uitableview' style='font-size: 100.81447963800905%'>UITableView(3)</a> <a href='/blog/categories/uitextfield' style='font-size: 100.54298642533936%'>UITextField(2)</a> <a href='/blog/categories/uiview' style='font-size: 102.98642533936652%'>UIView(11)</a> <a href='/blog/categories/uiviewanimationtransition' style='font-size: 100.27149321266968%'>UIViewAnimationTransition(1)</a> <a href='/blog/categories/uiviewcontroller' style='font-size: 101.08597285067873%'>UIViewController(4)</a> <a href='/blog/categories/uiwebview' style='font-size: 101.35746606334841%'>UIWebView(5)</a> <a href='/blog/categories/windowmanager' style='font-size: 100.27149321266968%'>WindowManager(1)</a> <a href='/blog/categories/xcode' style='font-size: 113.03167420814479%'>Xcode(48)</a> <a href='/blog/categories/xcode-5' style='font-size: 102.17194570135747%'>Xcode 5(8)</a> <a href='/blog/categories/xcode-5-dot-1' style='font-size: 100.54298642533936%'>Xcode 5.1(2)</a> </p>
+  <p id="tag-cloud"><a href='/blog/categories/actionscript' style='font-size: 102.43243243243244%'>ActionScript(9)</a> <a href='/blog/categories/actionscript3' style='font-size: 101.89189189189189%'>ActionScript3(7)</a> <a href='/blog/categories/ad' style='font-size: 101.08108108108108%'>Ad(4)</a> <a href='/blog/categories/adfurikun' style='font-size: 100.54054054054055%'>Adfurikun(2)</a> <a href='/blog/categories/admob' style='font-size: 102.43243243243244%'>AdMob(9)</a> <a href='/blog/categories/android' style='font-size: 102.70270270270271%'>Android(10)</a> <a href='/blog/categories/animation' style='font-size: 104.5945945945946%'>Animation(17)</a> <a href='/blog/categories/appdelegate' style='font-size: 100.8108108108108%'>AppDelegate(3)</a> <a href='/blog/categories/arc' style='font-size: 100.27027027027027%'>ARC(1)</a> <a href='/blog/categories/arraylist' style='font-size: 100.27027027027027%'>ArrayList(1)</a> <a href='/blog/categories/avaudioplayer' style='font-size: 101.08108108108108%'>AVAudioPlayer(4)</a> <a href='/blog/categories/avaudiosession' style='font-size: 100.27027027027027%'>AVAudioSession(1)</a> <a href='/blog/categories/avfoundation' style='font-size: 100.8108108108108%'>AVFoundation(3)</a> <a href='/blog/categories/banner' style='font-size: 100.54054054054055%'>Banner(2)</a> <a href='/blog/categories/bitmap' style='font-size: 100.27027027027027%'>Bitmap(1)</a> <a href='/blog/categories/camera' style='font-size: 101.08108108108108%'>Camera(4)</a> <a href='/blog/categories/cgaffinetransform' style='font-size: 101.08108108108108%'>CGAffineTransform(4)</a> <a href='/blog/categories/cgblendmode' style='font-size: 100.54054054054055%'>CGBlendMode(2)</a> <a href='/blog/categories/cgcontextref' style='font-size: 100.27027027027027%'>CGContextRef(1)</a> <a href='/blog/categories/cgimageref' style='font-size: 100.27027027027027%'>CGImageRef(1)</a> <a href='/blog/categories/classes' style='font-size: 111.89189189189189%'>Classes(44)</a> <a href='/blog/categories/cllocationmanager' style='font-size: 100.27027027027027%'>CLLocationManager(1)</a> <a href='/blog/categories/connectivitymanager' style='font-size: 100.27027027027027%'>ConnectivityManager(1)</a> <a href='/blog/categories/contentresolver' style='font-size: 100.27027027027027%'>ContentResolver(1)</a> <a href='/blog/categories/corelocation' style='font-size: 100.54054054054055%'>CoreLocation(2)</a> <a href='/blog/categories/delegate' style='font-size: 100.8108108108108%'>Delegate(3)</a> <a href='/blog/categories/device' style='font-size: 101.89189189189189%'>Device(7)</a> <a href='/blog/categories/display' style='font-size: 100.27027027027027%'>Display(1)</a> <a href='/blog/categories/displaymetrics' style='font-size: 100.27027027027027%'>DisplayMetrics(1)</a> <a href='/blog/categories/download' style='font-size: 127.29729729729729%'>Download(101)</a> <a href='/blog/categories/facebook' style='font-size: 101.62162162162163%'>Facebook(6)</a> <a href='/blog/categories/foundation' style='font-size: 119.45945945945945%'>Foundation(72)</a> <a href='/blog/categories/framework' style='font-size: 100.54054054054055%'>Framework(2)</a> <a href='/blog/categories/google-analytics' style='font-size: 100.27027027027027%'>Google Analytics(1)</a> <a href='/blog/categories/handler' style='font-size: 100.27027027027027%'>Handler(1)</a> <a href='/blog/categories/iad' style='font-size: 101.62162162162163%'>iAd(6)</a> <a href='/blog/categories/imageview' style='font-size: 100.27027027027027%'>ImageView(1)</a> <a href='/blog/categories/in-apppurchase' style='font-size: 100.27027027027027%'>In-AppPurchase(1)</a> <a href='/blog/categories/ios' style='font-size: 103.24324324324324%'>iOS(12)</a> <a href='/blog/categories/ios-7' style='font-size: 104.05405405405405%'>iOS 7(15)</a> <a href='/blog/categories/ios-7-dot-1' style='font-size: 100.8108108108108%'>iOS 7.1(3)</a> <a href='/blog/categories/ios-8' style='font-size: 100.27027027027027%'>iOS 8(1)</a> <a href='/blog/categories/ipad' style='font-size: 101.89189189189189%'>iPad(7)</a> <a href='/blog/categories/iphone' style='font-size: 105.67567567567568%'>iPhone(21)</a> <a href='/blog/categories/iphone-6' style='font-size: 101.08108108108108%'>iPhone 6(4)</a> <a href='/blog/categories/java' style='font-size: 101.89189189189189%'>Java(7)</a> <a href='/blog/categories/javascript' style='font-size: 100.54054054054055%'>JavaScript(2)</a> <a href='/blog/categories/line' style='font-size: 101.08108108108108%'>LINE(4)</a> <a href='/blog/categories/localize' style='font-size: 100.27027027027027%'>Localize(1)</a> <a href='/blog/categories/magazine' style='font-size: 100.27027027027027%'>Magazine(1)</a> <a href='/blog/categories/mediastore' style='font-size: 100.27027027027027%'>MediaStore(1)</a> <a href='/blog/categories/mfcomposeviewcontroller' style='font-size: 100.27027027027027%'>MFComposeViewController(1)</a> <a href='/blog/categories/nend' style='font-size: 100.27027027027027%'>Nend(1)</a> <a href='/blog/categories/networkinfo' style='font-size: 100.27027027027027%'>NetworkInfo(1)</a> <a href='/blog/categories/nsarray' style='font-size: 106.21621621621621%'>NSArray(23)</a> <a href='/blog/categories/nscalendar' style='font-size: 100.8108108108108%'>NSCalendar(3)</a> <a href='/blog/categories/nsdata' style='font-size: 100.54054054054055%'>NSData(2)</a> <a href='/blog/categories/nsdate' style='font-size: 101.89189189189189%'>NSDate(7)</a> <a href='/blog/categories/nsdatecomponents' style='font-size: 100.54054054054055%'>NSDateComponents(2)</a> <a href='/blog/categories/nsdateformatter' style='font-size: 100.54054054054055%'>NSDateFormatter(2)</a> <a href='/blog/categories/nsdictionary' style='font-size: 103.24324324324324%'>NSDictionary(12)</a> <a href='/blog/categories/nsenumerator' style='font-size: 100.27027027027027%'>NSEnumerator(1)</a> <a href='/blog/categories/nsindexset' style='font-size: 100.27027027027027%'>NSIndexSet(1)</a> <a href='/blog/categories/nsinteger' style='font-size: 101.62162162162163%'>NSInteger(6)</a> <a href='/blog/categories/nsmutablearray' style='font-size: 104.5945945945946%'>NSMutableArray(17)</a> <a href='/blog/categories/nsmutabledictionary' style='font-size: 101.35135135135135%'>NSMutableDictionary(5)</a> <a href='/blog/categories/nsmutableorderedset' style='font-size: 101.89189189189189%'>NSMutableOrderedSet(7)</a> <a href='/blog/categories/nsmutablestring' style='font-size: 101.08108108108108%'>NSMutableString(4)</a> <a href='/blog/categories/nsmutableurlrequest' style='font-size: 100.27027027027027%'>NSMutableURLRequest(1)</a> <a href='/blog/categories/nsnotificationcenter' style='font-size: 100.27027027027027%'>NSNotificationCenter(1)</a> <a href='/blog/categories/nsnumber' style='font-size: 100.27027027027027%'>NSNumber(1)</a> <a href='/blog/categories/nsobject' style='font-size: 100.27027027027027%'>NSObject(1)</a> <a href='/blog/categories/nsorderedset' style='font-size: 101.89189189189189%'>NSOrderedSet(7)</a> <a href='/blog/categories/nsrange' style='font-size: 100.54054054054055%'>NSRange(2)</a> <a href='/blog/categories/nsselectorfromstring' style='font-size: 100.27027027027027%'>NSSelectorFromString(1)</a> <a href='/blog/categories/nsset' style='font-size: 101.62162162162163%'>NSSet(6)</a> <a href='/blog/categories/nsstring' style='font-size: 105.13513513513513%'>NSString(19)</a> <a href='/blog/categories/nstimer' style='font-size: 101.08108108108108%'>NSTimer(4)</a> <a href='/blog/categories/nstimezone' style='font-size: 100.27027027027027%'>NSTimeZone(1)</a> <a href='/blog/categories/nsurl' style='font-size: 101.89189189189189%'>NSURL(7)</a> <a href='/blog/categories/nsurlconnection' style='font-size: 100.27027027027027%'>NSURLConnection(1)</a> <a href='/blog/categories/nsurlrequest' style='font-size: 100.54054054054055%'>NSURLRequest(2)</a> <a href='/blog/categories/nsuserdefaults' style='font-size: 101.89189189189189%'>NSUserDefaults(7)</a> <a href='/blog/categories/nsxmlparser' style='font-size: 100.54054054054055%'>NSXMLParser(2)</a> <a href='/blog/categories/objective-c' style='font-size: 160.0%'>Objective-C(222)</a> <a href='/blog/categories/php' style='font-size: 100.27027027027027%'>PHP(1)</a> <a href='/blog/categories/products' style='font-size: 103.78378378378379%'>Products(14)</a> <a href='/blog/categories/quartzcore' style='font-size: 100.8108108108108%'>QuartzCore(3)</a> <a href='/blog/categories/rss' style='font-size: 100.54054054054055%'>RSS(2)</a> <a href='/blog/categories/runnable' style='font-size: 100.27027027027027%'>Runnable(1)</a> <a href='/blog/categories/sample' style='font-size: 113.78378378378379%'>Sample(51)</a> <a href='/blog/categories/screensaver' style='font-size: 102.43243243243244%'>Screensaver(9)</a> <a href='/blog/categories/sdk' style='font-size: 100.54054054054055%'>SDK(2)</a> <a href='/blog/categories/sharecompat' style='font-size: 100.27027027027027%'>ShareCompat(1)</a> <a href='/blog/categories/social' style='font-size: 102.70270270270271%'>Social(10)</a> <a href='/blog/categories/storekit' style='font-size: 100.27027027027027%'>StoreKit(1)</a> <a href='/blog/categories/twitter' style='font-size: 101.62162162162163%'>Twitter(6)</a> <a href='/blog/categories/uiaccelerometer' style='font-size: 100.8108108108108%'>UIAccelerometer(3)</a> <a href='/blog/categories/uiactionsheet' style='font-size: 100.27027027027027%'>UIActionSheet(1)</a> <a href='/blog/categories/uiactivityindicator' style='font-size: 100.27027027027027%'>UIActivityIndicator(1)</a> <a href='/blog/categories/uiactivityindicatorview' style='font-size: 100.8108108108108%'>UIActivityIndicatorView(3)</a> <a href='/blog/categories/uiactivityviewcontroller' style='font-size: 100.27027027027027%'>UIActivityViewController(1)</a> <a href='/blog/categories/uialertview' style='font-size: 101.35135135135135%'>UIAlertView(5)</a> <a href='/blog/categories/uiapplication' style='font-size: 101.89189189189189%'>UIApplication(7)</a> <a href='/blog/categories/uibutton' style='font-size: 101.08108108108108%'>UIButton(4)</a> <a href='/blog/categories/uicolor' style='font-size: 100.8108108108108%'>UIColor(3)</a> <a href='/blog/categories/uidatepicker' style='font-size: 101.35135135135135%'>UIDatePicker(5)</a> <a href='/blog/categories/uidevice' style='font-size: 101.62162162162163%'>UIDevice(6)</a> <a href='/blog/categories/uideviceorientation' style='font-size: 100.27027027027027%'>UIDeviceOrientation(1)</a> <a href='/blog/categories/uievent' style='font-size: 101.62162162162163%'>UIEvent(6)</a> <a href='/blog/categories/uiimage' style='font-size: 104.05405405405405%'>UIImage(15)</a> <a href='/blog/categories/uiimagepickercontroller' style='font-size: 101.08108108108108%'>UIImagePickerController(4)</a> <a href='/blog/categories/uiimageview' style='font-size: 103.24324324324324%'>UIImageView(12)</a> <a href='/blog/categories/uikit' style='font-size: 115.67567567567568%'>UIKit(58)</a> <a href='/blog/categories/uilabel' style='font-size: 101.89189189189189%'>UILabel(7)</a> <a href='/blog/categories/uinavigationbar' style='font-size: 101.08108108108108%'>UINavigationBar(4)</a> <a href='/blog/categories/uinavigationitem' style='font-size: 100.27027027027027%'>UINavigationItem(1)</a> <a href='/blog/categories/uipasteboard' style='font-size: 101.08108108108108%'>UIPasteboard(4)</a> <a href='/blog/categories/uiscreen' style='font-size: 100.27027027027027%'>UIScreen(1)</a> <a href='/blog/categories/uiscrollbar' style='font-size: 100.27027027027027%'>UIScrollBar(1)</a> <a href='/blog/categories/uiscrollview' style='font-size: 100.27027027027027%'>UIScrollView(1)</a> <a href='/blog/categories/uislider' style='font-size: 100.8108108108108%'>UISlider(3)</a> <a href='/blog/categories/uistoryboardsegue' style='font-size: 100.8108108108108%'>UIStoryboardSegue(3)</a> <a href='/blog/categories/uiswitch' style='font-size: 100.27027027027027%'>UISwitch(1)</a> <a href='/blog/categories/uitabbar' style='font-size: 100.8108108108108%'>UITabBar(3)</a> <a href='/blog/categories/uitableview' style='font-size: 101.08108108108108%'>UITableView(4)</a> <a href='/blog/categories/uitextfield' style='font-size: 100.54054054054055%'>UITextField(2)</a> <a href='/blog/categories/uiview' style='font-size: 102.97297297297297%'>UIView(11)</a> <a href='/blog/categories/uiviewanimationtransition' style='font-size: 100.27027027027027%'>UIViewAnimationTransition(1)</a> <a href='/blog/categories/uiviewcontroller' style='font-size: 101.08108108108108%'>UIViewController(4)</a> <a href='/blog/categories/uiwebview' style='font-size: 101.35135135135135%'>UIWebView(5)</a> <a href='/blog/categories/windowmanager' style='font-size: 100.27027027027027%'>WindowManager(1)</a> <a href='/blog/categories/xcode' style='font-size: 112.97297297297297%'>Xcode(48)</a> <a href='/blog/categories/xcode-5' style='font-size: 102.16216216216216%'>Xcode 5(8)</a> <a href='/blog/categories/xcode-5-dot-1' style='font-size: 100.54054054054055%'>Xcode 5.1(2)</a> </p>
 </section>
 
   </div>
@@ -1830,6 +1666,10 @@ iOSアプリ開発をこれから始める方に最もお薦めな一冊です�
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2016/09/05/objc-native-ads-in-ui-table-view/">iOSアプリのテーブルビューにネイティブ広告を表示するサンプル</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2016/09/04/objc-classes-dc-admob-native-ads/">iOSアプリに AdMobネイティブ広告を表示するクラスを作成しました</a>
@@ -1897,10 +1737,6 @@ iOSアプリ開発をこれから始める方に最もお薦めな一冊です�
     
       <li class="post">
         <a href="/blog/2014/10/24/objc-iad-interstitial/">iAdインタースティシャル広告を表示するサンプル</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/10/18/iad-countries/">iAdの対応国が25ヶ国に増加</a>
       </li>
     
   </ul>

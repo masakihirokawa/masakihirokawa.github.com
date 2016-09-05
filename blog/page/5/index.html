@@ -6,16 +6,12 @@
 	<title>Dolice Lab</title>
 
 
-	<meta name="description" content="Androidアプリで指定した時間後に処理を実行するコードです。 例えばフェードアウトアニメーション後にメモリを解放したい際などに使用します。 下記のコードでは、3秒後に処理を実行するよう指定しています（3秒の場合は 3000のようにミリ秒単位で指定します）。 サンプルソースコード 1
-2
-3 &hellip;" />
+	<meta name="description" content="Androidアプリでネットワーク接続の有無を判定するサンプルを作成しました。 下記よりサンプルをダウンロードできます。 サンプルダウンロード https://github.com/masakihirokawa/android-network-manager 導入手順 1. パーミッションの追加 &hellip;" />
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
     <meta property="og:locale" content="ja_JP" />
     <meta property="og:title" content="Dolice Lab" />
-    <meta property="og:description" content="Androidアプリで指定した時間後に処理を実行するコードです。 例えばフェードアウトアニメーション後にメモリを解放したい際などに使用します。 下記のコードでは、3秒後に処理を実行するよう指定しています（3秒の場合は 3000のようにミリ秒単位で指定します）。 サンプルソースコード 1
-2
-3 &hellip;" />
+    <meta property="og:description" content="Androidアプリでネットワーク接続の有無を判定するサンプルを作成しました。 下記よりサンプルをダウンロードできます。 サンプルダウンロード https://github.com/masakihirokawa/android-network-manager 導入手順 1. パーミッションの追加 &hellip;" />
     <meta property="og:url" content="https://lab.dolice.net/blog/page/5/" />
     <meta property="og:image" content="/images/facebook-icon.jpg" />
     <meta property="og:author" content="Masaki Hirokawa" />
@@ -104,6 +100,266 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2015/05/04/android-network-manager/">
+		
+			ネットワーク接続の有無を取得する</a>
+	</h2>
+	<div class="entry-content">
+		<p>Androidアプリでネットワーク接続の有無を判定するサンプルを作成しました。</p>
+
+<p>下記よりサンプルをダウンロードできます。</p>
+
+<h2>サンプルダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/android-network-manager">https://github.com/masakihirokawa/android-network-manager</a></li>
+</ul>
+
+
+<h2>導入手順</h2>
+
+<h3>1. パーミッションの追加</h3>
+
+<p><em>AndroidManifest.xml</em> にネットワーク接続の取得を許可するための権限を追加します。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;uses-permission</span> <span class="na">android:name=</span><span class="s">&quot;android.permission.ACCESS_NETWORK_STATE&quot;</span> <span class="nt">/&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>2. NetworkManager クラスの組み込み</h3>
+
+<p>ネットワーク状態を判定するクラス <em>NetworkManager.java</em> を「<em>/app/src/main/java/net/dolice/connection/</em>」ディレクトリに配置します。</p>
+
+<h3>3. オンライン状態のチェック</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="c1">// 引数に Context を渡し判定します</span>
+</span><span class='line'><span class="k">if</span> <span class="o">(</span><span class="n">NetworkManager</span><span class="o">.</span><span class="na">isConnected</span><span class="o">(</span><span class="k">this</span><span class="o">))</span> <span class="o">{</span>
+</span><span class='line'>    <span class="n">Log</span><span class="o">.</span><span class="na">d</span><span class="o">(</span><span class="s">&quot;オンラインです&quot;</span><span class="o">);</span>
+</span><span class='line'><span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+</span><span class='line'>    <span class="n">Log</span><span class="o">.</span><span class="na">d</span><span class="o">(</span><span class="s">&quot;オフラインです&quot;</span><span class="o">);</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>下記に実装サンプルを記載します。</p>
+
+<p>サンプルでは、ネットワーク状態をチェックした結果をテキストビューに表示しています。オフラインの時はアラートが表示されます。</p>
+
+<h2>サンプルソースコード</h2>
+
+<h3>MainActivity.java</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kn">package</span> <span class="n">net</span><span class="o">.</span><span class="na">dolice</span><span class="o">.</span><span class="na">networkmanagerex</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kn">import</span> <span class="nn">android.app.Activity</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">android.app.AlertDialog</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">android.os.Bundle</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">android.util.Log</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">android.widget.TextView</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kn">import</span> <span class="nn">net.dolice.connection.NetworkManager</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MainActivity</span> <span class="kd">extends</span> <span class="n">Activity</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nd">@Override</span>
+</span><span class='line'>    <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">onCreate</span><span class="o">(</span><span class="n">Bundle</span> <span class="n">savedInstanceState</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="kd">super</span><span class="o">.</span><span class="na">onCreate</span><span class="o">(</span><span class="n">savedInstanceState</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">setContentView</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">layout</span><span class="o">.</span><span class="na">activity_main</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// ネットワーク状態をチェックし状態をテキストビューに表示</span>
+</span><span class='line'>        <span class="n">TextView</span> <span class="n">networkStatus</span> <span class="o">=</span> <span class="o">(</span><span class="n">TextView</span><span class="o">)</span><span class="n">findViewById</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">network_status</span><span class="o">);</span>
+</span><span class='line'>        <span class="k">if</span> <span class="o">(</span><span class="n">isConnected</span><span class="o">())</span> <span class="o">{</span>
+</span><span class='line'>            <span class="n">networkStatus</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="s">&quot;オンラインです&quot;</span><span class="o">);</span>
+</span><span class='line'>        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+</span><span class='line'>            <span class="n">networkStatus</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="s">&quot;オフラインです&quot;</span><span class="o">);</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// ネットワーク状態のチェック</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="kt">boolean</span> <span class="nf">isConnected</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">if</span> <span class="o">(!</span><span class="n">NetworkManager</span><span class="o">.</span><span class="na">isConnected</span><span class="o">(</span><span class="k">this</span><span class="o">))</span> <span class="o">{</span>
+</span><span class='line'>            <span class="n">showAlert</span><span class="o">(</span><span class="s">&quot;お知らせ&quot;</span><span class="o">,</span> <span class="s">&quot;ネットワーク接続が確立されていません&quot;</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// アラートの表示</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="kt">void</span> <span class="nf">showAlert</span><span class="o">(</span><span class="n">String</span> <span class="n">title</span><span class="o">,</span> <span class="n">String</span> <span class="n">message</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">try</span> <span class="o">{</span>
+</span><span class='line'>            <span class="n">AlertDialog</span><span class="o">.</span><span class="na">Builder</span> <span class="n">alertDialogBuilder</span> <span class="o">=</span> <span class="k">new</span> <span class="n">AlertDialog</span><span class="o">.</span><span class="na">Builder</span><span class="o">(</span><span class="n">MainActivity</span><span class="o">.</span><span class="na">this</span><span class="o">);</span>
+</span><span class='line'>            <span class="n">alertDialogBuilder</span><span class="o">.</span><span class="na">setTitle</span><span class="o">(</span><span class="n">title</span><span class="o">);</span>
+</span><span class='line'>            <span class="n">alertDialogBuilder</span><span class="o">.</span><span class="na">setMessage</span><span class="o">(</span><span class="n">message</span><span class="o">);</span>
+</span><span class='line'>            <span class="n">alertDialogBuilder</span><span class="o">.</span><span class="na">setPositiveButton</span><span class="o">(</span><span class="s">&quot;OK&quot;</span><span class="o">,</span> <span class="kc">null</span><span class="o">);</span>
+</span><span class='line'>            <span class="n">alertDialogBuilder</span><span class="o">.</span><span class="na">setCancelable</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="n">AlertDialog</span> <span class="n">alertDialog</span> <span class="o">=</span> <span class="n">alertDialogBuilder</span><span class="o">.</span><span class="na">create</span><span class="o">();</span>
+</span><span class='line'>            <span class="n">alertDialog</span><span class="o">.</span><span class="na">show</span><span class="o">();</span>
+</span><span class='line'>        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Error</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>            <span class="n">Log</span><span class="o">.</span><span class="na">e</span><span class="o">(</span><span class="s">&quot;MainActivity&quot;</span><span class="o">,</span> <span class="s">&quot;showAlert: &quot;</span> <span class="o">+</span> <span class="n">e</span><span class="o">);</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>NetworkManager.java</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kn">package</span> <span class="n">net</span><span class="o">.</span><span class="na">dolice</span><span class="o">.</span><span class="na">connection</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kn">import</span> <span class="nn">android.content.Context</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">android.net.ConnectivityManager</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">android.net.NetworkInfo</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">/**</span>
+</span><span class='line'><span class="cm"> * Created by Dolice on 15/03/16.</span>
+</span><span class='line'><span class="cm"> */</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">NetworkManager</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="cm">/**</span>
+</span><span class='line'><span class="cm">     * ネットワーク接続が確立されているか</span>
+</span><span class='line'><span class="cm">     * @param context</span>
+</span><span class='line'><span class="cm">     * @return</span>
+</span><span class='line'><span class="cm">     */</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">boolean</span> <span class="nf">isConnected</span><span class="o">(</span><span class="n">Context</span> <span class="n">context</span><span class="o">){</span>
+</span><span class='line'>        <span class="n">ConnectivityManager</span> <span class="n">connectivityManager</span> <span class="o">=</span> <span class="o">(</span><span class="n">ConnectivityManager</span><span class="o">)</span><span class="n">context</span><span class="o">.</span><span class="na">getSystemService</span><span class="o">(</span><span class="n">Context</span><span class="o">.</span><span class="na">CONNECTIVITY_SERVICE</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">NetworkInfo</span> <span class="n">networkInfo</span> <span class="o">=</span> <span class="n">connectivityManager</span><span class="o">.</span><span class="na">getActiveNetworkInfo</span><span class="o">();</span>
+</span><span class='line'>        <span class="k">if</span><span class="o">(</span><span class="n">networkInfo</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">){</span>
+</span><span class='line'>            <span class="k">return</span> <span class="n">connectivityManager</span><span class="o">.</span><span class="na">getActiveNetworkInfo</span><span class="o">().</span><span class="na">isConnected</span><span class="o">();</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-05-04T09:00:00+09:00" pubdate data-updated="true">May 4<span>th</span>, 2015</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/android/'>Android</a>, <a class='category' href='/blog/categories/connectivitymanager/'>ConnectivityManager</a>, <a class='category' href='/blog/categories/java/'>Java</a>, <a class='category' href='/blog/categories/networkinfo/'>NetworkInfo</a>
+
+
+</div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -351,180 +607,6 @@
 </div>
 </article>
 
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2015/05/03/android-beautiful-wallpapers-en/">
-		
-			Beautiful HD Wallpapers - Android App</a>
-	</h2>
-	<div class="entry-content">
-		<div class="app_screenshot_container"><img src="https://dolice.net/mb/android/marketing/images/beautiful_wallpapers/screenshot_pc/en/screenshot1.jpg" class="app_screenshot" /></div>
-
-
-<p>There&#8217;s no reason you need to settle for a standard-looking lock screen or home screen on your mobile device when instead you could customize it. The Beautiful HD Wallpapers app can be used on your Android to completely change up how your device looks. Use these on your lock and/or home screen and what&#8217;s really cool is that the app is updated daily with new exciting choices.</p>
-
-<h2>Google Play</h2>
-
-<ul>
-<li><strong><a href="https://play.google.com/store/apps/details?id=net.dolice.beautifulwallpapers" title="Beautiful HD Wallpapers">Beautiful HD Wallpapers</a></strong></li>
-</ul>
-
-
-<h2>A Huge Selection of Free Options</h2>
-
-<p>This app provides you with more than 20,000 free wallpapers that you can download and then save to your device. There are 18 categories of wallpapers to choose from, which also makes it easy to find what you&#8217;re looking for. During your browsing just add wallpapers to your favorites folder so they are there when you want to use them. As you view the wallpapers in the gallery you&#8217;ll find that they are displayed as full screen and they are shown as a slideshow. If you come across ones that you think are perfect for your family and friends why not share them through Twitter, Facebook, email, and Instagram.</p>
-
-<p>There has been a pretty extensive update recently that basically gives users a whole lot more of everything. There are more wallpapers, they are now updated daily, the favorites list is all new, the wallpaper categories are all new, the ability to share on Instagram is new, minor bugs have been fixed, and so much more. The app scores quite high with users getting four out of five stars from them.</p>
-
-<h2>The User Experience</h2>
-
-<p>Despite the fact that you have such a wide selection available to you the app itself remains incredibly easy to use. You can view the wallpapers in full screen as mentioned or as a thumbnail if you&#8217;d rather. You can enable the push notification to get information whenever updates are made, and there is a list function so that you can check out the most popular and the latest wallpapers.</p>
-
-<p>I find the app incredibly easy and enjoyable to browse through. I really like all the beautiful wallpapers you can discover and the category groupings make navigation much easier. The only downfall for me is the ad banner that appears across the bottom of the screen as it can be a bit distracting.</p>
-
-<div class="app_screenshot_container mt12"><img src="https://dolice.net/mb/android/marketing/images/beautiful_wallpapers/screenshot_pc/en/screenshot2.jpg" class="app_screenshot" /></div>
-
-
-<h2>Pros and Cons</h2>
-
-<h3>Pros</h3>
-
-<ul>
-<li>There are more than 20,000 wallpapers and more are constantly being added</li>
-<li>Mark wallpapers as favorites</li>
-<li>Share wallpaper with friends and family by email, Instagram, Twitter, and Facebook</li>
-<li>Wallpapers are grouped into 18 categories to help you find what you want</li>
-<li>There is a most popular and latest list available</li>
-</ul>
-
-
-<h3>Cons</h3>
-
-<ul>
-<li>The ad banner across the bottom of the screen can be distracting</li>
-</ul>
-
-
-<div class="app_screenshot_container mt12"><img src="https://dolice.net/mb/android/marketing/images/beautiful_wallpapers/screenshot_pc/en/screenshot5.jpg" class="app_screenshot" /></div>
-
-
-<h2>Final Words</h2>
-
-<p>The Beautiful HD Wallpapers app is a beautiful offering that gives you a huge free selection of wallpapers to use for your lock and home screen.</p>
-
-<p><em>Article source: <a href="http://www.apppicker.com/" title="AppPicker.com">AppPicker.com</a></em></p>
-
-<h2>Main functions</h2>
-
-<ol>
-<li>Browse pages and save wallpapers</li>
-<li>Wallpapers are added and updated daily</li>
-<li>List functions for the latest and popular wallpapers</li>
-<li>Display over 18 wallpaper categories</li>
-<li>Wallpaper favorites function</li>
-<li>View a list of wallpaper thumbnails</li>
-<li>Display wallpapers full screen</li>
-<li>Share wallpapers via Facebook / Twitter / Instagram / email</li>
-<li>Learn about wallpaper updates through push notifications</li>
-</ol>
-
-
-<h2>Wallpaper categories</h2>
-
-<ul>
-<li>Abstract</li>
-<li>Simple</li>
-<li>Colorful</li>
-<li>Monochrome</li>
-<li>Nature</li>
-<li>Space</li>
-<li>Flowers</li>
-<li>Architecture</li>
-<li>Car</li>
-<li>People</li>
-<li>Animals</li>
-<li>Art</li>
-<li>Illustrations</li>
-<li>Cute</li>
-<li>Food &amp; Drink</li>
-<li>Typography</li>
-<li>3D</li>
-<li>Funny</li>
-</ul>
-
-
-<h2>Wallpaper sizes</h2>
-
-<ul>
-<li>1440 × 2560 pixel (<em>WQHD</em>)</li>
-<li>1080 × 1920 pixel (<em>FHD</em>)</li>
-<li>720 × 1280 pixel (<em>HD</em>)</li>
-<li>480 × 800 pixel (<em>WVGA</em>)</li>
-<li>2560 × 1600 pixel (<em>WQXGA</em>)</li>
-<li>1200 × 1920 pixel (<em>WUXGA</em>)</li>
-</ul>
-
-
-<h2>Price</h2>
-
-<ul>
-<li>Free</li>
-</ul>
-
-
-<h2>Official Facebook Page</h2>
-
-<ul>
-<li><strong><a href="https://www.facebook.com/net.dolice.beautifulwallpapers" title="Facebook - Beautiful HD Wallpapers">Facebook - Beautiful HD Wallpapers</a></strong></li>
-</ul>
-
-
-<h2>YouTube</h2>
-
-<ul>
-<li><strong><a href="https://www.youtube.com/watch?v=LA0XuXMq3as" title="YouTube - Beautiful HD Wallpapers">YouTube - Beautiful HD Wallpapers</a></strong></li>
-</ul>
-
-
-<h2>Google Play</h2>
-
-<ul>
-<li><strong><a href="https://play.google.com/store/apps/details?id=net.dolice.beautifulwallpapers" title="Beautiful HD Wallpapers">Beautiful HD Wallpapers</a></strong></li>
-</ul>
-
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2015-05-03T11:00:00+09:00" pubdate data-updated="true">May 3<span>rd</span>, 2015</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/android/'>Android</a>, <a class='category' href='/blog/categories/download/'>Download</a>, <a class='category' href='/blog/categories/products/'>Products</a>
-
-
-</div>
-	
-</div>
-</article>
-
 <nav id="pagenavi">
     
         <a href="/blog/page/4/" class="prev">Prev</a>
@@ -596,7 +678,7 @@
   <div class="information-box-wide">
 <section id="tag-cloud-container">
   <h1 id="tag-cloud-title">Tag Cloud</h1>
-  <p id="tag-cloud"><a href='/blog/categories/actionscript' style='font-size: 102.44343891402715%'>ActionScript(9)</a> <a href='/blog/categories/actionscript3' style='font-size: 101.90045248868778%'>ActionScript3(7)</a> <a href='/blog/categories/ad' style='font-size: 101.08597285067873%'>Ad(4)</a> <a href='/blog/categories/adfurikun' style='font-size: 100.54298642533936%'>Adfurikun(2)</a> <a href='/blog/categories/admob' style='font-size: 102.44343891402715%'>AdMob(9)</a> <a href='/blog/categories/android' style='font-size: 102.71493212669684%'>Android(10)</a> <a href='/blog/categories/animation' style='font-size: 104.61538461538461%'>Animation(17)</a> <a href='/blog/categories/appdelegate' style='font-size: 100.81447963800905%'>AppDelegate(3)</a> <a href='/blog/categories/arc' style='font-size: 100.27149321266968%'>ARC(1)</a> <a href='/blog/categories/arraylist' style='font-size: 100.27149321266968%'>ArrayList(1)</a> <a href='/blog/categories/avaudioplayer' style='font-size: 101.08597285067873%'>AVAudioPlayer(4)</a> <a href='/blog/categories/avaudiosession' style='font-size: 100.27149321266968%'>AVAudioSession(1)</a> <a href='/blog/categories/avfoundation' style='font-size: 100.81447963800905%'>AVFoundation(3)</a> <a href='/blog/categories/banner' style='font-size: 100.54298642533936%'>Banner(2)</a> <a href='/blog/categories/bitmap' style='font-size: 100.27149321266968%'>Bitmap(1)</a> <a href='/blog/categories/camera' style='font-size: 101.08597285067873%'>Camera(4)</a> <a href='/blog/categories/cgaffinetransform' style='font-size: 101.08597285067873%'>CGAffineTransform(4)</a> <a href='/blog/categories/cgblendmode' style='font-size: 100.54298642533936%'>CGBlendMode(2)</a> <a href='/blog/categories/cgcontextref' style='font-size: 100.27149321266968%'>CGContextRef(1)</a> <a href='/blog/categories/cgimageref' style='font-size: 100.27149321266968%'>CGImageRef(1)</a> <a href='/blog/categories/classes' style='font-size: 111.94570135746606%'>Classes(44)</a> <a href='/blog/categories/cllocationmanager' style='font-size: 100.27149321266968%'>CLLocationManager(1)</a> <a href='/blog/categories/connectivitymanager' style='font-size: 100.27149321266968%'>ConnectivityManager(1)</a> <a href='/blog/categories/contentresolver' style='font-size: 100.27149321266968%'>ContentResolver(1)</a> <a href='/blog/categories/corelocation' style='font-size: 100.54298642533936%'>CoreLocation(2)</a> <a href='/blog/categories/delegate' style='font-size: 100.81447963800905%'>Delegate(3)</a> <a href='/blog/categories/device' style='font-size: 101.90045248868778%'>Device(7)</a> <a href='/blog/categories/display' style='font-size: 100.27149321266968%'>Display(1)</a> <a href='/blog/categories/displaymetrics' style='font-size: 100.27149321266968%'>DisplayMetrics(1)</a> <a href='/blog/categories/download' style='font-size: 127.14932126696833%'>Download(100)</a> <a href='/blog/categories/facebook' style='font-size: 101.6289592760181%'>Facebook(6)</a> <a href='/blog/categories/foundation' style='font-size: 119.5475113122172%'>Foundation(72)</a> <a href='/blog/categories/framework' style='font-size: 100.54298642533936%'>Framework(2)</a> <a href='/blog/categories/google-analytics' style='font-size: 100.27149321266968%'>Google Analytics(1)</a> <a href='/blog/categories/handler' style='font-size: 100.27149321266968%'>Handler(1)</a> <a href='/blog/categories/iad' style='font-size: 101.6289592760181%'>iAd(6)</a> <a href='/blog/categories/imageview' style='font-size: 100.27149321266968%'>ImageView(1)</a> <a href='/blog/categories/in-apppurchase' style='font-size: 100.27149321266968%'>In-AppPurchase(1)</a> <a href='/blog/categories/ios' style='font-size: 103.2579185520362%'>iOS(12)</a> <a href='/blog/categories/ios-7' style='font-size: 104.07239819004525%'>iOS 7(15)</a> <a href='/blog/categories/ios-7-dot-1' style='font-size: 100.81447963800905%'>iOS 7.1(3)</a> <a href='/blog/categories/ios-8' style='font-size: 100.27149321266968%'>iOS 8(1)</a> <a href='/blog/categories/ipad' style='font-size: 101.90045248868778%'>iPad(7)</a> <a href='/blog/categories/iphone' style='font-size: 105.70135746606334%'>iPhone(21)</a> <a href='/blog/categories/iphone-6' style='font-size: 101.08597285067873%'>iPhone 6(4)</a> <a href='/blog/categories/java' style='font-size: 101.90045248868778%'>Java(7)</a> <a href='/blog/categories/javascript' style='font-size: 100.54298642533936%'>JavaScript(2)</a> <a href='/blog/categories/line' style='font-size: 101.08597285067873%'>LINE(4)</a> <a href='/blog/categories/localize' style='font-size: 100.27149321266968%'>Localize(1)</a> <a href='/blog/categories/magazine' style='font-size: 100.27149321266968%'>Magazine(1)</a> <a href='/blog/categories/mediastore' style='font-size: 100.27149321266968%'>MediaStore(1)</a> <a href='/blog/categories/mfcomposeviewcontroller' style='font-size: 100.27149321266968%'>MFComposeViewController(1)</a> <a href='/blog/categories/nend' style='font-size: 100.27149321266968%'>Nend(1)</a> <a href='/blog/categories/networkinfo' style='font-size: 100.27149321266968%'>NetworkInfo(1)</a> <a href='/blog/categories/nsarray' style='font-size: 106.24434389140272%'>NSArray(23)</a> <a href='/blog/categories/nscalendar' style='font-size: 100.81447963800905%'>NSCalendar(3)</a> <a href='/blog/categories/nsdata' style='font-size: 100.54298642533936%'>NSData(2)</a> <a href='/blog/categories/nsdate' style='font-size: 101.90045248868778%'>NSDate(7)</a> <a href='/blog/categories/nsdatecomponents' style='font-size: 100.54298642533936%'>NSDateComponents(2)</a> <a href='/blog/categories/nsdateformatter' style='font-size: 100.54298642533936%'>NSDateFormatter(2)</a> <a href='/blog/categories/nsdictionary' style='font-size: 103.2579185520362%'>NSDictionary(12)</a> <a href='/blog/categories/nsenumerator' style='font-size: 100.27149321266968%'>NSEnumerator(1)</a> <a href='/blog/categories/nsindexset' style='font-size: 100.27149321266968%'>NSIndexSet(1)</a> <a href='/blog/categories/nsinteger' style='font-size: 101.6289592760181%'>NSInteger(6)</a> <a href='/blog/categories/nsmutablearray' style='font-size: 104.61538461538461%'>NSMutableArray(17)</a> <a href='/blog/categories/nsmutabledictionary' style='font-size: 101.35746606334841%'>NSMutableDictionary(5)</a> <a href='/blog/categories/nsmutableorderedset' style='font-size: 101.90045248868778%'>NSMutableOrderedSet(7)</a> <a href='/blog/categories/nsmutablestring' style='font-size: 101.08597285067873%'>NSMutableString(4)</a> <a href='/blog/categories/nsmutableurlrequest' style='font-size: 100.27149321266968%'>NSMutableURLRequest(1)</a> <a href='/blog/categories/nsnotificationcenter' style='font-size: 100.27149321266968%'>NSNotificationCenter(1)</a> <a href='/blog/categories/nsnumber' style='font-size: 100.27149321266968%'>NSNumber(1)</a> <a href='/blog/categories/nsobject' style='font-size: 100.27149321266968%'>NSObject(1)</a> <a href='/blog/categories/nsorderedset' style='font-size: 101.90045248868778%'>NSOrderedSet(7)</a> <a href='/blog/categories/nsrange' style='font-size: 100.54298642533936%'>NSRange(2)</a> <a href='/blog/categories/nsselectorfromstring' style='font-size: 100.27149321266968%'>NSSelectorFromString(1)</a> <a href='/blog/categories/nsset' style='font-size: 101.6289592760181%'>NSSet(6)</a> <a href='/blog/categories/nsstring' style='font-size: 105.15837104072398%'>NSString(19)</a> <a href='/blog/categories/nstimer' style='font-size: 101.08597285067873%'>NSTimer(4)</a> <a href='/blog/categories/nstimezone' style='font-size: 100.27149321266968%'>NSTimeZone(1)</a> <a href='/blog/categories/nsurl' style='font-size: 101.90045248868778%'>NSURL(7)</a> <a href='/blog/categories/nsurlconnection' style='font-size: 100.27149321266968%'>NSURLConnection(1)</a> <a href='/blog/categories/nsurlrequest' style='font-size: 100.54298642533936%'>NSURLRequest(2)</a> <a href='/blog/categories/nsuserdefaults' style='font-size: 101.90045248868778%'>NSUserDefaults(7)</a> <a href='/blog/categories/nsxmlparser' style='font-size: 100.54298642533936%'>NSXMLParser(2)</a> <a href='/blog/categories/objective-c' style='font-size: 160.0%'>Objective-C(221)</a> <a href='/blog/categories/php' style='font-size: 100.27149321266968%'>PHP(1)</a> <a href='/blog/categories/products' style='font-size: 103.80090497737557%'>Products(14)</a> <a href='/blog/categories/quartzcore' style='font-size: 100.81447963800905%'>QuartzCore(3)</a> <a href='/blog/categories/rss' style='font-size: 100.54298642533936%'>RSS(2)</a> <a href='/blog/categories/runnable' style='font-size: 100.27149321266968%'>Runnable(1)</a> <a href='/blog/categories/sample' style='font-size: 113.84615384615384%'>Sample(51)</a> <a href='/blog/categories/screensaver' style='font-size: 102.44343891402715%'>Screensaver(9)</a> <a href='/blog/categories/sdk' style='font-size: 100.54298642533936%'>SDK(2)</a> <a href='/blog/categories/sharecompat' style='font-size: 100.27149321266968%'>ShareCompat(1)</a> <a href='/blog/categories/social' style='font-size: 102.71493212669684%'>Social(10)</a> <a href='/blog/categories/storekit' style='font-size: 100.27149321266968%'>StoreKit(1)</a> <a href='/blog/categories/twitter' style='font-size: 101.6289592760181%'>Twitter(6)</a> <a href='/blog/categories/uiaccelerometer' style='font-size: 100.81447963800905%'>UIAccelerometer(3)</a> <a href='/blog/categories/uiactionsheet' style='font-size: 100.27149321266968%'>UIActionSheet(1)</a> <a href='/blog/categories/uiactivityindicator' style='font-size: 100.27149321266968%'>UIActivityIndicator(1)</a> <a href='/blog/categories/uiactivityindicatorview' style='font-size: 100.81447963800905%'>UIActivityIndicatorView(3)</a> <a href='/blog/categories/uiactivityviewcontroller' style='font-size: 100.27149321266968%'>UIActivityViewController(1)</a> <a href='/blog/categories/uialertview' style='font-size: 101.35746606334841%'>UIAlertView(5)</a> <a href='/blog/categories/uiapplication' style='font-size: 101.90045248868778%'>UIApplication(7)</a> <a href='/blog/categories/uibutton' style='font-size: 101.08597285067873%'>UIButton(4)</a> <a href='/blog/categories/uicolor' style='font-size: 100.81447963800905%'>UIColor(3)</a> <a href='/blog/categories/uidatepicker' style='font-size: 101.35746606334841%'>UIDatePicker(5)</a> <a href='/blog/categories/uidevice' style='font-size: 101.6289592760181%'>UIDevice(6)</a> <a href='/blog/categories/uideviceorientation' style='font-size: 100.27149321266968%'>UIDeviceOrientation(1)</a> <a href='/blog/categories/uievent' style='font-size: 101.6289592760181%'>UIEvent(6)</a> <a href='/blog/categories/uiimage' style='font-size: 104.07239819004525%'>UIImage(15)</a> <a href='/blog/categories/uiimagepickercontroller' style='font-size: 101.08597285067873%'>UIImagePickerController(4)</a> <a href='/blog/categories/uiimageview' style='font-size: 103.2579185520362%'>UIImageView(12)</a> <a href='/blog/categories/uikit' style='font-size: 115.74660633484163%'>UIKit(58)</a> <a href='/blog/categories/uilabel' style='font-size: 101.90045248868778%'>UILabel(7)</a> <a href='/blog/categories/uinavigationbar' style='font-size: 101.08597285067873%'>UINavigationBar(4)</a> <a href='/blog/categories/uinavigationitem' style='font-size: 100.27149321266968%'>UINavigationItem(1)</a> <a href='/blog/categories/uipasteboard' style='font-size: 101.08597285067873%'>UIPasteboard(4)</a> <a href='/blog/categories/uiscreen' style='font-size: 100.27149321266968%'>UIScreen(1)</a> <a href='/blog/categories/uiscrollbar' style='font-size: 100.27149321266968%'>UIScrollBar(1)</a> <a href='/blog/categories/uiscrollview' style='font-size: 100.27149321266968%'>UIScrollView(1)</a> <a href='/blog/categories/uislider' style='font-size: 100.81447963800905%'>UISlider(3)</a> <a href='/blog/categories/uistoryboardsegue' style='font-size: 100.81447963800905%'>UIStoryboardSegue(3)</a> <a href='/blog/categories/uiswitch' style='font-size: 100.27149321266968%'>UISwitch(1)</a> <a href='/blog/categories/uitabbar' style='font-size: 100.81447963800905%'>UITabBar(3)</a> <a href='/blog/categories/uitableview' style='font-size: 100.81447963800905%'>UITableView(3)</a> <a href='/blog/categories/uitextfield' style='font-size: 100.54298642533936%'>UITextField(2)</a> <a href='/blog/categories/uiview' style='font-size: 102.98642533936652%'>UIView(11)</a> <a href='/blog/categories/uiviewanimationtransition' style='font-size: 100.27149321266968%'>UIViewAnimationTransition(1)</a> <a href='/blog/categories/uiviewcontroller' style='font-size: 101.08597285067873%'>UIViewController(4)</a> <a href='/blog/categories/uiwebview' style='font-size: 101.35746606334841%'>UIWebView(5)</a> <a href='/blog/categories/windowmanager' style='font-size: 100.27149321266968%'>WindowManager(1)</a> <a href='/blog/categories/xcode' style='font-size: 113.03167420814479%'>Xcode(48)</a> <a href='/blog/categories/xcode-5' style='font-size: 102.17194570135747%'>Xcode 5(8)</a> <a href='/blog/categories/xcode-5-dot-1' style='font-size: 100.54298642533936%'>Xcode 5.1(2)</a> </p>
+  <p id="tag-cloud"><a href='/blog/categories/actionscript' style='font-size: 102.43243243243244%'>ActionScript(9)</a> <a href='/blog/categories/actionscript3' style='font-size: 101.89189189189189%'>ActionScript3(7)</a> <a href='/blog/categories/ad' style='font-size: 101.08108108108108%'>Ad(4)</a> <a href='/blog/categories/adfurikun' style='font-size: 100.54054054054055%'>Adfurikun(2)</a> <a href='/blog/categories/admob' style='font-size: 102.43243243243244%'>AdMob(9)</a> <a href='/blog/categories/android' style='font-size: 102.70270270270271%'>Android(10)</a> <a href='/blog/categories/animation' style='font-size: 104.5945945945946%'>Animation(17)</a> <a href='/blog/categories/appdelegate' style='font-size: 100.8108108108108%'>AppDelegate(3)</a> <a href='/blog/categories/arc' style='font-size: 100.27027027027027%'>ARC(1)</a> <a href='/blog/categories/arraylist' style='font-size: 100.27027027027027%'>ArrayList(1)</a> <a href='/blog/categories/avaudioplayer' style='font-size: 101.08108108108108%'>AVAudioPlayer(4)</a> <a href='/blog/categories/avaudiosession' style='font-size: 100.27027027027027%'>AVAudioSession(1)</a> <a href='/blog/categories/avfoundation' style='font-size: 100.8108108108108%'>AVFoundation(3)</a> <a href='/blog/categories/banner' style='font-size: 100.54054054054055%'>Banner(2)</a> <a href='/blog/categories/bitmap' style='font-size: 100.27027027027027%'>Bitmap(1)</a> <a href='/blog/categories/camera' style='font-size: 101.08108108108108%'>Camera(4)</a> <a href='/blog/categories/cgaffinetransform' style='font-size: 101.08108108108108%'>CGAffineTransform(4)</a> <a href='/blog/categories/cgblendmode' style='font-size: 100.54054054054055%'>CGBlendMode(2)</a> <a href='/blog/categories/cgcontextref' style='font-size: 100.27027027027027%'>CGContextRef(1)</a> <a href='/blog/categories/cgimageref' style='font-size: 100.27027027027027%'>CGImageRef(1)</a> <a href='/blog/categories/classes' style='font-size: 111.89189189189189%'>Classes(44)</a> <a href='/blog/categories/cllocationmanager' style='font-size: 100.27027027027027%'>CLLocationManager(1)</a> <a href='/blog/categories/connectivitymanager' style='font-size: 100.27027027027027%'>ConnectivityManager(1)</a> <a href='/blog/categories/contentresolver' style='font-size: 100.27027027027027%'>ContentResolver(1)</a> <a href='/blog/categories/corelocation' style='font-size: 100.54054054054055%'>CoreLocation(2)</a> <a href='/blog/categories/delegate' style='font-size: 100.8108108108108%'>Delegate(3)</a> <a href='/blog/categories/device' style='font-size: 101.89189189189189%'>Device(7)</a> <a href='/blog/categories/display' style='font-size: 100.27027027027027%'>Display(1)</a> <a href='/blog/categories/displaymetrics' style='font-size: 100.27027027027027%'>DisplayMetrics(1)</a> <a href='/blog/categories/download' style='font-size: 127.29729729729729%'>Download(101)</a> <a href='/blog/categories/facebook' style='font-size: 101.62162162162163%'>Facebook(6)</a> <a href='/blog/categories/foundation' style='font-size: 119.45945945945945%'>Foundation(72)</a> <a href='/blog/categories/framework' style='font-size: 100.54054054054055%'>Framework(2)</a> <a href='/blog/categories/google-analytics' style='font-size: 100.27027027027027%'>Google Analytics(1)</a> <a href='/blog/categories/handler' style='font-size: 100.27027027027027%'>Handler(1)</a> <a href='/blog/categories/iad' style='font-size: 101.62162162162163%'>iAd(6)</a> <a href='/blog/categories/imageview' style='font-size: 100.27027027027027%'>ImageView(1)</a> <a href='/blog/categories/in-apppurchase' style='font-size: 100.27027027027027%'>In-AppPurchase(1)</a> <a href='/blog/categories/ios' style='font-size: 103.24324324324324%'>iOS(12)</a> <a href='/blog/categories/ios-7' style='font-size: 104.05405405405405%'>iOS 7(15)</a> <a href='/blog/categories/ios-7-dot-1' style='font-size: 100.8108108108108%'>iOS 7.1(3)</a> <a href='/blog/categories/ios-8' style='font-size: 100.27027027027027%'>iOS 8(1)</a> <a href='/blog/categories/ipad' style='font-size: 101.89189189189189%'>iPad(7)</a> <a href='/blog/categories/iphone' style='font-size: 105.67567567567568%'>iPhone(21)</a> <a href='/blog/categories/iphone-6' style='font-size: 101.08108108108108%'>iPhone 6(4)</a> <a href='/blog/categories/java' style='font-size: 101.89189189189189%'>Java(7)</a> <a href='/blog/categories/javascript' style='font-size: 100.54054054054055%'>JavaScript(2)</a> <a href='/blog/categories/line' style='font-size: 101.08108108108108%'>LINE(4)</a> <a href='/blog/categories/localize' style='font-size: 100.27027027027027%'>Localize(1)</a> <a href='/blog/categories/magazine' style='font-size: 100.27027027027027%'>Magazine(1)</a> <a href='/blog/categories/mediastore' style='font-size: 100.27027027027027%'>MediaStore(1)</a> <a href='/blog/categories/mfcomposeviewcontroller' style='font-size: 100.27027027027027%'>MFComposeViewController(1)</a> <a href='/blog/categories/nend' style='font-size: 100.27027027027027%'>Nend(1)</a> <a href='/blog/categories/networkinfo' style='font-size: 100.27027027027027%'>NetworkInfo(1)</a> <a href='/blog/categories/nsarray' style='font-size: 106.21621621621621%'>NSArray(23)</a> <a href='/blog/categories/nscalendar' style='font-size: 100.8108108108108%'>NSCalendar(3)</a> <a href='/blog/categories/nsdata' style='font-size: 100.54054054054055%'>NSData(2)</a> <a href='/blog/categories/nsdate' style='font-size: 101.89189189189189%'>NSDate(7)</a> <a href='/blog/categories/nsdatecomponents' style='font-size: 100.54054054054055%'>NSDateComponents(2)</a> <a href='/blog/categories/nsdateformatter' style='font-size: 100.54054054054055%'>NSDateFormatter(2)</a> <a href='/blog/categories/nsdictionary' style='font-size: 103.24324324324324%'>NSDictionary(12)</a> <a href='/blog/categories/nsenumerator' style='font-size: 100.27027027027027%'>NSEnumerator(1)</a> <a href='/blog/categories/nsindexset' style='font-size: 100.27027027027027%'>NSIndexSet(1)</a> <a href='/blog/categories/nsinteger' style='font-size: 101.62162162162163%'>NSInteger(6)</a> <a href='/blog/categories/nsmutablearray' style='font-size: 104.5945945945946%'>NSMutableArray(17)</a> <a href='/blog/categories/nsmutabledictionary' style='font-size: 101.35135135135135%'>NSMutableDictionary(5)</a> <a href='/blog/categories/nsmutableorderedset' style='font-size: 101.89189189189189%'>NSMutableOrderedSet(7)</a> <a href='/blog/categories/nsmutablestring' style='font-size: 101.08108108108108%'>NSMutableString(4)</a> <a href='/blog/categories/nsmutableurlrequest' style='font-size: 100.27027027027027%'>NSMutableURLRequest(1)</a> <a href='/blog/categories/nsnotificationcenter' style='font-size: 100.27027027027027%'>NSNotificationCenter(1)</a> <a href='/blog/categories/nsnumber' style='font-size: 100.27027027027027%'>NSNumber(1)</a> <a href='/blog/categories/nsobject' style='font-size: 100.27027027027027%'>NSObject(1)</a> <a href='/blog/categories/nsorderedset' style='font-size: 101.89189189189189%'>NSOrderedSet(7)</a> <a href='/blog/categories/nsrange' style='font-size: 100.54054054054055%'>NSRange(2)</a> <a href='/blog/categories/nsselectorfromstring' style='font-size: 100.27027027027027%'>NSSelectorFromString(1)</a> <a href='/blog/categories/nsset' style='font-size: 101.62162162162163%'>NSSet(6)</a> <a href='/blog/categories/nsstring' style='font-size: 105.13513513513513%'>NSString(19)</a> <a href='/blog/categories/nstimer' style='font-size: 101.08108108108108%'>NSTimer(4)</a> <a href='/blog/categories/nstimezone' style='font-size: 100.27027027027027%'>NSTimeZone(1)</a> <a href='/blog/categories/nsurl' style='font-size: 101.89189189189189%'>NSURL(7)</a> <a href='/blog/categories/nsurlconnection' style='font-size: 100.27027027027027%'>NSURLConnection(1)</a> <a href='/blog/categories/nsurlrequest' style='font-size: 100.54054054054055%'>NSURLRequest(2)</a> <a href='/blog/categories/nsuserdefaults' style='font-size: 101.89189189189189%'>NSUserDefaults(7)</a> <a href='/blog/categories/nsxmlparser' style='font-size: 100.54054054054055%'>NSXMLParser(2)</a> <a href='/blog/categories/objective-c' style='font-size: 160.0%'>Objective-C(222)</a> <a href='/blog/categories/php' style='font-size: 100.27027027027027%'>PHP(1)</a> <a href='/blog/categories/products' style='font-size: 103.78378378378379%'>Products(14)</a> <a href='/blog/categories/quartzcore' style='font-size: 100.8108108108108%'>QuartzCore(3)</a> <a href='/blog/categories/rss' style='font-size: 100.54054054054055%'>RSS(2)</a> <a href='/blog/categories/runnable' style='font-size: 100.27027027027027%'>Runnable(1)</a> <a href='/blog/categories/sample' style='font-size: 113.78378378378379%'>Sample(51)</a> <a href='/blog/categories/screensaver' style='font-size: 102.43243243243244%'>Screensaver(9)</a> <a href='/blog/categories/sdk' style='font-size: 100.54054054054055%'>SDK(2)</a> <a href='/blog/categories/sharecompat' style='font-size: 100.27027027027027%'>ShareCompat(1)</a> <a href='/blog/categories/social' style='font-size: 102.70270270270271%'>Social(10)</a> <a href='/blog/categories/storekit' style='font-size: 100.27027027027027%'>StoreKit(1)</a> <a href='/blog/categories/twitter' style='font-size: 101.62162162162163%'>Twitter(6)</a> <a href='/blog/categories/uiaccelerometer' style='font-size: 100.8108108108108%'>UIAccelerometer(3)</a> <a href='/blog/categories/uiactionsheet' style='font-size: 100.27027027027027%'>UIActionSheet(1)</a> <a href='/blog/categories/uiactivityindicator' style='font-size: 100.27027027027027%'>UIActivityIndicator(1)</a> <a href='/blog/categories/uiactivityindicatorview' style='font-size: 100.8108108108108%'>UIActivityIndicatorView(3)</a> <a href='/blog/categories/uiactivityviewcontroller' style='font-size: 100.27027027027027%'>UIActivityViewController(1)</a> <a href='/blog/categories/uialertview' style='font-size: 101.35135135135135%'>UIAlertView(5)</a> <a href='/blog/categories/uiapplication' style='font-size: 101.89189189189189%'>UIApplication(7)</a> <a href='/blog/categories/uibutton' style='font-size: 101.08108108108108%'>UIButton(4)</a> <a href='/blog/categories/uicolor' style='font-size: 100.8108108108108%'>UIColor(3)</a> <a href='/blog/categories/uidatepicker' style='font-size: 101.35135135135135%'>UIDatePicker(5)</a> <a href='/blog/categories/uidevice' style='font-size: 101.62162162162163%'>UIDevice(6)</a> <a href='/blog/categories/uideviceorientation' style='font-size: 100.27027027027027%'>UIDeviceOrientation(1)</a> <a href='/blog/categories/uievent' style='font-size: 101.62162162162163%'>UIEvent(6)</a> <a href='/blog/categories/uiimage' style='font-size: 104.05405405405405%'>UIImage(15)</a> <a href='/blog/categories/uiimagepickercontroller' style='font-size: 101.08108108108108%'>UIImagePickerController(4)</a> <a href='/blog/categories/uiimageview' style='font-size: 103.24324324324324%'>UIImageView(12)</a> <a href='/blog/categories/uikit' style='font-size: 115.67567567567568%'>UIKit(58)</a> <a href='/blog/categories/uilabel' style='font-size: 101.89189189189189%'>UILabel(7)</a> <a href='/blog/categories/uinavigationbar' style='font-size: 101.08108108108108%'>UINavigationBar(4)</a> <a href='/blog/categories/uinavigationitem' style='font-size: 100.27027027027027%'>UINavigationItem(1)</a> <a href='/blog/categories/uipasteboard' style='font-size: 101.08108108108108%'>UIPasteboard(4)</a> <a href='/blog/categories/uiscreen' style='font-size: 100.27027027027027%'>UIScreen(1)</a> <a href='/blog/categories/uiscrollbar' style='font-size: 100.27027027027027%'>UIScrollBar(1)</a> <a href='/blog/categories/uiscrollview' style='font-size: 100.27027027027027%'>UIScrollView(1)</a> <a href='/blog/categories/uislider' style='font-size: 100.8108108108108%'>UISlider(3)</a> <a href='/blog/categories/uistoryboardsegue' style='font-size: 100.8108108108108%'>UIStoryboardSegue(3)</a> <a href='/blog/categories/uiswitch' style='font-size: 100.27027027027027%'>UISwitch(1)</a> <a href='/blog/categories/uitabbar' style='font-size: 100.8108108108108%'>UITabBar(3)</a> <a href='/blog/categories/uitableview' style='font-size: 101.08108108108108%'>UITableView(4)</a> <a href='/blog/categories/uitextfield' style='font-size: 100.54054054054055%'>UITextField(2)</a> <a href='/blog/categories/uiview' style='font-size: 102.97297297297297%'>UIView(11)</a> <a href='/blog/categories/uiviewanimationtransition' style='font-size: 100.27027027027027%'>UIViewAnimationTransition(1)</a> <a href='/blog/categories/uiviewcontroller' style='font-size: 101.08108108108108%'>UIViewController(4)</a> <a href='/blog/categories/uiwebview' style='font-size: 101.35135135135135%'>UIWebView(5)</a> <a href='/blog/categories/windowmanager' style='font-size: 100.27027027027027%'>WindowManager(1)</a> <a href='/blog/categories/xcode' style='font-size: 112.97297297297297%'>Xcode(48)</a> <a href='/blog/categories/xcode-5' style='font-size: 102.16216216216216%'>Xcode 5(8)</a> <a href='/blog/categories/xcode-5-dot-1' style='font-size: 100.54054054054055%'>Xcode 5.1(2)</a> </p>
 </section>
 
   </div>
@@ -604,6 +686,10 @@
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2016/09/05/objc-native-ads-in-ui-table-view/">iOSアプリのテーブルビューにネイティブ広告を表示するサンプル</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2016/09/04/objc-classes-dc-admob-native-ads/">iOSアプリに AdMobネイティブ広告を表示するクラスを作成しました</a>
@@ -671,10 +757,6 @@
     
       <li class="post">
         <a href="/blog/2014/10/24/objc-iad-interstitial/">iAdインタースティシャル広告を表示するサンプル</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/10/18/iad-countries/">iAdの対応国が25ヶ国に増加</a>
       </li>
     
   </ul>
