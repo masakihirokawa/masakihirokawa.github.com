@@ -4,7 +4,7 @@
   <title><![CDATA[Dolice Lab]]></title>
   <link href="https://lab.dolice.net/atom.xml" rel="self"/>
   <link href="https://lab.dolice.net/"/>
-  <updated>2018-04-25T06:48:15+09:00</updated>
+  <updated>2018-06-03T09:15:24+09:00</updated>
   <id>https://lab.dolice.net/</id>
   <author>
     <name><![CDATA[Masaki Hirokawa]]></name>
@@ -12,6 +12,537 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[AdMobのGDPR対応（iOS）]]></title>
+    <link href="https://lab.dolice.net/blog/2018/06/03/objc-personalized-ad-consent/"/>
+    <updated>2018-06-03T08:02:00+09:00</updated>
+    <id>https://lab.dolice.net/blog/2018/06/03/objc-personalized-ad-consent</id>
+    <content type="html"><![CDATA[<p>AdMobを使用した iOSアプリで GDPRに対応した同意フォームを表示するサンプルを作成しました。主に<a href="https://developers.google.com/admob/ios/eu-consent" title="公式ドキュメント">公式ドキュメント</a>の情報を参考にしています。</p>
+
+<h2>サンプルダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-personalized-ad-consent">https://github.com/masakihirokawa/objc-personalized-ad-consent</a></li>
+</ul>
+
+
+<h2>導入準備</h2>
+
+<h3>1. 広告技術プロバイダの選択</h3>
+
+<p>AdMobの管理画面にログインし、「ブロックの管理」→「EU ユーザーの同意」画面を開きます。</p>
+
+<p>次に『広告技術プロバイダの選択』から『広告技術プロバイダのカスタム グループ』を選択します（この設定の反映には、自分の場合は1時間ほど要しました。反映されるまで同意フォームの読み込みエラーが発生しますので、気長に待ちましょう）。</p>
+
+<p>また、『同意取得の設定』にある『サイト運営者 ID』も後に使用するので控えておきます。</p>
+
+<h3>2. CocoaPodsから SDKをインストール</h3>
+
+<p><em>Podfile</em>に <em>pod &#8216;PersonalizedAdConsent&#8217;</em> の一行を追加し、SDKをインストールします。</p>
+
+<h2>実装</h2>
+
+<h3>同意フォームの表示</h3>
+
+<p>EU圏内であれば同意フォームを表示し、従来通りのパーソナライズされた広告を表示するか、非パーソナライズされた広告を表示するかの設定を保持し、その設定によって広告のリクエストを分岐します。</p>
+
+<h4>ViewController.h</h4>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;UIKit/UIKit.h&gt;</span>
+</span><span class='line'><span class="cp">#import &lt;PersonalizedAdConsent/PersonalizedAdConsent.h&gt;</span>
+</span><span class='line'><span class="cp">#import &quot;Common.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> : <span class="nc">UIViewController</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>ViewController.m</h4>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+<span class='line-number'>102</span>
+<span class='line-number'>103</span>
+<span class='line-number'>104</span>
+<span class='line-number'>105</span>
+<span class='line-number'>106</span>
+<span class='line-number'>107</span>
+<span class='line-number'>108</span>
+<span class='line-number'>109</span>
+<span class='line-number'>110</span>
+<span class='line-number'>111</span>
+<span class='line-number'>112</span>
+<span class='line-number'>113</span>
+<span class='line-number'>114</span>
+<span class='line-number'>115</span>
+<span class='line-number'>116</span>
+<span class='line-number'>117</span>
+<span class='line-number'>118</span>
+<span class='line-number'>119</span>
+<span class='line-number'>120</span>
+<span class='line-number'>121</span>
+<span class='line-number'>122</span>
+<span class='line-number'>123</span>
+<span class='line-number'>124</span>
+<span class='line-number'>125</span>
+<span class='line-number'>126</span>
+<span class='line-number'>127</span>
+<span class='line-number'>128</span>
+<span class='line-number'>129</span>
+<span class='line-number'>130</span>
+<span class='line-number'>131</span>
+<span class='line-number'>132</span>
+<span class='line-number'>133</span>
+<span class='line-number'>134</span>
+<span class='line-number'>135</span>
+<span class='line-number'>136</span>
+<span class='line-number'>137</span>
+<span class='line-number'>138</span>
+<span class='line-number'>139</span>
+<span class='line-number'>140</span>
+<span class='line-number'>141</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;ViewController.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> <span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">ViewController</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="k">const</span> <span class="n">ADMOB_PUB_ID</span>       <span class="o">=</span> <span class="s">@&quot;Your AdMob Publisher ID&quot;</span><span class="p">;</span> <span class="c1">// AdMobのパブリッシャーID</span>
+</span><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="k">const</span> <span class="n">PRIVACY_POLICY_URL</span> <span class="o">=</span> <span class="s">@&quot;Your Privacy Policy URL&quot;</span><span class="p">;</span> <span class="c1">// プライバシーポリシーURL</span>
+</span><span class='line'><span class="kt">BOOL</span>      <span class="k">const</span> <span class="n">PAC_DEBUG_MODE</span>     <span class="o">=</span> <span class="n">YES</span><span class="p">;</span> <span class="c1">// デバッグモード</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark -</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 広告のパーソナライズ設定</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="n">initPersonalizedAdsSetting</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark - Personalized Ads</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 広告のパーソナライズ設定</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">initPersonalizedAdsSetting</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// デバッグ用</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">PAC_DEBUG_MODE</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="c1">// 実機の識別子をコンソール表示</span>
+</span><span class='line'>        <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;Advertising ID: %@&quot;</span><span class="p">,</span> <span class="n">ASIdentifierManager</span><span class="p">.</span><span class="n">sharedManager</span><span class="p">.</span><span class="n">advertisingIdentifier</span><span class="p">.</span><span class="n">UUIDString</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// 上記で出力した実機の識別子を入力（シミュレータで確認する場合は不要）</span>
+</span><span class='line'>        <span class="n">PACConsentInformation</span><span class="p">.</span><span class="n">sharedInstance</span><span class="p">.</span><span class="n">debugIdentifiers</span> <span class="o">=</span> <span class="err">@</span><span class="p">[</span><span class="s">@&quot;Advertising ID&quot;</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// ユーザー地域をEU圏内に指定</span>
+</span><span class='line'>        <span class="n">PACConsentInformation</span><span class="p">.</span><span class="n">sharedInstance</span><span class="p">.</span><span class="n">debugGeography</span> <span class="o">=</span> <span class="n">PACDebugGeographyEEA</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// ユーザー地域をEU圏外に指定</span>
+</span><span class='line'>        <span class="c1">//PACConsentInformation.sharedInstance.debugGeography = PACDebugGeographyNotEEA;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 広告のパーソナライズ設定初期化</span>
+</span><span class='line'>    <span class="p">[[</span><span class="n">Common</span> <span class="n">sharedManager</span><span class="p">]</span> <span class="n">initPersonalizedAdsSetting</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// ユーザー情報をリクエスト</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">PACConsentInformation</span><span class="p">.</span><span class="n">sharedInstance</span>
+</span><span class='line'>     <span class="nl">requestConsentInfoUpdateForPublisherIdentifiers:</span><span class="err">@</span><span class="p">[</span><span class="n">ADMOB_PUB_ID</span><span class="p">]</span>
+</span><span class='line'>     <span class="nl">completionHandler:</span><span class="o">^</span><span class="p">(</span><span class="n">NSError</span> <span class="o">*</span><span class="n">_Nullable</span> <span class="n">error</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>         <span class="k">if</span> <span class="p">(</span><span class="n">error</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>             <span class="c1">// エラー</span>
+</span><span class='line'>             <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;Error -&gt; requestConsentInfoUpdate: %@&quot;</span><span class="p">,</span> <span class="n">error</span><span class="p">)</span>
+</span><span class='line'>         <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>             <span class="k">if</span> <span class="p">([</span><span class="n">PACConsentInformation</span> <span class="n">sharedInstance</span><span class="p">].</span><span class="n">isRequestLocationInEEAOrUnknown</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                 <span class="c1">// EU圏内もしくは不明であればステータスをチェックする</span>
+</span><span class='line'>                 <span class="n">NSUInteger</span> <span class="k">const</span> <span class="n">status</span> <span class="o">=</span> <span class="n">PACConsentInformation</span><span class="p">.</span><span class="n">sharedInstance</span><span class="p">.</span><span class="n">consentStatus</span><span class="p">;</span>
+</span><span class='line'>                 <span class="k">switch</span> <span class="p">(</span><span class="n">status</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                     <span class="k">case</span> <span class="nl">PACConsentStatusPersonalized:</span>
+</span><span class='line'>                     <span class="k">case</span> <span class="nl">PACConsentStatusNonPersonalized:</span>
+</span><span class='line'>                         <span class="c1">// TODO: 既に同意フォームから設定を保存済みなので、保存済みのパーソナライズ設定の広告を表示</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>                         <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>                     <span class="k">case</span> <span class="nl">PACConsentStatusUnknown:</span>
+</span><span class='line'>                     <span class="k">default</span><span class="o">:</span>
+</span><span class='line'>                         <span class="c1">// 同意情報をユーザーから取得する必要があるので同意フォームを表示する</span>
+</span><span class='line'>                         <span class="p">[</span><span class="n">self</span> <span class="n">showConsentForm</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>                         <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>                 <span class="p">}</span>
+</span><span class='line'>             <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>                 <span class="c1">// TODO: EU圏外であれば従来通りパーソナライズされた広告を表示</span>
+</span><span class='line'>
+</span><span class='line'>             <span class="p">}</span>
+</span><span class='line'>         <span class="p">}</span>
+</span><span class='line'>     <span class="p">}];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 同意フォームの表示</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">showConsentForm</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// プライバシーポリシーURLを指定し同意フォーム初期化</span>
+</span><span class='line'>    <span class="n">NSURL</span> <span class="o">*</span><span class="n">privacyURL</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSURL</span> <span class="nl">URLWithString:</span><span class="n">PRIVACY_POLICY_URL</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">PACConsentForm</span> <span class="o">*</span><span class="n">form</span> <span class="o">=</span> <span class="p">[[</span><span class="n">PACConsentForm</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithApplicationPrivacyPolicyURL:</span><span class="n">privacyURL</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// パーソナライズ広告の同意ボタンの有無</span>
+</span><span class='line'>    <span class="n">form</span><span class="p">.</span><span class="n">shouldOfferPersonalizedAds</span> <span class="o">=</span> <span class="n">YES</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// パーソナライズされていない広告の同意ボタンの有無</span>
+</span><span class='line'>    <span class="n">form</span><span class="p">.</span><span class="n">shouldOfferNonPersonalizedAds</span> <span class="o">=</span> <span class="n">YES</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 有料アプリへの誘導ボタンの有無</span>
+</span><span class='line'>    <span class="n">form</span><span class="p">.</span><span class="n">shouldOfferAdFree</span> <span class="o">=</span> <span class="n">NO</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 同意フォームの読み込み</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">form</span> <span class="nl">loadWithCompletionHandler:</span><span class="o">^</span><span class="p">(</span><span class="n">NSError</span> <span class="o">*</span><span class="n">_Nullable</span> <span class="n">error</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">error</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="c1">// ロードエラー</span>
+</span><span class='line'>            <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;Error -&gt; loadWithCompletionHandler: %@&quot;</span><span class="p">,</span> <span class="n">error</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>            <span class="c1">// ロード成功</span>
+</span><span class='line'>            <span class="p">[</span><span class="n">form</span> <span class="nl">presentFromViewController:</span><span class="n">self</span>
+</span><span class='line'>                          <span class="nl">dismissCompletion:</span><span class="o">^</span><span class="p">(</span><span class="n">NSError</span> <span class="o">*</span><span class="n">_Nullable</span> <span class="n">error</span><span class="p">,</span> <span class="kt">BOOL</span> <span class="n">userPrefersAdFree</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                              <span class="k">if</span> <span class="p">(</span><span class="n">error</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                                  <span class="c1">// エラー</span>
+</span><span class='line'>                                  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;Error -&gt; presentFromViewController: %@&quot;</span><span class="p">,</span> <span class="n">error</span><span class="p">);</span>
+</span><span class='line'>                              <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>                                  <span class="c1">// ユーザーが同意フォームのどれを選択したかによって処理を分岐</span>
+</span><span class='line'>                                  <span class="c1">//PACConsentStatus *status = PACConsentInformation.sharedInstance.consentStatus; // 左記では型指定の警告が発生</span>
+</span><span class='line'>                                  <span class="n">NSUInteger</span> <span class="k">const</span> <span class="n">status</span> <span class="o">=</span> <span class="n">PACConsentInformation</span><span class="p">.</span><span class="n">sharedInstance</span><span class="p">.</span><span class="n">consentStatus</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>                                  <span class="k">switch</span> <span class="p">(</span><span class="n">status</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                                      <span class="k">case</span> <span class="nl">PACConsentStatusPersonalized:</span>
+</span><span class='line'>                                          <span class="c1">// パーソナライズ広告を表示するよう設定</span>
+</span><span class='line'>                                          <span class="p">[[</span><span class="n">Common</span> <span class="n">sharedManager</span><span class="p">]</span> <span class="nl">setPersonalizedAdsSetting:</span><span class="n">YES</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>                                          <span class="c1">// TODO: 広告の読み込み</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>                                          <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>                                      <span class="k">case</span> <span class="nl">PACConsentStatusNonPersonalized:</span>
+</span><span class='line'>                                          <span class="c1">// パーソナライズされていない広告を表示するよう設定</span>
+</span><span class='line'>                                          <span class="p">[[</span><span class="n">Common</span> <span class="n">sharedManager</span><span class="p">]</span> <span class="nl">setPersonalizedAdsSetting:</span><span class="n">NO</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>                                          <span class="c1">// TODO: 広告の読み込み</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>                                          <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>                                      <span class="k">case</span> <span class="nl">PACConsentStatusUnknown:</span>
+</span><span class='line'>                                      <span class="k">default</span><span class="o">:</span>
+</span><span class='line'>                                          <span class="c1">// 同意が得られなかった場合の処理（通常は何もしない）</span>
+</span><span class='line'>
+</span><span class='line'>                                          <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>                                  <span class="p">}</span>
+</span><span class='line'>                              <span class="p">}</span>
+</span><span class='line'>                          <span class="p">}];</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>広告のパーソナライズ設定の保持</h3>
+
+<p>広告のパーソナライズ設定をユーザーデフォルトに保持します。</p>
+
+<h4>Common.h</h4>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;UIKit/UIKit.h&gt;</span>
+</span><span class='line'><span class="cp">#import &lt;PersonalizedAdConsent/PersonalizedAdConsent.h&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#define UD_PERSONALIZED_ADS_KEY @&quot;UD_PERSONALIZED_ADS_KEY&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">Common</span> : <span class="nc">UIView</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">NSUserDefaults</span> <span class="o">*</span><span class="n">userDefaults</span><span class="p">;</span>
+</span><span class='line'>    <span class="kt">BOOL</span>           <span class="n">usePersonalizedAds</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark - property</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">retain</span><span class="p">)</span> <span class="n">NSUserDefaults</span> <span class="o">*</span><span class="n">userDefaults</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">assign</span><span class="p">)</span> <span class="kt">BOOL</span>           <span class="n">usePersonalizedAds</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark - public method</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">Common</span> <span class="o">*</span><span class="p">)</span><span class="nf">sharedManager</span><span class="p">;</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setPersonalizedAdsSetting:</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nv">usePersonalizedAds</span><span class="p">;</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">isRequestLocationInEEAOrUnknown</span><span class="p">;</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">initPersonalizedAdsSetting</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>Common.m</h4>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;Common.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">Common</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@synthesize</span> <span class="n">userDefaults</span><span class="p">;</span>
+</span><span class='line'><span class="k">@synthesize</span> <span class="n">usePersonalizedAds</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark - Shared Manager</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">static</span> <span class="n">Common</span> <span class="o">*</span><span class="n">_sharedInstance</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">Common</span> <span class="o">*</span><span class="p">)</span><span class="nf">sharedManager</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">_sharedInstance</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">_sharedInstance</span> <span class="o">=</span> <span class="p">[[</span><span class="n">Common</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="n">_sharedInstance</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark - Personalized Ads</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 広告のパーソナライズ設定初期化</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">initPersonalizedAdsSetting</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// ユーザーデフォルト初期化</span>
+</span><span class='line'>    <span class="n">NSMutableDictionary</span> <span class="o">*</span><span class="n">personalizedAdsDefaults</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSMutableDictionary</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">personalizedAdsDefaults</span> <span class="nl">setValue:</span><span class="err">@</span><span class="n">YES</span> <span class="nl">forKey:</span><span class="n">UD_PERSONALIZED_ADS_KEY</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">Common</span> <span class="n">sharedManager</span><span class="p">].</span><span class="n">userDefaults</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSUserDefaults</span> <span class="n">standardUserDefaults</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[[</span><span class="n">Common</span> <span class="n">sharedManager</span><span class="p">].</span><span class="n">userDefaults</span> <span class="nl">registerDefaults:</span><span class="n">personalizedAdsDefaults</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 広告のパーソナライズ設定をユーザーデフォルトから保持</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">Common</span> <span class="n">sharedManager</span><span class="p">].</span><span class="n">usePersonalizedAds</span> <span class="o">=</span> <span class="p">[[</span><span class="n">Common</span> <span class="n">sharedManager</span><span class="p">].</span><span class="n">userDefaults</span> <span class="nl">boolForKey:</span><span class="n">UD_PERSONALIZED_ADS_KEY</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 広告のパーソナライズ設定保持</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setPersonalizedAdsSetting:</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nv">usePersonalizedAds</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// 広告のパーソナライズ設定保持</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">Common</span> <span class="n">sharedManager</span><span class="p">].</span><span class="n">usePersonalizedAds</span> <span class="o">=</span> <span class="n">usePersonalizedAds</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// ユーザーデフォルト更新</span>
+</span><span class='line'>    <span class="p">[[</span><span class="n">Common</span> <span class="n">sharedManager</span><span class="p">].</span><span class="n">userDefaults</span> <span class="nl">setBool:</span><span class="p">[</span><span class="n">Common</span> <span class="n">sharedManager</span><span class="p">].</span><span class="n">usePersonalizedAds</span> <span class="nl">forKey:</span><span class="n">UD_PERSONALIZED_ADS_KEY</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[[</span><span class="n">Common</span> <span class="n">sharedManager</span><span class="p">].</span><span class="n">userDefaults</span> <span class="n">synchronize</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// ユーザー地域がEEAまたは不明であるか取得</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">isRequestLocationInEEAOrUnknown</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">[</span><span class="n">PACConsentInformation</span> <span class="n">sharedInstance</span><span class="p">].</span><span class="n">isRequestLocationInEEAOrUnknown</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>非パーソナライズ広告のリクエスト</h3>
+
+<p>非パーソナライズ広告を表示する場合は、下記のように広告のリクエスト時にパラメータを渡します。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">GADRequest</span> <span class="o">*</span><span class="n">request</span> <span class="o">=</span> <span class="p">[</span><span class="n">GADRequest</span> <span class="n">request</span><span class="p">];</span>
+</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">[</span><span class="n">Common</span> <span class="n">sharedManager</span><span class="p">].</span><span class="n">usePersonalizedAds</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">GADExtras</span> <span class="o">*</span><span class="n">extras</span> <span class="o">=</span> <span class="p">[[</span><span class="n">GADExtras</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">extras</span><span class="p">.</span><span class="n">additionalParameters</span> <span class="o">=</span> <span class="err">@</span><span class="p">{</span><span class="s">@&quot;npa&quot;</span><span class="o">:</span> <span class="s">@&quot;1&quot;</span><span class="p">};</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">request</span> <span class="nl">registerAdNetworkExtras:</span><span class="n">extras</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>以上が導入から実装までの大まかな流れになります。</p>
+
+<p>EU圏内からのアプリ使用で、同意フォームを表示する場合はまだ広告を表示しないようにし、選択された内容によって従来通りのパーソナライズされた広告か、非パーソナライズされた広告を読み込むのが良いと思います。</p>
+
+<p>また、アプリのどこかに同意フォームを再表示できるメニューやボタンを用意し、ユーザーがいつでも設定を変更できる必要があります。</p>
+
+<p>大雑把な情報ではありますが、少しでもお役に立てば幸いです。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[iPhoneアプリ「リラックス・ヒーリング」アップデート（3.0.0）]]></title>
@@ -3611,152 +4142,6 @@ Swiftのかなり入り込んだところまで解説しながら、実践コー
 
 <ul>
 <li><strong><a href="https://play.google.com/store/apps/details?id=net.dolice.beautifulwallpapers" title="綺麗な高画質壁紙">綺麗な高画質壁紙</a></strong></li>
-</ul>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Beautiful HD Wallpapers - Android app]]></title>
-    <link href="https://lab.dolice.net/blog/2015/05/03/android-beautiful-wallpapers-en/"/>
-    <updated>2015-05-03T11:00:00+09:00</updated>
-    <id>https://lab.dolice.net/blog/2015/05/03/android-beautiful-wallpapers-en</id>
-    <content type="html"><![CDATA[<div class="app_screenshot_container"><img src="https://dolice.net/mb/android/marketing/images/beautiful_wallpapers/screenshot_pc/en/screenshot1.jpg" class="app_screenshot" /></div>
-
-
-<p>There&#8217;s no reason you need to settle for a standard-looking lock screen or home screen on your mobile device when instead you could customize it. The Beautiful HD Wallpapers app can be used on your Android to completely change up how your device looks. Use these on your lock and/or home screen and what&#8217;s really cool is that the app is updated daily with new exciting choices.</p>
-
-<h2>Google Play</h2>
-
-<ul>
-<li><strong><a href="https://play.google.com/store/apps/details?id=net.dolice.beautifulwallpapers" title="Beautiful HD Wallpapers">Beautiful HD Wallpapers</a></strong></li>
-</ul>
-
-
-<h2>A Huge Selection of Free Options</h2>
-
-<p>This app provides you with more than 20,000 free wallpapers that you can download and then save to your device. There are 22 categories of wallpapers to choose from, which also makes it easy to find what you&#8217;re looking for. During your browsing just add wallpapers to your favorites folder so they are there when you want to use them. As you view the wallpapers in the gallery you&#8217;ll find that they are displayed as full screen and they are shown as a slideshow. If you come across ones that you think are perfect for your family and friends why not share them through Twitter, Facebook, email, and Instagram.</p>
-
-<p>There has been a pretty extensive update recently that basically gives users a whole lot more of everything. There are more wallpapers, they are now updated daily, the favorites list is all new, the wallpaper categories are all new, the ability to share on Instagram is new, minor bugs have been fixed, and so much more. The app scores quite high with users getting four out of five stars from them.</p>
-
-<h2>The User Experience</h2>
-
-<p>Despite the fact that you have such a wide selection available to you the app itself remains incredibly easy to use. You can view the wallpapers in full screen as mentioned or as a thumbnail if you&#8217;d rather. You can enable the push notification to get information whenever updates are made, and there is a list function so that you can check out the most popular and the latest wallpapers.</p>
-
-<p>I find the app incredibly easy and enjoyable to browse through. I really like all the beautiful wallpapers you can discover and the category groupings make navigation much easier. The only downfall for me is the ad banner that appears across the bottom of the screen as it can be a bit distracting.</p>
-
-<div class="app_screenshot_container mt12"><img src="https://dolice.net/mb/android/marketing/images/beautiful_wallpapers/screenshot_pc/en/screenshot2.jpg" class="app_screenshot" /></div>
-
-
-<h2>Pros and Cons</h2>
-
-<h3>Pros</h3>
-
-<ul>
-<li>There are more than 20,000 wallpapers and more are constantly being added</li>
-<li>Mark wallpapers as favorites</li>
-<li>Share wallpaper with friends and family by email, Instagram, Twitter, and Facebook</li>
-<li>Wallpapers are grouped into 22 categories to help you find what you want</li>
-<li>There is a most popular and latest list available</li>
-</ul>
-
-
-<h3>Cons</h3>
-
-<ul>
-<li>The ad banner across the bottom of the screen can be distracting</li>
-</ul>
-
-
-<div class="app_screenshot_container mt12"><img src="https://dolice.net/mb/android/marketing/images/beautiful_wallpapers/screenshot_pc/en/screenshot5.jpg" class="app_screenshot" /></div>
-
-
-<h2>Final Words</h2>
-
-<p>The Beautiful HD Wallpapers app is a beautiful offering that gives you a huge free selection of wallpapers to use for your lock and home screen.</p>
-
-<p><em>Article source: <a href="http://www.apppicker.com/" title="AppPicker.com">AppPicker.com</a></em></p>
-
-<h2>Wallpaper categories</h2>
-
-<ul>
-<li>Abstract</li>
-<li>Simple</li>
-<li>Colorful</li>
-<li>Monochrome</li>
-<li>Nature</li>
-<li>Space</li>
-<li>Flowers</li>
-<li>Plants</li>
-<li>Architecture</li>
-<li>Car</li>
-<li>People</li>
-<li>Animals</li>
-<li>Living things</li>
-<li>Art</li>
-<li>Illustrations</li>
-<li>Cute</li>
-<li>Love</li>
-<li>Holiday</li>
-<li>Food &amp; Drink</li>
-<li>Typography</li>
-<li>3D</li>
-<li>Funny</li>
-</ul>
-
-
-<h2>Main functions</h2>
-
-<ol>
-<li>Browse pages and save wallpapers</li>
-<li>Wallpapers are added and updated daily</li>
-<li>List functions for the latest and popular wallpapers</li>
-<li>Display over 22 wallpaper categories</li>
-<li>Wallpaper favorites function</li>
-<li>View a list of wallpaper thumbnails</li>
-<li>Display wallpapers full screen</li>
-<li>Share wallpapers via Facebook / Twitter / Instagram / email</li>
-<li>Learn about wallpaper updates through push notifications</li>
-</ol>
-
-
-<h2>Wallpaper sizes</h2>
-
-<ul>
-<li>1440 × 2560 pixel (<em>WQHD</em>)</li>
-<li>1080 × 1920 pixel (<em>FHD</em>)</li>
-<li>720 × 1280 pixel (<em>HD</em>)</li>
-<li>480 × 800 pixel (<em>WVGA</em>)</li>
-<li>2560 × 1600 pixel (<em>WQXGA</em>)</li>
-<li>1200 × 1920 pixel (<em>WUXGA</em>)</li>
-</ul>
-
-
-<h2>Price</h2>
-
-<ul>
-<li>Free</li>
-</ul>
-
-
-<h2>Official Facebook Page</h2>
-
-<ul>
-<li><strong><a href="https://www.facebook.com/net.dolice.beautifulwallpapers" title="Facebook - Beautiful HD Wallpapers">Facebook - Beautiful HD Wallpapers</a></strong></li>
-</ul>
-
-
-<h2>YouTube</h2>
-
-<ul>
-<li><strong><a href="https://www.youtube.com/watch?v=LA0XuXMq3as" title="YouTube - Beautiful HD Wallpapers">YouTube - Beautiful HD Wallpapers</a></strong></li>
-</ul>
-
-
-<h2>Google Play</h2>
-
-<ul>
-<li><strong><a href="https://play.google.com/store/apps/details?id=net.dolice.beautifulwallpapers" title="Beautiful HD Wallpapers">Beautiful HD Wallpapers</a></strong></li>
 </ul>
 
 ]]></content>
