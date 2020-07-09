@@ -6,12 +6,12 @@
 	<title>廣川政樹の開発ブログ - Dolice Lab</title>
 
 
-	<meta name="description" content="iPhoneアプリにアドフリくんの動画リワード広告を表示するサンプルを作成しました。 公式マニュアルを参考にさせていただきました。ご使用の際は広告枠IDを指定してください。 下記よりサンプルをダウンロード出来ますので、導入の際のお役に立てば幸いです。 ダウンロード https://github. &hellip;" />
+	<meta name="description" content="iPhoneアプリにAdMobのモバイルバナーを表示する「DCAdMobBanner」クラスを改訂しました。 公式リファレンスを参考にさせていただきました。 ご使用の際はアプリIDと広告枠IDを指定してください。 下記よりサンプルをダウンロード出来ますので、導入の際のお役に立てば幸いです。 &hellip;" />
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
     <meta property="og:locale" content="ja_JP" />
     <meta property="og:title" content="廣川政樹の開発ブログ - Dolice Lab" />
-    <meta property="og:description" content="iPhoneアプリにアドフリくんの動画リワード広告を表示するサンプルを作成しました。 公式マニュアルを参考にさせていただきました。ご使用の際は広告枠IDを指定してください。 下記よりサンプルをダウンロード出来ますので、導入の際のお役に立てば幸いです。 ダウンロード https://github. &hellip;" />
+    <meta property="og:description" content="iPhoneアプリにAdMobのモバイルバナーを表示する「DCAdMobBanner」クラスを改訂しました。 公式リファレンスを参考にさせていただきました。 ご使用の際はアプリIDと広告枠IDを指定してください。 下記よりサンプルをダウンロード出来ますので、導入の際のお役に立てば幸いです。 &hellip;" />
     <meta property="og:url" content="https://lab.dolice.net/" />
     <meta property="og:image" content="https://lab.dolice.net/images/ogp-icon.png" />
     <meta property="og:author" content="Masaki Hirokawa" />
@@ -99,6 +99,572 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2020/07/09/objc-classes-dc-admob-banner-2020/">
+		
+			AdMobバナーを表示する「DCAdMobBanner」クラス（改訂版）</a>
+	</h2>
+	<div class="entry-content">
+		<p>iPhoneアプリに<a href="https://admob.google.com/intl/ja/home/" title="AdMob">AdMob</a>のモバイルバナーを表示する「<a href="https://github.com/masakihirokawa/objc-classes-dc-admob-banner-2020" title="DCAdMobBanner">DCAdMobBanner</a>」クラスを改訂しました。</p>
+
+<p><a href="https://developers.google.com/admob/ios/banner?hl=ja" title="公式リファレンス">公式リファレンス</a>を参考にさせていただきました。</p>
+
+<p>ご使用の際はアプリIDと広告枠IDを指定してください。</p>
+
+<p>下記よりサンプルをダウンロード出来ますので、導入の際のお役に立てば幸いです。</p>
+
+<h2>ダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-classes-dc-admob-banner-2020">https://github.com/masakihirokawa/objc-classes-dc-admob-banner-2020</a></li>
+</ul>
+
+
+<h2>今回の変更点</h2>
+
+<ol>
+<li>バナーのフェードイン秒数を指定できるようにしました</li>
+<li>アダプティブバナーを使用するか指定できるようにしました</li>
+<li>広告のパーソナライズ設定を使用するか指定できるようにしました</li>
+</ol>
+
+
+<h2>導入準備</h2>
+
+<h3>1. Info.plistの編集</h3>
+
+<p><a href="https://admob.google.com/intl/ja/home/" title="AdMob">AdMob</a>のサイトからアプリIDを取得し、<em>Info.plist</em>に <em>GADApplicationIdentifier</em>の項目を追加し指定してください。</p>
+
+<h3>2. 広告枠IDの保持</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="k">const</span> <span class="n">GAD_UNIT_ID</span> <span class="o">=</span> <span class="s">@&quot;広告枠ID&quot;</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>3. アプリ起動時に初期化</h3>
+
+<h4>AppDelegate.h</h4>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="err">@</span><span class="n">import</span> <span class="n">GoogleMobileAds</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>AppDelegate.m</h4>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">application:</span><span class="p">(</span><span class="n">UIApplication</span> <span class="o">*</span><span class="p">)</span><span class="nv">application</span> <span class="nf">didFinishLaunchingWithOptions:</span><span class="p">(</span><span class="n">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nv">launchOptions</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// AdMobアプリID初期化</span>
+</span><span class='line'>    <span class="p">[[</span><span class="n">GADMobileAds</span> <span class="n">sharedInstance</span><span class="p">]</span> <span class="nl">startWithCompletionHandler:</span><span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="n">YES</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>クラスの使用方法</h2>
+
+<h3>1. バナーの表示</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">[[</span><span class="n">DCAdMobBanner</span> <span class="n">sharedManager</span><span class="p">]</span> <span class="nl">showAdBanner:</span><span class="n">self</span> <span class="nl">yPos:</span><span class="mf">0.0</span> <span class="nl">fadeInDuration:</span><span class="mf">0.0</span>
+</span><span class='line'>                              <span class="nl">useAdaptiveBanner:</span><span class="n">YES</span> <span class="nl">useSmartBanner:</span><span class="n">NO</span> <span class="nl">usePersonalizedAds:</span><span class="n">YES</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>2. バナーの削除</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">[[</span><span class="n">DCAdMobBanner</span> <span class="n">sharedManager</span><span class="p">]</span> <span class="n">removeAdBanner</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>3. バナーの非表示</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">[[</span><span class="n">DCAdMobBanner</span> <span class="n">sharedManager</span><span class="p">]</span> <span class="nl">hideAdBanner:</span><span class="n">YES</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>4. バナーを最前面に配置</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">[[</span><span class="n">DCAdMobBanner</span> <span class="n">sharedManager</span><span class="p">]</span> <span class="n">insertAdBanner</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>5. バナーの再読み込み</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">[[</span><span class="n">DCAdMobBanner</span> <span class="n">sharedManager</span><span class="p">]</span> <span class="nl">reloadAdBanner:</span><span class="n">self</span> <span class="nl">usePersonalizedAds:</span><span class="n">YES</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>6. ロード状況の取得</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="kt">BOOL</span> <span class="n">isLoadedAdBanner</span> <span class="o">=</span> <span class="p">[[</span><span class="n">DCAdMobBanner</span> <span class="n">sharedManager</span><span class="p">]</span> <span class="n">loaded</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>ソースコード</h2>
+
+<h3>DCAdMobBanner.h</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;Foundation/Foundation.h&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="err">@</span><span class="n">import</span> <span class="n">GoogleMobileAds</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">DCAdMobBanner</span> : <span class="nc">NSObject</span> <span class="o">&lt;</span><span class="n">GADBannerViewDelegate</span><span class="o">&gt;</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">CGFloat</span> <span class="n">bannerX</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">CGFloat</span> <span class="n">bannerY</span><span class="p">;</span>
+</span><span class='line'>    <span class="kt">BOOL</span>    <span class="n">isFailed</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark - property</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">strong</span><span class="p">)</span> <span class="n">GADBannerView</span>    <span class="o">*</span><span class="n">gadView</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">strong</span><span class="p">)</span> <span class="n">UIViewController</span> <span class="o">*</span><span class="n">currentRootViewController</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">assign</span><span class="p">)</span> <span class="kt">BOOL</span>             <span class="n">loaded</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">assign</span><span class="p">)</span> <span class="n">CGFloat</span>          <span class="n">fadeInDuration</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">assign</span><span class="p">)</span> <span class="kt">BOOL</span>             <span class="n">useAdaptiveBanner</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">assign</span><span class="p">)</span> <span class="kt">BOOL</span>             <span class="n">useSmartBanner</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">assign</span><span class="p">)</span> <span class="kt">BOOL</span>             <span class="n">usePersonalizedAds</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark - public method</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">sharedManager</span><span class="p">;</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">showAdBanner:</span><span class="p">(</span><span class="n">UIViewController</span> <span class="o">*</span><span class="p">)</span><span class="nv">viewController</span> <span class="nf">yPos:</span><span class="p">(</span><span class="n">CGFloat</span><span class="p">)</span><span class="nv">yPos</span> <span class="nf">fadeInDuration:</span><span class="p">(</span><span class="n">CGFloat</span><span class="p">)</span><span class="nv">fadeInDuration</span>
+</span><span class='line'>   <span class="nf">useAdaptiveBanner:</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nv">useAdaptiveBanner</span> <span class="nf">useSmartBanner:</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nv">useSmartBanner</span> <span class="nf">usePersonalizedAds:</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nv">usePersonalizedAds</span><span class="p">;</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">reloadAdBanner:</span><span class="p">(</span><span class="n">UIViewController</span> <span class="o">*</span><span class="p">)</span><span class="nv">viewController</span> <span class="nf">usePersonalizedAds:</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nv">usePersonalizedAds</span><span class="p">;</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">removeAdBanner</span><span class="p">;</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">hideAdBanner:</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nv">hidden</span><span class="p">;</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">insertAdBanner</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>DCAdMobBanner.m</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+<span class='line-number'>102</span>
+<span class='line-number'>103</span>
+<span class='line-number'>104</span>
+<span class='line-number'>105</span>
+<span class='line-number'>106</span>
+<span class='line-number'>107</span>
+<span class='line-number'>108</span>
+<span class='line-number'>109</span>
+<span class='line-number'>110</span>
+<span class='line-number'>111</span>
+<span class='line-number'>112</span>
+<span class='line-number'>113</span>
+<span class='line-number'>114</span>
+<span class='line-number'>115</span>
+<span class='line-number'>116</span>
+<span class='line-number'>117</span>
+<span class='line-number'>118</span>
+<span class='line-number'>119</span>
+<span class='line-number'>120</span>
+<span class='line-number'>121</span>
+<span class='line-number'>122</span>
+<span class='line-number'>123</span>
+<span class='line-number'>124</span>
+<span class='line-number'>125</span>
+<span class='line-number'>126</span>
+<span class='line-number'>127</span>
+<span class='line-number'>128</span>
+<span class='line-number'>129</span>
+<span class='line-number'>130</span>
+<span class='line-number'>131</span>
+<span class='line-number'>132</span>
+<span class='line-number'>133</span>
+<span class='line-number'>134</span>
+<span class='line-number'>135</span>
+<span class='line-number'>136</span>
+<span class='line-number'>137</span>
+<span class='line-number'>138</span>
+<span class='line-number'>139</span>
+<span class='line-number'>140</span>
+<span class='line-number'>141</span>
+<span class='line-number'>142</span>
+<span class='line-number'>143</span>
+<span class='line-number'>144</span>
+<span class='line-number'>145</span>
+<span class='line-number'>146</span>
+<span class='line-number'>147</span>
+<span class='line-number'>148</span>
+<span class='line-number'>149</span>
+<span class='line-number'>150</span>
+<span class='line-number'>151</span>
+<span class='line-number'>152</span>
+<span class='line-number'>153</span>
+<span class='line-number'>154</span>
+<span class='line-number'>155</span>
+<span class='line-number'>156</span>
+<span class='line-number'>157</span>
+<span class='line-number'>158</span>
+<span class='line-number'>159</span>
+<span class='line-number'>160</span>
+<span class='line-number'>161</span>
+<span class='line-number'>162</span>
+<span class='line-number'>163</span>
+<span class='line-number'>164</span>
+<span class='line-number'>165</span>
+<span class='line-number'>166</span>
+<span class='line-number'>167</span>
+<span class='line-number'>168</span>
+<span class='line-number'>169</span>
+<span class='line-number'>170</span>
+<span class='line-number'>171</span>
+<span class='line-number'>172</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;DCAdMobBanner.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">DCAdMobBanner</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@synthesize</span> <span class="n">gadView</span>                   <span class="o">=</span> <span class="n">_gadView</span><span class="p">;</span>
+</span><span class='line'><span class="k">@synthesize</span> <span class="n">currentRootViewController</span> <span class="o">=</span> <span class="n">_currentRootViewController</span><span class="p">;</span>
+</span><span class='line'><span class="k">@synthesize</span> <span class="n">loaded</span>                    <span class="o">=</span> <span class="n">_loaded</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark - Shared Manager</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">static</span> <span class="kt">id</span> <span class="n">sharedInstance</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">sharedManager</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">@synchronized</span><span class="p">(</span><span class="n">self</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">sharedInstance</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="n">sharedInstance</span> <span class="o">=</span> <span class="p">[[</span><span class="n">self</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="n">sharedInstance</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark - public method</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// バナー表示</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">showAdBanner:</span><span class="p">(</span><span class="n">UIViewController</span> <span class="o">*</span><span class="p">)</span><span class="nv">viewController</span> <span class="nf">yPos:</span><span class="p">(</span><span class="n">CGFloat</span><span class="p">)</span><span class="nv">yPos</span> <span class="nf">fadeInDuration:</span><span class="p">(</span><span class="n">CGFloat</span><span class="p">)</span><span class="nv">fadeInDuration</span>
+</span><span class='line'>   <span class="nf">useAdaptiveBanner:</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nv">useAdaptiveBanner</span> <span class="nf">useSmartBanner:</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nv">useSmartBanner</span> <span class="nf">usePersonalizedAds:</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nv">usePersonalizedAds</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">currentRootViewController</span> <span class="o">=</span> <span class="n">viewController</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">fadeInDuration</span> <span class="o">=</span> <span class="n">fadeInDuration</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">useAdaptiveBanner</span> <span class="o">=</span> <span class="n">useAdaptiveBanner</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">useSmartBanner</span> <span class="o">=</span> <span class="n">useSmartBanner</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">usePersonalizedAds</span> <span class="o">=</span> <span class="n">usePersonalizedAds</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">self</span><span class="p">.</span><span class="n">useAdaptiveBanner</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">self</span><span class="p">.</span><span class="n">useSmartBanner</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">CGFloat</span> <span class="k">const</span> <span class="n">screenWidth</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIScreen</span> <span class="n">mainScreen</span><span class="p">]</span> <span class="n">bounds</span><span class="p">].</span><span class="n">size</span><span class="p">.</span><span class="n">width</span><span class="p">;</span>
+</span><span class='line'>        <span class="n">bannerX</span> <span class="o">=</span> <span class="n">roundf</span><span class="p">((</span><span class="n">screenWidth</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">kGADAdSizeBanner</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">));</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="n">bannerY</span> <span class="o">=</span> <span class="n">yPos</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="nl">showAdMobBanner:</span><span class="n">viewController</span><span class="p">.</span><span class="n">view</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// バナーの再読み込み</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">reloadAdBanner:</span><span class="p">(</span><span class="n">UIViewController</span> <span class="o">*</span><span class="p">)</span><span class="nv">viewController</span> <span class="nf">usePersonalizedAds:</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nv">usePersonalizedAds</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">currentRootViewController</span> <span class="o">=</span> <span class="n">viewController</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">usePersonalizedAds</span> <span class="o">=</span> <span class="n">usePersonalizedAds</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">gadView</span><span class="p">.</span><span class="n">superview</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">self</span> <span class="nl">loadAdMobBanner:</span><span class="n">self</span><span class="p">.</span><span class="n">currentRootViewController</span><span class="p">.</span><span class="n">view</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// バナー削除</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">removeAdBanner</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">gadView</span><span class="p">.</span><span class="n">superview</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">gadView</span> <span class="n">removeFromSuperview</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// バナー非表示</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">hideAdBanner:</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nv">hidden</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">gadView</span><span class="p">.</span><span class="n">superview</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">self</span><span class="p">.</span><span class="n">gadView</span><span class="p">.</span><span class="n">hidden</span> <span class="o">=</span> <span class="n">hidden</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// バナーを最前面に配置</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">insertAdBanner</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">gadView</span><span class="p">.</span><span class="n">superview</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">NSUInteger</span> <span class="n">subviewsCount</span> <span class="o">=</span> <span class="p">[[</span><span class="n">self</span><span class="p">.</span><span class="n">currentRootViewController</span><span class="p">.</span><span class="n">view</span> <span class="n">subviews</span><span class="p">]</span> <span class="n">count</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">currentRootViewController</span><span class="p">.</span><span class="n">view</span> <span class="nl">insertSubview:</span><span class="n">self</span><span class="p">.</span><span class="n">gadView</span> <span class="nl">atIndex:</span><span class="n">subviewsCount</span> <span class="o">+</span> <span class="mi">1</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark - AdMob Banner</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">showAdMobBanner:</span><span class="p">(</span><span class="n">UIView</span> <span class="o">*</span><span class="p">)</span><span class="nv">targetView</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">self</span><span class="p">.</span><span class="n">gadView</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">useAdaptiveBanner</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="n">self</span><span class="p">.</span><span class="n">gadView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">GADBannerView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithAdSize:</span><span class="n">GADCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth</span><span class="p">(</span><span class="n">targetView</span><span class="p">.</span><span class="n">frame</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span><span class="p">)];</span>
+</span><span class='line'>        <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">useSmartBanner</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="n">self</span><span class="p">.</span><span class="n">gadView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">GADBannerView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithAdSize:</span><span class="n">kGADAdSizeSmartBannerPortrait</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>            <span class="n">self</span><span class="p">.</span><span class="n">gadView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">GADBannerView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithAdSize:</span><span class="n">kGADAdSizeBanner</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="n">self</span><span class="p">.</span><span class="n">gadView</span><span class="p">.</span><span class="n">adUnitID</span> <span class="o">=</span> <span class="n">GAD_TEST_MODE</span> <span class="o">?</span> <span class="n">GAD_TEST_UNIT_ID</span> <span class="o">:</span> <span class="n">GAD_UNIT_ID</span><span class="p">;</span>
+</span><span class='line'>        <span class="n">self</span><span class="p">.</span><span class="n">gadView</span><span class="p">.</span><span class="n">delegate</span> <span class="o">=</span> <span class="n">self</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">self</span> <span class="nl">loadAdMobBanner:</span><span class="n">targetView</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">gadView</span><span class="p">.</span><span class="n">superview</span> <span class="nl">isEqual:</span><span class="n">targetView</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">gadView</span> <span class="n">removeFromSuperview</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">self</span> <span class="nl">loadAdMobBanner:</span><span class="n">targetView</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">loadAdMobBanner:</span><span class="p">(</span><span class="n">UIView</span> <span class="o">*</span><span class="p">)</span><span class="nv">view</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">gadView</span><span class="p">.</span><span class="n">rootViewController</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">currentRootViewController</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">CGRect</span> <span class="n">gadViewFrame</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">gadView</span><span class="p">.</span><span class="n">frame</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">gadViewFrame</span><span class="p">.</span><span class="n">origin</span> <span class="o">=</span> <span class="n">CGPointMake</span><span class="p">(</span><span class="n">bannerX</span><span class="p">,</span> <span class="n">bannerY</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">gadView</span><span class="p">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">gadViewFrame</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">self</span><span class="p">.</span><span class="n">gadView</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">GADRequest</span> <span class="o">*</span><span class="n">request</span> <span class="o">=</span> <span class="p">[</span><span class="n">GADRequest</span> <span class="n">request</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">GAD_TEST_MODE</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="p">[[</span><span class="n">GADMobileAds</span> <span class="n">sharedInstance</span><span class="p">]</span> <span class="n">requestConfiguration</span><span class="p">].</span><span class="n">testDeviceIdentifiers</span> <span class="o">=</span> <span class="err">@</span><span class="p">[</span><span class="n">kGADSimulatorID</span><span class="p">,</span>
+</span><span class='line'>                                                                                       <span class="s">@&quot;Test Device ID&quot;</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">self</span><span class="p">.</span><span class="n">usePersonalizedAds</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">GADExtras</span> <span class="o">*</span><span class="n">extras</span> <span class="o">=</span> <span class="p">[[</span><span class="n">GADExtras</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">extras</span><span class="p">.</span><span class="n">additionalParameters</span> <span class="o">=</span> <span class="err">@</span><span class="p">{</span><span class="s">@&quot;npa&quot;</span><span class="o">:</span> <span class="s">@&quot;1&quot;</span><span class="p">};</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">request</span> <span class="nl">registerAdNetworkExtras:</span><span class="n">extras</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="c1">//NSLog(@&quot;DCAdMobBanner -&gt; usePersonalizedAds: %d&quot;, self.usePersonalizedAds);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">gadView</span> <span class="nl">loadRequest:</span><span class="n">request</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark - delegate method</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">adViewDidReceiveAd:</span><span class="p">(</span><span class="n">GADBannerView</span> <span class="o">*</span><span class="p">)</span><span class="nv">bannerView</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="kt">BOOL</span> <span class="k">const</span> <span class="n">useFadeInAnimation</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">fadeInDuration</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">useFadeInAnimation</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">bannerView</span><span class="p">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">UIView</span> <span class="nl">animateWithDuration:</span><span class="n">self</span><span class="p">.</span><span class="n">fadeInDuration</span> <span class="nl">animations:</span><span class="o">^</span><span class="p">{</span>
+</span><span class='line'>            <span class="n">bannerView</span><span class="p">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">_loaded</span> <span class="o">=</span> <span class="n">YES</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">isFailed</span> <span class="o">=</span> <span class="o">!</span><span class="n">_loaded</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">adView:</span><span class="p">(</span><span class="n">GADBannerView</span> <span class="o">*</span><span class="p">)</span><span class="nv">bannerView</span> <span class="nf">didFailToReceiveAdWithError:</span><span class="p">(</span><span class="n">GADRequestError</span> <span class="o">*</span><span class="p">)</span><span class="nv">error</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">_loaded</span> <span class="o">=</span> <span class="n">NO</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">isFailed</span> <span class="o">=</span> <span class="o">!</span><span class="n">_loaded</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// バナー再読み込み</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="nl">showAdBanner:</span><span class="n">self</span><span class="p">.</span><span class="n">currentRootViewController</span> <span class="nl">yPos:</span><span class="n">bannerY</span> <span class="nl">fadeInDuration:</span><span class="n">self</span><span class="p">.</span><span class="n">fadeInDuration</span>
+</span><span class='line'>     <span class="nl">useAdaptiveBanner:</span><span class="n">self</span><span class="p">.</span><span class="n">useAdaptiveBanner</span> <span class="nl">useSmartBanner:</span><span class="n">self</span><span class="p">.</span><span class="n">useSmartBanner</span> <span class="nl">usePersonalizedAds:</span><span class="n">self</span><span class="p">.</span><span class="n">usePersonalizedAds</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">adViewWillPresentScreen:</span><span class="p">(</span><span class="n">GADBannerView</span> <span class="o">*</span><span class="p">)</span><span class="nv">bannerView</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">adViewDidDismissScreen:</span><span class="p">(</span><span class="n">GADBannerView</span> <span class="o">*</span><span class="p">)</span><span class="nv">bannerView</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">adViewWillDismissScreen:</span><span class="p">(</span><span class="n">GADBannerView</span> <span class="o">*</span><span class="p">)</span><span class="nv">bannerView</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">adViewWillLeaveApplication:</span><span class="p">(</span><span class="n">GADBannerView</span> <span class="o">*</span><span class="p">)</span><span class="nv">bannerView</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2020-07-09T15:24:00+09:00" pubdate data-updated="true">Jul 9<span>th</span>, 2020</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/admob/'>AdMob</a>, <a class='category' href='/blog/categories/classes/'>Classes</a>, <a class='category' href='/blog/categories/download/'>Download</a>, <a class='category' href='/blog/categories/objective-c/'>Objective-C</a>
+
+
+</div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -584,7 +1150,7 @@
 
 <p>当方は動画リワード広告が最後まで再生されたら3日間広告を表示しないという設定にしています。</p>
 
-<p>また、リワードが提供されたことをユーザーにお知らせするアラートに使用するため、リワード期限日を文字列で取得できるようにしています。</p>
+<p>また、リワードが提供されたことをユーザーにお知らせするため、リワード期限日を文字列で取得できるようにしています。</p>
 
 <p>まず下記のようにリワードを提供します。</p>
 
@@ -1014,7 +1580,7 @@
 
 <ul>
 <li><strong><a href="/blog/2020/07/08/objc-classes-dc-adfurikun-banner/" title="アドフリくんバナーを表示する「DCAdfurikunBanner」クラス">アドフリくんバナーを表示する「DCAdfurikunBanner」クラス</a></strong></li>
-<li><strong><a href="/blog/2020/07/09/adfurikun-rewarded-video-ads/" title="アドフリくんの動画リワード広告導入手順">アドフリくんの動画リワード広告導入手順</a></strong></li>
+<li><strong><a href="/blog/2020/07/09/objc-adfurikun-rewarded-video-ads/" title="アドフリくんの動画リワード広告導入手順">アドフリくんの動画リワード広告導入手順</a></strong></li>
 </ul>
 
 
@@ -1037,480 +1603,6 @@
 
 
 <time datetime="2020-07-09T12:33:00+09:00" pubdate data-updated="true">Jul 9<span>th</span>, 2020</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/classes/'>Classes</a>, <a class='category' href='/blog/categories/download/'>Download</a>, <a class='category' href='/blog/categories/objective-c/'>Objective-C</a>
-
-
-</div>
-	
-</div>
-</article>
-
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2020/07/08/objc-classes-dc-adfurikun-banner/">
-		
-			アドフリくんバナーを表示する「DCAdfurikunBanner」クラス</a>
-	</h2>
-	<div class="entry-content">
-		<p>iPhoneアプリに<a href="https://adfurikun.jp/" title="アドフリくん">アドフリくん</a>のモバイルバナー（Ver. 2）を表示する「<a href="https://github.com/masakihirokawa/objc-classes-dc-adfurikun-banner" title="DCAdfurikunBanner">DCAdfurikunBanner</a>」クラスを作成しました。</p>
-
-<p><a href="https://github.com/glossom-dev/AdfurikunSDK-iOS/wiki" title="公式マニュアル">公式マニュアル</a>を参考にさせていただき、10秒毎にバナーがリフレッシュされるよう実装しております。ご使用の際は広告枠IDを指定してください。</p>
-
-<p>下記よりサンプルをダウンロード出来ますので、導入の際のお役に立てば幸いです。</p>
-
-<h2>ダウンロード</h2>
-
-<ul>
-<li><a href="https://github.com/masakihirokawa/objc-classes-dc-adfurikun-banner">https://github.com/masakihirokawa/objc-classes-dc-adfurikun-banner</a></li>
-</ul>
-
-
-<h2>導入準備</h2>
-
-<h3>1. 広告枠IDの保持</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="k">const</span> <span class="n">ADFURIKUN_AD_UNIT_ID</span> <span class="o">=</span> <span class="s">@&quot;広告枠ID&quot;</span><span class="p">;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>2. アプリ起動時に初期化</h3>
-
-<h4>AppDelegate.h</h4>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;ADFMovieReward/ADFmyBanner.h&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h4>AppDelegate.m</h4>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">application:</span><span class="p">(</span><span class="n">UIApplication</span> <span class="o">*</span><span class="p">)</span><span class="nv">application</span> <span class="nf">didFinishLaunchingWithOptions:</span><span class="p">(</span><span class="n">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nv">launchOptions</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="c1">// アドフリくんバナー初期化</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">([</span><span class="n">ADFmyNativeAd</span> <span class="n">isSupportedOSVersion</span><span class="p">])</span> <span class="p">{</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">ADFmyNativeAd</span> <span class="nl">initializeWithAppID:</span><span class="n">ADFURIKUN_AD_UNIT_ID</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">return</span> <span class="n">YES</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>e.x. Info.plistの編集</h3>
-
-<p><a href="https://admob.google.com/intl/ja/home/" title="AdMob">AdMob</a>を使用する場合は <em>Info.plist</em>に <em>GADApplicationIdentifier</em>の設定値を追加してください。</p>
-
-<h2>クラスの使用方法</h2>
-
-<h3>1. バナーの表示</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">[[</span><span class="n">DCAdfurikunBanner</span> <span class="n">sharedManager</span><span class="p">]</span> <span class="nl">showAdBanner:</span><span class="n">self</span> <span class="nl">yPos:</span><span class="mf">0.0</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>2. バナーの削除</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">[[</span><span class="n">DCAdfurikunBanner</span> <span class="n">sharedManager</span><span class="p">]</span> <span class="n">removeAdBanner</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>3. バナーの非表示</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">[[</span><span class="n">DCAdfurikunBanner</span> <span class="n">sharedManager</span><span class="p">]</span> <span class="nl">hideAdBanner:</span><span class="n">YES</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>4. バナーを最前面に配置</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">[[</span><span class="n">DCAdfurikunBanner</span> <span class="n">sharedManager</span><span class="p">]</span> <span class="n">insertAdBanner</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>5. バナーの再読み込み</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">[[</span><span class="n">DCAdfurikunBanner</span> <span class="n">sharedManager</span><span class="p">]</span> <span class="n">reloadAdBanner</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>ソースコード</h2>
-
-<h3>DCAdfurikunBanner.h</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;Foundation/Foundation.h&gt;</span>
-</span><span class='line'><span class="cp">#import &lt;ADFMovieReward/ADFmyBanner.h&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@interface</span> <span class="nc">DCAdfurikunBanner</span> : <span class="nc">NSObject</span> <span class="o">&lt;</span><span class="n">ADFmyNativeAdDelegate</span><span class="o">&gt;</span> <span class="p">{</span>
-</span><span class='line'>    <span class="n">CGFloat</span> <span class="n">bannerY</span><span class="p">;</span>
-</span><span class='line'>    <span class="kt">BOOL</span>    <span class="n">isAdfurikunFailed</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#pragma mark - property</span>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">)</span> <span class="n">ADFmyBanner</span>              <span class="o">*</span><span class="n">bannerAd</span><span class="p">;</span>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">)</span> <span class="n">ADFNativeAdInfo</span>          <span class="o">*</span><span class="n">bannerAdInfo</span><span class="p">;</span>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">strong</span><span class="p">)</span> <span class="n">UIViewController</span> <span class="o">*</span><span class="n">currentRootViewController</span><span class="p">;</span>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">assign</span><span class="p">)</span> <span class="n">NSTimer</span>          <span class="o">*</span><span class="n">refreshTimer</span><span class="p">;</span>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">assign</span><span class="p">)</span> <span class="kt">BOOL</span>             <span class="n">loaded</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#pragma mark - public method</span>
-</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">sharedManager</span><span class="p">;</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">showAdBanner:</span><span class="p">(</span><span class="n">UIViewController</span> <span class="o">*</span><span class="p">)</span><span class="nv">viewController</span> <span class="nf">yPos:</span><span class="p">(</span><span class="n">CGFloat</span><span class="p">)</span><span class="nv">yPos</span><span class="p">;</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">removeAdBanner</span><span class="p">;</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">hideAdBanner:</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nv">hidden</span><span class="p">;</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">insertAdBanner</span><span class="p">;</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">reloadAdBanner</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>DCAdfurikunBanner.m</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-<span class='line-number'>65</span>
-<span class='line-number'>66</span>
-<span class='line-number'>67</span>
-<span class='line-number'>68</span>
-<span class='line-number'>69</span>
-<span class='line-number'>70</span>
-<span class='line-number'>71</span>
-<span class='line-number'>72</span>
-<span class='line-number'>73</span>
-<span class='line-number'>74</span>
-<span class='line-number'>75</span>
-<span class='line-number'>76</span>
-<span class='line-number'>77</span>
-<span class='line-number'>78</span>
-<span class='line-number'>79</span>
-<span class='line-number'>80</span>
-<span class='line-number'>81</span>
-<span class='line-number'>82</span>
-<span class='line-number'>83</span>
-<span class='line-number'>84</span>
-<span class='line-number'>85</span>
-<span class='line-number'>86</span>
-<span class='line-number'>87</span>
-<span class='line-number'>88</span>
-<span class='line-number'>89</span>
-<span class='line-number'>90</span>
-<span class='line-number'>91</span>
-<span class='line-number'>92</span>
-<span class='line-number'>93</span>
-<span class='line-number'>94</span>
-<span class='line-number'>95</span>
-<span class='line-number'>96</span>
-<span class='line-number'>97</span>
-<span class='line-number'>98</span>
-<span class='line-number'>99</span>
-<span class='line-number'>100</span>
-<span class='line-number'>101</span>
-<span class='line-number'>102</span>
-<span class='line-number'>103</span>
-<span class='line-number'>104</span>
-<span class='line-number'>105</span>
-<span class='line-number'>106</span>
-<span class='line-number'>107</span>
-<span class='line-number'>108</span>
-<span class='line-number'>109</span>
-<span class='line-number'>110</span>
-<span class='line-number'>111</span>
-<span class='line-number'>112</span>
-<span class='line-number'>113</span>
-<span class='line-number'>114</span>
-<span class='line-number'>115</span>
-<span class='line-number'>116</span>
-<span class='line-number'>117</span>
-<span class='line-number'>118</span>
-<span class='line-number'>119</span>
-<span class='line-number'>120</span>
-<span class='line-number'>121</span>
-<span class='line-number'>122</span>
-<span class='line-number'>123</span>
-<span class='line-number'>124</span>
-<span class='line-number'>125</span>
-<span class='line-number'>126</span>
-<span class='line-number'>127</span>
-<span class='line-number'>128</span>
-<span class='line-number'>129</span>
-<span class='line-number'>130</span>
-<span class='line-number'>131</span>
-<span class='line-number'>132</span>
-<span class='line-number'>133</span>
-<span class='line-number'>134</span>
-<span class='line-number'>135</span>
-<span class='line-number'>136</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;DCAdfurikunBanner.h&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@implementation</span> <span class="nc">DCAdfurikunBanner</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@synthesize</span> <span class="n">bannerAd</span>                  <span class="o">=</span> <span class="n">_bannerAd</span><span class="p">;</span>
-</span><span class='line'><span class="k">@synthesize</span> <span class="n">bannerAdInfo</span>              <span class="o">=</span> <span class="n">_bannerAdInfo</span><span class="p">;</span>
-</span><span class='line'><span class="k">@synthesize</span> <span class="n">currentRootViewController</span> <span class="o">=</span> <span class="n">_currentRootViewController</span><span class="p">;</span>
-</span><span class='line'><span class="k">@synthesize</span> <span class="n">refreshTimer</span>              <span class="o">=</span> <span class="n">_refreshTimer</span><span class="p">;</span>
-</span><span class='line'><span class="k">@synthesize</span> <span class="n">loaded</span>                    <span class="o">=</span> <span class="n">_loaded</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#pragma mark - Shared Manager</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">static</span> <span class="kt">id</span> <span class="n">sharedInstance</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">sharedManager</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">@synchronized</span><span class="p">(</span><span class="n">self</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">sharedInstance</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>            <span class="n">sharedInstance</span> <span class="o">=</span> <span class="p">[[</span><span class="n">self</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">return</span> <span class="n">sharedInstance</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#pragma mark - public method</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// バナー表示</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">showAdBanner:</span><span class="p">(</span><span class="n">UIViewController</span> <span class="o">*</span><span class="p">)</span><span class="nv">viewController</span> <span class="nf">yPos:</span><span class="p">(</span><span class="n">CGFloat</span><span class="p">)</span><span class="nv">yPos</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="n">removeAdBanner</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">[</span><span class="n">viewController</span> <span class="nl">isEqual:</span><span class="n">self</span><span class="p">.</span><span class="n">currentRootViewController</span><span class="p">])</span> <span class="p">{</span>
-</span><span class='line'>        <span class="n">self</span><span class="p">.</span><span class="n">currentRootViewController</span> <span class="o">=</span> <span class="n">viewController</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">bannerY</span> <span class="o">=</span> <span class="n">yPos</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">_bannerAd</span> <span class="o">=</span> <span class="p">[</span><span class="n">ADFmyBanner</span> <span class="nl">createInstance:</span><span class="n">ADFURIKUN_AD_UNIT_ID</span><span class="s">&quot;];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">_bannerAd</span> <span class="nl">loadAndNotifyTo:</span><span class="n">self</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// バナー削除</span>
-</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">removeAdBanner</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">_bannerAdInfo</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">_bannerAdInfo</span><span class="p">.</span><span class="n">mediaView</span> <span class="n">removeFromSuperview</span><span class="p">];</span>
-</span><span class='line'>        <span class="n">_bannerAdInfo</span><span class="p">.</span><span class="n">mediaView</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
-</span><span class='line'>        <span class="n">_bannerAdInfo</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="n">clearRefreshTimer</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// バナー非表示</span>
-</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">hideAdBanner:</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="n">hidden</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">_bannerAdInfo</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="n">_bannerAdInfo</span><span class="p">.</span><span class="n">mediaView</span><span class="p">.</span><span class="n">hidden</span> <span class="o">=</span> <span class="n">hidden</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// バナーを最前面に配置</span>
-</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">insertAdBanner</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">_bannerAdInfo</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="n">NSUInteger</span> <span class="n">subviewsCount</span> <span class="o">=</span> <span class="p">[[</span><span class="n">self</span><span class="p">.</span><span class="n">currentRootViewController</span><span class="p">.</span><span class="n">view</span> <span class="n">subviews</span><span class="p">]</span> <span class="n">count</span><span class="p">];</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">currentRootViewController</span><span class="p">.</span><span class="n">view</span> <span class="nl">insertSubview:</span><span class="n">_bannerAdInfo</span><span class="p">.</span><span class="n">mediaView</span> <span class="nl">atIndex:</span><span class="n">subviewsCount</span> <span class="o">+</span> <span class="mi">1</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// バナーの再読み込み</span>
-</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">reloadAdBanner</span> <span class="p">{</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">_bannerAdInfo</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">self</span> <span class="n">removeAdBanner</span><span class="p">];</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">_bannerAd</span> <span class="nl">loadAndNotifyTo:</span><span class="n">self</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#pragma mark - Refresh Timer</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// 広告の自動更新タイマー開始</span>
-</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">startRefreshTimer</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">_refreshTimer</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSTimer</span> <span class="nl">scheduledTimerWithTimeInterval:</span><span class="mf">10.0</span> <span class="nl">repeats:</span><span class="n">YES</span> <span class="nl">block:</span><span class="o">^</span><span class="p">(</span><span class="n">NSTimer</span> <span class="o">*</span> <span class="n">_Nonnull</span> <span class="n">timer</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">self</span> <span class="n">reloadAdBanner</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">}];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// 広告の自動更新タイマー削除</span>
-</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">clearRefreshTimer</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">_refreshTimer</span> <span class="o">!=</span> <span class="nb">nil</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">_refreshTimer</span> <span class="n">invalidate</span><span class="p">];</span>
-</span><span class='line'>        <span class="n">_refreshTimer</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#pragma mark - delegate method</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// バナーの取得に成功した時に呼ばれる</span>
-</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">onNativeAdLoadFinish:</span><span class="p">(</span><span class="n">ADFNativeAdInfo</span> <span class="o">*</span><span class="p">)</span><span class="n">info</span> <span class="nl">appID:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="n">appID</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="c1">//NSLog(@&quot;onNativeAdLoadFinish&quot;);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">_bannerAdInfo</span> <span class="o">=</span> <span class="n">info</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">CGFloat</span> <span class="k">const</span> <span class="n">bannerWidth</span>  <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">currentRootViewController</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">frame</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">CGFloat</span> <span class="k">const</span> <span class="n">bannerHeight</span> <span class="o">=</span> <span class="mf">50.0</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">_bannerAdInfo</span><span class="p">.</span><span class="n">mediaView</span><span class="p">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">CGRectMake</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">bannerY</span><span class="p">,</span> <span class="n">bannerWidth</span><span class="p">,</span> <span class="n">bannerHeight</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">currentRootViewController</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">_bannerAdInfo</span><span class="p">.</span><span class="n">mediaView</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">_bannerAdInfo</span> <span class="n">playMediaView</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="n">clearRefreshTimer</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="n">startRefreshTimer</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">_loaded</span> <span class="o">=</span> <span class="n">YES</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">isAdfurikunFailed</span> <span class="o">=</span> <span class="o">!</span><span class="n">_loaded</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// バナーの取得に失敗した時に呼ばれる</span>
-</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">onNativeAdLoadError:</span><span class="p">(</span><span class="n">ADFMovieError</span> <span class="o">*</span><span class="p">)</span><span class="n">error</span> <span class="nl">appID:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="n">appID</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="c1">//NSLog(@&quot;Failed to load native ad, error code=%lu, error message=\&quot;%@\&quot;&quot;, (unsigned long)error.errorCode, error.errorMessage);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">_loaded</span> <span class="o">=</span> <span class="n">NO</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">isAdfurikunFailed</span> <span class="o">=</span> <span class="o">!</span><span class="n">_loaded</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// バナー再読み込み</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="nl">showAdBanner:</span><span class="n">self</span><span class="p">.</span><span class="n">currentRootViewController</span> <span class="nl">yPos:</span><span class="n">bannerY</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>関連記事</h2>
-
-<ul>
-<li><strong><a href="/blog/2020/07/09/objc-classes-dc-adfurikun-interstitial/" title="アドフリくんの動画インタースティシャル広告を表示する「DCAdfurikunInterstitial」クラス">アドフリくんの動画インタースティシャル広告を表示する「DCAdfurikunInterstitial」クラス</a></strong></li>
-<li><strong><a href="/blog/2020/07/09/adfurikun-rewarded-video-ads/" title="アドフリくんの動画リワード広告導入手順">アドフリくんの動画リワード広告導入手順</a></strong></li>
-</ul>
-
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2020-07-08T13:38:00+09:00" pubdate data-updated="true">Jul 8<span>th</span>, 2020</time></div>
 	<div class="tags">
 
 
@@ -1590,7 +1682,7 @@
   <div class="information-box-wide">
 <section id="tag-cloud-container">
   <h1 id="tag-cloud-title">Tag Cloud</h1>
-  <p id="tag-cloud"><a href='/blog/categories/actionscript' style='font-size: 102.38938053097345%'>ActionScript(9)</a> <a href='/blog/categories/actionscript3' style='font-size: 101.85840707964601%'>ActionScript3(7)</a> <a href='/blog/categories/ad' style='font-size: 101.32743362831859%'>Ad(5)</a> <a href='/blog/categories/adfurikun' style='font-size: 100.53097345132744%'>Adfurikun(2)</a> <a href='/blog/categories/admob' style='font-size: 102.65486725663717%'>AdMob(10)</a> <a href='/blog/categories/android' style='font-size: 102.92035398230088%'>Android(11)</a> <a href='/blog/categories/animation' style='font-size: 104.51327433628319%'>Animation(17)</a> <a href='/blog/categories/appdelegate' style='font-size: 100.79646017699115%'>AppDelegate(3)</a> <a href='/blog/categories/arc' style='font-size: 100.26548672566372%'>ARC(1)</a> <a href='/blog/categories/arraylist' style='font-size: 100.26548672566372%'>ArrayList(1)</a> <a href='/blog/categories/avaudioplayer' style='font-size: 101.06194690265487%'>AVAudioPlayer(4)</a> <a href='/blog/categories/avaudiosession' style='font-size: 100.26548672566372%'>AVAudioSession(1)</a> <a href='/blog/categories/avfoundation' style='font-size: 100.79646017699115%'>AVFoundation(3)</a> <a href='/blog/categories/banner' style='font-size: 100.53097345132744%'>Banner(2)</a> <a href='/blog/categories/bitmap' style='font-size: 100.26548672566372%'>Bitmap(1)</a> <a href='/blog/categories/camera' style='font-size: 101.06194690265487%'>Camera(4)</a> <a href='/blog/categories/cgaffinetransform' style='font-size: 101.06194690265487%'>CGAffineTransform(4)</a> <a href='/blog/categories/cgblendmode' style='font-size: 100.53097345132744%'>CGBlendMode(2)</a> <a href='/blog/categories/cgcontextref' style='font-size: 100.26548672566372%'>CGContextRef(1)</a> <a href='/blog/categories/cgimageref' style='font-size: 100.26548672566372%'>CGImageRef(1)</a> <a href='/blog/categories/classes' style='font-size: 112.47787610619469%'>Classes(47)</a> <a href='/blog/categories/cllocationmanager' style='font-size: 100.26548672566372%'>CLLocationManager(1)</a> <a href='/blog/categories/connectivitymanager' style='font-size: 100.26548672566372%'>ConnectivityManager(1)</a> <a href='/blog/categories/contentresolver' style='font-size: 100.26548672566372%'>ContentResolver(1)</a> <a href='/blog/categories/corelocation' style='font-size: 100.53097345132744%'>CoreLocation(2)</a> <a href='/blog/categories/delegate' style='font-size: 100.79646017699115%'>Delegate(3)</a> <a href='/blog/categories/device' style='font-size: 101.85840707964601%'>Device(7)</a> <a href='/blog/categories/display' style='font-size: 100.26548672566372%'>Display(1)</a> <a href='/blog/categories/displaymetrics' style='font-size: 100.26548672566372%'>DisplayMetrics(1)</a> <a href='/blog/categories/download' style='font-size: 128.141592920354%'>Download(106)</a> <a href='/blog/categories/facebook' style='font-size: 101.59292035398231%'>Facebook(6)</a> <a href='/blog/categories/foundation' style='font-size: 119.11504424778761%'>Foundation(72)</a> <a href='/blog/categories/framework' style='font-size: 100.53097345132744%'>Framework(2)</a> <a href='/blog/categories/google-analytics' style='font-size: 100.26548672566372%'>Google Analytics(1)</a> <a href='/blog/categories/handler' style='font-size: 100.26548672566372%'>Handler(1)</a> <a href='/blog/categories/iad' style='font-size: 101.59292035398231%'>iAd(6)</a> <a href='/blog/categories/imageview' style='font-size: 100.26548672566372%'>ImageView(1)</a> <a href='/blog/categories/in-apppurchase' style='font-size: 100.26548672566372%'>In-AppPurchase(1)</a> <a href='/blog/categories/ios' style='font-size: 103.1858407079646%'>iOS(12)</a> <a href='/blog/categories/ios-7' style='font-size: 103.98230088495575%'>iOS 7(15)</a> <a href='/blog/categories/ios-7-dot-1' style='font-size: 100.79646017699115%'>iOS 7.1(3)</a> <a href='/blog/categories/ios-8' style='font-size: 100.26548672566372%'>iOS 8(1)</a> <a href='/blog/categories/ipad' style='font-size: 101.85840707964601%'>iPad(7)</a> <a href='/blog/categories/iphone' style='font-size: 106.3716814159292%'>iPhone(24)</a> <a href='/blog/categories/iphone-6' style='font-size: 101.06194690265487%'>iPhone 6(4)</a> <a href='/blog/categories/java' style='font-size: 101.85840707964601%'>Java(7)</a> <a href='/blog/categories/javascript' style='font-size: 100.53097345132744%'>JavaScript(2)</a> <a href='/blog/categories/line' style='font-size: 101.06194690265487%'>LINE(4)</a> <a href='/blog/categories/localize' style='font-size: 100.26548672566372%'>Localize(1)</a> <a href='/blog/categories/magazine' style='font-size: 100.79646017699115%'>Magazine(3)</a> <a href='/blog/categories/mediastore' style='font-size: 100.26548672566372%'>MediaStore(1)</a> <a href='/blog/categories/mfcomposeviewcontroller' style='font-size: 100.26548672566372%'>MFComposeViewController(1)</a> <a href='/blog/categories/nend' style='font-size: 100.26548672566372%'>Nend(1)</a> <a href='/blog/categories/networkinfo' style='font-size: 100.26548672566372%'>NetworkInfo(1)</a> <a href='/blog/categories/nsarray' style='font-size: 106.10619469026548%'>NSArray(23)</a> <a href='/blog/categories/nscalendar' style='font-size: 100.79646017699115%'>NSCalendar(3)</a> <a href='/blog/categories/nsdata' style='font-size: 100.53097345132744%'>NSData(2)</a> <a href='/blog/categories/nsdate' style='font-size: 101.85840707964601%'>NSDate(7)</a> <a href='/blog/categories/nsdatecomponents' style='font-size: 100.53097345132744%'>NSDateComponents(2)</a> <a href='/blog/categories/nsdateformatter' style='font-size: 100.53097345132744%'>NSDateFormatter(2)</a> <a href='/blog/categories/nsdictionary' style='font-size: 103.1858407079646%'>NSDictionary(12)</a> <a href='/blog/categories/nsenumerator' style='font-size: 100.26548672566372%'>NSEnumerator(1)</a> <a href='/blog/categories/nsindexset' style='font-size: 100.26548672566372%'>NSIndexSet(1)</a> <a href='/blog/categories/nsinteger' style='font-size: 101.59292035398231%'>NSInteger(6)</a> <a href='/blog/categories/nsmutablearray' style='font-size: 104.51327433628319%'>NSMutableArray(17)</a> <a href='/blog/categories/nsmutabledictionary' style='font-size: 101.32743362831859%'>NSMutableDictionary(5)</a> <a href='/blog/categories/nsmutableorderedset' style='font-size: 101.85840707964601%'>NSMutableOrderedSet(7)</a> <a href='/blog/categories/nsmutablestring' style='font-size: 101.06194690265487%'>NSMutableString(4)</a> <a href='/blog/categories/nsmutableurlrequest' style='font-size: 100.26548672566372%'>NSMutableURLRequest(1)</a> <a href='/blog/categories/nsnotificationcenter' style='font-size: 100.26548672566372%'>NSNotificationCenter(1)</a> <a href='/blog/categories/nsnumber' style='font-size: 100.26548672566372%'>NSNumber(1)</a> <a href='/blog/categories/nsobject' style='font-size: 100.26548672566372%'>NSObject(1)</a> <a href='/blog/categories/nsorderedset' style='font-size: 101.85840707964601%'>NSOrderedSet(7)</a> <a href='/blog/categories/nsrange' style='font-size: 100.53097345132744%'>NSRange(2)</a> <a href='/blog/categories/nsselectorfromstring' style='font-size: 100.26548672566372%'>NSSelectorFromString(1)</a> <a href='/blog/categories/nsset' style='font-size: 101.59292035398231%'>NSSet(6)</a> <a href='/blog/categories/nsstring' style='font-size: 105.04424778761062%'>NSString(19)</a> <a href='/blog/categories/nstimer' style='font-size: 101.06194690265487%'>NSTimer(4)</a> <a href='/blog/categories/nstimezone' style='font-size: 100.26548672566372%'>NSTimeZone(1)</a> <a href='/blog/categories/nsurl' style='font-size: 101.85840707964601%'>NSURL(7)</a> <a href='/blog/categories/nsurlconnection' style='font-size: 100.26548672566372%'>NSURLConnection(1)</a> <a href='/blog/categories/nsurlrequest' style='font-size: 100.53097345132744%'>NSURLRequest(2)</a> <a href='/blog/categories/nsuserdefaults' style='font-size: 101.85840707964601%'>NSUserDefaults(7)</a> <a href='/blog/categories/nsxmlparser' style='font-size: 100.53097345132744%'>NSXMLParser(2)</a> <a href='/blog/categories/objective-c' style='font-size: 160.0%'>Objective-C(226)</a> <a href='/blog/categories/php' style='font-size: 100.26548672566372%'>PHP(1)</a> <a href='/blog/categories/products' style='font-size: 104.51327433628319%'>Products(17)</a> <a href='/blog/categories/quartzcore' style='font-size: 100.79646017699115%'>QuartzCore(3)</a> <a href='/blog/categories/rss' style='font-size: 100.53097345132744%'>RSS(2)</a> <a href='/blog/categories/runnable' style='font-size: 100.26548672566372%'>Runnable(1)</a> <a href='/blog/categories/sample' style='font-size: 113.53982300884955%'>Sample(51)</a> <a href='/blog/categories/screensaver' style='font-size: 102.38938053097345%'>Screensaver(9)</a> <a href='/blog/categories/sdk' style='font-size: 100.53097345132744%'>SDK(2)</a> <a href='/blog/categories/sharecompat' style='font-size: 100.26548672566372%'>ShareCompat(1)</a> <a href='/blog/categories/social' style='font-size: 102.65486725663717%'>Social(10)</a> <a href='/blog/categories/storekit' style='font-size: 100.26548672566372%'>StoreKit(1)</a> <a href='/blog/categories/twitter' style='font-size: 101.59292035398231%'>Twitter(6)</a> <a href='/blog/categories/uiaccelerometer' style='font-size: 100.79646017699115%'>UIAccelerometer(3)</a> <a href='/blog/categories/uiactionsheet' style='font-size: 100.26548672566372%'>UIActionSheet(1)</a> <a href='/blog/categories/uiactivityindicator' style='font-size: 100.26548672566372%'>UIActivityIndicator(1)</a> <a href='/blog/categories/uiactivityindicatorview' style='font-size: 100.79646017699115%'>UIActivityIndicatorView(3)</a> <a href='/blog/categories/uiactivityviewcontroller' style='font-size: 100.26548672566372%'>UIActivityViewController(1)</a> <a href='/blog/categories/uialertview' style='font-size: 101.32743362831859%'>UIAlertView(5)</a> <a href='/blog/categories/uiapplication' style='font-size: 101.85840707964601%'>UIApplication(7)</a> <a href='/blog/categories/uibutton' style='font-size: 101.06194690265487%'>UIButton(4)</a> <a href='/blog/categories/uicolor' style='font-size: 100.79646017699115%'>UIColor(3)</a> <a href='/blog/categories/uidatepicker' style='font-size: 101.32743362831859%'>UIDatePicker(5)</a> <a href='/blog/categories/uidevice' style='font-size: 101.59292035398231%'>UIDevice(6)</a> <a href='/blog/categories/uideviceorientation' style='font-size: 100.26548672566372%'>UIDeviceOrientation(1)</a> <a href='/blog/categories/uievent' style='font-size: 101.59292035398231%'>UIEvent(6)</a> <a href='/blog/categories/uiimage' style='font-size: 103.98230088495575%'>UIImage(15)</a> <a href='/blog/categories/uiimagepickercontroller' style='font-size: 101.06194690265487%'>UIImagePickerController(4)</a> <a href='/blog/categories/uiimageview' style='font-size: 103.1858407079646%'>UIImageView(12)</a> <a href='/blog/categories/uikit' style='font-size: 115.39823008849558%'>UIKit(58)</a> <a href='/blog/categories/uilabel' style='font-size: 101.85840707964601%'>UILabel(7)</a> <a href='/blog/categories/uinavigationbar' style='font-size: 101.06194690265487%'>UINavigationBar(4)</a> <a href='/blog/categories/uinavigationitem' style='font-size: 100.26548672566372%'>UINavigationItem(1)</a> <a href='/blog/categories/uipasteboard' style='font-size: 101.06194690265487%'>UIPasteboard(4)</a> <a href='/blog/categories/uiscreen' style='font-size: 100.26548672566372%'>UIScreen(1)</a> <a href='/blog/categories/uiscrollbar' style='font-size: 100.26548672566372%'>UIScrollBar(1)</a> <a href='/blog/categories/uiscrollview' style='font-size: 100.26548672566372%'>UIScrollView(1)</a> <a href='/blog/categories/uislider' style='font-size: 100.79646017699115%'>UISlider(3)</a> <a href='/blog/categories/uistoryboardsegue' style='font-size: 100.79646017699115%'>UIStoryboardSegue(3)</a> <a href='/blog/categories/uiswitch' style='font-size: 100.26548672566372%'>UISwitch(1)</a> <a href='/blog/categories/uitabbar' style='font-size: 100.79646017699115%'>UITabBar(3)</a> <a href='/blog/categories/uitableview' style='font-size: 101.06194690265487%'>UITableView(4)</a> <a href='/blog/categories/uitextfield' style='font-size: 100.53097345132744%'>UITextField(2)</a> <a href='/blog/categories/uiview' style='font-size: 102.92035398230088%'>UIView(11)</a> <a href='/blog/categories/uiviewanimationtransition' style='font-size: 100.26548672566372%'>UIViewAnimationTransition(1)</a> <a href='/blog/categories/uiviewcontroller' style='font-size: 101.06194690265487%'>UIViewController(4)</a> <a href='/blog/categories/uiwebview' style='font-size: 101.32743362831859%'>UIWebView(5)</a> <a href='/blog/categories/uncategorized' style='font-size: 100.26548672566372%'>Uncategorized(1)</a> <a href='/blog/categories/windowmanager' style='font-size: 100.26548672566372%'>WindowManager(1)</a> <a href='/blog/categories/xcode' style='font-size: 112.7433628318584%'>Xcode(48)</a> <a href='/blog/categories/xcode-5' style='font-size: 102.12389380530973%'>Xcode 5(8)</a> <a href='/blog/categories/xcode-5-dot-1' style='font-size: 100.53097345132744%'>Xcode 5.1(2)</a> </p>
+  <p id="tag-cloud"><a href='/blog/categories/actionscript' style='font-size: 102.37885462555066%'>ActionScript(9)</a> <a href='/blog/categories/actionscript3' style='font-size: 101.85022026431719%'>ActionScript3(7)</a> <a href='/blog/categories/ad' style='font-size: 101.3215859030837%'>Ad(5)</a> <a href='/blog/categories/adfurikun' style='font-size: 100.52863436123349%'>Adfurikun(2)</a> <a href='/blog/categories/admob' style='font-size: 102.90748898678414%'>AdMob(11)</a> <a href='/blog/categories/android' style='font-size: 102.90748898678414%'>Android(11)</a> <a href='/blog/categories/animation' style='font-size: 104.49339207048459%'>Animation(17)</a> <a href='/blog/categories/appdelegate' style='font-size: 100.79295154185021%'>AppDelegate(3)</a> <a href='/blog/categories/arc' style='font-size: 100.26431718061674%'>ARC(1)</a> <a href='/blog/categories/arraylist' style='font-size: 100.26431718061674%'>ArrayList(1)</a> <a href='/blog/categories/avaudioplayer' style='font-size: 101.05726872246696%'>AVAudioPlayer(4)</a> <a href='/blog/categories/avaudiosession' style='font-size: 100.26431718061674%'>AVAudioSession(1)</a> <a href='/blog/categories/avfoundation' style='font-size: 100.79295154185021%'>AVFoundation(3)</a> <a href='/blog/categories/banner' style='font-size: 100.52863436123349%'>Banner(2)</a> <a href='/blog/categories/bitmap' style='font-size: 100.26431718061674%'>Bitmap(1)</a> <a href='/blog/categories/camera' style='font-size: 101.05726872246696%'>Camera(4)</a> <a href='/blog/categories/cgaffinetransform' style='font-size: 101.05726872246696%'>CGAffineTransform(4)</a> <a href='/blog/categories/cgblendmode' style='font-size: 100.52863436123349%'>CGBlendMode(2)</a> <a href='/blog/categories/cgcontextref' style='font-size: 100.26431718061674%'>CGContextRef(1)</a> <a href='/blog/categories/cgimageref' style='font-size: 100.26431718061674%'>CGImageRef(1)</a> <a href='/blog/categories/classes' style='font-size: 112.68722466960352%'>Classes(48)</a> <a href='/blog/categories/cllocationmanager' style='font-size: 100.26431718061674%'>CLLocationManager(1)</a> <a href='/blog/categories/connectivitymanager' style='font-size: 100.26431718061674%'>ConnectivityManager(1)</a> <a href='/blog/categories/contentresolver' style='font-size: 100.26431718061674%'>ContentResolver(1)</a> <a href='/blog/categories/corelocation' style='font-size: 100.52863436123349%'>CoreLocation(2)</a> <a href='/blog/categories/delegate' style='font-size: 100.79295154185021%'>Delegate(3)</a> <a href='/blog/categories/device' style='font-size: 101.85022026431719%'>Device(7)</a> <a href='/blog/categories/display' style='font-size: 100.26431718061674%'>Display(1)</a> <a href='/blog/categories/displaymetrics' style='font-size: 100.26431718061674%'>DisplayMetrics(1)</a> <a href='/blog/categories/download' style='font-size: 128.28193832599118%'>Download(107)</a> <a href='/blog/categories/facebook' style='font-size: 101.58590308370044%'>Facebook(6)</a> <a href='/blog/categories/foundation' style='font-size: 119.03083700440529%'>Foundation(72)</a> <a href='/blog/categories/framework' style='font-size: 100.52863436123349%'>Framework(2)</a> <a href='/blog/categories/google-analytics' style='font-size: 100.26431718061674%'>Google Analytics(1)</a> <a href='/blog/categories/handler' style='font-size: 100.26431718061674%'>Handler(1)</a> <a href='/blog/categories/iad' style='font-size: 101.58590308370044%'>iAd(6)</a> <a href='/blog/categories/imageview' style='font-size: 100.26431718061674%'>ImageView(1)</a> <a href='/blog/categories/in-apppurchase' style='font-size: 100.26431718061674%'>In-AppPurchase(1)</a> <a href='/blog/categories/ios' style='font-size: 103.17180616740089%'>iOS(12)</a> <a href='/blog/categories/ios-7' style='font-size: 103.9647577092511%'>iOS 7(15)</a> <a href='/blog/categories/ios-7-dot-1' style='font-size: 100.79295154185021%'>iOS 7.1(3)</a> <a href='/blog/categories/ios-8' style='font-size: 100.26431718061674%'>iOS 8(1)</a> <a href='/blog/categories/ipad' style='font-size: 101.85022026431719%'>iPad(7)</a> <a href='/blog/categories/iphone' style='font-size: 106.34361233480176%'>iPhone(24)</a> <a href='/blog/categories/iphone-6' style='font-size: 101.05726872246696%'>iPhone 6(4)</a> <a href='/blog/categories/java' style='font-size: 101.85022026431719%'>Java(7)</a> <a href='/blog/categories/javascript' style='font-size: 100.52863436123349%'>JavaScript(2)</a> <a href='/blog/categories/line' style='font-size: 101.05726872246696%'>LINE(4)</a> <a href='/blog/categories/localize' style='font-size: 100.26431718061674%'>Localize(1)</a> <a href='/blog/categories/magazine' style='font-size: 100.79295154185021%'>Magazine(3)</a> <a href='/blog/categories/mediastore' style='font-size: 100.26431718061674%'>MediaStore(1)</a> <a href='/blog/categories/mfcomposeviewcontroller' style='font-size: 100.26431718061674%'>MFComposeViewController(1)</a> <a href='/blog/categories/nend' style='font-size: 100.26431718061674%'>Nend(1)</a> <a href='/blog/categories/networkinfo' style='font-size: 100.26431718061674%'>NetworkInfo(1)</a> <a href='/blog/categories/nsarray' style='font-size: 106.07929515418502%'>NSArray(23)</a> <a href='/blog/categories/nscalendar' style='font-size: 100.79295154185021%'>NSCalendar(3)</a> <a href='/blog/categories/nsdata' style='font-size: 100.52863436123349%'>NSData(2)</a> <a href='/blog/categories/nsdate' style='font-size: 101.85022026431719%'>NSDate(7)</a> <a href='/blog/categories/nsdatecomponents' style='font-size: 100.52863436123349%'>NSDateComponents(2)</a> <a href='/blog/categories/nsdateformatter' style='font-size: 100.52863436123349%'>NSDateFormatter(2)</a> <a href='/blog/categories/nsdictionary' style='font-size: 103.17180616740089%'>NSDictionary(12)</a> <a href='/blog/categories/nsenumerator' style='font-size: 100.26431718061674%'>NSEnumerator(1)</a> <a href='/blog/categories/nsindexset' style='font-size: 100.26431718061674%'>NSIndexSet(1)</a> <a href='/blog/categories/nsinteger' style='font-size: 101.58590308370044%'>NSInteger(6)</a> <a href='/blog/categories/nsmutablearray' style='font-size: 104.49339207048459%'>NSMutableArray(17)</a> <a href='/blog/categories/nsmutabledictionary' style='font-size: 101.3215859030837%'>NSMutableDictionary(5)</a> <a href='/blog/categories/nsmutableorderedset' style='font-size: 101.85022026431719%'>NSMutableOrderedSet(7)</a> <a href='/blog/categories/nsmutablestring' style='font-size: 101.05726872246696%'>NSMutableString(4)</a> <a href='/blog/categories/nsmutableurlrequest' style='font-size: 100.26431718061674%'>NSMutableURLRequest(1)</a> <a href='/blog/categories/nsnotificationcenter' style='font-size: 100.26431718061674%'>NSNotificationCenter(1)</a> <a href='/blog/categories/nsnumber' style='font-size: 100.26431718061674%'>NSNumber(1)</a> <a href='/blog/categories/nsobject' style='font-size: 100.26431718061674%'>NSObject(1)</a> <a href='/blog/categories/nsorderedset' style='font-size: 101.85022026431719%'>NSOrderedSet(7)</a> <a href='/blog/categories/nsrange' style='font-size: 100.52863436123349%'>NSRange(2)</a> <a href='/blog/categories/nsselectorfromstring' style='font-size: 100.26431718061674%'>NSSelectorFromString(1)</a> <a href='/blog/categories/nsset' style='font-size: 101.58590308370044%'>NSSet(6)</a> <a href='/blog/categories/nsstring' style='font-size: 105.02202643171806%'>NSString(19)</a> <a href='/blog/categories/nstimer' style='font-size: 101.05726872246696%'>NSTimer(4)</a> <a href='/blog/categories/nstimezone' style='font-size: 100.26431718061674%'>NSTimeZone(1)</a> <a href='/blog/categories/nsurl' style='font-size: 101.85022026431719%'>NSURL(7)</a> <a href='/blog/categories/nsurlconnection' style='font-size: 100.26431718061674%'>NSURLConnection(1)</a> <a href='/blog/categories/nsurlrequest' style='font-size: 100.52863436123349%'>NSURLRequest(2)</a> <a href='/blog/categories/nsuserdefaults' style='font-size: 101.85022026431719%'>NSUserDefaults(7)</a> <a href='/blog/categories/nsxmlparser' style='font-size: 100.52863436123349%'>NSXMLParser(2)</a> <a href='/blog/categories/objective-c' style='font-size: 160.0%'>Objective-C(227)</a> <a href='/blog/categories/php' style='font-size: 100.26431718061674%'>PHP(1)</a> <a href='/blog/categories/products' style='font-size: 104.49339207048459%'>Products(17)</a> <a href='/blog/categories/quartzcore' style='font-size: 100.79295154185021%'>QuartzCore(3)</a> <a href='/blog/categories/rss' style='font-size: 100.52863436123349%'>RSS(2)</a> <a href='/blog/categories/runnable' style='font-size: 100.26431718061674%'>Runnable(1)</a> <a href='/blog/categories/sample' style='font-size: 113.48017621145374%'>Sample(51)</a> <a href='/blog/categories/screensaver' style='font-size: 102.37885462555066%'>Screensaver(9)</a> <a href='/blog/categories/sdk' style='font-size: 100.52863436123349%'>SDK(2)</a> <a href='/blog/categories/sharecompat' style='font-size: 100.26431718061674%'>ShareCompat(1)</a> <a href='/blog/categories/social' style='font-size: 102.6431718061674%'>Social(10)</a> <a href='/blog/categories/storekit' style='font-size: 100.26431718061674%'>StoreKit(1)</a> <a href='/blog/categories/twitter' style='font-size: 101.58590308370044%'>Twitter(6)</a> <a href='/blog/categories/uiaccelerometer' style='font-size: 100.79295154185021%'>UIAccelerometer(3)</a> <a href='/blog/categories/uiactionsheet' style='font-size: 100.26431718061674%'>UIActionSheet(1)</a> <a href='/blog/categories/uiactivityindicator' style='font-size: 100.26431718061674%'>UIActivityIndicator(1)</a> <a href='/blog/categories/uiactivityindicatorview' style='font-size: 100.79295154185021%'>UIActivityIndicatorView(3)</a> <a href='/blog/categories/uiactivityviewcontroller' style='font-size: 100.26431718061674%'>UIActivityViewController(1)</a> <a href='/blog/categories/uialertview' style='font-size: 101.3215859030837%'>UIAlertView(5)</a> <a href='/blog/categories/uiapplication' style='font-size: 101.85022026431719%'>UIApplication(7)</a> <a href='/blog/categories/uibutton' style='font-size: 101.05726872246696%'>UIButton(4)</a> <a href='/blog/categories/uicolor' style='font-size: 100.79295154185021%'>UIColor(3)</a> <a href='/blog/categories/uidatepicker' style='font-size: 101.3215859030837%'>UIDatePicker(5)</a> <a href='/blog/categories/uidevice' style='font-size: 101.58590308370044%'>UIDevice(6)</a> <a href='/blog/categories/uideviceorientation' style='font-size: 100.26431718061674%'>UIDeviceOrientation(1)</a> <a href='/blog/categories/uievent' style='font-size: 101.58590308370044%'>UIEvent(6)</a> <a href='/blog/categories/uiimage' style='font-size: 103.9647577092511%'>UIImage(15)</a> <a href='/blog/categories/uiimagepickercontroller' style='font-size: 101.05726872246696%'>UIImagePickerController(4)</a> <a href='/blog/categories/uiimageview' style='font-size: 103.17180616740089%'>UIImageView(12)</a> <a href='/blog/categories/uikit' style='font-size: 115.33039647577093%'>UIKit(58)</a> <a href='/blog/categories/uilabel' style='font-size: 101.85022026431719%'>UILabel(7)</a> <a href='/blog/categories/uinavigationbar' style='font-size: 101.05726872246696%'>UINavigationBar(4)</a> <a href='/blog/categories/uinavigationitem' style='font-size: 100.26431718061674%'>UINavigationItem(1)</a> <a href='/blog/categories/uipasteboard' style='font-size: 101.05726872246696%'>UIPasteboard(4)</a> <a href='/blog/categories/uiscreen' style='font-size: 100.26431718061674%'>UIScreen(1)</a> <a href='/blog/categories/uiscrollbar' style='font-size: 100.26431718061674%'>UIScrollBar(1)</a> <a href='/blog/categories/uiscrollview' style='font-size: 100.26431718061674%'>UIScrollView(1)</a> <a href='/blog/categories/uislider' style='font-size: 100.79295154185021%'>UISlider(3)</a> <a href='/blog/categories/uistoryboardsegue' style='font-size: 100.79295154185021%'>UIStoryboardSegue(3)</a> <a href='/blog/categories/uiswitch' style='font-size: 100.26431718061674%'>UISwitch(1)</a> <a href='/blog/categories/uitabbar' style='font-size: 100.79295154185021%'>UITabBar(3)</a> <a href='/blog/categories/uitableview' style='font-size: 101.05726872246696%'>UITableView(4)</a> <a href='/blog/categories/uitextfield' style='font-size: 100.52863436123349%'>UITextField(2)</a> <a href='/blog/categories/uiview' style='font-size: 102.90748898678414%'>UIView(11)</a> <a href='/blog/categories/uiviewanimationtransition' style='font-size: 100.26431718061674%'>UIViewAnimationTransition(1)</a> <a href='/blog/categories/uiviewcontroller' style='font-size: 101.05726872246696%'>UIViewController(4)</a> <a href='/blog/categories/uiwebview' style='font-size: 101.3215859030837%'>UIWebView(5)</a> <a href='/blog/categories/uncategorized' style='font-size: 100.26431718061674%'>Uncategorized(1)</a> <a href='/blog/categories/windowmanager' style='font-size: 100.26431718061674%'>WindowManager(1)</a> <a href='/blog/categories/xcode' style='font-size: 112.68722466960352%'>Xcode(48)</a> <a href='/blog/categories/xcode-5' style='font-size: 102.11453744493392%'>Xcode 5(8)</a> <a href='/blog/categories/xcode-5-dot-1' style='font-size: 100.52863436123349%'>Xcode 5.1(2)</a> </p>
 </section>
 
   </div>
@@ -1598,6 +1690,10 @@
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2020/07/09/objc-classes-dc-admob-banner-2020/">AdMobバナーを表示する「DCAdMobBanner」クラス（改訂版）</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2020/07/09/objc-adfurikun-rewarded-video-ads/">アドフリくんの動画リワード広告導入手順</a>
@@ -1657,10 +1753,6 @@
     
       <li class="post">
         <a href="/blog/2015/08/13/ios-relaxing-healing/">iPhoneアプリ「リラックス・ヒーリング」アップデート</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2015/06/28/objc-classes-dc-in-app-purchase/">iOSでアプリ内課金をする「DCInAppPurchase」クラス</a>
       </li>
     
   </ul>
