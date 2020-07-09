@@ -4,7 +4,7 @@
   <title><![CDATA[廣川政樹の開発ブログ - Dolice Lab]]></title>
   <link href="https://lab.dolice.net/atom.xml" rel="self"/>
   <link href="https://lab.dolice.net/"/>
-  <updated>2020-07-09T15:43:50+09:00</updated>
+  <updated>2020-07-09T16:29:00+09:00</updated>
   <id>https://lab.dolice.net/</id>
   <author>
     <name><![CDATA[Masaki Hirokawa]]></name>
@@ -14,15 +14,666 @@
 
   
   <entry>
+    <title type="html"><![CDATA[AdMob動画リワード広告の導入手順]]></title>
+    <link href="https://lab.dolice.net/blog/2020/07/09/objc-admob-rewarded-video-ads/"/>
+    <updated>2020-07-09T16:19:00+09:00</updated>
+    <id>https://lab.dolice.net/blog/2020/07/09/objc-admob-rewarded-video-ads</id>
+    <content type="html"><![CDATA[<p>iPhoneアプリに<a href="https://admob.google.com/intl/ja/home/" title="AdMob">AdMob</a>の動画リワード広告を表示するサンプルを作成しました。</p>
+
+<p><a href="https://developers.google.com/admob/ios/rewarded-ads?hl=ja" title="公式リファレンス">公式リファレンス</a>を参考にさせていただきました。ご使用の際はアプリIDと広告枠IDを指定してください。</p>
+
+<p>下記よりサンプルをダウンロード出来ますので、導入の際のお役に立てば幸いです。</p>
+
+<h2>ダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-admob-rewarded-video-ads">https://github.com/masakihirokawa/objc-admob-rewarded-video-ads</a></li>
+</ul>
+
+
+<h2>導入準備</h2>
+
+<h3>1. Info.plistの編集</h3>
+
+<p><a href="https://admob.google.com/intl/ja/home/" title="AdMob">AdMob</a>のサイトからアプリIDを取得し、<em>Info.plist</em>に <em>GADApplicationIdentifier</em>の項目を追加し指定してください。</p>
+
+<h3>2. 広告枠IDの保持</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="k">const</span> <span class="n">GAD_REWARD_UNIT_ID</span> <span class="o">=</span> <span class="s">@&quot;広告枠ID&quot;</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>3. アプリ起動時に初期化</h3>
+
+<h4>AppDelegate.h</h4>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="err">@</span><span class="n">import</span> <span class="n">GoogleMobileAds</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>AppDelegate.m</h4>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">application:</span><span class="p">(</span><span class="n">UIApplication</span> <span class="o">*</span><span class="p">)</span><span class="nv">application</span> <span class="nf">didFinishLaunchingWithOptions:</span><span class="p">(</span><span class="n">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nv">launchOptions</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// AdMobアプリID初期化</span>
+</span><span class='line'>    <span class="p">[[</span><span class="n">GADMobileAds</span> <span class="n">sharedInstance</span><span class="p">]</span> <span class="nl">startWithCompletionHandler:</span><span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="n">YES</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>動画リワード広告の読み込み</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">[[</span><span class="n">AdMobRewardedVideoAds</span> <span class="n">sharedManager</span><span class="p">]</span> <span class="nl">loadRewardedVideoAds:</span><span class="n">self</span> <span class="nl">usePersonalizedAds:</span><span class="n">YES</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>ソースコード</h2>
+
+<h3>AdMobRewardedVideoAds.h</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;Foundation/Foundation.h&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="err">@</span><span class="n">import</span> <span class="n">GoogleMobileAds</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">AdMobRewardedVideoAds</span> : <span class="nc">NSObject</span> <span class="o">&lt;</span><span class="n">GADRewardedAdDelegate</span><span class="o">&gt;</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kt">BOOL</span> <span class="n">isCompletePlaying</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark - property</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">strong</span><span class="p">)</span> <span class="n">GADRewardedAd</span>    <span class="o">*</span><span class="n">adMobRewardedAd</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">strong</span><span class="p">)</span> <span class="n">UIViewController</span> <span class="o">*</span><span class="n">rootViewController</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">assign</span><span class="p">)</span> <span class="kt">BOOL</span>             <span class="n">usePersonalizedAds</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">retain</span><span class="p">)</span> <span class="n">UIActivityIndicatorView</span> <span class="o">*</span><span class="n">activityIndicator</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">retain</span><span class="p">)</span> <span class="n">UIView</span>                  <span class="o">*</span><span class="n">overlay</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">assign</span><span class="p">)</span> <span class="kt">BOOL</span>                    <span class="n">showOverlay</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark - enumerator</span>
+</span><span class='line'><span class="k">typedef</span> <span class="nf">NS_ENUM</span><span class="p">(</span><span class="n">NSUInteger</span><span class="p">,</span> <span class="n">activityIndicatorStyles</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">AI_GRAY</span>        <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+</span><span class='line'>    <span class="n">AI_WHITE</span>       <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+</span><span class='line'>    <span class="n">AI_WHITE_LARGE</span> <span class="o">=</span> <span class="mi">3</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark - public method</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">sharedManager</span><span class="p">;</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">loadRewardedVideoAds:</span><span class="p">(</span><span class="n">UIViewController</span> <span class="o">*</span><span class="p">)</span><span class="nv">viewController</span> <span class="nf">usePersonalizedAds:</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nv">usePersonalizedAds</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>AdMobRewardedVideoAds.m</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+<span class='line-number'>102</span>
+<span class='line-number'>103</span>
+<span class='line-number'>104</span>
+<span class='line-number'>105</span>
+<span class='line-number'>106</span>
+<span class='line-number'>107</span>
+<span class='line-number'>108</span>
+<span class='line-number'>109</span>
+<span class='line-number'>110</span>
+<span class='line-number'>111</span>
+<span class='line-number'>112</span>
+<span class='line-number'>113</span>
+<span class='line-number'>114</span>
+<span class='line-number'>115</span>
+<span class='line-number'>116</span>
+<span class='line-number'>117</span>
+<span class='line-number'>118</span>
+<span class='line-number'>119</span>
+<span class='line-number'>120</span>
+<span class='line-number'>121</span>
+<span class='line-number'>122</span>
+<span class='line-number'>123</span>
+<span class='line-number'>124</span>
+<span class='line-number'>125</span>
+<span class='line-number'>126</span>
+<span class='line-number'>127</span>
+<span class='line-number'>128</span>
+<span class='line-number'>129</span>
+<span class='line-number'>130</span>
+<span class='line-number'>131</span>
+<span class='line-number'>132</span>
+<span class='line-number'>133</span>
+<span class='line-number'>134</span>
+<span class='line-number'>135</span>
+<span class='line-number'>136</span>
+<span class='line-number'>137</span>
+<span class='line-number'>138</span>
+<span class='line-number'>139</span>
+<span class='line-number'>140</span>
+<span class='line-number'>141</span>
+<span class='line-number'>142</span>
+<span class='line-number'>143</span>
+<span class='line-number'>144</span>
+<span class='line-number'>145</span>
+<span class='line-number'>146</span>
+<span class='line-number'>147</span>
+<span class='line-number'>148</span>
+<span class='line-number'>149</span>
+<span class='line-number'>150</span>
+<span class='line-number'>151</span>
+<span class='line-number'>152</span>
+<span class='line-number'>153</span>
+<span class='line-number'>154</span>
+<span class='line-number'>155</span>
+<span class='line-number'>156</span>
+<span class='line-number'>157</span>
+<span class='line-number'>158</span>
+<span class='line-number'>159</span>
+<span class='line-number'>160</span>
+<span class='line-number'>161</span>
+<span class='line-number'>162</span>
+<span class='line-number'>163</span>
+<span class='line-number'>164</span>
+<span class='line-number'>165</span>
+<span class='line-number'>166</span>
+<span class='line-number'>167</span>
+<span class='line-number'>168</span>
+<span class='line-number'>169</span>
+<span class='line-number'>170</span>
+<span class='line-number'>171</span>
+<span class='line-number'>172</span>
+<span class='line-number'>173</span>
+<span class='line-number'>174</span>
+<span class='line-number'>175</span>
+<span class='line-number'>176</span>
+<span class='line-number'>177</span>
+<span class='line-number'>178</span>
+<span class='line-number'>179</span>
+<span class='line-number'>180</span>
+<span class='line-number'>181</span>
+<span class='line-number'>182</span>
+<span class='line-number'>183</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;AdMobRewardedVideoAds.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@implementation</span> <span class="nc">AdMobRewardedVideoAds</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark - Shared Manager</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">static</span> <span class="kt">id</span> <span class="n">sharedInstance</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">sharedManager</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">@synchronized</span><span class="p">(</span><span class="n">self</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">sharedInstance</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="n">sharedInstance</span> <span class="o">=</span> <span class="p">[[</span><span class="n">self</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="n">sharedInstance</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark - AdMob Rewarded Video Ads</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// AdMob動画リワード広告広告読み込み</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">loadRewardedVideoAds:</span><span class="p">(</span><span class="n">UIViewController</span> <span class="o">*</span><span class="p">)</span><span class="nv">viewController</span> <span class="nf">usePersonalizedAds:</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nv">usePersonalizedAds</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">[</span><span class="n">viewController</span> <span class="nl">isEqual:</span><span class="n">self</span><span class="p">.</span><span class="n">rootViewController</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">self</span><span class="p">.</span><span class="n">rootViewController</span> <span class="o">=</span> <span class="n">viewController</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">usePersonalizedAds</span> <span class="o">=</span> <span class="n">usePersonalizedAds</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">adMobRewardedAd</span> <span class="o">=</span> <span class="p">[[</span><span class="n">GADRewardedAd</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithAdUnitID:</span><span class="n">GAD_TEST_MODE</span> <span class="o">?</span> <span class="n">GAD_REWARD_TEST_UNIT_ID</span> <span class="o">:</span> <span class="n">GAD_REWARD_UNIT_ID</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">GADRequest</span> <span class="o">*</span><span class="n">request</span> <span class="o">=</span> <span class="p">[</span><span class="n">GADRequest</span> <span class="n">request</span><span class="p">];</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">GAD_TEST_MODE</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="p">[[</span><span class="n">GADMobileAds</span> <span class="n">sharedInstance</span><span class="p">]</span> <span class="n">requestConfiguration</span><span class="p">].</span><span class="n">testDeviceIdentifiers</span> <span class="o">=</span> <span class="err">@</span><span class="p">[</span><span class="n">kGADSimulatorID</span><span class="p">,</span>
+</span><span class='line'>                                                                                       <span class="s">@&quot;Test Device ID&quot;</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">self</span><span class="p">.</span><span class="n">usePersonalizedAds</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">GADExtras</span> <span class="o">*</span><span class="n">extras</span> <span class="o">=</span> <span class="p">[[</span><span class="n">GADExtras</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">extras</span><span class="p">.</span><span class="n">additionalParameters</span> <span class="o">=</span> <span class="err">@</span><span class="p">{</span><span class="s">@&quot;npa&quot;</span><span class="o">:</span> <span class="s">@&quot;1&quot;</span><span class="p">};</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">request</span> <span class="nl">registerAdNetworkExtras:</span><span class="n">extras</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="c1">//NSLog(@&quot;RewardedVideoAds -&gt; usePersonalizedAds: %d&quot;, self.usePersonalizedAds);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">adMobRewardedAd</span> <span class="nl">loadRequest:</span><span class="n">request</span> <span class="nl">completionHandler:</span><span class="o">^</span><span class="p">(</span><span class="n">GADRequestError</span> <span class="o">*</span> <span class="n">_Nullable</span> <span class="n">error</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="n">error</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>          <span class="c1">// 再生完了フラグを下ろす</span>
+</span><span class='line'>          <span class="n">self</span><span class="o">-&gt;</span><span class="n">isCompletePlaying</span> <span class="o">=</span> <span class="n">NO</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>          <span class="c1">// アクティビティインジケーターのアニメーション停止</span>
+</span><span class='line'>          <span class="p">[</span><span class="n">self</span> <span class="n">stopActivityIndicator</span><span class="p">];</span>
+</span><span class='line'>      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>          <span class="c1">//NSLog(@&quot;Reward based video ad is received.&quot;);</span>
+</span><span class='line'>
+</span><span class='line'>          <span class="c1">// 動画リワード広告表示</span>
+</span><span class='line'>          <span class="k">if</span> <span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">adMobRewardedAd</span><span class="p">.</span><span class="n">isReady</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>              <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">adMobRewardedAd</span> <span class="nl">presentFromRootViewController:</span><span class="n">self</span><span class="p">.</span><span class="n">rootViewController</span> <span class="nl">delegate:</span><span class="n">self</span><span class="p">];</span>
+</span><span class='line'>          <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>          <span class="c1">// アクティビティインジケーターのアニメーション停止</span>
+</span><span class='line'>          <span class="p">[</span><span class="n">self</span> <span class="n">stopActivityIndicator</span><span class="p">];</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>    <span class="p">}];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// アクティビティインジケータのアニメーション開始</span>
+</span><span class='line'>    <span class="n">CGFloat</span> <span class="k">const</span> <span class="n">screenWidth</span>  <span class="o">=</span> <span class="p">[[</span><span class="n">UIScreen</span> <span class="n">mainScreen</span><span class="p">]</span> <span class="n">bounds</span><span class="p">].</span><span class="n">size</span><span class="p">.</span><span class="n">width</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">CGFloat</span> <span class="k">const</span> <span class="n">screenHeight</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIScreen</span> <span class="n">mainScreen</span><span class="p">]</span> <span class="n">bounds</span><span class="p">].</span><span class="n">size</span><span class="p">.</span><span class="n">height</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="nl">startActivityIndicator:</span><span class="n">self</span><span class="p">.</span><span class="n">rootViewController</span><span class="p">.</span><span class="n">view</span> <span class="nl">center:</span><span class="n">CGPointMake</span><span class="p">(</span><span class="n">screenWidth</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">screenHeight</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+</span><span class='line'>                         <span class="nl">styleId:</span><span class="n">AI_WHITE</span> <span class="nl">hidesWhenStopped:</span><span class="n">YES</span> <span class="nl">showOverlay:</span><span class="n">YES</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 再生完了フラグを下ろす</span>
+</span><span class='line'>    <span class="n">isCompletePlaying</span> <span class="o">=</span> <span class="n">NO</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// リワード提供</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">rewardedAd:</span><span class="p">(</span><span class="n">GADRewardedAd</span> <span class="o">*</span><span class="p">)</span><span class="nv">rewardedAd</span> <span class="nf">userDidEarnReward:</span><span class="p">(</span><span class="n">GADAdReward</span> <span class="o">*</span><span class="p">)</span><span class="nv">reward</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">//NSLog(@&quot;rewardedAd:userDidEarnReward:&quot;);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// TODO: リワード提供</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 再生完了フラグを立てる</span>
+</span><span class='line'>    <span class="n">isCompletePlaying</span> <span class="o">=</span> <span class="n">YES</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 動画リワード広告が開かれた時に呼ばれる</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">rewardedAdDidPresent:</span><span class="p">(</span><span class="n">GADRewardedAd</span> <span class="o">*</span><span class="p">)</span><span class="nv">rewardedAd</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">//NSLog(@&quot;rewardedAdDidPresent:&quot;);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 再生完了フラグを下ろす</span>
+</span><span class='line'>    <span class="n">isCompletePlaying</span> <span class="o">=</span> <span class="n">NO</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 動画リワード広告がエラーで開かれなかった時に呼ばれる</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">rewardedAd:</span><span class="p">(</span><span class="n">GADRewardedAd</span> <span class="o">*</span><span class="p">)</span><span class="nv">rewardedAd</span> <span class="nf">didFailToPresentWithError:</span><span class="p">(</span><span class="n">NSError</span> <span class="o">*</span><span class="p">)</span><span class="nv">error</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">//NSLog(@&quot;rewardedAd:didFailToPresentWithError&quot;);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 再生完了フラグを下ろす</span>
+</span><span class='line'>    <span class="n">isCompletePlaying</span> <span class="o">=</span> <span class="n">NO</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// アクティビティインジケーターのアニメーション停止</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="n">stopActivityIndicator</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 動画リワード広告が閉じられた時に呼ばれる</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">rewardedAdDidDismiss:</span><span class="p">(</span><span class="n">GADRewardedAd</span> <span class="o">*</span><span class="p">)</span><span class="nv">rewardedAd</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">//NSLog(@&quot;rewardedAd:rewardedAdDidDismiss&quot;);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// TODO: 再生が完了していればお知らせアラート表示</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">isCompletePlaying</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark - Activity Indicator</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// アクティビティインジケーターのアニメーション開始</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">startActivityIndicator:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">view</span> <span class="nf">center:</span><span class="p">(</span><span class="n">CGPoint</span><span class="p">)</span><span class="nv">center</span> <span class="nf">styleId:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">styleId</span> <span class="nf">hidesWhenStopped:</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nv">hidesWhenStopped</span> <span class="nf">showOverlay:</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nv">showOverlay</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// インジケーター初期化</span>
+</span><span class='line'>    <span class="n">_activityIndicator</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIActivityIndicatorView</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// スタイルを設定</span>
+</span><span class='line'>    <span class="k">switch</span> <span class="p">(</span><span class="n">styleId</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">case</span> <span class="nl">AI_GRAY:</span>
+</span><span class='line'>            <span class="n">_activityIndicator</span><span class="p">.</span><span class="n">activityIndicatorViewStyle</span> <span class="o">=</span> <span class="n">UIActivityIndicatorViewStyleGray</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>        <span class="k">case</span> <span class="nl">AI_WHITE:</span>
+</span><span class='line'>            <span class="n">_activityIndicator</span><span class="p">.</span><span class="n">activityIndicatorViewStyle</span> <span class="o">=</span> <span class="n">UIActivityIndicatorViewStyleWhite</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>        <span class="k">case</span> <span class="nl">AI_WHITE_LARGE:</span>
+</span><span class='line'>            <span class="n">_activityIndicator</span><span class="p">.</span><span class="n">activityIndicatorViewStyle</span> <span class="o">=</span> <span class="n">UIActivityIndicatorViewStyleWhiteLarge</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// スタイルに応じて寸法変更</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">_activityIndicator</span><span class="p">.</span><span class="n">activityIndicatorViewStyle</span> <span class="o">==</span> <span class="n">UIActivityIndicatorViewStyleWhiteLarge</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">_activityIndicator</span><span class="p">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">50.0</span><span class="p">,</span> <span class="mf">50.0</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">_activityIndicator</span><span class="p">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">20.0</span><span class="p">,</span> <span class="mf">20.0</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 座標をセンターに指定</span>
+</span><span class='line'>    <span class="n">_activityIndicator</span><span class="p">.</span><span class="n">center</span> <span class="o">=</span> <span class="n">center</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 停止した時に隠れるよう設定</span>
+</span><span class='line'>    <span class="n">_activityIndicator</span><span class="p">.</span><span class="n">hidesWhenStopped</span> <span class="o">=</span> <span class="n">hidesWhenStopped</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// インジケーターアニメーション開始</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">_activityIndicator</span> <span class="n">startAnimating</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// オーバーレイ表示フラグ保持</span>
+</span><span class='line'>    <span class="n">_showOverlay</span> <span class="o">=</span> <span class="n">showOverlay</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// オーバーレイ表示</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">_showOverlay</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">_overlay</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame:</span><span class="p">[[</span><span class="n">UIScreen</span> <span class="n">mainScreen</span><span class="p">]</span> <span class="n">bounds</span><span class="p">]];</span>
+</span><span class='line'>        <span class="n">_overlay</span><span class="p">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIColor</span> <span class="nl">colorWithRed:</span><span class="mf">0.0</span> <span class="nl">green:</span><span class="mf">0.0</span> <span class="nl">blue:</span><span class="mf">0.0</span> <span class="nl">alpha:</span><span class="mf">0.5f</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">_overlay</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 画面に追加</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">_activityIndicator</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// アクティビティインジケーターのアニメーション停止</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">stopActivityIndicator</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">_showOverlay</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">_overlay</span> <span class="n">removeFromSuperview</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">_activityIndicator</span> <span class="n">stopAnimating</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>リワードの提供</h2>
+
+<p>当方は動画リワード広告が最後まで再生されたら3日間広告を表示しないという設定にしています。</p>
+
+<p>また、リワードが提供されたことをユーザーにお知らせするため、リワード期限日を文字列で取得できるようにしています。</p>
+
+<p>まず下記のようにリワードを提供します。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">// 動画リワード広告再生完了時の処理</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">onCompleteRewardedVideoAds</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// 視聴済みフラグを立てる</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">Common</span> <span class="n">sharedManager</span><span class="p">].</span><span class="n">isRewarded</span> <span class="o">=</span> <span class="n">YES</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// ユーザーデフォルト更新</span>
+</span><span class='line'>    <span class="p">[[</span><span class="n">Common</span> <span class="n">sharedManager</span><span class="p">].</span><span class="n">userDefaults</span> <span class="nl">setBool:</span><span class="p">[</span><span class="n">Common</span> <span class="n">sharedManager</span><span class="p">].</span><span class="n">isRewarded</span> <span class="nl">forKey:</span><span class="n">UD_REWARDED_KEY</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[[</span><span class="n">Common</span> <span class="n">sharedManager</span><span class="p">].</span><span class="n">userDefaults</span> <span class="n">synchronize</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// リワード受取日と期限日の保存</span>
+</span><span class='line'>    <span class="n">NSDate</span> <span class="o">*</span><span class="k">const</span> <span class="n">rewardDateReceived</span>   <span class="o">=</span> <span class="p">[</span><span class="n">NSDate</span> <span class="n">date</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">NSDate</span> <span class="o">*</span><span class="k">const</span> <span class="n">rewardExpirationDate</span> <span class="o">=</span> <span class="p">[</span><span class="n">Common</span> <span class="n">rewardExpirationDate</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">[[</span><span class="n">Common</span> <span class="n">sharedManager</span><span class="p">].</span><span class="n">userDefaults</span> <span class="nl">setObject:</span><span class="n">rewardDateReceived</span> <span class="nl">forKey:</span><span class="n">UD_REWARD_DATE_RECEIVED_KEY</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[[</span><span class="n">Common</span> <span class="n">sharedManager</span><span class="p">].</span><span class="n">userDefaults</span> <span class="nl">setObject:</span><span class="n">rewardExpirationDate</span> <span class="nl">forKey:</span><span class="n">UD_REWARD_EXPIRATION_KEY</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[[</span><span class="n">Common</span> <span class="n">sharedManager</span><span class="p">].</span><span class="n">userDefaults</span> <span class="n">synchronize</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// TODO: バナー削除</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// リワード期限日の取得</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSDate</span> <span class="o">*</span><span class="p">)</span><span class="nf">rewardExpirationDate</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">NSDate</span> <span class="o">*</span><span class="k">const</span> <span class="n">rewardDateReceived</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSDate</span> <span class="n">date</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="p">[</span><span class="n">rewardDateReceived</span> <span class="nl">initWithTimeInterval:</span><span class="p">[</span><span class="n">Common</span> <span class="n">sharedManager</span><span class="p">].</span><span class="n">rewardPeriod</span> <span class="o">*</span> <span class="mi">24</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span> <span class="nl">sinceDate:</span><span class="n">rewardDateReceived</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// リワード期限日を文字列で取得</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nf">rewardExpirationDateStr</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">NSDateFormatter</span> <span class="o">*</span><span class="n">dateFormatter</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSDateFormatter</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">dateFormatter</span> <span class="nl">setLocale:</span><span class="p">[</span><span class="n">NSLocale</span> <span class="n">systemLocale</span><span class="p">]];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">dateFormatter</span> <span class="nl">setDateFormat:</span><span class="s">@&quot;yyyy/MM/dd HH:mm:ss&quot;</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">NSDate</span>   <span class="o">*</span><span class="k">const</span> <span class="n">expirationDate</span>    <span class="o">=</span> <span class="p">[</span><span class="n">Common</span> <span class="n">rewardExpirationDate</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">NSString</span> <span class="o">*</span><span class="k">const</span> <span class="n">expirationDateStr</span> <span class="o">=</span> <span class="p">[</span><span class="n">dateFormatter</span> <span class="nl">stringFromDate:</span><span class="n">expirationDate</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">@&quot;（有効期限: %@）&quot;</span><span class="p">,</span> <span class="n">expirationDateStr</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>リワード期間中であるか判定</h2>
+
+<p>アプリ起動時にリワード期間中であるか判定し、フラグを更新します。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">application:</span><span class="p">(</span><span class="n">UIApplication</span> <span class="o">*</span><span class="p">)</span><span class="nv">application</span> <span class="nf">didFinishLaunchingWithOptions:</span><span class="p">(</span><span class="n">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nv">launchOptions</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// リワード期間であれば期限切れであるか判定</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">([</span><span class="n">Common</span> <span class="n">sharedManager</span><span class="p">].</span><span class="n">isRewarded</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="c1">// リワード受取日とリワード期限日の取得</span>
+</span><span class='line'>        <span class="n">NSDate</span> <span class="o">*</span><span class="k">const</span> <span class="n">rewardDateReceived</span>   <span class="o">=</span> <span class="p">[[</span><span class="n">Common</span> <span class="n">sharedManager</span><span class="p">].</span><span class="n">userDefaults</span> <span class="nl">objectForKey:</span><span class="n">UD_REWARD_DATE_RECEIVED_KEY</span><span class="p">];</span>
+</span><span class='line'>        <span class="n">NSDate</span> <span class="o">*</span><span class="k">const</span> <span class="n">rewardExpirationDate</span> <span class="o">=</span> <span class="p">[[</span><span class="n">Common</span> <span class="n">sharedManager</span><span class="p">].</span><span class="n">userDefaults</span> <span class="nl">objectForKey:</span><span class="n">UD_REWARD_EXPIRATION_KEY</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// 現在時刻がリワード期間であるか判定</span>
+</span><span class='line'>        <span class="n">NSDate</span> <span class="o">*</span><span class="k">const</span> <span class="n">now</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSDate</span> <span class="n">date</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">Common</span> <span class="n">sharedManager</span><span class="p">].</span><span class="n">isRewarded</span> <span class="o">=</span> <span class="p">[</span><span class="n">now</span> <span class="nl">compare:</span><span class="n">rewardDateReceived</span><span class="p">]</span> <span class="o">==</span> <span class="n">NSOrderedDescending</span> <span class="o">&amp;&amp;</span> <span class="p">[</span><span class="n">now</span> <span class="nl">compare:</span><span class="n">rewardExpirationDate</span><span class="p">]</span> <span class="o">==</span> <span class="n">NSOrderedAscending</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// ユーザーデフォルト更新</span>
+</span><span class='line'>        <span class="p">[[</span><span class="n">Common</span> <span class="n">sharedManager</span><span class="p">].</span><span class="n">userDefaults</span> <span class="nl">setBool:</span><span class="p">[</span><span class="n">Common</span> <span class="n">sharedManager</span><span class="p">].</span><span class="n">isRewarded</span> <span class="nl">forKey:</span><span class="n">UD_REWARDED_KEY</span><span class="p">];</span>
+</span><span class='line'>        <span class="p">[[</span><span class="n">Common</span> <span class="n">sharedManager</span><span class="p">].</span><span class="n">userDefaults</span> <span class="n">synchronize</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="n">YES</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>以上で動画リワード広告の実装は完了になります。</p>
+
+<h2>関連記事</h2>
+
+<ul>
+<li><strong><a href="https://lab.dolice.net/blog/2020/07/09/objc-classes-dc-admob-banner-2020/" title="AdMobバナーを表示する「DCAdMobBanner」クラス（改訂版）">AdMobバナーを表示する「DCAdMobBanner」クラス（改訂版）</a></strong></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[AdMobバナーを表示する「DCAdMobBanner」クラス（改訂版）]]></title>
     <link href="https://lab.dolice.net/blog/2020/07/09/objc-classes-dc-admob-banner-2020/"/>
     <updated>2020-07-09T15:24:00+09:00</updated>
     <id>https://lab.dolice.net/blog/2020/07/09/objc-classes-dc-admob-banner-2020</id>
     <content type="html"><![CDATA[<p>iPhoneアプリに<a href="https://admob.google.com/intl/ja/home/" title="AdMob">AdMob</a>のモバイルバナーを表示する「<a href="https://github.com/masakihirokawa/objc-classes-dc-admob-banner-2020" title="DCAdMobBanner">DCAdMobBanner</a>」クラスを改訂しました。</p>
 
-<p><a href="https://developers.google.com/admob/ios/banner?hl=ja" title="公式リファレンス">公式リファレンス</a>を参考にさせていただきました。</p>
-
-<p>ご使用の際はアプリIDと広告枠IDを指定してください。</p>
+<p><a href="https://developers.google.com/admob/ios/banner?hl=ja" title="公式リファレンス">公式リファレンス</a>を参考にさせていただきました。ご使用の際はアプリIDと広告枠IDを指定してください。</p>
 
 <p>下記よりサンプルをダウンロード出来ますので、導入の際のお役に立てば幸いです。</p>
 
@@ -543,6 +1194,11 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
+<h2>関連記事</h2>
+
+<ul>
+<li><strong><a href="https://lab.dolice.net/blog/2020/07/09/objc-admob-rewarded-video-ads/" title="AdMob動画リワード広告の導入手順">AdMob動画リワード広告の導入手順</a></strong></li>
+</ul>
 
 ]]></content>
   </entry>
@@ -4636,109 +5292,6 @@ Swiftのかなり入り込んだところまで解説しながら、実践コー
 
 <p><strong><a href="https://www.amazon.co.jp/gp/product/4797386258/ref=as_li_qf_sp_asin_tl?ie=UTF8&camp=247&creative=1211&creativeASIN=4797386258&linkCode=as2&tag=pinocchio-22">詳解 Swift 改訂版</a></strong><img src="https://ir-jp.amazon-adsystem.com/e/ir?t=pinocchio-22&l=as2&o=9&a=4797386258" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" /><br />
 Swiftのかなり入り込んだところまで解説しながら、実践コードを多数収録しています。応用本になりますので、入門書を読み終えて中級者から上級者に差し掛かる時に読むことをお勧めします。読み物としてだけではなくリファレンスとしても使用できます。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Androidアプリで画像とテキストを共有する方法]]></title>
-    <link href="https://lab.dolice.net/blog/2015/06/25/android-share-compat/"/>
-    <updated>2015-06-25T10:20:00+09:00</updated>
-    <id>https://lab.dolice.net/blog/2015/06/25/android-share-compat</id>
-    <content type="html"><![CDATA[<p>Androidアプリで画像とテキストを共有する方法を以下に記載します。</p>
-
-<p>下記のサンプルでは、<em>ShareCompat</em> を使用して画像とテキストを共有しています。</p>
-
-<p>画像を共有する場合は画像の URIを指定する必要があり、URIの取得方法については後日別の記事で解説します。</p>
-
-<h2>サンプルソースコード</h2>
-
-<h3>テキストの共有</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kt">void</span> <span class="nf">shareText</span><span class="o">(</span><span class="n">Activity</span> <span class="n">activity</span><span class="o">,</span> <span class="n">String</span> <span class="n">chooserTitle</span><span class="o">,</span> <span class="n">String</span> <span class="n">subject</span><span class="o">,</span> <span class="n">String</span> <span class="n">text</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>    <span class="n">ShareCompat</span><span class="o">.</span><span class="na">IntentBuilder</span> <span class="n">builder</span> <span class="o">=</span> <span class="n">ShareCompat</span><span class="o">.</span><span class="na">IntentBuilder</span><span class="o">.</span><span class="na">from</span><span class="o">(</span><span class="n">activity</span><span class="o">);</span>
-</span><span class='line'>    <span class="n">builder</span><span class="o">.</span><span class="na">setChooserTitle</span><span class="o">(</span><span class="n">chooserTitle</span><span class="o">);</span>
-</span><span class='line'>    <span class="n">builder</span><span class="o">.</span><span class="na">setSubject</span><span class="o">(</span><span class="n">subject</span><span class="o">);</span>
-</span><span class='line'>    <span class="n">builder</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="n">text</span><span class="o">);</span>
-</span><span class='line'>    <span class="n">builder</span><span class="o">.</span><span class="na">setType</span><span class="o">(</span><span class="s">&quot;text/plain&quot;</span><span class="o">);</span>
-</span><span class='line'>    <span class="n">builder</span><span class="o">.</span><span class="na">startChooser</span><span class="o">();</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">shareText</span><span class="o">(</span><span class="n">MainActivity</span><span class="o">.</span><span class="na">this</span><span class="o">,</span> <span class="s">&quot;共有枠のタイトル&quot;</span><span class="o">,</span> <span class="s">&quot;共有タイトル&quot;</span><span class="o">,</span> <span class="s">&quot;共有テキスト&quot;</span><span class="o">);</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>画像の共有</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kt">void</span> <span class="nf">shareImage</span><span class="o">(</span><span class="n">Activity</span> <span class="n">activity</span><span class="o">,</span> <span class="n">String</span> <span class="n">chooserTitle</span><span class="o">,</span> <span class="n">String</span> <span class="n">subject</span><span class="o">,</span> <span class="n">Uri</span> <span class="n">uri</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>    <span class="n">ShareCompat</span><span class="o">.</span><span class="na">IntentBuilder</span> <span class="n">builder</span> <span class="o">=</span> <span class="n">ShareCompat</span><span class="o">.</span><span class="na">IntentBuilder</span><span class="o">.</span><span class="na">from</span><span class="o">(</span><span class="n">activity</span><span class="o">);</span>
-</span><span class='line'>    <span class="n">builder</span><span class="o">.</span><span class="na">setChooserTitle</span><span class="o">(</span><span class="n">chooserTitle</span><span class="o">);</span>
-</span><span class='line'>    <span class="n">builder</span><span class="o">.</span><span class="na">setSubject</span><span class="o">(</span><span class="n">subject</span><span class="o">);</span>
-</span><span class='line'>    <span class="n">builder</span><span class="o">.</span><span class="na">setStream</span><span class="o">(</span><span class="n">uri</span><span class="o">);</span>
-</span><span class='line'>    <span class="n">builder</span><span class="o">.</span><span class="na">setType</span><span class="o">(</span><span class="s">&quot;image/jpeg&quot;</span><span class="o">);</span>
-</span><span class='line'>    <span class="n">builder</span><span class="o">.</span><span class="na">startChooser</span><span class="o">();</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">shareImage</span><span class="o">(</span><span class="n">MainActivity</span><span class="o">.</span><span class="na">this</span><span class="o">,</span> <span class="s">&quot;共有枠のタイトル&quot;</span><span class="o">,</span> <span class="s">&quot;共有タイトル&quot;</span><span class="o">,</span> <span class="err">ビットマップ画像の</span><span class="n">URI</span><span class="o">);</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>画像とテキストの共有</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kt">void</span> <span class="nf">shareImageAndText</span><span class="o">(</span><span class="n">Activity</span> <span class="n">activity</span><span class="o">,</span> <span class="n">String</span> <span class="n">chooserTitle</span><span class="o">,</span> <span class="n">String</span> <span class="n">subject</span><span class="o">,</span> <span class="n">String</span> <span class="n">text</span><span class="o">,</span> <span class="n">Uri</span> <span class="n">uri</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>    <span class="n">ShareCompat</span><span class="o">.</span><span class="na">IntentBuilder</span> <span class="n">builder</span> <span class="o">=</span> <span class="n">ShareCompat</span><span class="o">.</span><span class="na">IntentBuilder</span><span class="o">.</span><span class="na">from</span><span class="o">(</span><span class="n">activity</span><span class="o">);</span>
-</span><span class='line'>    <span class="n">builder</span><span class="o">.</span><span class="na">setChooserTitle</span><span class="o">(</span><span class="n">chooserTitle</span><span class="o">);</span>
-</span><span class='line'>    <span class="n">builder</span><span class="o">.</span><span class="na">setSubject</span><span class="o">(</span><span class="n">subject</span><span class="o">);</span>
-</span><span class='line'>    <span class="n">builder</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="n">text</span><span class="o">);</span>
-</span><span class='line'>    <span class="n">builder</span><span class="o">.</span><span class="na">setStream</span><span class="o">(</span><span class="n">uri</span><span class="o">);</span>
-</span><span class='line'>    <span class="n">builder</span><span class="o">.</span><span class="na">setType</span><span class="o">(</span><span class="s">&quot;image/jpeg&quot;</span><span class="o">);</span>
-</span><span class='line'>    <span class="n">builder</span><span class="o">.</span><span class="na">startChooser</span><span class="o">();</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">shareImageAndText</span><span class="o">(</span><span class="n">MainActivity</span><span class="o">.</span><span class="na">this</span><span class="o">,</span> <span class="s">&quot;共有枠のタイトル&quot;</span><span class="o">,</span> <span class="s">&quot;共有タイトル&quot;</span><span class="o">,</span> <span class="s">&quot;共有テキスト&quot;</span><span class="o">,</span> <span class="err">ビットマップ画像の</span><span class="n">URI</span><span class="o">);</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
 ]]></content>
   </entry>
   
