@@ -6,14 +6,12 @@
 	<title>廣川政樹の開発ブログ - Dolice Lab</title>
 
 
-	<meta name="description" content="iOSのバージョンを判別するサンプルを作成しました。サンプルでは、iOSのバージョン6以上と6未満で処理を振り分けています。 サンプルダウンロード https://github.com/masakihirokawa/objc-determine-version-of-ios ソースコード 1
-2 &hellip;" />
+	<meta name="description" content="画像とテキストを Facebook、Twitter、メールで共有するサンプルを以下に作成しました。 サンプルダウンロード https://github.com/masakihirokawa/objc-ui-activity-view-controller ソースコード &hellip;" />
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
     <meta property="og:locale" content="ja_JP" />
     <meta property="og:title" content="廣川政樹の開発ブログ - Dolice Lab" />
-    <meta property="og:description" content="iOSのバージョンを判別するサンプルを作成しました。サンプルでは、iOSのバージョン6以上と6未満で処理を振り分けています。 サンプルダウンロード https://github.com/masakihirokawa/objc-determine-version-of-ios ソースコード 1
-2 &hellip;" />
+    <meta property="og:description" content="画像とテキストを Facebook、Twitter、メールで共有するサンプルを以下に作成しました。 サンプルダウンロード https://github.com/masakihirokawa/objc-ui-activity-view-controller ソースコード &hellip;" />
     <meta property="og:url" content="https://lab.dolice.net/blog/page/61/" />
     <meta property="og:image" content="https://lab.dolice.net/images/ogp-icon.png" />
     <meta property="og:author" content="Masaki Hirokawa" />
@@ -101,6 +99,128 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/04/07/objc-ui-activity-view-controller/">
+		
+			画像とテキストを Facebook/Twitter/メールで共有する</a>
+	</h2>
+	<div class="entry-content">
+		<p>画像とテキストを Facebook、Twitter、メールで共有するサンプルを以下に作成しました。</p>
+
+<h2>サンプルダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-ui-activity-view-controller">https://github.com/masakihirokawa/objc-ui-activity-view-controller</a></li>
+</ul>
+
+
+<h2>ソースコード</h2>
+
+<h3>ViewController.h</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">weak</span><span class="p">,</span> <span class="n">nonatomic</span><span class="p">)</span> <span class="kt">IBOutlet</span> <span class="n">UIButton</span> <span class="o">*</span><span class="n">shareButton</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">share:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>ViewController.m</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//共有ボタンイベント</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">IBAction</span><span class="p">)</span><span class="nf">share:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">sender</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">if</span><span class="p">(</span> <span class="p">[</span><span class="n">UIActivityViewController</span> <span class="n">class</span><span class="p">]</span> <span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">//共有テキスト設定</span>
+</span><span class='line'>    <span class="n">NSString</span> <span class="o">*</span><span class="n">textToShare</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">@&quot;%@&quot;</span><span class="p">,</span> <span class="s">@&quot;共有するテキストがここに入ります&quot;</span><span class="p">];</span>
+</span><span class='line'>    <span class="c1">//共有イメージ設定</span>
+</span><span class='line'>    <span class="n">UIImage</span> <span class="o">*</span><span class="n">imageToShare</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="n">image</span><span class="p">];</span>
+</span><span class='line'>    <span class="c1">//共有アイテム生成</span>
+</span><span class='line'>    <span class="n">NSArray</span> <span class="o">*</span><span class="n">itemsToShare</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSArray</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithObjects:</span><span class="n">textToShare</span><span class="p">,</span> <span class="n">imageToShare</span><span class="p">,</span> <span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">UIActivityViewController</span> <span class="o">*</span><span class="n">activityVC</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIActivityViewController</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithActivityItems:</span><span class="n">itemsToShare</span> <span class="nl">applicationActivities:</span><span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">activityVC</span><span class="p">.</span><span class="n">excludedActivityTypes</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSArray</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithObjects:</span> <span class="n">UIActivityTypePrint</span><span class="p">,</span> <span class="n">UIActivityTypeCopyToPasteboard</span><span class="p">,</span> <span class="n">UIActivityTypeAssignToContact</span><span class="p">,</span> <span class="n">UIActivityTypeSaveToCameraRoll</span><span class="p">,</span> <span class="n">UIActivityTypeMessage</span><span class="p">,</span> <span class="n">UIActivityTypePostToWeibo</span><span class="p">,</span> <span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="nl">presentViewController:</span><span class="n">activityVC</span> <span class="nl">animated:</span><span class="n">YES</span> <span class="nl">completion:</span><span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//画像ファイルを取得</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nf">image</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="n">UIImageView</span> <span class="o">*</span><span class="n">imageView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIImageView</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>  <span class="n">imageView</span><span class="p">.</span><span class="n">image</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIImage</span> <span class="nl">imageNamed:</span><span class="s">@&quot;Pandora_640_1136.jpg&quot;</span><span class="p">];</span>
+</span><span class='line'>  <span class="k">return</span> <span class="p">(</span><span class="n">imageView</span><span class="p">.</span><span class="n">image</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>関連記事</h2>
+
+<ul>
+<li><strong><a href="/blog/2013/09/02/download-objc-classes-dc-activity-indicator2/" title="インジケーターを表示する「DCActivityIndicator」クラス改訂版">インジケーターを表示する「DCActivityIndicator」クラス改訂版</a></strong></li>
+</ul>
+
+
+<h2>お薦めの参考書</h2>
+
+<p><strong><a href="https://www.amazon.co.jp/gp/product/4774179841/ref=as_li_qf_sp_asin_tl?ie=UTF8&camp=247&creative=1211&creativeASIN=4774179841&linkCode=as2&tag=pinocchio-22">Swiftポケットリファレンス</a></strong><img src="https://ir-jp.amazon-adsystem.com/e/ir?t=pinocchio-22&l=as2&o=9&a=4774179841" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" /><br />
+Swiftの基本的な使い方から、データ処理やネットワーク処理の応用まで、逆引き形式で調べられる良書です。サンプルコードも Webからダウンロード出来、とても便利です。内容としては中級者向けですが、手元にあれば安心の一冊です。</p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-04-07T19:15:00+09:00" pubdate data-updated="true">Apr 7<span>th</span>, 2013</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/facebook/'>Facebook</a>, <a class='category' href='/blog/categories/objective-c/'>Objective-C</a>, <a class='category' href='/blog/categories/sample/'>Sample</a>, <a class='category' href='/blog/categories/social/'>Social</a>, <a class='category' href='/blog/categories/twitter/'>Twitter</a>, <a class='category' href='/blog/categories/uiactivityviewcontroller/'>UIActivityViewController</a>
+
+
+</div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -298,397 +418,6 @@ Swiftの基本的な使い方から、データ処理やネットワーク処理
 </div>
 </article>
 
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/04/06/download-xcode-objc-frame-by-frame-animation/">
-		
-			Objective-Cでコマ送りアニメーションを実行するクラス</a>
-	</h2>
-	<div class="entry-content">
-		<p><img src="https://lab.dolice.net/images/article/frame-by-frame-animation.jpg" alt="" /></p>
-
-<p>Objective-Cでコマ送りアニメーションを実行するためのクラスを作成しました。</p>
-
-<p>「アニメーションの総フレーム数」、「画像ファイル名の接頭詞」、「アニメーション秒数」、「アニメーションリピート回数」、「アニメーション画像の座標・寸法」の順にパラメータを渡して使用します。</p>
-
-<p>下記よりサンプルのダウンロードが行えます。</p>
-
-<h2>サンプルダウンロード</h2>
-
-<ul>
-<li><a href="https://github.com/masakihirokawa/objc-frame-by-frame-animation">https://github.com/masakihirokawa/objc-frame-by-frame-animation</a></li>
-</ul>
-
-
-<h2>使用方法</h2>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">//クラス初期化</span>
-</span><span class='line'><span class="n">FrameByFrameAnimation</span> <span class="o">*</span><span class="n">fbfAnimation</span> <span class="o">=</span> <span class="p">[[</span><span class="n">FrameByFrameAnimation</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'><span class="c1">//アニメーション開始</span>
-</span><span class='line'><span class="p">[</span><span class="n">fbfAnimation</span> <span class="nl">setAnimating:</span><span class="n">animationFrames</span>
-</span><span class='line'>                          <span class="o">:</span><span class="n">animationPrefix</span>
-</span><span class='line'>                          <span class="o">:</span><span class="n">animationDuration</span>
-</span><span class='line'>                          <span class="o">:</span><span class="n">animationRepeatNum</span>
-</span><span class='line'>                          <span class="o">:</span><span class="n">animationImageX</span>
-</span><span class='line'>                          <span class="o">:</span><span class="n">animationImageY</span>
-</span><span class='line'>                          <span class="o">:</span><span class="n">animationImageWidth</span>
-</span><span class='line'>                          <span class="o">:</span><span class="n">animationImageHeight</span><span class="p">];</span>
-</span><span class='line'><span class="c1">//ステージに追加</span>
-</span><span class='line'><span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="p">[</span><span class="n">fbfAnimation</span> <span class="n">animationImageView</span><span class="p">]];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>ソースコード</h2>
-
-<h3>ViewController.m</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;ViewController.h&quot;</span>
-</span><span class='line'><span class="cp">#import &quot;FrameByFrameAnimation.h&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@interface</span> <span class="nc">ViewController</span> <span class="p">()</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@implementation</span> <span class="nc">ViewController</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//アニメーションのフレームレート</span>
-</span><span class='line'><span class="kt">float</span> <span class="k">const</span> <span class="n">_animationFps</span> <span class="o">=</span> <span class="mf">24.0f</span><span class="p">;</span>
-</span><span class='line'><span class="c1">//アニメーションのリピート回数を無限に指定</span>
-</span><span class='line'><span class="n">NSInteger</span> <span class="n">_animationRepeatNum</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'><span class="c1">//アニメーションの座標・寸法指定</span>
-</span><span class='line'><span class="n">NSInteger</span> <span class="n">_animationImageX</span><span class="p">;</span>
-</span><span class='line'><span class="n">NSInteger</span> <span class="n">_animationImageY</span><span class="p">;</span>
-</span><span class='line'><span class="n">NSInteger</span> <span class="k">const</span> <span class="n">_animationImageWidth</span> <span class="o">=</span> <span class="mi">85</span><span class="p">;</span>
-</span><span class='line'><span class="n">NSInteger</span> <span class="k">const</span> <span class="n">_animationImageHeight</span> <span class="o">=</span> <span class="mi">120</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
-</span><span class='line'>  <span class="c1">//アニメーション開始</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">self</span> <span class="n">startAnimationImage</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">didReceiveMemoryWarning</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">super</span> <span class="n">didReceiveMemoryWarning</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//アニメーション開始</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">startAnimationImage</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="c1">//クラス初期化</span>
-</span><span class='line'>  <span class="n">FrameByFrameAnimation</span> <span class="o">*</span><span class="n">fbfAnimation</span> <span class="o">=</span> <span class="p">[[</span><span class="n">FrameByFrameAnimation</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'>  <span class="c1">//アニメーションの総フレーム数</span>
-</span><span class='line'>  <span class="n">NSInteger</span> <span class="n">animationFrames</span> <span class="o">=</span> <span class="mi">14</span><span class="p">;</span>
-</span><span class='line'>  <span class="c1">//アニメーションファイルの接頭詞</span>
-</span><span class='line'>  <span class="n">NSString</span> <span class="o">*</span><span class="n">animationPrefix</span> <span class="o">=</span> <span class="s">@&quot;frame&quot;</span><span class="p">;</span>
-</span><span class='line'>  <span class="c1">//アニメーションをセンターに配置</span>
-</span><span class='line'>  <span class="n">NSInteger</span> <span class="n">_animationImageX</span> <span class="o">=</span> <span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">frame</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">_animationImageWidth</span> <span class="o">/</span> <span class="mi">2</span><span class="p">);</span>
-</span><span class='line'>  <span class="n">NSInteger</span> <span class="n">_animationImageY</span> <span class="o">=</span> <span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">frame</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">height</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">_animationImageHeight</span> <span class="o">/</span> <span class="mi">2</span><span class="p">);</span>
-</span><span class='line'>  <span class="c1">//アニメーション開始</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">fbfAnimation</span> <span class="nl">setAnimating:</span><span class="n">animationFrames</span>
-</span><span class='line'>                            <span class="o">:</span><span class="n">animationPrefix</span>
-</span><span class='line'>                            <span class="o">:</span><span class="p">[</span><span class="n">self</span> <span class="nl">animationSeconds:</span><span class="n">animationFrames</span><span class="p">]</span>
-</span><span class='line'>                            <span class="o">:</span><span class="n">_animationRepeatNum</span>
-</span><span class='line'>                            <span class="o">:</span><span class="n">_animationImageX</span>
-</span><span class='line'>                            <span class="o">:</span><span class="n">_animationImageY</span>
-</span><span class='line'>                            <span class="o">:</span><span class="n">_animationImageWidth</span>
-</span><span class='line'>                            <span class="o">:</span><span class="n">_animationImageHeight</span><span class="p">];</span>
-</span><span class='line'>  <span class="c1">//ステージに追加</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="p">[</span><span class="n">fbfAnimation</span> <span class="n">animationImageView</span><span class="p">]];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//アニメーション秒数を取得</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="nf">animationSeconds:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">animationFrames</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="k">return</span> <span class="p">(</span><span class="n">animationFrames</span> <span class="o">/</span> <span class="n">_animationFps</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>FrameByFrameAnimation.h</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;UIKit/UIKit.h&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@interface</span> <span class="nc">FrameByFrameAnimation</span> : <span class="nc">UIImageView</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">retain</span><span class="p">)</span> <span class="n">UIImageView</span> <span class="o">*</span><span class="n">animationImageView</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setAnimating:</span><span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="nv">animationImageNum</span> <span class="o">:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="n">animationImageSuffix</span> <span class="o">:</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="n">animationDuration</span> <span class="o">:</span><span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">animationRepeatCount</span> <span class="o">:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="n">animationImageX</span> <span class="o">:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="n">animationImageY</span> <span class="o">:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="n">animationImageWidth</span> <span class="o">:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="n">animationImageHeight</span><span class="p">;</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSArray</span> <span class="o">*</span><span class="p">)</span><span class="nf">animationImages:</span><span class="p">(</span><span class="n">NSMutableArray</span> <span class="o">*</span><span class="p">)</span><span class="nv">animationImageNameList</span><span class="p">;</span>
-</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="n">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nf">getUIImageFromResources:</span><span class="p">(</span><span class="n">NSString</span><span class="o">*</span><span class="p">)</span><span class="nv">fileName</span> <span class="nf">ext:</span><span class="p">(</span><span class="n">NSString</span><span class="o">*</span><span class="p">)</span><span class="nv">ext</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>FrameByFrameAnimation.m</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-<span class='line-number'>65</span>
-<span class='line-number'>66</span>
-<span class='line-number'>67</span>
-<span class='line-number'>68</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;FrameByFrameAnimation.h&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@implementation</span> <span class="nc">FrameByFrameAnimation</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@synthesize</span> <span class="n">animationImageView</span> <span class="o">=</span> <span class="n">_animationImageView</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">initWithFrame:</span><span class="p">(</span><span class="n">CGRect</span><span class="p">)</span><span class="nv">frame</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="n">self</span> <span class="o">=</span> <span class="p">[</span><span class="n">super</span> <span class="nl">initWithFrame:</span><span class="n">frame</span><span class="p">];</span>
-</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="n">self</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>  <span class="k">return</span> <span class="n">self</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//アニメーション設定</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setAnimating:</span><span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="nv">animationImageNum</span> <span class="o">:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="n">animationImageSuffix</span> <span class="o">:</span><span class="p">(</span><span class="kt">float</span><span class="p">)</span><span class="n">animationDuration</span> <span class="o">:</span><span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">animationRepeatCount</span> <span class="o">:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="n">animationImageX</span> <span class="o">:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="n">animationImageY</span> <span class="o">:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="n">animationImageWidth</span> <span class="o">:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="n">animationImageHeight</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="c1">//UIImageView初期化</span>
-</span><span class='line'>  <span class="n">_animationImageView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIImageView</span> <span class="n">alloc</span><span class="p">]</span>
-</span><span class='line'>                         <span class="nl">initWithFrame:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="n">animationImageX</span><span class="p">,</span>
-</span><span class='line'>                                                  <span class="n">animationImageY</span><span class="p">,</span>
-</span><span class='line'>                                                  <span class="n">animationImageWidth</span><span class="p">,</span>
-</span><span class='line'>                                                  <span class="n">animationImageHeight</span><span class="p">)];</span>
-</span><span class='line'>  <span class="c1">//アニメーションフレームを配列に入れる</span>
-</span><span class='line'>  <span class="n">NSMutableArray</span> <span class="o">*</span><span class="n">animationImageArray</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSMutableArray</span> <span class="n">array</span><span class="p">];</span>
-</span><span class='line'>  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="n">animationImageNum</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">animationImageArray</span> <span class="nl">addObject:</span><span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">@&quot;%@%@&quot;</span><span class="p">,</span> <span class="n">animationImageSuffix</span><span class="p">,</span> <span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">@&quot;%d&quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">]]];</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>  <span class="n">_animationImageView</span><span class="p">.</span><span class="n">animationImages</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="nl">animationImages:</span><span class="n">animationImageArray</span><span class="p">];</span>
-</span><span class='line'>  <span class="c1">//アニメーションの秒数を設定</span>
-</span><span class='line'>  <span class="n">_animationImageView</span><span class="p">.</span><span class="n">animationDuration</span> <span class="o">=</span> <span class="n">animationDuration</span><span class="p">;</span>
-</span><span class='line'>  <span class="c1">//アニメーションのリピート回数を設定</span>
-</span><span class='line'>  <span class="n">_animationImageView</span><span class="p">.</span><span class="n">animationRepeatCount</span> <span class="o">=</span> <span class="n">animationRepeatCount</span><span class="p">;</span>
-</span><span class='line'>  <span class="c1">//アニメーション開始</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">_animationImageView</span> <span class="n">startAnimating</span><span class="p">];</span>
-</span><span class='line'>  <span class="c1">//アニメーション終了時のメソッド定義</span>
-</span><span class='line'>  <span class="p">[</span><span class="n">self</span> <span class="nl">performSelector:</span><span class="k">@selector</span><span class="p">(</span><span class="nl">animationDidFinish:</span><span class="p">)</span> <span class="nl">withObject:</span><span class="nb">nil</span>
-</span><span class='line'>             <span class="nl">afterDelay:</span><span class="n">_animationImageView</span><span class="p">.</span><span class="n">animationDuration</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//アニメーション終了時のメソッド</span>
-</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">animationDidFinish:</span><span class="p">(</span><span class="kt">SEL</span><span class="p">)</span><span class="n">selector</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;Animation is complete&quot;</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//画像ファイル名を配列で取得する</span>
-</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="n">NSArray</span> <span class="o">*</span><span class="p">)</span><span class="nl">animationImages:</span><span class="p">(</span><span class="n">NSMutableArray</span> <span class="o">*</span><span class="p">)</span><span class="n">animationImageNameList</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="c1">//画像の配列を作成</span>
-</span><span class='line'>  <span class="n">NSMutableArray</span> <span class="o">*</span><span class="n">imageArray</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSMutableArray</span> <span class="n">array</span><span class="p">];</span>
-</span><span class='line'>  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">animationImageNameList</span><span class="p">.</span><span class="n">count</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="n">NSString</span> <span class="o">*</span><span class="n">imageTitle</span> <span class="o">=</span> <span class="p">[</span><span class="n">animationImageNameList</span> <span class="nl">objectAtIndex:</span><span class="n">i</span><span class="p">];</span>
-</span><span class='line'>    <span class="c1">//画像の配列に画像ファイルを追加</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">imageArray</span> <span class="nl">addObject:</span><span class="p">[</span><span class="n">FrameByFrameAnimation</span> <span class="nl">getUIImageFromResources:</span><span class="n">imageTitle</span> <span class="nl">ext:</span><span class="s">@&quot;png&quot;</span><span class="p">]];</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>  <span class="k">return</span> <span class="p">(</span><span class="n">imageArray</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//画像ファイルを取得</span>
-</span><span class='line'><span class="o">+</span> <span class="p">(</span><span class="n">UIImage</span> <span class="o">*</span><span class="p">)</span><span class="nl">getUIImageFromResources:</span><span class="p">(</span><span class="n">NSString</span><span class="o">*</span><span class="p">)</span><span class="n">fileName</span> <span class="nl">ext:</span><span class="p">(</span><span class="n">NSString</span><span class="o">*</span><span class="p">)</span><span class="n">ext</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="n">NSString</span> <span class="o">*</span><span class="n">path</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSBundle</span> <span class="n">mainBundle</span><span class="p">]</span> <span class="nl">pathForResource:</span><span class="n">fileName</span> <span class="nl">ofType:</span><span class="n">ext</span><span class="p">];</span>
-</span><span class='line'>  <span class="n">UIImage</span> <span class="o">*</span><span class="n">img</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIImage</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithContentsOfFile:</span><span class="n">path</span><span class="p">];</span>
-</span><span class='line'>  <span class="k">return</span> <span class="n">img</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>お薦めの参考書</h2>
-
-<p><strong><a href="https://www.amazon.co.jp/gp/product/4774170550/ref=as_li_qf_sp_asin_tl?ie=UTF8&camp=247&creative=1211&creativeASIN=4774170550&linkCode=as2&tag=pinocchio-22”>Cocos2d-xではじめるスマートフォンゲーム開発 Ver.3対応</a></strong><img src="https://ir-jp.amazon-adsystem.com/e/ir?t=pinocchio-22&l=as2&o=9&a=4774170550" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" /><br />
-Cocos2d-xでゲームを開発したいという方に必携の1冊です。実際にゲームを作りながら学習して行く内容で、とても身に付き易い構成になっています。プログラミング経験はあるけれどゲーム開発は未経験という方にお薦めの内容となっております。</p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-04-06T00:35:00+09:00" pubdate data-updated="true">Apr 6<span>th</span>, 2013</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/animation/'>Animation</a>, <a class='category' href='/blog/categories/classes/'>Classes</a>, <a class='category' href='/blog/categories/download/'>Download</a>, <a class='category' href='/blog/categories/objective-c/'>Objective-C</a>, <a class='category' href='/blog/categories/uiimageview/'>UIImageView</a>, <a class='category' href='/blog/categories/uikit/'>UIKit</a>, <a class='category' href='/blog/categories/xcode/'>Xcode</a>
-
-
-</div>
-	
-</div>
-</article>
-
 <nav id="pagenavi">
     
         <a href="/blog/page/60/" class="prev">Prev</a>
@@ -759,7 +488,7 @@ Cocos2d-xでゲームを開発したいという方に必携の1冊です。実�
   <div class="information-box-wide">
 <section id="tag-cloud-container">
   <h1 id="tag-cloud-title">Tag Cloud</h1>
-  <p id="tag-cloud"><a href='/blog/categories/actionscript' style='font-size: 102.41071428571429%'>ActionScript(9)</a> <a href='/blog/categories/actionscript3' style='font-size: 101.875%'>ActionScript3(7)</a> <a href='/blog/categories/ad' style='font-size: 101.33928571428571%'>Ad(5)</a> <a href='/blog/categories/adfurikun' style='font-size: 100.53571428571429%'>Adfurikun(2)</a> <a href='/blog/categories/admob' style='font-size: 102.67857142857143%'>AdMob(10)</a> <a href='/blog/categories/android' style='font-size: 102.94642857142857%'>Android(11)</a> <a href='/blog/categories/animation' style='font-size: 104.55357142857143%'>Animation(17)</a> <a href='/blog/categories/appdelegate' style='font-size: 100.80357142857143%'>AppDelegate(3)</a> <a href='/blog/categories/arc' style='font-size: 100.26785714285714%'>ARC(1)</a> <a href='/blog/categories/arraylist' style='font-size: 100.26785714285714%'>ArrayList(1)</a> <a href='/blog/categories/avaudioplayer' style='font-size: 101.07142857142857%'>AVAudioPlayer(4)</a> <a href='/blog/categories/avaudiosession' style='font-size: 100.26785714285714%'>AVAudioSession(1)</a> <a href='/blog/categories/avfoundation' style='font-size: 100.80357142857143%'>AVFoundation(3)</a> <a href='/blog/categories/banner' style='font-size: 100.53571428571429%'>Banner(2)</a> <a href='/blog/categories/bitmap' style='font-size: 100.26785714285714%'>Bitmap(1)</a> <a href='/blog/categories/camera' style='font-size: 101.07142857142857%'>Camera(4)</a> <a href='/blog/categories/cgaffinetransform' style='font-size: 101.07142857142857%'>CGAffineTransform(4)</a> <a href='/blog/categories/cgblendmode' style='font-size: 100.53571428571429%'>CGBlendMode(2)</a> <a href='/blog/categories/cgcontextref' style='font-size: 100.26785714285714%'>CGContextRef(1)</a> <a href='/blog/categories/cgimageref' style='font-size: 100.26785714285714%'>CGImageRef(1)</a> <a href='/blog/categories/classes' style='font-size: 112.05357142857143%'>Classes(45)</a> <a href='/blog/categories/cllocationmanager' style='font-size: 100.26785714285714%'>CLLocationManager(1)</a> <a href='/blog/categories/connectivitymanager' style='font-size: 100.26785714285714%'>ConnectivityManager(1)</a> <a href='/blog/categories/contentresolver' style='font-size: 100.26785714285714%'>ContentResolver(1)</a> <a href='/blog/categories/corelocation' style='font-size: 100.53571428571429%'>CoreLocation(2)</a> <a href='/blog/categories/delegate' style='font-size: 100.80357142857143%'>Delegate(3)</a> <a href='/blog/categories/device' style='font-size: 101.875%'>Device(7)</a> <a href='/blog/categories/display' style='font-size: 100.26785714285714%'>Display(1)</a> <a href='/blog/categories/displaymetrics' style='font-size: 100.26785714285714%'>DisplayMetrics(1)</a> <a href='/blog/categories/download' style='font-size: 127.85714285714286%'>Download(104)</a> <a href='/blog/categories/facebook' style='font-size: 101.60714285714286%'>Facebook(6)</a> <a href='/blog/categories/foundation' style='font-size: 119.28571428571428%'>Foundation(72)</a> <a href='/blog/categories/framework' style='font-size: 100.53571428571429%'>Framework(2)</a> <a href='/blog/categories/google-analytics' style='font-size: 100.26785714285714%'>Google Analytics(1)</a> <a href='/blog/categories/handler' style='font-size: 100.26785714285714%'>Handler(1)</a> <a href='/blog/categories/iad' style='font-size: 101.60714285714286%'>iAd(6)</a> <a href='/blog/categories/imageview' style='font-size: 100.26785714285714%'>ImageView(1)</a> <a href='/blog/categories/in-apppurchase' style='font-size: 100.26785714285714%'>In-AppPurchase(1)</a> <a href='/blog/categories/ios' style='font-size: 103.21428571428571%'>iOS(12)</a> <a href='/blog/categories/ios-7' style='font-size: 104.01785714285714%'>iOS 7(15)</a> <a href='/blog/categories/ios-7-dot-1' style='font-size: 100.80357142857143%'>iOS 7.1(3)</a> <a href='/blog/categories/ios-8' style='font-size: 100.26785714285714%'>iOS 8(1)</a> <a href='/blog/categories/ipad' style='font-size: 101.875%'>iPad(7)</a> <a href='/blog/categories/iphone' style='font-size: 106.42857142857143%'>iPhone(24)</a> <a href='/blog/categories/iphone-6' style='font-size: 101.07142857142857%'>iPhone 6(4)</a> <a href='/blog/categories/java' style='font-size: 101.875%'>Java(7)</a> <a href='/blog/categories/javascript' style='font-size: 100.53571428571429%'>JavaScript(2)</a> <a href='/blog/categories/line' style='font-size: 101.07142857142857%'>LINE(4)</a> <a href='/blog/categories/localize' style='font-size: 100.26785714285714%'>Localize(1)</a> <a href='/blog/categories/magazine' style='font-size: 100.80357142857143%'>Magazine(3)</a> <a href='/blog/categories/mediastore' style='font-size: 100.26785714285714%'>MediaStore(1)</a> <a href='/blog/categories/mfcomposeviewcontroller' style='font-size: 100.26785714285714%'>MFComposeViewController(1)</a> <a href='/blog/categories/nend' style='font-size: 100.26785714285714%'>Nend(1)</a> <a href='/blog/categories/networkinfo' style='font-size: 100.26785714285714%'>NetworkInfo(1)</a> <a href='/blog/categories/nsarray' style='font-size: 106.16071428571429%'>NSArray(23)</a> <a href='/blog/categories/nscalendar' style='font-size: 100.80357142857143%'>NSCalendar(3)</a> <a href='/blog/categories/nsdata' style='font-size: 100.53571428571429%'>NSData(2)</a> <a href='/blog/categories/nsdate' style='font-size: 101.875%'>NSDate(7)</a> <a href='/blog/categories/nsdatecomponents' style='font-size: 100.53571428571429%'>NSDateComponents(2)</a> <a href='/blog/categories/nsdateformatter' style='font-size: 100.53571428571429%'>NSDateFormatter(2)</a> <a href='/blog/categories/nsdictionary' style='font-size: 103.21428571428571%'>NSDictionary(12)</a> <a href='/blog/categories/nsenumerator' style='font-size: 100.26785714285714%'>NSEnumerator(1)</a> <a href='/blog/categories/nsindexset' style='font-size: 100.26785714285714%'>NSIndexSet(1)</a> <a href='/blog/categories/nsinteger' style='font-size: 101.60714285714286%'>NSInteger(6)</a> <a href='/blog/categories/nsmutablearray' style='font-size: 104.55357142857143%'>NSMutableArray(17)</a> <a href='/blog/categories/nsmutabledictionary' style='font-size: 101.33928571428571%'>NSMutableDictionary(5)</a> <a href='/blog/categories/nsmutableorderedset' style='font-size: 101.875%'>NSMutableOrderedSet(7)</a> <a href='/blog/categories/nsmutablestring' style='font-size: 101.07142857142857%'>NSMutableString(4)</a> <a href='/blog/categories/nsmutableurlrequest' style='font-size: 100.26785714285714%'>NSMutableURLRequest(1)</a> <a href='/blog/categories/nsnotificationcenter' style='font-size: 100.26785714285714%'>NSNotificationCenter(1)</a> <a href='/blog/categories/nsnumber' style='font-size: 100.26785714285714%'>NSNumber(1)</a> <a href='/blog/categories/nsobject' style='font-size: 100.26785714285714%'>NSObject(1)</a> <a href='/blog/categories/nsorderedset' style='font-size: 101.875%'>NSOrderedSet(7)</a> <a href='/blog/categories/nsrange' style='font-size: 100.53571428571429%'>NSRange(2)</a> <a href='/blog/categories/nsselectorfromstring' style='font-size: 100.26785714285714%'>NSSelectorFromString(1)</a> <a href='/blog/categories/nsset' style='font-size: 101.60714285714286%'>NSSet(6)</a> <a href='/blog/categories/nsstring' style='font-size: 105.08928571428571%'>NSString(19)</a> <a href='/blog/categories/nstimer' style='font-size: 101.07142857142857%'>NSTimer(4)</a> <a href='/blog/categories/nstimezone' style='font-size: 100.26785714285714%'>NSTimeZone(1)</a> <a href='/blog/categories/nsurl' style='font-size: 101.875%'>NSURL(7)</a> <a href='/blog/categories/nsurlconnection' style='font-size: 100.26785714285714%'>NSURLConnection(1)</a> <a href='/blog/categories/nsurlrequest' style='font-size: 100.53571428571429%'>NSURLRequest(2)</a> <a href='/blog/categories/nsuserdefaults' style='font-size: 101.875%'>NSUserDefaults(7)</a> <a href='/blog/categories/nsxmlparser' style='font-size: 100.53571428571429%'>NSXMLParser(2)</a> <a href='/blog/categories/objective-c' style='font-size: 160.0%'>Objective-C(224)</a> <a href='/blog/categories/php' style='font-size: 100.26785714285714%'>PHP(1)</a> <a href='/blog/categories/products' style='font-size: 104.55357142857143%'>Products(17)</a> <a href='/blog/categories/quartzcore' style='font-size: 100.80357142857143%'>QuartzCore(3)</a> <a href='/blog/categories/rss' style='font-size: 100.53571428571429%'>RSS(2)</a> <a href='/blog/categories/runnable' style='font-size: 100.26785714285714%'>Runnable(1)</a> <a href='/blog/categories/sample' style='font-size: 113.66071428571429%'>Sample(51)</a> <a href='/blog/categories/screensaver' style='font-size: 102.41071428571429%'>Screensaver(9)</a> <a href='/blog/categories/sdk' style='font-size: 100.53571428571429%'>SDK(2)</a> <a href='/blog/categories/sharecompat' style='font-size: 100.26785714285714%'>ShareCompat(1)</a> <a href='/blog/categories/social' style='font-size: 102.67857142857143%'>Social(10)</a> <a href='/blog/categories/storekit' style='font-size: 100.26785714285714%'>StoreKit(1)</a> <a href='/blog/categories/twitter' style='font-size: 101.60714285714286%'>Twitter(6)</a> <a href='/blog/categories/uiaccelerometer' style='font-size: 100.80357142857143%'>UIAccelerometer(3)</a> <a href='/blog/categories/uiactionsheet' style='font-size: 100.26785714285714%'>UIActionSheet(1)</a> <a href='/blog/categories/uiactivityindicator' style='font-size: 100.26785714285714%'>UIActivityIndicator(1)</a> <a href='/blog/categories/uiactivityindicatorview' style='font-size: 100.80357142857143%'>UIActivityIndicatorView(3)</a> <a href='/blog/categories/uiactivityviewcontroller' style='font-size: 100.26785714285714%'>UIActivityViewController(1)</a> <a href='/blog/categories/uialertview' style='font-size: 101.33928571428571%'>UIAlertView(5)</a> <a href='/blog/categories/uiapplication' style='font-size: 101.875%'>UIApplication(7)</a> <a href='/blog/categories/uibutton' style='font-size: 101.07142857142857%'>UIButton(4)</a> <a href='/blog/categories/uicolor' style='font-size: 100.80357142857143%'>UIColor(3)</a> <a href='/blog/categories/uidatepicker' style='font-size: 101.33928571428571%'>UIDatePicker(5)</a> <a href='/blog/categories/uidevice' style='font-size: 101.60714285714286%'>UIDevice(6)</a> <a href='/blog/categories/uideviceorientation' style='font-size: 100.26785714285714%'>UIDeviceOrientation(1)</a> <a href='/blog/categories/uievent' style='font-size: 101.60714285714286%'>UIEvent(6)</a> <a href='/blog/categories/uiimage' style='font-size: 104.01785714285714%'>UIImage(15)</a> <a href='/blog/categories/uiimagepickercontroller' style='font-size: 101.07142857142857%'>UIImagePickerController(4)</a> <a href='/blog/categories/uiimageview' style='font-size: 103.21428571428571%'>UIImageView(12)</a> <a href='/blog/categories/uikit' style='font-size: 115.53571428571429%'>UIKit(58)</a> <a href='/blog/categories/uilabel' style='font-size: 101.875%'>UILabel(7)</a> <a href='/blog/categories/uinavigationbar' style='font-size: 101.07142857142857%'>UINavigationBar(4)</a> <a href='/blog/categories/uinavigationitem' style='font-size: 100.26785714285714%'>UINavigationItem(1)</a> <a href='/blog/categories/uipasteboard' style='font-size: 101.07142857142857%'>UIPasteboard(4)</a> <a href='/blog/categories/uiscreen' style='font-size: 100.26785714285714%'>UIScreen(1)</a> <a href='/blog/categories/uiscrollbar' style='font-size: 100.26785714285714%'>UIScrollBar(1)</a> <a href='/blog/categories/uiscrollview' style='font-size: 100.26785714285714%'>UIScrollView(1)</a> <a href='/blog/categories/uislider' style='font-size: 100.80357142857143%'>UISlider(3)</a> <a href='/blog/categories/uistoryboardsegue' style='font-size: 100.80357142857143%'>UIStoryboardSegue(3)</a> <a href='/blog/categories/uiswitch' style='font-size: 100.26785714285714%'>UISwitch(1)</a> <a href='/blog/categories/uitabbar' style='font-size: 100.80357142857143%'>UITabBar(3)</a> <a href='/blog/categories/uitableview' style='font-size: 101.07142857142857%'>UITableView(4)</a> <a href='/blog/categories/uitextfield' style='font-size: 100.53571428571429%'>UITextField(2)</a> <a href='/blog/categories/uiview' style='font-size: 102.94642857142857%'>UIView(11)</a> <a href='/blog/categories/uiviewanimationtransition' style='font-size: 100.26785714285714%'>UIViewAnimationTransition(1)</a> <a href='/blog/categories/uiviewcontroller' style='font-size: 101.07142857142857%'>UIViewController(4)</a> <a href='/blog/categories/uiwebview' style='font-size: 101.33928571428571%'>UIWebView(5)</a> <a href='/blog/categories/uncategorized' style='font-size: 100.26785714285714%'>Uncategorized(1)</a> <a href='/blog/categories/windowmanager' style='font-size: 100.26785714285714%'>WindowManager(1)</a> <a href='/blog/categories/xcode' style='font-size: 112.85714285714286%'>Xcode(48)</a> <a href='/blog/categories/xcode-5' style='font-size: 102.14285714285714%'>Xcode 5(8)</a> <a href='/blog/categories/xcode-5-dot-1' style='font-size: 100.53571428571429%'>Xcode 5.1(2)</a> </p>
+  <p id="tag-cloud"><a href='/blog/categories/actionscript' style='font-size: 102.4%'>ActionScript(9)</a> <a href='/blog/categories/actionscript3' style='font-size: 101.86666666666666%'>ActionScript3(7)</a> <a href='/blog/categories/ad' style='font-size: 101.33333333333333%'>Ad(5)</a> <a href='/blog/categories/adfurikun' style='font-size: 100.53333333333333%'>Adfurikun(2)</a> <a href='/blog/categories/admob' style='font-size: 102.66666666666667%'>AdMob(10)</a> <a href='/blog/categories/android' style='font-size: 102.93333333333334%'>Android(11)</a> <a href='/blog/categories/animation' style='font-size: 104.53333333333333%'>Animation(17)</a> <a href='/blog/categories/appdelegate' style='font-size: 100.8%'>AppDelegate(3)</a> <a href='/blog/categories/arc' style='font-size: 100.26666666666667%'>ARC(1)</a> <a href='/blog/categories/arraylist' style='font-size: 100.26666666666667%'>ArrayList(1)</a> <a href='/blog/categories/avaudioplayer' style='font-size: 101.06666666666666%'>AVAudioPlayer(4)</a> <a href='/blog/categories/avaudiosession' style='font-size: 100.26666666666667%'>AVAudioSession(1)</a> <a href='/blog/categories/avfoundation' style='font-size: 100.8%'>AVFoundation(3)</a> <a href='/blog/categories/banner' style='font-size: 100.53333333333333%'>Banner(2)</a> <a href='/blog/categories/bitmap' style='font-size: 100.26666666666667%'>Bitmap(1)</a> <a href='/blog/categories/camera' style='font-size: 101.06666666666666%'>Camera(4)</a> <a href='/blog/categories/cgaffinetransform' style='font-size: 101.06666666666666%'>CGAffineTransform(4)</a> <a href='/blog/categories/cgblendmode' style='font-size: 100.53333333333333%'>CGBlendMode(2)</a> <a href='/blog/categories/cgcontextref' style='font-size: 100.26666666666667%'>CGContextRef(1)</a> <a href='/blog/categories/cgimageref' style='font-size: 100.26666666666667%'>CGImageRef(1)</a> <a href='/blog/categories/classes' style='font-size: 112.26666666666667%'>Classes(46)</a> <a href='/blog/categories/cllocationmanager' style='font-size: 100.26666666666667%'>CLLocationManager(1)</a> <a href='/blog/categories/connectivitymanager' style='font-size: 100.26666666666667%'>ConnectivityManager(1)</a> <a href='/blog/categories/contentresolver' style='font-size: 100.26666666666667%'>ContentResolver(1)</a> <a href='/blog/categories/corelocation' style='font-size: 100.53333333333333%'>CoreLocation(2)</a> <a href='/blog/categories/delegate' style='font-size: 100.8%'>Delegate(3)</a> <a href='/blog/categories/device' style='font-size: 101.86666666666666%'>Device(7)</a> <a href='/blog/categories/display' style='font-size: 100.26666666666667%'>Display(1)</a> <a href='/blog/categories/displaymetrics' style='font-size: 100.26666666666667%'>DisplayMetrics(1)</a> <a href='/blog/categories/download' style='font-size: 128.0%'>Download(105)</a> <a href='/blog/categories/facebook' style='font-size: 101.6%'>Facebook(6)</a> <a href='/blog/categories/foundation' style='font-size: 119.2%'>Foundation(72)</a> <a href='/blog/categories/framework' style='font-size: 100.53333333333333%'>Framework(2)</a> <a href='/blog/categories/google-analytics' style='font-size: 100.26666666666667%'>Google Analytics(1)</a> <a href='/blog/categories/handler' style='font-size: 100.26666666666667%'>Handler(1)</a> <a href='/blog/categories/iad' style='font-size: 101.6%'>iAd(6)</a> <a href='/blog/categories/imageview' style='font-size: 100.26666666666667%'>ImageView(1)</a> <a href='/blog/categories/in-apppurchase' style='font-size: 100.26666666666667%'>In-AppPurchase(1)</a> <a href='/blog/categories/ios' style='font-size: 103.2%'>iOS(12)</a> <a href='/blog/categories/ios-7' style='font-size: 104.0%'>iOS 7(15)</a> <a href='/blog/categories/ios-7-dot-1' style='font-size: 100.8%'>iOS 7.1(3)</a> <a href='/blog/categories/ios-8' style='font-size: 100.26666666666667%'>iOS 8(1)</a> <a href='/blog/categories/ipad' style='font-size: 101.86666666666666%'>iPad(7)</a> <a href='/blog/categories/iphone' style='font-size: 106.4%'>iPhone(24)</a> <a href='/blog/categories/iphone-6' style='font-size: 101.06666666666666%'>iPhone 6(4)</a> <a href='/blog/categories/java' style='font-size: 101.86666666666666%'>Java(7)</a> <a href='/blog/categories/javascript' style='font-size: 100.53333333333333%'>JavaScript(2)</a> <a href='/blog/categories/line' style='font-size: 101.06666666666666%'>LINE(4)</a> <a href='/blog/categories/localize' style='font-size: 100.26666666666667%'>Localize(1)</a> <a href='/blog/categories/magazine' style='font-size: 100.8%'>Magazine(3)</a> <a href='/blog/categories/mediastore' style='font-size: 100.26666666666667%'>MediaStore(1)</a> <a href='/blog/categories/mfcomposeviewcontroller' style='font-size: 100.26666666666667%'>MFComposeViewController(1)</a> <a href='/blog/categories/nend' style='font-size: 100.26666666666667%'>Nend(1)</a> <a href='/blog/categories/networkinfo' style='font-size: 100.26666666666667%'>NetworkInfo(1)</a> <a href='/blog/categories/nsarray' style='font-size: 106.13333333333334%'>NSArray(23)</a> <a href='/blog/categories/nscalendar' style='font-size: 100.8%'>NSCalendar(3)</a> <a href='/blog/categories/nsdata' style='font-size: 100.53333333333333%'>NSData(2)</a> <a href='/blog/categories/nsdate' style='font-size: 101.86666666666666%'>NSDate(7)</a> <a href='/blog/categories/nsdatecomponents' style='font-size: 100.53333333333333%'>NSDateComponents(2)</a> <a href='/blog/categories/nsdateformatter' style='font-size: 100.53333333333333%'>NSDateFormatter(2)</a> <a href='/blog/categories/nsdictionary' style='font-size: 103.2%'>NSDictionary(12)</a> <a href='/blog/categories/nsenumerator' style='font-size: 100.26666666666667%'>NSEnumerator(1)</a> <a href='/blog/categories/nsindexset' style='font-size: 100.26666666666667%'>NSIndexSet(1)</a> <a href='/blog/categories/nsinteger' style='font-size: 101.6%'>NSInteger(6)</a> <a href='/blog/categories/nsmutablearray' style='font-size: 104.53333333333333%'>NSMutableArray(17)</a> <a href='/blog/categories/nsmutabledictionary' style='font-size: 101.33333333333333%'>NSMutableDictionary(5)</a> <a href='/blog/categories/nsmutableorderedset' style='font-size: 101.86666666666666%'>NSMutableOrderedSet(7)</a> <a href='/blog/categories/nsmutablestring' style='font-size: 101.06666666666666%'>NSMutableString(4)</a> <a href='/blog/categories/nsmutableurlrequest' style='font-size: 100.26666666666667%'>NSMutableURLRequest(1)</a> <a href='/blog/categories/nsnotificationcenter' style='font-size: 100.26666666666667%'>NSNotificationCenter(1)</a> <a href='/blog/categories/nsnumber' style='font-size: 100.26666666666667%'>NSNumber(1)</a> <a href='/blog/categories/nsobject' style='font-size: 100.26666666666667%'>NSObject(1)</a> <a href='/blog/categories/nsorderedset' style='font-size: 101.86666666666666%'>NSOrderedSet(7)</a> <a href='/blog/categories/nsrange' style='font-size: 100.53333333333333%'>NSRange(2)</a> <a href='/blog/categories/nsselectorfromstring' style='font-size: 100.26666666666667%'>NSSelectorFromString(1)</a> <a href='/blog/categories/nsset' style='font-size: 101.6%'>NSSet(6)</a> <a href='/blog/categories/nsstring' style='font-size: 105.06666666666666%'>NSString(19)</a> <a href='/blog/categories/nstimer' style='font-size: 101.06666666666666%'>NSTimer(4)</a> <a href='/blog/categories/nstimezone' style='font-size: 100.26666666666667%'>NSTimeZone(1)</a> <a href='/blog/categories/nsurl' style='font-size: 101.86666666666666%'>NSURL(7)</a> <a href='/blog/categories/nsurlconnection' style='font-size: 100.26666666666667%'>NSURLConnection(1)</a> <a href='/blog/categories/nsurlrequest' style='font-size: 100.53333333333333%'>NSURLRequest(2)</a> <a href='/blog/categories/nsuserdefaults' style='font-size: 101.86666666666666%'>NSUserDefaults(7)</a> <a href='/blog/categories/nsxmlparser' style='font-size: 100.53333333333333%'>NSXMLParser(2)</a> <a href='/blog/categories/objective-c' style='font-size: 160.0%'>Objective-C(225)</a> <a href='/blog/categories/php' style='font-size: 100.26666666666667%'>PHP(1)</a> <a href='/blog/categories/products' style='font-size: 104.53333333333333%'>Products(17)</a> <a href='/blog/categories/quartzcore' style='font-size: 100.8%'>QuartzCore(3)</a> <a href='/blog/categories/rss' style='font-size: 100.53333333333333%'>RSS(2)</a> <a href='/blog/categories/runnable' style='font-size: 100.26666666666667%'>Runnable(1)</a> <a href='/blog/categories/sample' style='font-size: 113.6%'>Sample(51)</a> <a href='/blog/categories/screensaver' style='font-size: 102.4%'>Screensaver(9)</a> <a href='/blog/categories/sdk' style='font-size: 100.53333333333333%'>SDK(2)</a> <a href='/blog/categories/sharecompat' style='font-size: 100.26666666666667%'>ShareCompat(1)</a> <a href='/blog/categories/social' style='font-size: 102.66666666666667%'>Social(10)</a> <a href='/blog/categories/storekit' style='font-size: 100.26666666666667%'>StoreKit(1)</a> <a href='/blog/categories/twitter' style='font-size: 101.6%'>Twitter(6)</a> <a href='/blog/categories/uiaccelerometer' style='font-size: 100.8%'>UIAccelerometer(3)</a> <a href='/blog/categories/uiactionsheet' style='font-size: 100.26666666666667%'>UIActionSheet(1)</a> <a href='/blog/categories/uiactivityindicator' style='font-size: 100.26666666666667%'>UIActivityIndicator(1)</a> <a href='/blog/categories/uiactivityindicatorview' style='font-size: 100.8%'>UIActivityIndicatorView(3)</a> <a href='/blog/categories/uiactivityviewcontroller' style='font-size: 100.26666666666667%'>UIActivityViewController(1)</a> <a href='/blog/categories/uialertview' style='font-size: 101.33333333333333%'>UIAlertView(5)</a> <a href='/blog/categories/uiapplication' style='font-size: 101.86666666666666%'>UIApplication(7)</a> <a href='/blog/categories/uibutton' style='font-size: 101.06666666666666%'>UIButton(4)</a> <a href='/blog/categories/uicolor' style='font-size: 100.8%'>UIColor(3)</a> <a href='/blog/categories/uidatepicker' style='font-size: 101.33333333333333%'>UIDatePicker(5)</a> <a href='/blog/categories/uidevice' style='font-size: 101.6%'>UIDevice(6)</a> <a href='/blog/categories/uideviceorientation' style='font-size: 100.26666666666667%'>UIDeviceOrientation(1)</a> <a href='/blog/categories/uievent' style='font-size: 101.6%'>UIEvent(6)</a> <a href='/blog/categories/uiimage' style='font-size: 104.0%'>UIImage(15)</a> <a href='/blog/categories/uiimagepickercontroller' style='font-size: 101.06666666666666%'>UIImagePickerController(4)</a> <a href='/blog/categories/uiimageview' style='font-size: 103.2%'>UIImageView(12)</a> <a href='/blog/categories/uikit' style='font-size: 115.46666666666667%'>UIKit(58)</a> <a href='/blog/categories/uilabel' style='font-size: 101.86666666666666%'>UILabel(7)</a> <a href='/blog/categories/uinavigationbar' style='font-size: 101.06666666666666%'>UINavigationBar(4)</a> <a href='/blog/categories/uinavigationitem' style='font-size: 100.26666666666667%'>UINavigationItem(1)</a> <a href='/blog/categories/uipasteboard' style='font-size: 101.06666666666666%'>UIPasteboard(4)</a> <a href='/blog/categories/uiscreen' style='font-size: 100.26666666666667%'>UIScreen(1)</a> <a href='/blog/categories/uiscrollbar' style='font-size: 100.26666666666667%'>UIScrollBar(1)</a> <a href='/blog/categories/uiscrollview' style='font-size: 100.26666666666667%'>UIScrollView(1)</a> <a href='/blog/categories/uislider' style='font-size: 100.8%'>UISlider(3)</a> <a href='/blog/categories/uistoryboardsegue' style='font-size: 100.8%'>UIStoryboardSegue(3)</a> <a href='/blog/categories/uiswitch' style='font-size: 100.26666666666667%'>UISwitch(1)</a> <a href='/blog/categories/uitabbar' style='font-size: 100.8%'>UITabBar(3)</a> <a href='/blog/categories/uitableview' style='font-size: 101.06666666666666%'>UITableView(4)</a> <a href='/blog/categories/uitextfield' style='font-size: 100.53333333333333%'>UITextField(2)</a> <a href='/blog/categories/uiview' style='font-size: 102.93333333333334%'>UIView(11)</a> <a href='/blog/categories/uiviewanimationtransition' style='font-size: 100.26666666666667%'>UIViewAnimationTransition(1)</a> <a href='/blog/categories/uiviewcontroller' style='font-size: 101.06666666666666%'>UIViewController(4)</a> <a href='/blog/categories/uiwebview' style='font-size: 101.33333333333333%'>UIWebView(5)</a> <a href='/blog/categories/uncategorized' style='font-size: 100.26666666666667%'>Uncategorized(1)</a> <a href='/blog/categories/windowmanager' style='font-size: 100.26666666666667%'>WindowManager(1)</a> <a href='/blog/categories/xcode' style='font-size: 112.8%'>Xcode(48)</a> <a href='/blog/categories/xcode-5' style='font-size: 102.13333333333334%'>Xcode 5(8)</a> <a href='/blog/categories/xcode-5-dot-1' style='font-size: 100.53333333333333%'>Xcode 5.1(2)</a> </p>
 </section>
 
   </div>
@@ -767,6 +496,10 @@ Cocos2d-xでゲームを開発したいという方に必携の1冊です。実�
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2020/07/09/objc-classes-dc-adfurikun-interstitial/">アドフリくんの動画インタースティシャル広告を表示する「DCAdfurikunInterstitial」クラス</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2020/07/08/objc-classes-dc-adfurikun-banner/">アドフリくんバナーを表示する「DCAdfurikunBanner」クラス</a>
@@ -826,10 +559,6 @@ Cocos2d-xでゲームを開発したいという方に必携の1冊です。実�
     
       <li class="post">
         <a href="/blog/2015/06/26/ios-google-analytics/">iOSアプリへの Google Analytics 導入方法</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2015/06/25/ios-android-array-loop/">配列のループ化（iOS/Android）</a>
       </li>
     
   </ul>

@@ -3,7 +3,7 @@
   <title><![CDATA[Category: Download | 廣川政樹の開発ブログ - Dolice Lab]]></title>
   <link href="https://lab.dolice.net/blog/categories/download/atom.xml" rel="self"/>
   <link href="https://lab.dolice.net/"/>
-  <updated>2020-07-09T08:55:16+09:00</updated>
+  <updated>2020-07-09T12:38:58+09:00</updated>
   <id>https://lab.dolice.net/</id>
   <author>
     <name><![CDATA[Masaki Hirokawa]]></name>
@@ -11,6 +11,312 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[アドフリくんの動画インタースティシャル広告を表示する「DCAdfurikunInterstitial」クラス]]></title>
+    <link href="https://lab.dolice.net/blog/2020/07/09/objc-classes-dc-adfurikun-interstitial/"/>
+    <updated>2020-07-09T12:33:00+09:00</updated>
+    <id>https://lab.dolice.net/blog/2020/07/09/objc-classes-dc-adfurikun-interstitial</id>
+    <content type="html"><![CDATA[<p>iPhoneアプリに<a href="https://adfurikun.jp/" title="アドフリくん">アドフリくん</a>の動画インタースティシャル広告を表示する「<a href="https://github.com/masakihirokawa/objc-classes-dc-adfurikun-interstitial" title="DCAdfurikunInterstitial">DCAdfurikunInterstitial</a>」クラスを作成しました。</p>
+
+<p><a href="https://github.com/glossom-dev/AdfurikunSDK-iOS/wiki" title="公式マニュアル">公式マニュアル</a>の通りの実装になりますが、作業時間短縮のお役に立てば幸いです。ご使用の際は広告枠IDを指定してください。</p>
+
+<p>下記よりサンプルをダウンロード出来ます。</p>
+
+<h2>ダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-classes-dc-adfurikun-interstitial">https://github.com/masakihirokawa/objc-classes-dc-adfurikun-interstitial</a></li>
+</ul>
+
+
+<h2>導入準備</h2>
+
+<h3>1. 広告枠IDの保持</h3>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="k">const</span> <span class="n">ADFURIKUN_INTERS_UNIT_ID</span> <span class="o">=</span> <span class="s">@&quot;広告枠ID&quot;</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h3>2. アプリ起動時に初期化</h3>
+
+<h4>AppDelegate.h</h4>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">import</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">ADFMovieReward</span><span class="o">/</span><span class="n">ADFmyInterstitial</span><span class="p">.</span><span class="n">h</span><span class="o">&gt;&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h4>AppDelegate.m</h4>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">application:</span><span class="p">(</span><span class="n">UIApplication</span> <span class="o">&lt;</span><span class="n">em</span><span class="o">&gt;</span><span class="p">)</span><span class="nv">application</span> <span class="nf">didFinishLaunchingWithOptions:</span><span class="p">(</span><span class="n">NSDictionary</span> <span class="o">&lt;/</span><span class="n">em</span><span class="o">&gt;</span><span class="p">)</span><span class="nv">launchOptions</span>
+</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="c1">// アドフリくんインタースティシャル広告初期化</span>
+</span><span class='line'><span class="k">if</span> <span class="p">([</span><span class="n">ADFmyInterstitial</span> <span class="n">isSupportedOSVersion</span><span class="p">]</span> <span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">ADFmyInterstitial</span> <span class="nl">initializeWithAppID:</span><span class="n">ADFURIKUN_INTERS_UNIT_ID</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">return</span> <span class="n">YES</span><span class="p">;</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h3>e.x. Info.plistの編集</h3>
+
+<p><a href="https://admob.google.com/intl/ja/home/" title="AdMob">AdMob</a>を使用する場合は <em>Info.plist</em>に <em>GADApplicationIdentifier</em>の設定値を追加してください。</p>
+
+<h2>クラスの使用方法</h2>
+
+<h3>動画インタースティシャル広告の読み込み</h3>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">[[</span><span class="n">DCAdfurikunInterstitial</span> <span class="n">sharedManager</span><span class="p">]</span> <span class="nl">loadInterstitial:</span><span class="n">self</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h2>ソースコード</h2>
+
+<h3>DCAdfurikunInterstitial.h</h3>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">import</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">Foundation</span><span class="o">/</span><span class="n">Foundation</span><span class="p">.</span><span class="n">h</span><span class="o">&gt;&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">import</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">ADFMovieReward</span><span class="o">/</span><span class="n">ADFmyInterstitial</span><span class="p">.</span><span class="n">h</span><span class="o">&gt;&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">@interface</span> <span class="nc">DCAdfurikunInterstitial</span> : <span class="nc">NSObject</span> <span class="o">&lt;</span><span class="n">ADFmyMovieRewardDelegate</span><span class="o">&gt;</span> <span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">ADFmyInterstitial</span> <span class="o">*</span><span class="n">adfurikunInterstitial</span><span class="p">;</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">pragma</span> <span class="n">mark</span> <span class="o">-</span> <span class="n">property</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">strong</span><span class="p">)</span> <span class="n">UIViewController</span> <span class="o">*</span><span class="n">rootViewController</span><span class="p">;</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">pragma</span> <span class="n">mark</span> <span class="o">-</span> <span class="n">public</span> <span class="n">method</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">ul</span><span class="o">&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="n">li</span><span class="o">&gt;</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="n">sharedManager</span><span class="p">;</span><span class="o">&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="n">li</span><span class="o">&gt;</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">loadInterstitial:</span><span class="p">(</span><span class="n">UIViewController</span> <span class="o">*</span><span class="p">)</span><span class="n">viewController</span><span class="p">;</span><span class="o">&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">ul</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h3>DCAdfurikunInterstitial.m</h3>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">import</span> <span class="s">&quot;DCAdfurikunInterstitial.h&quot;</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">@implementation</span> <span class="nc">DCAdfurikunInterstitial</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">pragma</span> <span class="n">mark</span> <span class="o">-</span> <span class="n">Shared</span> <span class="n">Manager</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">static</span> <span class="kt">id</span> <span class="n">sharedInstance</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">ul</span><span class="o">&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="n">li</span><span class="o">&gt;</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="n">sharedManager</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="k">@synchronized</span><span class="p">(</span><span class="n">self</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span>  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">sharedInstance</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="n">sharedInstance</span> <span class="o">=</span> <span class="p">[[</span><span class="n">self</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>  <span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>  <span class="k">return</span> <span class="n">sharedInstance</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">ul</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">pragma</span> <span class="n">mark</span> <span class="o">-</span> <span class="n">Adfurikun</span> <span class="n">Interstitial</span> <span class="n">Ad</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">// Adfurikunインタースティシャル広告読み込み</span>
+</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">loadInterstitial:</span><span class="p">(</span><span class="n">UIViewController</span> <span class="o">*</span><span class="p">)</span><span class="n">viewController</span>
+</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">[</span><span class="n">viewController</span> <span class="nl">isEqual:</span><span class="n">self</span><span class="p">.</span><span class="n">rootViewController</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">rootViewController</span> <span class="o">=</span> <span class="n">viewController</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">adfurikunInterstitial</span> <span class="o">=</span> <span class="p">[</span><span class="n">ADFmyInterstitial</span> <span class="nl">getInstance:</span><span class="n">ADFURIKUN_INTERS_UNIT_ID</span> <span class="nl">delegate:</span><span class="n">self</span><span class="p">];</span>
+</span><span class='line'><span class="p">[</span><span class="n">adfurikunInterstitial</span> <span class="n">load</span><span class="p">];</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">// 広告の読み込みが完了した時に呼ばれる</span>
+</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">AdsFetchCompleted:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="n">appID</span> <span class="nl">isTestMode:</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="n">isTestMode_inApp</span>
+</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="k">if</span> <span class="p">(</span><span class="n">adfurikunInterstitial</span> <span class="o">!=</span> <span class="nb">nil</span> <span class="o">&amp;</span><span class="n">amp</span><span class="p">;</span><span class="o">&amp;</span><span class="n">amp</span><span class="p">;</span> <span class="p">[</span><span class="n">adfurikunInterstitial</span> <span class="n">isPrepared</span><span class="p">]</span> <span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">adfurikunInterstitial</span> <span class="nl">playWithPresentingViewController:</span><span class="n">self</span><span class="p">.</span><span class="n">rootViewController</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">// 広告の読み込みに失敗した時に呼ばれる</span>
+</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">AdsFetchFailed:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">&lt;</span><span class="n">em</span><span class="o">&gt;</span><span class="p">)</span><span class="n">appID</span> <span class="nl">error:</span><span class="p">(</span><span class="n">NSError</span> <span class="o">&lt;/</span><span class="n">em</span><span class="o">&gt;</span><span class="p">)</span><span class="n">error</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">// 広告の表示を開始した時に呼ばれる</span>
+</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">AdsDidShow:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">&lt;</span><span class="n">em</span><span class="o">&gt;</span><span class="p">)</span><span class="n">appID</span> <span class="nl">adNetworkKey:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">&lt;/</span><span class="n">em</span><span class="o">&gt;</span><span class="p">)</span><span class="n">adNetworkKey</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">// 広告の再生が完了した時に呼ばれる</span>
+</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">AdsDidCompleteShow:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="n">appID</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">// 広告を閉じた時に呼ばれる</span>
+</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">AdsDidHide:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="n">appID</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">// 広告の再生エラー時に呼ばれる</span>
+</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">AdsPlayFailed:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="n">appID</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[アドフリくんバナーを表示する「DCAdfurikunBanner」クラス]]></title>
@@ -1360,73 +1666,6 @@
 <li><strong><a href="/blog/2014/10/24/ios-ukiyo-e-ja/" title="Androidアプリ「浮世絵壁紙 - 美しい日本画ギャラリー」リリース">Androidアプリ「浮世絵壁紙 - 美しい日本画ギャラリー」リリース</a></strong></li>
 </ul>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[iPhoneアプリ「望みが叶う！引き寄せの法則アプリ」アップデート（1.4.0）]]></title>
-    <link href="https://lab.dolice.net/blog/2018/01/06/ios-law-of-attraction-update-1-4-0/"/>
-    <updated>2018-01-06T10:14:00+09:00</updated>
-    <id>https://lab.dolice.net/blog/2018/01/06/ios-law-of-attraction-update-1-4-0</id>
-    <content type="html"><![CDATA[<p><img src="/images/article/law_of_attraction.jpg" title="iPhone App: 望みが叶う！引き寄せの法則アプリ" alt="iPhone App: 望みが叶う！引き寄せの法則アプリ" /></p>
-
-<p>引き寄せの法則を簡単に実践できる iPhoneアプリ「<a href="https://itunes.apple.com/us/app/law-of-attraction-free/id841157677?mt=8" title="望みが叶う！引き寄せの法則アプリ">望みが叶う！引き寄せの法則アプリ</a>」をアップデートしました。</p>
-
-<p>今回のアップデートでは、ご要望の多かった Touch ID / Face IDへの対応および、iPhone Xへの対応を行いました。また、ユーザーの方々よりご報告いただいた幾つかの不具合を修正いたしました。</p>
-
-<p>現在のバージョンから「望み」編集時の文字数制限を廃止し、改行を連続して入力できるよう仕様を変更しております。これにより、より自由な編集が行えるようになりました。</p>
-
-<p>ユーザーの方々から寄せられたご要望はまだ全て反映できておりませんが、今後も丁寧にアップデートを重ねて行きたく思います。</p>
-
-<p>いつも当アプリをご利用いただき、本当にありがとうございます。</p>
-
-<h2>更新内容</h2>
-
-<ol>
-<li>Touch ID / Face IDに対応いたしました</li>
-<li>「望み」作成時の文字数制限を廃止いたしました</li>
-<li>「望み」編集時、改行した際にカーソルが一番下まで移動する不具合を修正いたしました</li>
-<li>起動パスワードを7文字までしか設定できない不具合を修正いたしました</li>
-<li>iPhone Xに対応いたしました</li>
-</ol>
-
-
-<h2>主な機能</h2>
-
-<ul>
-<li>直感的な操作で美しい「望み」を引き寄せ</li>
-<li>豊富なサンプル文から自分好みの「望み」を作成</li>
-<li>引き寄せの時間を忘れないようプッシュ通知を設定</li>
-<li>アプリ起動時のパスワードロック機能（Touch ID / Face ID対応）</li>
-<li>iCloudへのバックアップ機能</li>
-</ul>
-
-
-<h2>価格</h2>
-
-<ul>
-<li>無料</li>
-</ul>
-
-
-<h2>対応言語</h2>
-
-<ul>
-<li>日本語</li>
-<li>英語</li>
-</ul>
-
-
-<h2>公式Facebookページ</h2>
-
-<ul>
-<li><a href="https://www.facebook.com/dolice.law.of.attraction">https://www.facebook.com/dolice.law.of.attraction</a></li>
-</ul>
-
-
-<h2>アプリのダウンロード</h2>
-
-<p><a href="https://itunes.apple.com/jp/app/%E6%9C%9B%E3%81%BF%E3%81%8C%E5%8F%B6%E3%81%86-%E5%BC%95%E3%81%8D%E5%AF%84%E3%81%9B%E3%81%AE%E6%B3%95%E5%89%87%E3%82%A2%E3%83%97%E3%83%AA/id841157677?mt=8" style="display:inline-block;overflow:hidden;background:url(//linkmaker.itunes.apple.com/assets/shared/badges/ja-jp/appstore-lrg.svg) no-repeat;width:135px;height:40px;background-size:contain;"></a></p>
 ]]></content>
   </entry>
   
