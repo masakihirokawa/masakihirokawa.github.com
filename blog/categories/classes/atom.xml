@@ -3,7 +3,7 @@
   <title><![CDATA[Category: Classes | 廣川政樹の開発ブログ - Dolice Lab]]></title>
   <link href="https://lab.dolice.net/blog/categories/classes/atom.xml" rel="self"/>
   <link href="https://lab.dolice.net/"/>
-  <updated>2020-07-09T12:38:58+09:00</updated>
+  <updated>2020-07-09T14:17:58+09:00</updated>
   <id>https://lab.dolice.net/</id>
   <author>
     <name><![CDATA[Masaki Hirokawa]]></name>
@@ -11,6 +11,762 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[アドフリくんの動画リワード広告導入手順]]></title>
+    <link href="https://lab.dolice.net/blog/2020/07/09/objc-adfurikun-rewarded-video-ads/"/>
+    <updated>2020-07-09T13:50:00+09:00</updated>
+    <id>https://lab.dolice.net/blog/2020/07/09/objc-adfurikun-rewarded-video-ads</id>
+    <content type="html"><![CDATA[<p>iPhoneアプリに<a href="https://adfurikun.jp/" title="アドフリくん">アドフリくん</a>の動画リワード広告を表示するサンプルを作成しました。</p>
+
+<p><a href="https://github.com/glossom-dev/AdfurikunSDK-iOS/wiki" title="公式マニュアル">公式マニュアル</a>を参考にさせていただきました。ご使用の際は広告枠IDを指定してください。</p>
+
+<p>下記よりサンプルをダウンロード出来ますので、導入の際のお役に立てば幸いです。</p>
+
+<h2>ダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-adfurikun-rewarded-video-ads">https://github.com/masakihirokawa/objc-adfurikun-rewarded-video-ads</a></li>
+</ul>
+
+
+<h2>導入準備</h2>
+
+<h3>1. 広告枠IDの保持</h3>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="k">const</span> <span class="n">ADFURIKUN_REWARD_UNIT_ID</span> <span class="o">=</span> <span class="s">@&quot;広告枠ID&quot;</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h3>2. アプリ起動時に初期化</h3>
+
+<h4>AppDelegate.h</h4>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">import</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">ADFMovieReward</span><span class="o">/</span><span class="n">ADFmyMovieReward</span><span class="p">.</span><span class="n">h</span><span class="o">&gt;&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h4>AppDelegate.m</h4>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">application:</span><span class="p">(</span><span class="n">UIApplication</span> <span class="o">&lt;</span><span class="n">em</span><span class="o">&gt;</span><span class="p">)</span><span class="nv">application</span> <span class="nf">didFinishLaunchingWithOptions:</span><span class="p">(</span><span class="n">NSDictionary</span> <span class="o">&lt;/</span><span class="n">em</span><span class="o">&gt;</span><span class="p">)</span><span class="nv">launchOptions</span>
+</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="c1">// アドフリくん動画リワード広告初期化</span>
+</span><span class='line'><span class="p">[</span><span class="n">ADFmyMovieReward</span> <span class="nl">initializeWithAppID:</span><span class="n">ADFURIKUN_REWARD_UNIT_ID</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">return</span> <span class="n">YES</span><span class="p">;</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h3>e.x. Info.plistの編集</h3>
+
+<p><a href="https://admob.google.com/intl/ja/home/" title="AdMob">AdMob</a>を使用する場合は <em>Info.plist</em>に <em>GADApplicationIdentifier</em>の設定値を追加してください。</p>
+
+<h3>動画リワード広告の読み込み</h3>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">[[</span><span class="n">AdfurikunRewardedVideoAds</span> <span class="n">sharedManager</span><span class="p">]</span> <span class="nl">loadRewardedVideoAds:</span><span class="n">self</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h2>ソースコード</h2>
+
+<h3>AdfurikunRewardedVideoAds.h</h3>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">import</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">UIKit</span><span class="o">/</span><span class="n">UIKit</span><span class="p">.</span><span class="n">h</span><span class="o">&gt;&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">import</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">ADFMovieReward</span><span class="o">/</span><span class="n">ADFmyMovieReward</span><span class="p">.</span><span class="n">h</span><span class="o">&gt;&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">@interface</span> <span class="nc">AdfurikunRewardedVideoAds</span> : <span class="nc">NSObject</span> <span class="o">&lt;</span><span class="n">ADFmyMovieRewardDelegate</span><span class="o">&gt;</span> <span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="kt">BOOL</span> <span class="n">isCompletePlaying</span><span class="p">;</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">pragma</span> <span class="n">mark</span> <span class="o">-</span> <span class="n">property</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">)</span>         <span class="n">ADFmyMovieReward</span> <span class="o">&lt;</span><span class="n">em</span><span class="o">&gt;</span><span class="n">adfurikunRewardedAd</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">strong</span><span class="p">)</span> <span class="n">UIViewController</span> <span class="o">&lt;/</span><span class="n">em</span><span class="o">&gt;</span><span class="n">rootViewController</span><span class="p">;</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">retain</span><span class="p">)</span> <span class="n">UIActivityIndicatorView</span> <span class="o">&lt;</span><span class="n">em</span><span class="o">&gt;</span><span class="n">activityIndicator</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">retain</span><span class="p">)</span> <span class="n">UIView</span>                  <span class="o">&lt;/</span><span class="n">em</span><span class="o">&gt;</span><span class="n">overlay</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">assign</span><span class="p">)</span> <span class="kt">BOOL</span>                    <span class="n">showOverlay</span><span class="p">;</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">pragma</span> <span class="n">mark</span> <span class="o">-</span> <span class="n">enumerator</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">typedef</span> <span class="n">NS_ENUM</span><span class="p">(</span><span class="n">NSUInteger</span><span class="p">,</span> <span class="n">activityIndicatorStyles</span><span class="p">)</span> <span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">AI_GRAY</span>        <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+</span><span class='line'><span class="n">AI_WHITE</span>       <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+</span><span class='line'><span class="n">AI_WHITE_LARGE</span> <span class="o">=</span> <span class="mi">3</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">};</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">pragma</span> <span class="n">mark</span> <span class="o">-</span> <span class="n">public</span> <span class="n">method</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">ul</span><span class="o">&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="n">li</span><span class="o">&gt;</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="n">sharedManager</span><span class="p">;</span><span class="o">&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="n">li</span><span class="o">&gt;</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">loadRewardedVideoAds:</span><span class="p">(</span><span class="n">UIViewController</span> <span class="o">*</span><span class="p">)</span><span class="n">viewController</span><span class="p">;</span><span class="o">&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">ul</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h3>AdfurikunRewardedVideoAds.m</h3>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+<span class='line-number'>102</span>
+<span class='line-number'>103</span>
+<span class='line-number'>104</span>
+<span class='line-number'>105</span>
+<span class='line-number'>106</span>
+<span class='line-number'>107</span>
+<span class='line-number'>108</span>
+<span class='line-number'>109</span>
+<span class='line-number'>110</span>
+<span class='line-number'>111</span>
+<span class='line-number'>112</span>
+<span class='line-number'>113</span>
+<span class='line-number'>114</span>
+<span class='line-number'>115</span>
+<span class='line-number'>116</span>
+<span class='line-number'>117</span>
+<span class='line-number'>118</span>
+<span class='line-number'>119</span>
+<span class='line-number'>120</span>
+<span class='line-number'>121</span>
+<span class='line-number'>122</span>
+<span class='line-number'>123</span>
+<span class='line-number'>124</span>
+<span class='line-number'>125</span>
+<span class='line-number'>126</span>
+<span class='line-number'>127</span>
+<span class='line-number'>128</span>
+<span class='line-number'>129</span>
+<span class='line-number'>130</span>
+<span class='line-number'>131</span>
+<span class='line-number'>132</span>
+<span class='line-number'>133</span>
+<span class='line-number'>134</span>
+<span class='line-number'>135</span>
+<span class='line-number'>136</span>
+<span class='line-number'>137</span>
+<span class='line-number'>138</span>
+<span class='line-number'>139</span>
+<span class='line-number'>140</span>
+<span class='line-number'>141</span>
+<span class='line-number'>142</span>
+<span class='line-number'>143</span>
+<span class='line-number'>144</span>
+<span class='line-number'>145</span>
+<span class='line-number'>146</span>
+<span class='line-number'>147</span>
+<span class='line-number'>148</span>
+<span class='line-number'>149</span>
+<span class='line-number'>150</span>
+<span class='line-number'>151</span>
+<span class='line-number'>152</span>
+<span class='line-number'>153</span>
+<span class='line-number'>154</span>
+<span class='line-number'>155</span>
+<span class='line-number'>156</span>
+<span class='line-number'>157</span>
+<span class='line-number'>158</span>
+<span class='line-number'>159</span>
+<span class='line-number'>160</span>
+<span class='line-number'>161</span>
+<span class='line-number'>162</span>
+<span class='line-number'>163</span>
+<span class='line-number'>164</span>
+<span class='line-number'>165</span>
+<span class='line-number'>166</span>
+<span class='line-number'>167</span>
+<span class='line-number'>168</span>
+<span class='line-number'>169</span>
+<span class='line-number'>170</span>
+<span class='line-number'>171</span>
+<span class='line-number'>172</span>
+<span class='line-number'>173</span>
+<span class='line-number'>174</span>
+<span class='line-number'>175</span>
+<span class='line-number'>176</span>
+<span class='line-number'>177</span>
+<span class='line-number'>178</span>
+<span class='line-number'>179</span>
+<span class='line-number'>180</span>
+<span class='line-number'>181</span>
+<span class='line-number'>182</span>
+<span class='line-number'>183</span>
+<span class='line-number'>184</span>
+<span class='line-number'>185</span>
+<span class='line-number'>186</span>
+<span class='line-number'>187</span>
+<span class='line-number'>188</span>
+<span class='line-number'>189</span>
+<span class='line-number'>190</span>
+<span class='line-number'>191</span>
+<span class='line-number'>192</span>
+<span class='line-number'>193</span>
+<span class='line-number'>194</span>
+<span class='line-number'>195</span>
+<span class='line-number'>196</span>
+<span class='line-number'>197</span>
+<span class='line-number'>198</span>
+<span class='line-number'>199</span>
+<span class='line-number'>200</span>
+<span class='line-number'>201</span>
+<span class='line-number'>202</span>
+<span class='line-number'>203</span>
+<span class='line-number'>204</span>
+<span class='line-number'>205</span>
+<span class='line-number'>206</span>
+<span class='line-number'>207</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">import</span> <span class="s">&quot;AdfurikunRewardedVideoAds.h&quot;</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">@implementation</span> <span class="nc">AdfurikunRewardedVideoAds</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">pragma</span> <span class="n">mark</span> <span class="o">-</span> <span class="n">Shared</span> <span class="n">Manager</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">static</span> <span class="kt">id</span> <span class="n">sharedInstance</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">ul</span><span class="o">&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="n">li</span><span class="o">&gt;</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="n">sharedManager</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="k">@synchronized</span><span class="p">(</span><span class="n">self</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span>  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">sharedInstance</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="n">sharedInstance</span> <span class="o">=</span> <span class="p">[[</span><span class="n">self</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>  <span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>  <span class="k">return</span> <span class="n">sharedInstance</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">ul</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">pragma</span> <span class="n">mark</span> <span class="o">-</span> <span class="n">Adfurikun</span> <span class="n">Rewarded</span> <span class="n">Video</span> <span class="n">Ads</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">// 動画リワード広告広告読み込み</span>
+</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">loadRewardedVideoAds:</span><span class="p">(</span><span class="n">UIViewController</span> <span class="o">*</span><span class="p">)</span><span class="n">viewController</span>
+</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">[</span><span class="n">viewController</span> <span class="nl">isEqual:</span><span class="n">self</span><span class="p">.</span><span class="n">rootViewController</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">rootViewController</span> <span class="o">=</span> <span class="n">viewController</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// Adfurikun動画リワード広告読み込み</span>
+</span><span class='line'><span class="n">self</span><span class="p">.</span><span class="n">adfurikunRewardedAd</span> <span class="o">=</span> <span class="p">[</span><span class="n">ADFmyMovieReward</span> <span class="nl">getInstance:</span><span class="n">ADFURIKUN_REWARD_UNIT_ID</span> <span class="nl">delegate:</span><span class="n">self</span><span class="p">];</span>
+</span><span class='line'><span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">adfurikunRewardedAd</span> <span class="n">load</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// アクティビティインジケータのアニメーション開始</span>
+</span><span class='line'><span class="n">CGFloat</span> <span class="k">const</span> <span class="n">screenWidth</span>  <span class="o">=</span> <span class="p">[[</span><span class="n">UIScreen</span> <span class="n">mainScreen</span><span class="p">]</span> <span class="n">bounds</span><span class="p">].</span><span class="n">size</span><span class="p">.</span><span class="n">width</span><span class="p">;</span>
+</span><span class='line'><span class="n">CGFloat</span> <span class="k">const</span> <span class="n">screenHeight</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIScreen</span> <span class="n">mainScreen</span><span class="p">]</span> <span class="n">bounds</span><span class="p">].</span><span class="n">size</span><span class="p">.</span><span class="n">height</span><span class="p">;</span>
+</span><span class='line'><span class="p">[</span><span class="n">self</span> <span class="nl">startActivityIndicator:</span><span class="n">self</span><span class="p">.</span><span class="n">rootViewController</span><span class="p">.</span><span class="n">view</span> <span class="nl">center:</span><span class="n">CGPointMake</span><span class="p">(</span><span class="n">screenWidth</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">screenHeight</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+</span><span class='line'>                     <span class="nl">styleId:</span><span class="n">AI_WHITE</span> <span class="nl">hidesWhenStopped:</span><span class="n">YES</span> <span class="nl">showOverlay:</span><span class="n">YES</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 再生完了フラグを下ろす</span>
+</span><span class='line'><span class="n">isCompletePlaying</span> <span class="o">=</span> <span class="n">NO</span><span class="p">;</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">// 広告取得成功時に呼ばれる</span>
+</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">AdsFetchCompleted:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="n">appID</span> <span class="nl">isTestMode:</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="n">isTestMode_inApp</span>
+</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="c1">//NSLog(@&quot;AdfurikunRewardedVideoAds: AdsFetchCompleted&quot;);</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> <span class="p">([</span><span class="n">self</span><span class="p">.</span><span class="n">adfurikunRewardedAd</span> <span class="n">isPrepared</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">adfurikunRewardedAd</span> <span class="nl">playWithPresentingViewController:</span><span class="n">self</span><span class="p">.</span><span class="n">rootViewController</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">// 広告取得失敗時に呼ばれる</span>
+</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">AdsFetchFailed:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">&lt;</span><span class="n">em</span><span class="o">&gt;</span><span class="p">)</span><span class="n">appID</span> <span class="nl">error:</span><span class="p">(</span><span class="n">NSError</span> <span class="o">&lt;/</span><span class="n">em</span><span class="o">&gt;</span><span class="p">)</span><span class="n">error</span>
+</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="c1">//NSLog(@&quot;AdfurikunRewardedVideoAds: AdsFetchFailed&quot;);</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 再生完了フラグを下ろす</span>
+</span><span class='line'><span class="n">isCompletePlaying</span> <span class="o">=</span> <span class="n">NO</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// アクティビティインジケーターのアニメーション停止</span>
+</span><span class='line'><span class="p">[</span><span class="n">self</span> <span class="n">stopActivityIndicator</span><span class="p">];</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">// 広告表示開始時に呼ばれる</span>
+</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">AdsDidShow:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">&lt;</span><span class="n">em</span><span class="o">&gt;</span><span class="p">)</span><span class="n">appID</span> <span class="nl">adNetworkKey:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">&lt;/</span><span class="n">em</span><span class="o">&gt;</span><span class="p">)</span><span class="n">adNetworkKey</span>
+</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="c1">//NSLog(@&quot;AdfurikunRewardedVideoAds: AdsDidShow&quot;);</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 再生完了フラグを下ろす</span>
+</span><span class='line'><span class="n">isCompletePlaying</span> <span class="o">=</span> <span class="n">NO</span><span class="p">;</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">// 広告表示失敗時に呼ばれる</span>
+</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">AdsPlayFailed:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="n">appID</span>
+</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="c1">//NSLog(@&quot;AdfurikunRewardedVideoAds: AdsPlayFailed&quot;);</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 再生完了フラグを下ろす</span>
+</span><span class='line'><span class="n">isCompletePlaying</span> <span class="o">=</span> <span class="n">NO</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// アクティビティインジケーターのアニメーション停止</span>
+</span><span class='line'><span class="p">[</span><span class="n">self</span> <span class="n">stopActivityIndicator</span><span class="p">];</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">// 広告を最後まで視聴した時に呼ばれる</span>
+</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">AdsDidCompleteShow:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="n">appID</span>
+</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="c1">//NSLog(@&quot;AdfurikunRewardedVideoAds: AdsDidCompleteShow&quot;);</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// TODO: リワード提供</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 再生完了フラグを立てる</span>
+</span><span class='line'><span class="n">isCompletePlaying</span> <span class="o">=</span> <span class="n">YES</span><span class="p">;</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">// 広告を閉じた時に呼ばれる</span>
+</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">AdsDidHide:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="n">appID</span>
+</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="c1">//NSLog(@&quot;AdfurikunRewardedVideoAds: AdsDidHide&quot;);</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// TODO: 再生が完了していればお知らせアラート表示</span>
+</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="n">isCompletePlaying</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">pragma</span> <span class="n">mark</span> <span class="o">-</span> <span class="n">Activity</span> <span class="n">Indicator</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">// アクティビティインジケーターのアニメーション開始</span>
+</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">startActivityIndicator:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="n">view</span> <span class="nl">center:</span><span class="p">(</span><span class="n">CGPoint</span><span class="p">)</span><span class="n">center</span> <span class="nl">styleId:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="n">styleId</span> <span class="nl">hidesWhenStopped:</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="n">hidesWhenStopped</span> <span class="nl">showOverlay:</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="n">showOverlay</span>
+</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="c1">// インジケーター初期化</span>
+</span><span class='line'><span class="n">_activityIndicator</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIActivityIndicatorView</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// スタイルを設定</span>
+</span><span class='line'><span class="k">switch</span> <span class="p">(</span><span class="n">styleId</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">case</span> <span class="nl">AI_GRAY:</span>
+</span><span class='line'>        <span class="n">_activityIndicator</span><span class="p">.</span><span class="n">activityIndicatorViewStyle</span> <span class="o">=</span> <span class="n">UIActivityIndicatorViewStyleGray</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">case</span> <span class="nl">AI_WHITE:</span>
+</span><span class='line'>        <span class="n">_activityIndicator</span><span class="p">.</span><span class="n">activityIndicatorViewStyle</span> <span class="o">=</span> <span class="n">UIActivityIndicatorViewStyleWhite</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">case</span> <span class="nl">AI_WHITE_LARGE:</span>
+</span><span class='line'>        <span class="n">_activityIndicator</span><span class="p">.</span><span class="n">activityIndicatorViewStyle</span> <span class="o">=</span> <span class="n">UIActivityIndicatorViewStyleWhiteLarge</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">break</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// スタイルに応じて寸法変更</span>
+</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="n">_activityIndicator</span><span class="p">.</span><span class="n">activityIndicatorViewStyle</span> <span class="o">==</span> <span class="n">UIActivityIndicatorViewStyleWhiteLarge</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">_activityIndicator</span><span class="p">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">50.0</span><span class="p">,</span> <span class="mf">50.0</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">_activityIndicator</span><span class="p">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">20.0</span><span class="p">,</span> <span class="mf">20.0</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 座標をセンターに指定</span>
+</span><span class='line'><span class="n">_activityIndicator</span><span class="p">.</span><span class="n">center</span> <span class="o">=</span> <span class="n">center</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 停止した時に隠れるよう設定</span>
+</span><span class='line'><span class="n">_activityIndicator</span><span class="p">.</span><span class="n">hidesWhenStopped</span> <span class="o">=</span> <span class="n">hidesWhenStopped</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// インジケーターアニメーション開始</span>
+</span><span class='line'><span class="p">[</span><span class="n">_activityIndicator</span> <span class="n">startAnimating</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// オーバーレイ表示フラグ保持</span>
+</span><span class='line'><span class="n">_showOverlay</span> <span class="o">=</span> <span class="n">showOverlay</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// オーバーレイ表示</span>
+</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="n">_showOverlay</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">_overlay</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame:</span><span class="p">[[</span><span class="n">UIScreen</span> <span class="n">mainScreen</span><span class="p">]</span> <span class="n">bounds</span><span class="p">]];</span>
+</span><span class='line'>    <span class="n">_overlay</span><span class="p">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIColor</span> <span class="nl">colorWithRed:</span><span class="mf">0.0</span> <span class="nl">green:</span><span class="mf">0.0</span> <span class="nl">blue:</span><span class="mf">0.0</span> <span class="nl">alpha:</span><span class="mf">0.5f</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">_overlay</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 画面に追加</span>
+</span><span class='line'><span class="p">[</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">_activityIndicator</span><span class="p">];</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">// アクティビティインジケーターのアニメーション停止</span>
+</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">stopActivityIndicator</span>
+</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="k">if</span> <span class="p">(</span><span class="n">_showOverlay</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">_overlay</span> <span class="n">removeFromSuperview</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="p">[</span><span class="n">_activityIndicator</span> <span class="n">stopAnimating</span><span class="p">];</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h2>リワードの提供</h2>
+
+<p>当方は動画リワード広告が最後まで再生されたら3日間広告を表示しないという設定にしています。</p>
+
+<p>また、リワードが提供されたことをユーザーにお知らせするアラートに使用するため、リワード期限日を文字列で取得できるようにしています。</p>
+
+<p>まず下記のようにリワードを提供します。</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">// 動画リワード広告再生完了時の処理</span>
+</span><span class='line'><span class="k">+</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">onCompleteRewardedVideoAds</span>
+</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="c1">// 視聴済みフラグを立てる</span>
+</span><span class='line'><span class="p">[</span><span class="n">Common</span> <span class="n">sharedManager</span><span class="p">].</span><span class="n">isRewarded</span> <span class="o">=</span> <span class="n">YES</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// ユーザーデフォルト更新</span>
+</span><span class='line'><span class="p">[[</span><span class="n">Common</span> <span class="n">sharedManager</span><span class="p">].</span><span class="n">userDefaults</span> <span class="nl">setBool:</span><span class="p">[</span><span class="n">Common</span> <span class="n">sharedManager</span><span class="p">].</span><span class="n">isRewarded</span> <span class="nl">forKey:</span><span class="n">UD_REWARDED_KEY</span><span class="p">];</span>
+</span><span class='line'><span class="p">[[</span><span class="n">Common</span> <span class="n">sharedManager</span><span class="p">].</span><span class="n">userDefaults</span> <span class="n">synchronize</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// リワード受取日と期限日の保存</span>
+</span><span class='line'><span class="n">NSDate</span> <span class="o">*</span><span class="k">const</span> <span class="n">rewardDateReceived</span>   <span class="o">=</span> <span class="p">[</span><span class="n">NSDate</span> <span class="n">date</span><span class="p">];</span>
+</span><span class='line'><span class="n">NSDate</span> <span class="o">*</span><span class="k">const</span> <span class="n">rewardExpirationDate</span> <span class="o">=</span> <span class="p">[</span><span class="n">Common</span> <span class="n">rewardExpirationDate</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">[[</span><span class="n">Common</span> <span class="n">sharedManager</span><span class="p">].</span><span class="n">userDefaults</span> <span class="nl">setObject:</span><span class="n">rewardDateReceived</span> <span class="nl">forKey:</span><span class="n">UD_REWARD_DATE_RECEIVED_KEY</span><span class="p">];</span>
+</span><span class='line'><span class="p">[[</span><span class="n">Common</span> <span class="n">sharedManager</span><span class="p">].</span><span class="n">userDefaults</span> <span class="nl">setObject:</span><span class="n">rewardExpirationDate</span> <span class="nl">forKey:</span><span class="n">UD_REWARD_EXPIRATION_KEY</span><span class="p">];</span>
+</span><span class='line'><span class="p">[[</span><span class="n">Common</span> <span class="n">sharedManager</span><span class="p">].</span><span class="n">userDefaults</span> <span class="n">synchronize</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// TODO: バナー削除</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">// リワード期限日の取得</span>
+</span><span class='line'><span class="o">+</span> <span class="p">(</span><span class="n">NSDate</span> <span class="o">*</span><span class="p">)</span><span class="n">rewardExpirationDate</span>
+</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">NSDate</span> <span class="o">*</span><span class="k">const</span> <span class="n">rewardDateReceived</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSDate</span> <span class="n">date</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">return</span> <span class="p">[</span><span class="n">rewardDateReceived</span> <span class="nl">initWithTimeInterval:</span><span class="p">[</span><span class="n">Common</span> <span class="n">sharedManager</span><span class="p">].</span><span class="n">rewardPeriod</span> <span class="o">*</span> <span class="mi">24</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span> <span class="nl">sinceDate:</span><span class="n">rewardDateReceived</span><span class="p">];</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">// リワード期限日を文字列で取得</span>
+</span><span class='line'><span class="o">+</span> <span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="n">rewardExpirationDateStr</span>
+</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">NSDateFormatter</span> <span class="o">*</span><span class="n">dateFormatter</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSDateFormatter</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'><span class="p">[</span><span class="n">dateFormatter</span> <span class="nl">setLocale:</span><span class="p">[</span><span class="n">NSLocale</span> <span class="n">systemLocale</span><span class="p">]];</span>
+</span><span class='line'><span class="p">[</span><span class="n">dateFormatter</span> <span class="nl">setDateFormat:</span><span class="s">@&quot;yyyy/MM/dd HH:mm:ss&quot;</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">NSDate</span>   <span class="o">*</span><span class="k">const</span> <span class="n">expirationDate</span>    <span class="o">=</span> <span class="p">[</span><span class="n">Common</span> <span class="n">rewardExpirationDate</span><span class="p">];</span>
+</span><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="k">const</span> <span class="n">expirationDateStr</span> <span class="o">=</span> <span class="p">[</span><span class="n">dateFormatter</span> <span class="nl">stringFromDate:</span><span class="n">expirationDate</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">return</span> <span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">@&quot;（有効期限: %@）&quot;</span><span class="p">,</span> <span class="n">expirationDateStr</span><span class="p">];</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h2>リワード期間中であるか判定</h2>
+
+<p>アプリ起動時にリワード期間中であるか判定し、フラグを更新します。</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">application:</span><span class="p">(</span><span class="n">UIApplication</span> <span class="o">&lt;</span><span class="n">em</span><span class="o">&gt;</span><span class="p">)</span><span class="nv">application</span> <span class="nf">didFinishLaunchingWithOptions:</span><span class="p">(</span><span class="n">NSDictionary</span> <span class="o">&lt;/</span><span class="n">em</span><span class="o">&gt;</span><span class="p">)</span><span class="nv">launchOptions</span>
+</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="c1">// リワード期間であれば期限切れであるか判定</span>
+</span><span class='line'><span class="k">if</span> <span class="p">([</span><span class="n">Common</span> <span class="n">sharedManager</span><span class="p">].</span><span class="n">isRewarded</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">// リワード受取日とリワード期限日の取得</span>
+</span><span class='line'>    <span class="n">NSDate</span> <span class="o">*</span><span class="k">const</span> <span class="n">rewardDateReceived</span>   <span class="o">=</span> <span class="p">[[</span><span class="n">Common</span> <span class="n">sharedManager</span><span class="p">].</span><span class="n">userDefaults</span> <span class="nl">objectForKey:</span><span class="n">UD_REWARD_DATE_RECEIVED_KEY</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">NSDate</span> <span class="o">*</span><span class="k">const</span> <span class="n">rewardExpirationDate</span> <span class="o">=</span> <span class="p">[[</span><span class="n">Common</span> <span class="n">sharedManager</span><span class="p">].</span><span class="n">userDefaults</span> <span class="nl">objectForKey:</span><span class="n">UD_REWARD_EXPIRATION_KEY</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 現在時刻がリワード期間であるか判定</span>
+</span><span class='line'>    <span class="n">NSDate</span> <span class="o">*</span><span class="k">const</span> <span class="n">now</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSDate</span> <span class="n">date</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">Common</span> <span class="n">sharedManager</span><span class="p">].</span><span class="n">isRewarded</span> <span class="o">=</span> <span class="p">[</span><span class="n">now</span> <span class="nl">compare:</span><span class="n">rewardDateReceived</span><span class="p">]</span> <span class="o">==</span> <span class="n">NSOrderedDescending</span> <span class="o">&amp;</span><span class="n">amp</span><span class="p">;</span><span class="o">&amp;</span><span class="n">amp</span><span class="p">;</span> <span class="p">[</span><span class="n">now</span> <span class="nl">compare:</span><span class="n">rewardExpirationDate</span><span class="p">]</span> <span class="o">==</span> <span class="n">NSOrderedAscending</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// ユーザーデフォルト更新</span>
+</span><span class='line'>    <span class="p">[[</span><span class="n">Common</span> <span class="n">sharedManager</span><span class="p">].</span><span class="n">userDefaults</span> <span class="nl">setBool:</span><span class="p">[</span><span class="n">Common</span> <span class="n">sharedManager</span><span class="p">].</span><span class="n">isRewarded</span> <span class="nl">forKey:</span><span class="n">UD_REWARDED_KEY</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[[</span><span class="n">Common</span> <span class="n">sharedManager</span><span class="p">].</span><span class="n">userDefaults</span> <span class="n">synchronize</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">return</span> <span class="n">YES</span><span class="p">;</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>以上で動画リワード広告の実装は完了になります。</p>
+
+<h2>関連記事</h2>
+
+<ul>
+<li><strong><a href="/blog/2020/07/08/objc-classes-dc-adfurikun-banner/" title="アドフリくんバナーを表示する「DCAdfurikunBanner」クラス">アドフリくんバナーを表示する「DCAdfurikunBanner」クラス</a></strong></li>
+<li><strong><a href="/blog/2020/07/09/objc-classes-dc-adfurikun-interstitial/" title="アドフリくんの動画インタースティシャル広告を表示する「DCAdfurikunInterstitial」クラス">アドフリくんの動画インタースティシャル広告を表示する「DCAdfurikunInterstitial」クラス</a></strong></li>
+</ul>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[アドフリくんの動画インタースティシャル広告を表示する「DCAdfurikunInterstitial」クラス]]></title>
@@ -315,6 +1071,14 @@
 </span><span class='line'>
 </span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">@end</span>
 </span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h2>関連記事</h2>
+
+<ul>
+<li><strong><a href="/blog/2020/07/08/objc-classes-dc-adfurikun-banner/" title="アドフリくんバナーを表示する「DCAdfurikunBanner」クラス">アドフリくんバナーを表示する「DCAdfurikunBanner」クラス</a></strong></li>
+<li><strong><a href="/blog/2020/07/09/adfurikun-rewarded-video-ads/" title="アドフリくんの動画リワード広告導入手順">アドフリくんの動画リワード広告導入手順</a></strong></li>
+</ul>
+
 ]]></content>
   </entry>
   
@@ -845,6 +1609,14 @@
 </span><span class='line'>
 </span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">@end</span>
 </span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h2>関連記事</h2>
+
+<ul>
+<li><strong><a href="/blog/2020/07/09/objc-classes-dc-adfurikun-interstitial/" title="アドフリくんの動画インタースティシャル広告を表示する「DCAdfurikunInterstitial」クラス">アドフリくんの動画インタースティシャル広告を表示する「DCAdfurikunInterstitial」クラス</a></strong></li>
+<li><strong><a href="/blog/2020/07/09/adfurikun-rewarded-video-ads/" title="アドフリくんの動画リワード広告導入手順">アドフリくんの動画リワード広告導入手順</a></strong></li>
+</ul>
+
 ]]></content>
   </entry>
   
@@ -1348,789 +2120,6 @@ iOSアプリ開発をこれから始める方に最もお薦めな一冊です�
 
 <p><strong><a href="https://www.amazon.co.jp/gp/product/4797386258/ref=as_li_qf_sp_asin_tl?ie=UTF8&camp=247&creative=1211&creativeASIN=4797386258&linkCode=as2&tag=pinocchio-22">詳解 Swift 改訂版</a></strong><img src="https://ir-jp.amazon-adsystem.com/e/ir?t=pinocchio-22&l=as2&o=9&a=4797386258" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" /><br />
 Swiftのかなり入り込んだところまで解説しながら、実践コードを多数収録しています。応用本になりますので、入門書を読み終えて中級者から上級者に差し掛かる時に読むことをお勧めします。読み物としてだけではなくリファレンスとしても使用できます。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[指定した日時からの経過時間を取得する「DCDate」クラス改訂版]]></title>
-    <link href="https://lab.dolice.net/blog/2014/01/15/download-objc-classes-dc-date3/"/>
-    <updated>2014-01-15T14:51:00+09:00</updated>
-    <id>https://lab.dolice.net/blog/2014/01/15/download-objc-classes-dc-date3</id>
-    <content type="html"><![CDATA[<p><img src="/images/article/dc-date3.png" alt="" /></p>
-
-<p>UIDatePickerの取得や年号日付時刻等の情報を取得する「DCDate」クラスに、指定した日時からの経過時間を「日・時・分・秒」単位で取得する機能を追加しました。</p>
-
-<p>例えば「RSSフィードから取得した更新日時が7日以内であれば更新アイコンを表示する」等の用途に使用できると思います。</p>
-
-<p>下記よりファイルのダウンロードが行えます。</p>
-
-<h2>ダウンロード</h2>
-
-<ul>
-<li><a href="https://github.com/masakihirokawa/objc-classes-dc-date">https://github.com/masakihirokawa/objc-classes-dc-date</a></li>
-</ul>
-
-
-<h2>主な機能</h2>
-
-<ol>
-<li>UIDatePickerの取得</li>
-<li>UIDatePickerの選択時刻と現在時刻の比較</li>
-<li>UIDatePickerで選択した日付と現在の日付の比較</li>
-<li>UIDatePickerで選択中の年号/月日/時分の取得</li>
-<li>現在の年号/月日/時分秒の取得</li>
-<li>指定した日時からの経過時間を取得</li>
-</ol>
-
-
-<h2>使用方法</h2>
-
-<h3>指定した日時からの経過日数を取得</h3>
-
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">// 日付フォーマット定義</span>
-</span><span class='line'><span class="n">NSDateFormatter</span> <span class="o">*</span><span class="n">dateFormatter</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSDateFormatter</span> <span class="n">alloc</span><span class="p">]</span><span class="n">init</span><span class="p">];</span>
-</span><span class='line'><span class="p">[</span><span class="n">dateFormatter</span> <span class="nl">setDateFormat:</span><span class="s">@&quot;yyyy-MM-dd HH:mm:ss&quot;</span><span class="p">];</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">// 基点となる日付(2014年1月1日)と目標の日付(今日)を定義</span>
-</span><span class='line'><span class="n">NSString</span> <span class="o">&lt;</span><span class="n">em</span><span class="o">&gt;</span><span class="n">referenceDateString</span> <span class="o">=</span> <span class="s">@&quot;2014-01-01 00:00:00&quot;</span><span class="p">;</span>
-</span><span class='line'><span class="n">NSString</span> <span class="o">&lt;/</span><span class="n">em</span><span class="o">&gt;</span><span class="n">targetDateString</span>    <span class="o">=</span> <span class="p">[</span><span class="n">dateFormatter</span> <span class="nl">stringFromDate:</span><span class="p">[</span><span class="n">NSDate</span> <span class="n">date</span><span class="p">]];</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">// 2014年1月1日から今日までの経過日数を CGFloat型で取得</span>
-</span><span class='line'><span class="n">CGFloat</span> <span class="n">since</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCDate</span> <span class="nl">since:</span><span class="n">referenceDateString</span> <span class="nl">targetDateString:</span><span class="n">targetDateString</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span>               <span class="nl">dateFormat:</span><span class="s">@&quot;yyyy-MM-dd HH:mm:ss&quot;</span> <span class="nl">dateUnit:</span><span class="mi">3</span><span class="p">];</span>
-</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">// 小数点を切り捨て NSNumber型に変換</span>
-</span><span class='line'><span class="n">NSNumber</span> <span class="o">*</span><span class="n">sinceNum</span> <span class="o">=</span> <span class="err">@</span><span class="p">(</span><span class="n">floorf</span><span class="p">(</span><span class="n">since</span><span class="p">));</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">// コンソール出力</span>
-</span><span class='line'><span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;今日は 2014年1月1日から %@日経過しています&quot;</span><span class="p">,</span> <span class="n">sinceNum</span><span class="p">);</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
-
-<h3>UIDatePickerの取得</h3>
-
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">UIDatePicker</span> <span class="o">*</span><span class="n">datePicker</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCDate</span> <span class="nl">picker:</span><span class="n">self</span> <span class="nl">rect:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">frame</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">height</span> <span class="o">-</span> <span class="mi">210</span><span class="p">,</span> <span class="mi">320</span><span class="p">,</span> <span class="mi">210</span><span class="p">)</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span>                    <span class="nl">mode:</span><span class="n">UIDatePickerModeDateAndTime</span> <span class="nl">minuteInterval:</span><span class="mi">1</span>
-</span><span class='line'>                <span class="nl">dateText:</span><span class="s">@&quot;2013-09-09 15:00:00&quot;</span> <span class="nl">dateFormat:</span><span class="s">@&quot;yyyy-MM-dd HH:mm:ss&quot;</span>
-</span><span class='line'>                  <span class="nl">action:</span><span class="k">@selector</span><span class="p">(</span><span class="nl">pickerChanged:</span><span class="p">)];</span>
-</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
-
-<h3>現在の日付とピッカーの日付を比較</h3>
-
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="kt">BOOL</span> <span class="n">isCurrentDate</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCDate</span> <span class="n">isCurrentDate</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
-
-<h3>現在時刻とピッカーの時刻を比較</h3>
-
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="kt">BOOL</span> <span class="n">isCurrentTime</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCDate</span> <span class="n">isCurrentTime</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
-
-<h3>UIDatePickerで選択中の年号/月日/時分の取得</h3>
-
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">NSInteger</span> <span class="n">pickerYear</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCDate</span> <span class="n">pickerYear</span><span class="p">];</span>
-</span><span class='line'><span class="n">NSInteger</span> <span class="n">pickerMonth</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCDate</span> <span class="n">pickerMonth</span><span class="p">];</span>
-</span><span class='line'><span class="n">NSInteger</span> <span class="n">pickerDay</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCDate</span> <span class="n">pickerDay</span><span class="p">];</span>
-</span><span class='line'><span class="n">NSInteger</span> <span class="n">pickerHour</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCDate</span> <span class="n">pickerHour</span><span class="p">];</span>
-</span><span class='line'><span class="n">NSInteger</span> <span class="n">pickerMinute</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCDate</span> <span class="n">pickerMinute</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
-
-<h3>現在の年号/月日/時分秒の取得</h3>
-
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">NSInteger</span> <span class="n">currentYear</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCDate</span> <span class="n">currentYear</span><span class="p">];</span>
-</span><span class='line'><span class="n">NSInteger</span> <span class="n">currentMonth</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCDate</span> <span class="n">currentMonth</span><span class="p">];</span>
-</span><span class='line'><span class="n">NSInteger</span> <span class="n">currentDay</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCDate</span> <span class="n">currentDay</span><span class="p">];</span>
-</span><span class='line'><span class="n">NSInteger</span> <span class="n">currentHour</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCDate</span> <span class="n">currentHour</span><span class="p">];</span>
-</span><span class='line'><span class="n">NSInteger</span> <span class="n">currentMinute</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCDate</span> <span class="n">currentMinute</span><span class="p">];</span>
-</span><span class='line'><span class="n">NSInteger</span> <span class="n">currentSecond</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCDate</span> <span class="n">currentSecond</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
-
-<h2>ソースコード</h2>
-
-<h3>DCDate.h</h3>
-
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">import</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">Foundation</span><span class="o">/</span><span class="n">Foundation</span><span class="p">.</span><span class="n">h</span><span class="o">&gt;&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">@interface</span> <span class="nc">DCDate</span> : <span class="nc">NSObject</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">pragma</span> <span class="n">mark</span> <span class="o">-</span> <span class="n">public</span> <span class="n">method</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">ul</span><span class="o">&gt;</span>
-</span><span class='line'><span class="o">&lt;</span><span class="n">li</span><span class="o">&gt;</span><span class="p">(</span><span class="n">UIDatePicker</span> <span class="o">&lt;</span><span class="n">em</span><span class="o">&gt;</span><span class="p">)</span><span class="nl">picker:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="n">delegate</span> <span class="nl">rect:</span><span class="p">(</span><span class="n">CGRect</span><span class="p">)</span><span class="n">rect</span> <span class="nl">mode:</span><span class="p">(</span><span class="n">UIDatePickerMode</span><span class="p">)</span><span class="n">mode</span> <span class="nl">minuteInterval:</span><span class="p">(</span><span class="n">NSUInteger</span><span class="p">)</span><span class="n">minuteInterval</span> <span class="nl">dateText:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">&lt;/</span><span class="n">em</span><span class="o">&gt;</span><span class="p">)</span><span class="n">dateText</span> <span class="nl">dateFormat:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="n">dateFormat</span> <span class="nl">action:</span><span class="p">(</span><span class="kt">SEL</span><span class="p">)</span><span class="n">action</span><span class="p">;</span><span class="o">&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
-</span><span class='line'><span class="o">&lt;</span><span class="n">li</span><span class="o">&gt;</span><span class="p">(</span><span class="n">NSDate</span> <span class="o">&lt;</span><span class="n">em</span><span class="o">&gt;</span><span class="p">)</span><span class="nl">date:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">&lt;/</span><span class="n">em</span><span class="o">&gt;</span><span class="p">)</span><span class="n">dateText</span> <span class="nl">dateFormat:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="n">dateFormat</span><span class="p">;</span><span class="o">&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
-</span><span class='line'><span class="o">&lt;</span><span class="n">li</span><span class="o">&gt;</span><span class="p">(</span><span class="n">NSString</span> <span class="o">&lt;</span><span class="n">em</span><span class="o">&gt;</span><span class="p">)</span><span class="nl">dateText:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">&lt;/</span><span class="n">em</span><span class="o">&gt;</span><span class="p">)</span><span class="n">dateFormat</span><span class="p">;</span><span class="o">&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
-</span><span class='line'><span class="o">&lt;</span><span class="n">li</span><span class="o">&gt;</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="n">pickerYear</span><span class="p">;</span><span class="o">&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
-</span><span class='line'><span class="o">&lt;</span><span class="n">li</span><span class="o">&gt;</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="n">pickerMonth</span><span class="p">;</span><span class="o">&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
-</span><span class='line'><span class="o">&lt;</span><span class="n">li</span><span class="o">&gt;</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="n">pickerDay</span><span class="p">;</span><span class="o">&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
-</span><span class='line'><span class="o">&lt;</span><span class="n">li</span><span class="o">&gt;</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="n">pickerHour</span><span class="p">;</span><span class="o">&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
-</span><span class='line'><span class="o">&lt;</span><span class="n">li</span><span class="o">&gt;</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="n">pickerMinute</span><span class="p">;</span><span class="o">&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
-</span><span class='line'><span class="o">&lt;</span><span class="n">li</span><span class="o">&gt;</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="n">currentYear</span><span class="p">;</span><span class="o">&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
-</span><span class='line'><span class="o">&lt;</span><span class="n">li</span><span class="o">&gt;</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="n">currentMonth</span><span class="p">;</span><span class="o">&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
-</span><span class='line'><span class="o">&lt;</span><span class="n">li</span><span class="o">&gt;</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="n">currentDay</span><span class="p">;</span><span class="o">&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
-</span><span class='line'><span class="o">&lt;</span><span class="n">li</span><span class="o">&gt;</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="n">currentHour</span><span class="p">;</span><span class="o">&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
-</span><span class='line'><span class="o">&lt;</span><span class="n">li</span><span class="o">&gt;</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="n">currentMinute</span><span class="p">;</span><span class="o">&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
-</span><span class='line'><span class="o">&lt;</span><span class="n">li</span><span class="o">&gt;</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="n">currentSecond</span><span class="p">;</span><span class="o">&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
-</span><span class='line'><span class="o">&lt;</span><span class="n">li</span><span class="o">&gt;</span><span class="p">(</span><span class="n">NSDateComponents</span> <span class="o">*</span><span class="p">)</span><span class="n">currentDateComponents</span><span class="p">;</span><span class="o">&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
-</span><span class='line'><span class="o">&lt;</span><span class="n">li</span><span class="o">&gt;</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="n">isCurrentDate</span><span class="p">;</span><span class="o">&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
-</span><span class='line'><span class="o">&lt;</span><span class="n">li</span><span class="o">&gt;</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="n">isCurrentTime</span><span class="p">;</span><span class="o">&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
-</span><span class='line'><span class="o">&lt;</span><span class="n">li</span><span class="o">&gt;</span><span class="p">(</span><span class="n">CGFloat</span><span class="p">)</span><span class="nl">since:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">&lt;</span><span class="n">em</span><span class="o">&gt;</span><span class="p">)</span><span class="n">referenceDateString</span> <span class="nl">targetDateString:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">&lt;/</span><span class="n">em</span><span class="o">&gt;</span><span class="p">)</span><span class="n">targetDateString</span> <span class="nl">dateFormat:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="n">dateFormat</span> <span class="nl">dateUnit:</span><span class="p">(</span><span class="n">NSUInteger</span><span class="p">)</span><span class="n">dateUnit</span><span class="p">;</span><span class="o">&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
-</span><span class='line'><span class="o">&lt;/</span><span class="n">ul</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
-
-<h3>DCDate.m</h3>
-
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-<span class='line-number'>65</span>
-<span class='line-number'>66</span>
-<span class='line-number'>67</span>
-<span class='line-number'>68</span>
-<span class='line-number'>69</span>
-<span class='line-number'>70</span>
-<span class='line-number'>71</span>
-<span class='line-number'>72</span>
-<span class='line-number'>73</span>
-<span class='line-number'>74</span>
-<span class='line-number'>75</span>
-<span class='line-number'>76</span>
-<span class='line-number'>77</span>
-<span class='line-number'>78</span>
-<span class='line-number'>79</span>
-<span class='line-number'>80</span>
-<span class='line-number'>81</span>
-<span class='line-number'>82</span>
-<span class='line-number'>83</span>
-<span class='line-number'>84</span>
-<span class='line-number'>85</span>
-<span class='line-number'>86</span>
-<span class='line-number'>87</span>
-<span class='line-number'>88</span>
-<span class='line-number'>89</span>
-<span class='line-number'>90</span>
-<span class='line-number'>91</span>
-<span class='line-number'>92</span>
-<span class='line-number'>93</span>
-<span class='line-number'>94</span>
-<span class='line-number'>95</span>
-<span class='line-number'>96</span>
-<span class='line-number'>97</span>
-<span class='line-number'>98</span>
-<span class='line-number'>99</span>
-<span class='line-number'>100</span>
-<span class='line-number'>101</span>
-<span class='line-number'>102</span>
-<span class='line-number'>103</span>
-<span class='line-number'>104</span>
-<span class='line-number'>105</span>
-<span class='line-number'>106</span>
-<span class='line-number'>107</span>
-<span class='line-number'>108</span>
-<span class='line-number'>109</span>
-<span class='line-number'>110</span>
-<span class='line-number'>111</span>
-<span class='line-number'>112</span>
-<span class='line-number'>113</span>
-<span class='line-number'>114</span>
-<span class='line-number'>115</span>
-<span class='line-number'>116</span>
-<span class='line-number'>117</span>
-<span class='line-number'>118</span>
-<span class='line-number'>119</span>
-<span class='line-number'>120</span>
-<span class='line-number'>121</span>
-<span class='line-number'>122</span>
-<span class='line-number'>123</span>
-<span class='line-number'>124</span>
-<span class='line-number'>125</span>
-<span class='line-number'>126</span>
-<span class='line-number'>127</span>
-<span class='line-number'>128</span>
-<span class='line-number'>129</span>
-<span class='line-number'>130</span>
-<span class='line-number'>131</span>
-<span class='line-number'>132</span>
-<span class='line-number'>133</span>
-<span class='line-number'>134</span>
-<span class='line-number'>135</span>
-<span class='line-number'>136</span>
-<span class='line-number'>137</span>
-<span class='line-number'>138</span>
-<span class='line-number'>139</span>
-<span class='line-number'>140</span>
-<span class='line-number'>141</span>
-<span class='line-number'>142</span>
-<span class='line-number'>143</span>
-<span class='line-number'>144</span>
-<span class='line-number'>145</span>
-<span class='line-number'>146</span>
-<span class='line-number'>147</span>
-<span class='line-number'>148</span>
-<span class='line-number'>149</span>
-<span class='line-number'>150</span>
-<span class='line-number'>151</span>
-<span class='line-number'>152</span>
-<span class='line-number'>153</span>
-<span class='line-number'>154</span>
-<span class='line-number'>155</span>
-<span class='line-number'>156</span>
-<span class='line-number'>157</span>
-<span class='line-number'>158</span>
-<span class='line-number'>159</span>
-<span class='line-number'>160</span>
-<span class='line-number'>161</span>
-<span class='line-number'>162</span>
-<span class='line-number'>163</span>
-<span class='line-number'>164</span>
-<span class='line-number'>165</span>
-<span class='line-number'>166</span>
-<span class='line-number'>167</span>
-<span class='line-number'>168</span>
-<span class='line-number'>169</span>
-<span class='line-number'>170</span>
-<span class='line-number'>171</span>
-<span class='line-number'>172</span>
-<span class='line-number'>173</span>
-<span class='line-number'>174</span>
-<span class='line-number'>175</span>
-<span class='line-number'>176</span>
-<span class='line-number'>177</span>
-<span class='line-number'>178</span>
-<span class='line-number'>179</span>
-<span class='line-number'>180</span>
-<span class='line-number'>181</span>
-<span class='line-number'>182</span>
-<span class='line-number'>183</span>
-<span class='line-number'>184</span>
-<span class='line-number'>185</span>
-<span class='line-number'>186</span>
-<span class='line-number'>187</span>
-<span class='line-number'>188</span>
-<span class='line-number'>189</span>
-<span class='line-number'>190</span>
-<span class='line-number'>191</span>
-<span class='line-number'>192</span>
-<span class='line-number'>193</span>
-<span class='line-number'>194</span>
-<span class='line-number'>195</span>
-<span class='line-number'>196</span>
-<span class='line-number'>197</span>
-<span class='line-number'>198</span>
-<span class='line-number'>199</span>
-<span class='line-number'>200</span>
-<span class='line-number'>201</span>
-<span class='line-number'>202</span>
-<span class='line-number'>203</span>
-<span class='line-number'>204</span>
-<span class='line-number'>205</span>
-<span class='line-number'>206</span>
-<span class='line-number'>207</span>
-<span class='line-number'>208</span>
-<span class='line-number'>209</span>
-<span class='line-number'>210</span>
-<span class='line-number'>211</span>
-<span class='line-number'>212</span>
-<span class='line-number'>213</span>
-<span class='line-number'>214</span>
-<span class='line-number'>215</span>
-<span class='line-number'>216</span>
-<span class='line-number'>217</span>
-<span class='line-number'>218</span>
-<span class='line-number'>219</span>
-<span class='line-number'>220</span>
-<span class='line-number'>221</span>
-<span class='line-number'>222</span>
-<span class='line-number'>223</span>
-<span class='line-number'>224</span>
-<span class='line-number'>225</span>
-<span class='line-number'>226</span>
-<span class='line-number'>227</span>
-<span class='line-number'>228</span>
-<span class='line-number'>229</span>
-<span class='line-number'>230</span>
-<span class='line-number'>231</span>
-<span class='line-number'>232</span>
-<span class='line-number'>233</span>
-<span class='line-number'>234</span>
-<span class='line-number'>235</span>
-<span class='line-number'>236</span>
-<span class='line-number'>237</span>
-<span class='line-number'>238</span>
-<span class='line-number'>239</span>
-<span class='line-number'>240</span>
-<span class='line-number'>241</span>
-<span class='line-number'>242</span>
-<span class='line-number'>243</span>
-<span class='line-number'>244</span>
-<span class='line-number'>245</span>
-<span class='line-number'>246</span>
-<span class='line-number'>247</span>
-<span class='line-number'>248</span>
-<span class='line-number'>249</span>
-<span class='line-number'>250</span>
-<span class='line-number'>251</span>
-<span class='line-number'>252</span>
-<span class='line-number'>253</span>
-<span class='line-number'>254</span>
-<span class='line-number'>255</span>
-<span class='line-number'>256</span>
-<span class='line-number'>257</span>
-<span class='line-number'>258</span>
-<span class='line-number'>259</span>
-<span class='line-number'>260</span>
-<span class='line-number'>261</span>
-<span class='line-number'>262</span>
-<span class='line-number'>263</span>
-<span class='line-number'>264</span>
-<span class='line-number'>265</span>
-<span class='line-number'>266</span>
-<span class='line-number'>267</span>
-<span class='line-number'>268</span>
-<span class='line-number'>269</span>
-<span class='line-number'>270</span>
-<span class='line-number'>271</span>
-<span class='line-number'>272</span>
-<span class='line-number'>273</span>
-<span class='line-number'>274</span>
-<span class='line-number'>275</span>
-<span class='line-number'>276</span>
-<span class='line-number'>277</span>
-<span class='line-number'>278</span>
-<span class='line-number'>279</span>
-<span class='line-number'>280</span>
-<span class='line-number'>281</span>
-<span class='line-number'>282</span>
-<span class='line-number'>283</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">import</span> <span class="s">&quot;DCDate.h&quot;</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">@implementation</span> <span class="nc">DCDate</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">static</span> <span class="n">UIDatePicker</span> <span class="o">*</span><span class="n">datePicker</span><span class="p">;</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">pragma</span> <span class="n">mark</span> <span class="o">-</span> <span class="n">Date</span> <span class="n">Picker</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">// ピッカー取得</span>
-</span><span class='line'><span class="o">+</span> <span class="p">(</span><span class="n">UIDatePicker</span> <span class="o">&lt;</span><span class="n">em</span><span class="o">&gt;</span><span class="p">)</span><span class="nl">picker:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="n">delegate</span> <span class="nl">rect:</span><span class="p">(</span><span class="n">CGRect</span><span class="p">)</span><span class="n">rect</span> <span class="nl">mode:</span><span class="p">(</span><span class="n">UIDatePickerMode</span><span class="p">)</span><span class="n">mode</span> <span class="nl">minuteInterval:</span><span class="p">(</span><span class="n">NSUInteger</span><span class="p">)</span><span class="n">minuteInterval</span> <span class="nl">dateText:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">&lt;/</span><span class="n">em</span><span class="o">&gt;</span><span class="p">)</span><span class="n">dateText</span> <span class="nl">dateFormat:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="n">dateFormat</span> <span class="nl">action:</span><span class="p">(</span><span class="kt">SEL</span><span class="p">)</span><span class="n">action</span>
-</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="c1">// ピッカー初期化</span>
-</span><span class='line'><span class="n">DCDate</span><span class="p">.</span><span class="n">datePicker</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIDatePicker</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame:</span><span class="n">rect</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// 背景色指定</span>
-</span><span class='line'><span class="n">DCDate</span><span class="p">.</span><span class="n">datePicker</span><span class="p">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIColor</span> <span class="n">whiteColor</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// 日付の表示モードを変更する</span>
-</span><span class='line'><span class="n">DCDate</span><span class="p">.</span><span class="n">datePicker</span><span class="p">.</span><span class="n">datePickerMode</span> <span class="o">=</span> <span class="n">mode</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// 何分刻みにするか</span>
-</span><span class='line'><span class="n">DCDate</span><span class="p">.</span><span class="n">datePicker</span><span class="p">.</span><span class="n">minuteInterval</span> <span class="o">=</span> <span class="n">minuteInterval</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// 初期時刻設定</span>
-</span><span class='line'><span class="p">[</span><span class="n">DCDate</span><span class="p">.</span><span class="n">datePicker</span> <span class="nl">setDate:</span><span class="p">[</span><span class="n">DCDate</span> <span class="nl">date:</span><span class="n">dateText</span> <span class="nl">dateFormat:</span><span class="n">dateFormat</span><span class="p">]];</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// ピッカーの値が変更されたときに呼ばれるメソッドを設定</span>
-</span><span class='line'><span class="p">[</span><span class="n">DCDate</span><span class="p">.</span><span class="n">datePicker</span> <span class="nl">addTarget:</span><span class="n">delegate</span> <span class="nl">action:</span><span class="n">action</span> <span class="nl">forControlEvents:</span><span class="n">UIControlEventValueChanged</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">return</span> <span class="n">DCDate</span><span class="p">.</span><span class="n">datePicker</span><span class="p">;</span>
-</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">// ピッカーに表示する時間取得</span>
-</span><span class='line'><span class="o">+</span> <span class="p">(</span><span class="n">NSDate</span> <span class="o">&lt;</span><span class="n">em</span><span class="o">&gt;</span><span class="p">)</span><span class="nl">date:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">&lt;/</span><span class="n">em</span><span class="o">&gt;</span><span class="p">)</span><span class="n">dateText</span> <span class="nl">dateFormat:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="n">dateFormat</span>
-</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">NSString</span> <span class="o">*</span><span class="n">dateString</span> <span class="o">=</span> <span class="n">dateText</span><span class="p">;</span>
-</span><span class='line'><span class="n">NSDateFormatter</span> <span class="o">*</span><span class="n">dateFormater</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSDateFormatter</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'><span class="p">[</span><span class="n">dateFormater</span> <span class="nl">setDateFormat:</span><span class="n">dateFormat</span><span class="p">];</span>
-</span><span class='line'><span class="n">NSDate</span> <span class="o">*</span><span class="n">date</span> <span class="o">=</span> <span class="p">[</span><span class="n">dateFormater</span> <span class="nl">dateFromString:</span><span class="n">dateString</span><span class="p">];</span>
-</span><span class='line'><span class="k">return</span> <span class="n">date</span><span class="p">;</span>
-</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">// ピッカーで指定されている時間をテキストで取得</span>
-</span><span class='line'><span class="o">+</span> <span class="p">(</span><span class="n">NSString</span> <span class="o">&lt;</span><span class="n">em</span><span class="o">&gt;</span><span class="p">)</span><span class="nl">dateText:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">&lt;/</span><span class="n">em</span><span class="o">&gt;</span><span class="p">)</span><span class="n">dateFormat</span>
-</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">NSDateFormatter</span> <span class="o">*</span><span class="n">dateFormatter</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSDateFormatter</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'><span class="n">dateFormatter</span><span class="p">.</span><span class="n">dateFormat</span> <span class="o">=</span> <span class="n">dateFormat</span><span class="p">;</span>
-</span><span class='line'><span class="k">return</span> <span class="p">[</span><span class="n">dateFormatter</span> <span class="nl">stringFromDate:</span><span class="n">DCDate</span><span class="p">.</span><span class="n">datePicker</span><span class="p">.</span><span class="n">date</span><span class="p">];</span>
-</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">// ピッカーで指定されている年取得</span>
-</span><span class='line'><span class="o">+</span> <span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="n">pickerYear</span>
-</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">NSDateFormatter</span> <span class="o">*</span><span class="n">yearFormatter</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSDateFormatter</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'><span class="p">[</span><span class="n">yearFormatter</span> <span class="nl">setLocale:</span><span class="p">[</span><span class="n">NSLocale</span> <span class="n">currentLocale</span><span class="p">]];</span>
-</span><span class='line'><span class="p">[</span><span class="n">yearFormatter</span> <span class="nl">setDateFormat:</span><span class="s">@&quot;yyyy&quot;</span><span class="p">];</span>
-</span><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="n">pickerYear</span> <span class="o">=</span> <span class="p">[</span><span class="n">yearFormatter</span> <span class="nl">stringFromDate:</span><span class="n">DCDate</span><span class="p">.</span><span class="n">datePicker</span><span class="p">.</span><span class="n">date</span><span class="p">];</span>
-</span><span class='line'><span class="k">return</span> <span class="p">[</span><span class="n">pickerYear</span> <span class="n">intValue</span><span class="p">];</span>
-</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">// ピッカーで指定されている月取得</span>
-</span><span class='line'><span class="o">+</span> <span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="n">pickerMonth</span>
-</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">NSDateFormatter</span> <span class="o">*</span><span class="n">monthFormatter</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSDateFormatter</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'><span class="p">[</span><span class="n">monthFormatter</span> <span class="nl">setLocale:</span><span class="p">[</span><span class="n">NSLocale</span> <span class="n">currentLocale</span><span class="p">]];</span>
-</span><span class='line'><span class="p">[</span><span class="n">monthFormatter</span> <span class="nl">setDateFormat:</span><span class="s">@&quot;MM&quot;</span><span class="p">];</span>
-</span><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="n">pickerMonth</span> <span class="o">=</span> <span class="p">[</span><span class="n">monthFormatter</span> <span class="nl">stringFromDate:</span><span class="n">DCDate</span><span class="p">.</span><span class="n">datePicker</span><span class="p">.</span><span class="n">date</span><span class="p">];</span>
-</span><span class='line'><span class="k">return</span> <span class="p">[</span><span class="n">pickerMonth</span> <span class="n">intValue</span><span class="p">];</span>
-</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">// ピッカーで指定されている日付取得</span>
-</span><span class='line'><span class="o">+</span> <span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="n">pickerDay</span>
-</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">NSDateFormatter</span> <span class="o">*</span><span class="n">dayFormatter</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSDateFormatter</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'><span class="p">[</span><span class="n">dayFormatter</span> <span class="nl">setLocale:</span><span class="p">[</span><span class="n">NSLocale</span> <span class="n">currentLocale</span><span class="p">]];</span>
-</span><span class='line'><span class="p">[</span><span class="n">dayFormatter</span> <span class="nl">setDateFormat:</span><span class="s">@&quot;dd&quot;</span><span class="p">];</span>
-</span><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="n">pickerDay</span> <span class="o">=</span> <span class="p">[</span><span class="n">dayFormatter</span> <span class="nl">stringFromDate:</span><span class="n">DCDate</span><span class="p">.</span><span class="n">datePicker</span><span class="p">.</span><span class="n">date</span><span class="p">];</span>
-</span><span class='line'><span class="k">return</span> <span class="p">[</span><span class="n">pickerDay</span> <span class="n">intValue</span><span class="p">];</span>
-</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">// ピッカーで指定されている時刻(時)取得</span>
-</span><span class='line'><span class="o">+</span> <span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="n">pickerHour</span>
-</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">NSDateFormatter</span> <span class="o">*</span><span class="n">hourFormatter</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSDateFormatter</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'><span class="p">[</span><span class="n">hourFormatter</span> <span class="nl">setLocale:</span><span class="p">[</span><span class="n">NSLocale</span> <span class="n">currentLocale</span><span class="p">]];</span>
-</span><span class='line'><span class="p">[</span><span class="n">hourFormatter</span> <span class="nl">setDateFormat:</span><span class="s">@&quot;HH&quot;</span><span class="p">];</span>
-</span><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="n">pickerHour</span> <span class="o">=</span> <span class="p">[</span><span class="n">hourFormatter</span> <span class="nl">stringFromDate:</span><span class="n">DCDate</span><span class="p">.</span><span class="n">datePicker</span><span class="p">.</span><span class="n">date</span><span class="p">];</span>
-</span><span class='line'><span class="k">return</span> <span class="p">[</span><span class="n">pickerHour</span> <span class="n">intValue</span><span class="p">];</span>
-</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">// ピッカーで指定されている時刻(分)取得</span>
-</span><span class='line'><span class="o">+</span> <span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="n">pickerMinute</span>
-</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">NSDateFormatter</span> <span class="o">*</span><span class="n">minuteFormatter</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSDateFormatter</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'><span class="p">[</span><span class="n">minuteFormatter</span> <span class="nl">setLocale:</span><span class="p">[</span><span class="n">NSLocale</span> <span class="n">currentLocale</span><span class="p">]];</span>
-</span><span class='line'><span class="p">[</span><span class="n">minuteFormatter</span> <span class="nl">setDateFormat:</span><span class="s">@&quot;mm&quot;</span><span class="p">];</span>
-</span><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="n">pickerMinute</span> <span class="o">=</span> <span class="p">[</span><span class="n">minuteFormatter</span> <span class="nl">stringFromDate:</span><span class="n">DCDate</span><span class="p">.</span><span class="n">datePicker</span><span class="p">.</span><span class="n">date</span><span class="p">];</span>
-</span><span class='line'><span class="k">return</span> <span class="p">[</span><span class="n">pickerMinute</span> <span class="n">intValue</span><span class="p">];</span>
-</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">pragma</span> <span class="n">mark</span> <span class="o">-</span> <span class="n">Utils</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">// 現在の月を取得</span>
-</span><span class='line'><span class="o">+</span> <span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="n">currentYear</span>
-</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">NSDateComponents</span> <span class="o">*</span><span class="n">currentTimeComponents</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCDate</span> <span class="n">currentDateComponents</span><span class="p">];</span>
-</span><span class='line'><span class="k">return</span> <span class="n">currentTimeComponents</span><span class="p">.</span><span class="n">year</span><span class="p">;</span>
-</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">// 現在の月を取得</span>
-</span><span class='line'><span class="o">+</span> <span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="n">currentMonth</span>
-</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">NSDateComponents</span> <span class="o">*</span><span class="n">currentTimeComponents</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCDate</span> <span class="n">currentDateComponents</span><span class="p">];</span>
-</span><span class='line'><span class="k">return</span> <span class="n">currentTimeComponents</span><span class="p">.</span><span class="n">month</span><span class="p">;</span>
-</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">// 現在の日付を取得</span>
-</span><span class='line'><span class="o">+</span> <span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="n">currentDay</span>
-</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">NSDateComponents</span> <span class="o">*</span><span class="n">currentTimeComponents</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCDate</span> <span class="n">currentDateComponents</span><span class="p">];</span>
-</span><span class='line'><span class="k">return</span> <span class="n">currentTimeComponents</span><span class="p">.</span><span class="n">day</span><span class="p">;</span>
-</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">// 現在の時間を取得</span>
-</span><span class='line'><span class="o">+</span> <span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="n">currentHour</span>
-</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">NSDateComponents</span> <span class="o">*</span><span class="n">currentTimeComponents</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCDate</span> <span class="n">currentDateComponents</span><span class="p">];</span>
-</span><span class='line'><span class="k">return</span> <span class="n">currentTimeComponents</span><span class="p">.</span><span class="n">hour</span><span class="p">;</span>
-</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">// 現在の分数を取得</span>
-</span><span class='line'><span class="o">+</span> <span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="n">currentMinute</span>
-</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">NSDateComponents</span> <span class="o">*</span><span class="n">currentTimeComponents</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCDate</span> <span class="n">currentDateComponents</span><span class="p">];</span>
-</span><span class='line'><span class="k">return</span> <span class="n">currentTimeComponents</span><span class="p">.</span><span class="n">minute</span><span class="p">;</span>
-</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">// 現在の秒数を取得</span>
-</span><span class='line'><span class="o">+</span> <span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="n">currentSecond</span>
-</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">NSDateComponents</span> <span class="o">*</span><span class="n">currentTimeComponents</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCDate</span> <span class="n">currentDateComponents</span><span class="p">];</span>
-</span><span class='line'><span class="k">return</span> <span class="n">currentTimeComponents</span><span class="p">.</span><span class="n">second</span><span class="p">;</span>
-</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">// 現在時刻のコンポーネント取得</span>
-</span><span class='line'><span class="o">+</span> <span class="p">(</span><span class="n">NSDateComponents</span> <span class="o">*</span><span class="p">)</span><span class="n">currentDateComponents</span>
-</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="c1">// 現在の時刻を取得</span>
-</span><span class='line'><span class="n">NSDate</span> <span class="o">*</span><span class="n">nowDate</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSDate</span> <span class="n">date</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// 現在時刻のコンポーネント定義</span>
-</span><span class='line'><span class="n">NSDateComponents</span> <span class="o">*</span><span class="n">nowComponents</span><span class="p">;</span>
-</span><span class='line'><span class="n">nowComponents</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSCalendar</span> <span class="n">currentCalendar</span><span class="p">]</span> <span class="nl">components:</span><span class="p">(</span><span class="n">NSYearCalendarUnit</span> <span class="o">|</span>
-</span><span class='line'>                                                          <span class="n">NSMonthCalendarUnit</span> <span class="o">|</span>
-</span><span class='line'>                                                          <span class="n">NSDayCalendarUnit</span> <span class="o">|</span>
-</span><span class='line'>                                                          <span class="n">NSHourCalendarUnit</span> <span class="o">|</span>
-</span><span class='line'>                                                          <span class="n">NSMinuteCalendarUnit</span> <span class="o">|</span>
-</span><span class='line'>                                                          <span class="n">NSSecondCalendarUnit</span><span class="p">)</span>
-</span><span class='line'>                                                <span class="nl">fromDate:</span><span class="n">nowDate</span><span class="p">];</span>
-</span><span class='line'><span class="k">return</span> <span class="n">nowComponents</span><span class="p">;</span>
-</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">pragma</span> <span class="n">mark</span> <span class="o">-</span> <span class="n">Decision</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">// ピッカーで指定されている日付が現在と同じであるか</span>
-</span><span class='line'><span class="o">+</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="n">isCurrentDate</span>
-</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="k">return</span> <span class="p">([</span><span class="n">DCDate</span> <span class="n">currentYear</span><span class="p">]</span> <span class="o">==</span> <span class="p">[</span><span class="n">DCDate</span> <span class="n">pickerYear</span><span class="p">]</span> <span class="o">&amp;</span><span class="n">amp</span><span class="p">;</span><span class="o">&amp;</span><span class="n">amp</span><span class="p">;</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">DCDate</span> <span class="n">currentMonth</span><span class="p">]</span> <span class="o">==</span> <span class="p">[</span><span class="n">DCDate</span> <span class="n">pickerMonth</span><span class="p">]</span> <span class="o">&amp;</span><span class="n">amp</span><span class="p">;</span><span class="o">&amp;</span><span class="n">amp</span><span class="p">;</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">DCDate</span> <span class="n">currentDay</span><span class="p">]</span> <span class="o">==</span> <span class="p">[</span><span class="n">DCDate</span> <span class="n">pickerDay</span><span class="p">]);</span>
-</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">// ピッカーで指定されている時刻が現在時刻であるか</span>
-</span><span class='line'><span class="o">+</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="n">isCurrentTime</span>
-</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="k">return</span> <span class="p">([</span><span class="n">DCDate</span> <span class="n">currentHour</span><span class="p">]</span> <span class="o">==</span> <span class="p">[</span><span class="n">DCDate</span> <span class="n">pickerHour</span><span class="p">]</span> <span class="o">&amp;</span><span class="n">amp</span><span class="p">;</span><span class="o">&amp;</span><span class="n">amp</span><span class="p">;</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">DCDate</span> <span class="n">currentMinute</span><span class="p">]</span> <span class="o">==</span> <span class="p">[</span><span class="n">DCDate</span> <span class="n">pickerMinute</span><span class="p">]);</span>
-</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">pragma</span> <span class="n">mark</span> <span class="o">-</span> <span class="n">Since</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">typedef</span> <span class="n">NS_ENUM</span><span class="p">(</span><span class="n">NSUInteger</span><span class="p">,</span> <span class="n">dateUnitId</span><span class="p">)</span> <span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">SEC</span>  <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-</span><span class='line'><span class="n">MIN</span>  <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-</span><span class='line'><span class="n">HOUR</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
-</span><span class='line'><span class="n">DAY</span>  <span class="o">=</span> <span class="mi">3</span>
-</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">};</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">// 指定した日付からの経過時間を取得</span>
-</span><span class='line'><span class="o">+</span> <span class="p">(</span><span class="n">CGFloat</span><span class="p">)</span><span class="nl">since:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">&lt;</span><span class="n">em</span><span class="o">&gt;</span><span class="p">)</span><span class="n">referenceDateString</span> <span class="nl">targetDateString:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">&lt;/</span><span class="n">em</span><span class="o">&gt;</span><span class="p">)</span><span class="n">targetDateString</span> <span class="nl">dateFormat:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="n">dateFormat</span> <span class="nl">dateUnit:</span><span class="p">(</span><span class="n">NSUInteger</span><span class="p">)</span><span class="n">dateUnit</span>
-</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">NSDateFormatter</span> <span class="o">*</span><span class="n">dateFormatter</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSDateFormatter</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'><span class="p">[</span><span class="n">dateFormatter</span> <span class="nl">setLocale:</span><span class="p">[</span><span class="n">NSLocale</span> <span class="n">systemLocale</span><span class="p">]];</span>
-</span><span class='line'><span class="p">[</span><span class="n">dateFormatter</span> <span class="nl">setDateFormat:</span><span class="n">dateFormat</span><span class="p">];</span>
-</span><span class='line'><span class="n">NSDate</span> <span class="o">*</span><span class="n">referenceDate</span> <span class="o">=</span> <span class="p">[</span><span class="n">dateFormatter</span> <span class="nl">dateFromString:</span><span class="n">referenceDateString</span><span class="p">];</span>
-</span><span class='line'><span class="n">NSDate</span> <span class="o">*</span><span class="n">targetDate</span>    <span class="o">=</span> <span class="p">[</span><span class="n">dateFormatter</span> <span class="nl">dateFromString:</span><span class="n">targetDateString</span><span class="p">];</span>
-</span><span class='line'><span class="n">NSTimeInterval</span> <span class="n">since</span>  <span class="o">=</span> <span class="p">[</span><span class="n">targetDate</span> <span class="nl">timeIntervalSinceDate:</span><span class="n">referenceDate</span><span class="p">];</span>
-</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="n">dateUnit</span> <span class="o">==</span> <span class="n">SEC</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">since</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">dateUnit</span> <span class="o">==</span> <span class="n">MIN</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">since</span> <span class="o">/</span> <span class="mi">60</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">dateUnit</span> <span class="o">==</span> <span class="n">HOUR</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">since</span> <span class="o">/</span> <span class="p">(</span><span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">dateUnit</span> <span class="o">==</span> <span class="n">DAY</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">since</span> <span class="o">/</span> <span class="p">(</span><span class="mi">24</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="k">return</span> <span class="n">since</span><span class="p">;</span>
-</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">pragma</span> <span class="n">mark</span> <span class="o">-</span> <span class="n">setter</span><span class="o">/</span><span class="n">getter</span> <span class="n">method</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">ul</span><span class="o">&gt;</span>
-</span><span class='line'><span class="o">&lt;</span><span class="n">li</span><span class="o">&gt;&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">setDatePicker:</span><span class="p">(</span><span class="n">UIDatePicker</span> <span class="o">*</span><span class="p">)</span><span class="n">picker</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="n">datePicker</span> <span class="o">=</span> <span class="n">picker</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
-</span><span class='line'><span class="o">&lt;</span><span class="n">li</span><span class="o">&gt;&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">(</span><span class="n">UIDatePicker</span> <span class="o">*</span><span class="p">)</span><span class="n">datePicker</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="k">return</span> <span class="n">datePicker</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
-</span><span class='line'><span class="o">&lt;/</span><span class="n">ul</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
-
-<h2>お薦めの参考書</h2>
-
-<p><strong><a href="https://www.amazon.co.jp/gp/product/B018JMSUPC/ref=as_li_qf_sp_asin_tl?ie=UTF8&camp=247&creative=1211&creativeASIN=B018JMSUPC&linkCode=as2&tag=pinocchio-22">絶対に挫折しない iPhoneアプリ開発「超」入門 増補改訂第4版</a></strong><img src="https://ir-jp.amazon-adsystem.com/e/ir?t=pinocchio-22&l=as2&o=9&a=B018JMSUPC" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" /><br />
-Swiftについて知りたい開発者の方のみならず、プログラミング未経験者の方にも参考になる内容になっています。Swiftの基礎を一から丁寧に解説されており、この書籍があればネットで調べる手間をかなり省くことができると思います。</p>
 ]]></content>
   </entry>
   
