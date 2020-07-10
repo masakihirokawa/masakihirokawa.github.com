@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title><![CDATA[Category: UserNotifications | 廣川政樹の開発ブログ - Dolice Lab]]></title>
+  <link href="https://lab.dolice.net/blog/categories/usernotifications/atom.xml" rel="self"/>
+  <link href="https://lab.dolice.net/"/>
+  <updated>2020-07-10T12:48:46+09:00</updated>
+  <id>https://lab.dolice.net/</id>
+  <author>
+    <name><![CDATA[Masaki Hirokawa]]></name>
+    <email><![CDATA[info@dolice.net]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[iOSアプリでローカルプッシュ通知を使用する]]></title>
+    <link href="https://lab.dolice.net/blog/2020/07/10/objc-local-notification/"/>
+    <updated>2020-07-10T12:31:00+09:00</updated>
+    <id>https://lab.dolice.net/blog/2020/07/10/objc-local-notification</id>
+    <content type="html"><![CDATA[<p>iOSアプリで指定した時刻にローカルプッシュ通知を送信する手順を以下に記載します。</p>
+
+<p>下記よりサンプルをダウンロード出来ますので、実装の際のお役に立てば幸いです。</p>
+
+<h2>ダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-local-notification">https://github.com/masakihirokawa/objc-local-notification</a></li>
+</ul>
+
+
+<h2>使用手順</h2>
+
+<h3>1. Frameworkの追加</h3>
+
+<p>今回のサンプルは iOS 10以降を対象としていますので、<em>UserNotifications.framework</em>をプロジェクトに追加します。</p>
+
+<h3>2. プッシュ通知の許可をユーザーに求める</h3>
+
+<p>ローカルプッシュ通知の送信には、アプリ起動時にユーザーのプッシュ通知受信許可を求める必要があります。</p>
+
+<h4>AppDelegate.h</h4>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="err">@</span><span class="n">import</span> <span class="n">UserNotifications</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h4>AppDelegate.m</h4>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">// アプリ起動時の処理</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">application:</span><span class="p">(</span><span class="n">UIApplication</span> <span class="o">&lt;</span><span class="n">em</span><span class="o">&gt;</span><span class="p">)</span><span class="nv">application</span> <span class="nf">didFinishLaunchingWithOptions:</span><span class="p">(</span><span class="n">NSDictionary</span> <span class="o">&lt;/</span><span class="n">em</span><span class="o">&gt;</span><span class="p">)</span><span class="nv">launchOptions</span>
+</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="c1">// ユーザーにプッシュ通知の許可を求める</span>
+</span><span class='line'><span class="n">UNUserNotificationCenter</span> <span class="o">*</span><span class="n">center</span> <span class="o">=</span> <span class="p">[</span><span class="n">UNUserNotificationCenter</span> <span class="n">currentNotificationCenter</span><span class="p">];</span>
+</span><span class='line'><span class="p">[</span><span class="n">center</span> <span class="nl">requestAuthorizationWithOptions:</span><span class="p">(</span><span class="n">UNAuthorizationOptionBadge</span> <span class="o">|</span> <span class="n">UNAuthorizationOptionSound</span> <span class="o">|</span> <span class="n">UNAuthorizationOptionAlert</span><span class="p">)</span>
+</span><span class='line'>                      <span class="nl">completionHandler:</span><span class="o">^</span><span class="p">(</span><span class="kt">BOOL</span> <span class="n">granted</span><span class="p">,</span> <span class="n">NSError</span> <span class="o">*</span> <span class="n">_Nullable</span> <span class="n">error</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">error</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;Succeeded!&quot;</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}];</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">return</span> <span class="n">YES</span><span class="p">;</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h3>3. ローカルプッシュ通知管理クラスの作成</h3>
+
+<p>今回のサンプルでは、指定した時刻にローカルプッシュ通知を送信するよう実装しています。必要に応じてカスタマイズしてください。</p>
+
+<h4>LocalNotificationManager.h</h4>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">import</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">UIKit</span><span class="o">/</span><span class="n">UIKit</span><span class="p">.</span><span class="n">h</span><span class="o">&gt;&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="err">@</span><span class="n">import</span> <span class="n">UserNotifications</span><span class="p">;</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="n">NS_ASSUME_NONNULL_BEGIN</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">@interface</span> <span class="nc">LocalNotificationManager</span> : <span class="nc">NSObject</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">pragma</span> <span class="n">mark</span> <span class="o">-</span> <span class="n">property</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">strong</span><span class="p">)</span> <span class="n">NSCalendar</span> <span class="o">&lt;</span><span class="n">em</span><span class="o">&gt;</span><span class="n">calendar</span><span class="p">;</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">strong</span><span class="p">)</span> <span class="n">NSDate</span>     <span class="o">&lt;/</span><span class="n">em</span><span class="o">&gt;</span><span class="n">nowDate</span><span class="p">;</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">pragma</span> <span class="n">mark</span> <span class="o">-</span> <span class="n">public</span> <span class="n">method</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">ul</span><span class="o">&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="n">li</span><span class="o">&gt;</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">scheduleLocalNotifications:</span><span class="p">(</span><span class="n">NSArray</span> <span class="o">*</span><span class="p">)</span><span class="n">notificationHours</span><span class="p">;</span><span class="o">&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">ul</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">@end</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="n">NS_ASSUME_NONNULL_END</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h4>LocalNotificationManager.m</h4>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">import</span> <span class="s">&quot;LocalNotificationManager.h&quot;</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">@implementation</span> <span class="nc">LocalNotificationManager</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">pragma</span> <span class="n">mark</span> <span class="o">-</span> <span class="n">Scheduler</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">// ローカルプッシュ通知のスケジューリング</span>
+</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">scheduleLocalNotifications:</span><span class="p">(</span><span class="n">NSArray</span> <span class="o">*</span><span class="p">)</span><span class="n">notificationHours</span>
+</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="c1">// 通知を全てキャンセルする</span>
+</span><span class='line'><span class="p">[[</span><span class="n">UNUserNotificationCenter</span> <span class="n">currentNotificationCenter</span><span class="p">]</span> <span class="n">removeAllPendingNotificationRequests</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 通知時間を設定する</span>
+</span><span class='line'><span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="p">[</span><span class="n">notificationHours</span> <span class="n">count</span><span class="p">];</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">// 通知時間保持</span>
+</span><span class='line'>    <span class="n">NSUInteger</span> <span class="n">notificationHour</span> <span class="o">=</span> <span class="p">[</span><span class="n">notificationHours</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="n">intValue</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// カレンダー初期化</span>
+</span><span class='line'>    <span class="n">_calendar</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSCalendar</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithCalendarIdentifier:</span><span class="n">NSCalendarIdentifierGregorian</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 現在の日付取得</span>
+</span><span class='line'>    <span class="n">_nowDate</span>  <span class="o">=</span> <span class="p">[</span><span class="n">NSDate</span> <span class="n">date</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// コンポーネント初期化</span>
+</span><span class='line'>    <span class="n">NSDateComponents</span> <span class="o">*</span><span class="n">fireDateComponents</span> <span class="o">=</span> <span class="p">[</span><span class="n">_calendar</span> <span class="nl">components:</span><span class="p">(</span><span class="n">NSCalendarUnitHour</span> <span class="o">|</span>
+</span><span class='line'>                                                                  <span class="n">NSCalendarUnitMinute</span> <span class="o">|</span>
+</span><span class='line'>                                                                  <span class="n">NSCalendarUnitSecond</span><span class="p">)</span>
+</span><span class='line'>                                                        <span class="nl">fromDate:</span><span class="n">_nowDate</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// コンポーネントに通知時間を指定</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">fireDateComponents</span> <span class="nl">setHour:</span><span class="n">notificationHour</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">fireDateComponents</span> <span class="nl">setMinute:</span><span class="mi">0</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">fireDateComponents</span> <span class="nl">setSecond:</span><span class="mi">0</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">fireDateComponents</span> <span class="nl">setTimeZone:</span><span class="p">[</span><span class="n">NSTimeZone</span> <span class="n">systemTimeZone</span><span class="p">]];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// ローカル通知のスケジュール呼び出し</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="nl">makeNotification:</span><span class="n">fireDateComponents</span> <span class="nl">notificationHour:</span><span class="n">notificationHour</span> <span class="nl">userInfo:</span><span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="c1">// ローカルプッシュ通知生成</span>
+</span><span class='line'><span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">makeNotification:</span><span class="p">(</span><span class="n">NSDateComponents</span> <span class="o">&lt;</span><span class="n">em</span><span class="o">&gt;</span><span class="p">)</span><span class="n">fireDateComponents</span> <span class="nl">notificationHour:</span><span class="p">(</span><span class="n">NSUInteger</span><span class="p">)</span><span class="n">notificationHour</span> <span class="nl">userInfo:</span><span class="p">(</span><span class="n">NSDictionary</span> <span class="o">&lt;/</span><span class="n">em</span><span class="o">&gt;</span><span class="p">)</span><span class="n">userInfo</span>
+</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="c1">// デバッグ出力</span>
+</span><span class='line'><span class="c1">//NSLog(@&quot;fireDateComponents: %@&quot;, fireDateComponents);</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// ローカルプッシュ通知のスケジューリング</span>
+</span><span class='line'><span class="n">UNMutableNotificationContent</span><span class="o">*</span> <span class="n">content</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UNMutableNotificationContent</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'><span class="n">content</span><span class="p">.</span><span class="n">title</span>    <span class="o">=</span> <span class="s">@&quot;It&#39;s time to go.&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="n">content</span><span class="p">.</span><span class="n">body</span>     <span class="o">=</span> <span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">@&quot;t&#39;s now %lu:00.&quot;</span><span class="p">,</span> <span class="n">notificationHour</span><span class="p">];</span>
+</span><span class='line'><span class="n">content</span><span class="p">.</span><span class="n">sound</span>    <span class="o">=</span> <span class="p">[</span><span class="n">UNNotificationSound</span> <span class="n">defaultSound</span><span class="p">];</span>
+</span><span class='line'><span class="n">content</span><span class="p">.</span><span class="n">badge</span>    <span class="o">=</span> <span class="err">@</span><span class="p">([[</span><span class="n">UIApplication</span> <span class="n">sharedApplication</span><span class="p">]</span> <span class="n">applicationIconBadgeNumber</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
+</span><span class='line'><span class="n">content</span><span class="p">.</span><span class="n">userInfo</span> <span class="o">=</span> <span class="n">userInfo</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">UNCalendarNotificationTrigger</span> <span class="o">*</span><span class="n">trigger</span> <span class="o">=</span> <span class="p">[</span><span class="n">UNCalendarNotificationTrigger</span>
+</span><span class='line'>                                          <span class="nl">triggerWithDateMatchingComponents:</span><span class="n">fireDateComponents</span> <span class="nl">repeats:</span><span class="n">YES</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">NSString</span> <span class="o">*</span><span class="k">const</span> <span class="n">notificationIdentifier</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSString</span> <span class="nl">stringWithFormat:</span><span class="s">@&quot;NotificationHour: %lu&quot;</span><span class="p">,</span> <span class="n">notificationHour</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">UNNotificationRequest</span> <span class="o">*</span><span class="n">request</span> <span class="o">=</span> <span class="p">[</span><span class="n">UNNotificationRequest</span>
+</span><span class='line'>                                  <span class="nl">requestWithIdentifier:</span><span class="n">notificationIdentifier</span> <span class="nl">content:</span><span class="n">content</span> <span class="nl">trigger:</span><span class="n">trigger</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">UNUserNotificationCenter</span> <span class="o">*</span><span class="n">center</span> <span class="o">=</span> <span class="p">[</span><span class="n">UNUserNotificationCenter</span> <span class="n">currentNotificationCenter</span><span class="p">];</span>
+</span><span class='line'><span class="p">[</span><span class="n">center</span> <span class="nl">addNotificationRequest:</span><span class="n">request</span> <span class="nl">withCompletionHandler:</span><span class="o">^</span><span class="p">(</span><span class="n">NSError</span> <span class="o">*</span> <span class="n">_Nullable</span> <span class="n">error</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">error</span> <span class="o">!=</span> <span class="nb">nil</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;%@&quot;</span><span class="p">,</span> <span class="n">error</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}];</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h3>4. プッシュ通知の予約</h3>
+
+<p>ユーザーがアプリを閉じたタイミングでプッシュ通知を予約します。今回は9時、12時、15時、18時にローカルプッシュ通知が送信されるよう指定しました。</p>
+
+<h4>AppDelegate.h</h4>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">import</span> <span class="s">&quot;LocalNotificationManager.h&quot;</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h4>AppDelegate.m</h4>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">// アプリがバックグラウンドになった時に呼ばれる</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">applicationDidEnterBackground:</span><span class="p">(</span><span class="n">UIApplication</span> <span class="o">*</span><span class="p">)</span><span class="nv">application</span>
+</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="c1">// ローカルプッシュ通知を送信する時間を指定</span>
+</span><span class='line'><span class="n">NSArray</span> <span class="o">*</span><span class="n">notificationHours</span> <span class="o">=</span> <span class="err">@</span><span class="p">[</span><span class="err">@</span><span class="mi">9</span><span class="p">,</span> <span class="err">@</span><span class="mi">12</span><span class="p">,</span> <span class="err">@</span><span class="mi">15</span><span class="p">,</span> <span class="err">@</span><span class="mi">18</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// バックグラウンド移行時にプッシュ通知を設定</span>
+</span><span class='line'><span class="n">LocalNotificationManager</span> <span class="o">*</span><span class="n">notificationManager</span> <span class="o">=</span> <span class="p">[[</span><span class="n">LocalNotificationManager</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'><span class="p">[</span><span class="n">notificationManager</span> <span class="nl">scheduleLocalNotifications:</span><span class="n">notificationHours</span><span class="p">];</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h3>e.x. アイコンバッジの削除</h3>
+
+<p>このサンプルではプッシュ通知送信時にアイコンバッジを付与するよう指定していますので、アプリが起動されたらアイコンバッジを削除するようにします。</p>
+
+<h4>AppDelegate.m</h4>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="c1">// アプリがバックグラウンドからフォアグラウンドになる直前に呼ばれる</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">applicationWillEnterForeground:</span><span class="p">(</span><span class="n">UIApplication</span> <span class="o">*</span><span class="p">)</span><span class="nv">application</span>
+</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="c1">// アイコンバッジ削除</span>
+</span><span class='line'><span class="p">[[</span><span class="n">UIApplication</span> <span class="n">sharedApplication</span><span class="p">]</span> <span class="nl">setApplicationIconBadgeNumber:</span><span class="mi">0</span><span class="p">];</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>以上でローカルプッシュ通知の実装は完了になります。</p>
+]]></content>
+  </entry>
+  
+</feed>

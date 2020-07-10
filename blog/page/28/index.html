@@ -6,12 +6,12 @@
 	<title>廣川政樹の開発ブログ - Dolice Lab</title>
 
 
-	<meta name="description" content="Objective-Cで画像を使用し UITabBarをカスタマイズする方法を以下に記載します。 下記よりソースコードのダウンロードが行えます。 ダウンロード https://github.com/masakihirokawa/objc-ui-tab-bar-custom 必要な画像の寸法 ( &hellip;" />
+	<meta name="description" content="UITabBarを使用した画面で、タブメニュー外のボタンから画面遷移する方法を以下に記載します。 UITabBarControllerの selectedViewControllerの値に遷移先 ViewControllerのインデックスIDを渡して実行します。 &hellip;" />
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
     <meta property="og:locale" content="ja_JP" />
     <meta property="og:title" content="廣川政樹の開発ブログ - Dolice Lab" />
-    <meta property="og:description" content="Objective-Cで画像を使用し UITabBarをカスタマイズする方法を以下に記載します。 下記よりソースコードのダウンロードが行えます。 ダウンロード https://github.com/masakihirokawa/objc-ui-tab-bar-custom 必要な画像の寸法 ( &hellip;" />
+    <meta property="og:description" content="UITabBarを使用した画面で、タブメニュー外のボタンから画面遷移する方法を以下に記載します。 UITabBarControllerの selectedViewControllerの値に遷移先 ViewControllerのインデックスIDを渡して実行します。 &hellip;" />
     <meta property="og:url" content="https://lab.dolice.net/blog/page/28/" />
     <meta property="og:image" content="https://lab.dolice.net/images/ogp-icon.png" />
     <meta property="og:author" content="Masaki Hirokawa" />
@@ -99,6 +99,310 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/09/06/objc-ui-tab-bar-controller/">
+		
+			UITabBarを使用した画面で外から画面遷移を呼ぶ方法</a>
+	</h2>
+	<div class="entry-content">
+		<p><img src="/images/article/ui-tab-bar-custom.png" alt="" /></p>
+
+<p>UITabBarを使用した画面で、タブメニュー外のボタンから画面遷移する方法を以下に記載します。</p>
+
+<p>UITabBarControllerの selectedViewControllerの値に遷移先 ViewControllerのインデックスIDを渡して実行します。</p>
+
+<p>下記よりサンプルのダウンロードが行えます。</p>
+
+<h2>ダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/objc-ui-tab-bar-controller">https://github.com/masakihirokawa/objc-ui-tab-bar-controller</a></li>
+</ul>
+
+
+<h2>画面遷移の実行方法</h2>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">UITabBarController</span> <span class="o">*</span><span class="n">controller</span> <span class="o">=</span> <span class="p">(</span><span class="n">UITabBarController</span> <span class="o">*</span><span class="p">)</span><span class="n">tabBarController_</span><span class="p">;</span>
+</span><span class='line'><span class="n">controller</span><span class="p">.</span><span class="n">selectedViewController</span> <span class="o">=</span> <span class="p">[</span><span class="n">controller</span><span class="p">.</span><span class="n">viewControllers</span> <span class="nl">objectAtIndex:</span><span class="err">＜</span><span class="n">ViewController</span><span class="err">のインデックス</span><span class="n">ID</span><span class="err">＞</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>ソースコード</h2>
+
+<h3>*pch</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;AppDelegate.h&quot;</span>
+</span><span class='line'><span class="cp">#define APP_DELEGATE (AppDelegate*)[[UIApplication sharedApplication] delegate]</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#define TITLE_RECT   CGRectMake(0, 0, 320, 48)</span>
+</span><span class='line'><span class="cp">#define BTN_RECT     CGRectMake(20, 220, 280, 48)</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">typedef</span> <span class="k">enum</span> <span class="n">viewControllerIndexId</span> <span class="o">:</span> <span class="n">NSUInteger</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">FIRST_ID</span>  <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+</span><span class='line'>    <span class="n">SECOND_ID</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+</span><span class='line'>    <span class="n">THIRD_ID</span>  <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+</span><span class='line'>    <span class="n">FOURTH_ID</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
+</span><span class='line'>    <span class="n">FIFTH_ID</span>  <span class="o">=</span> <span class="mi">4</span>
+</span><span class='line'><span class="p">}</span> <span class="n">viewControllerIndexId</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>FirstViewController.m</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">transitionButtonTapEvent:</span><span class="p">(</span><span class="n">UIButton</span> <span class="o">*</span><span class="p">)</span><span class="nv">button</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">NSUInteger</span> <span class="n">viewControllerId</span> <span class="o">=</span> <span class="n">button</span><span class="p">.</span><span class="n">tag</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">APP_DELEGATE</span> <span class="nl">switchTabBarController:</span><span class="n">viewControllerId</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>AppDelegate.h</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;FirstViewController.h&quot;</span>
+</span><span class='line'><span class="cp">#import &quot;SecondViewController.h&quot;</span>
+</span><span class='line'><span class="cp">#import &quot;ThirdViewController.h&quot;</span>
+</span><span class='line'><span class="cp">#import &quot;FourthViewController.h&quot;</span>
+</span><span class='line'><span class="cp">#import &quot;FifthViewController.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@interface</span> <span class="nc">AppDelegate</span> : <span class="nc">UIResponder</span> <span class="o">&lt;</span><span class="n">UIApplicationDelegate</span><span class="o">&gt;</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">UITabBarController</span> <span class="o">*</span><span class="n">tabBarController_</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark property prototype</span>
+</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">strong</span><span class="p">,</span> <span class="n">nonatomic</span><span class="p">)</span> <span class="n">UIWindow</span> <span class="o">*</span><span class="n">window</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#pragma mark method prototype</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">switchTabBarController:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">selectedViewIndex</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>AppDelegate.m</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">application:</span><span class="p">(</span><span class="n">UIApplication</span> <span class="o">*</span><span class="p">)</span><span class="nv">application</span> <span class="nf">didFinishLaunchingWithOptions:</span><span class="p">(</span><span class="n">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nv">launchOptions</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">//window初期化</span>
+</span><span class='line'>    <span class="n">CGRect</span> <span class="n">bounds</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIScreen</span> <span class="n">mainScreen</span><span class="p">]</span> <span class="n">bounds</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">_window</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIWindow</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame:</span><span class="n">bounds</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//UITabBarController初期化</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="n">initTabBarController</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="n">YES</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//UITabBarController初期化</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">initTabBarController</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">//基点となる Controller生成</span>
+</span><span class='line'>    <span class="n">tabBarController_</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UITabBarController</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//タブの背景画像と選択時の背景画像を設定</span>
+</span><span class='line'>    <span class="p">[[</span><span class="n">UITabBar</span> <span class="n">appearance</span><span class="p">]</span> <span class="nl">setBackgroundImage:</span><span class="p">[</span><span class="n">UIImage</span> <span class="nl">imageNamed:</span><span class="s">@&quot;tab_background.png&quot;</span><span class="p">]];</span>
+</span><span class='line'>    <span class="p">[[</span><span class="n">UITabBar</span> <span class="n">appearance</span><span class="p">]</span> <span class="nl">setSelectionIndicatorImage:</span><span class="p">[</span><span class="n">UIImage</span> <span class="nl">imageNamed:</span><span class="s">@&quot;tab_selection_indicator.png&quot;</span><span class="p">]];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//タブメニュー選択時のビュー生成</span>
+</span><span class='line'>    <span class="n">FirstViewController</span>  <span class="o">*</span><span class="n">tabFirstVC</span>  <span class="o">=</span> <span class="p">[[</span><span class="n">FirstViewController</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">SecondViewController</span> <span class="o">*</span><span class="n">tabSecondVC</span> <span class="o">=</span> <span class="p">[[</span><span class="n">SecondViewController</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">ThirdViewController</span>  <span class="o">*</span><span class="n">tabThirdVC</span>  <span class="o">=</span> <span class="p">[[</span><span class="n">ThirdViewController</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">FourthViewController</span> <span class="o">*</span><span class="n">tabFourthVC</span> <span class="o">=</span> <span class="p">[[</span><span class="n">FourthViewController</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">FifthViewController</span>  <span class="o">*</span><span class="n">tabFifthVC</span>  <span class="o">=</span> <span class="p">[[</span><span class="n">FifthViewController</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//タブのアイコン指定</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">tabFirstVC</span><span class="p">.</span><span class="n">tabBarItem</span> <span class="nl">setFinishedSelectedImage:</span><span class="p">[</span><span class="n">UIImage</span> <span class="nl">imageNamed:</span><span class="s">@&quot;tab_icon1-o.png&quot;</span><span class="p">]</span>
+</span><span class='line'>                        <span class="nl">withFinishedUnselectedImage:</span><span class="p">[</span><span class="n">UIImage</span> <span class="nl">imageNamed:</span><span class="s">@&quot;tab_icon1.png&quot;</span><span class="p">]];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">tabSecondVC</span><span class="p">.</span><span class="n">tabBarItem</span> <span class="nl">setFinishedSelectedImage:</span><span class="p">[</span><span class="n">UIImage</span> <span class="nl">imageNamed:</span><span class="s">@&quot;tab_icon2-o.png&quot;</span><span class="p">]</span>
+</span><span class='line'>                         <span class="nl">withFinishedUnselectedImage:</span><span class="p">[</span><span class="n">UIImage</span> <span class="nl">imageNamed:</span><span class="s">@&quot;tab_icon2.png&quot;</span><span class="p">]];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">tabThirdVC</span><span class="p">.</span><span class="n">tabBarItem</span> <span class="nl">setFinishedSelectedImage:</span><span class="p">[</span><span class="n">UIImage</span> <span class="nl">imageNamed:</span><span class="s">@&quot;tab_icon3-o.png&quot;</span><span class="p">]</span>
+</span><span class='line'>                        <span class="nl">withFinishedUnselectedImage:</span><span class="p">[</span><span class="n">UIImage</span> <span class="nl">imageNamed:</span><span class="s">@&quot;tab_icon3.png&quot;</span><span class="p">]];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">tabFourthVC</span><span class="p">.</span><span class="n">tabBarItem</span> <span class="nl">setFinishedSelectedImage:</span><span class="p">[</span><span class="n">UIImage</span> <span class="nl">imageNamed:</span><span class="s">@&quot;tab_icon4-o.png&quot;</span><span class="p">]</span>
+</span><span class='line'>                         <span class="nl">withFinishedUnselectedImage:</span><span class="p">[</span><span class="n">UIImage</span> <span class="nl">imageNamed:</span><span class="s">@&quot;tab_icon4.png&quot;</span><span class="p">]];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">tabFifthVC</span><span class="p">.</span><span class="n">tabBarItem</span> <span class="nl">setFinishedSelectedImage:</span><span class="p">[</span><span class="n">UIImage</span> <span class="nl">imageNamed:</span><span class="s">@&quot;tab_icon5-o.png&quot;</span><span class="p">]</span>
+</span><span class='line'>                        <span class="nl">withFinishedUnselectedImage:</span><span class="p">[</span><span class="n">UIImage</span> <span class="nl">imageNamed:</span><span class="s">@&quot;tab_icon5.png&quot;</span><span class="p">]];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//タブのタイトル指定</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">tabFirstVC</span> <span class="nl">setTitle:</span><span class="s">@&quot;First&quot;</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">tabSecondVC</span> <span class="nl">setTitle:</span><span class="s">@&quot;Second&quot;</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">tabThirdVC</span> <span class="nl">setTitle:</span><span class="s">@&quot;Third&quot;</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">tabFourthVC</span> <span class="nl">setTitle:</span><span class="s">@&quot;Fourth&quot;</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">tabFifthVC</span> <span class="nl">setTitle:</span><span class="s">@&quot;Fifth&quot;</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//タブのタイトル位置設定</span>
+</span><span class='line'>    <span class="p">[[</span><span class="n">UITabBarItem</span> <span class="n">appearance</span><span class="p">]</span> <span class="nl">setTitlePositionAdjustment:</span><span class="n">UIOffsetMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//タブのタイトル色指定</span>
+</span><span class='line'>    <span class="p">[[</span><span class="n">UITabBarItem</span> <span class="n">appearance</span><span class="p">]</span> <span class="nl">setTitleTextAttributes:</span><span class="p">[</span><span class="n">NSDictionary</span> <span class="nl">dictionaryWithObjectsAndKeys:</span><span class="p">[</span><span class="n">UIColor</span> <span class="n">whiteColor</span><span class="p">],</span> <span class="n">UITextAttributeTextColor</span><span class="p">,</span><span class="nb">nil</span><span class="p">]</span> <span class="nl">forState:</span><span class="n">UIControlStateNormal</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//タブのタイトル色指定(選択中)</span>
+</span><span class='line'>    <span class="p">[[</span><span class="n">UITabBarItem</span> <span class="n">appearance</span><span class="p">]</span> <span class="nl">setTitleTextAttributes:</span><span class="p">[</span><span class="n">NSDictionary</span> <span class="nl">dictionaryWithObjectsAndKeys:</span><span class="p">[</span><span class="n">UIColor</span> <span class="nl">colorWithRed:</span><span class="mf">0.91f</span> <span class="nl">green:</span><span class="mf">1.0f</span> <span class="nl">blue:</span><span class="mf">0.74f</span> <span class="nl">alpha:</span><span class="mf">1.0f</span><span class="p">],</span> <span class="n">UITextAttributeTextColor</span><span class="p">,</span><span class="nb">nil</span><span class="p">]</span> <span class="nl">forState:</span><span class="n">UIControlStateSelected</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//ビューを Controllerに追加</span>
+</span><span class='line'>    <span class="n">NSArray</span> <span class="o">*</span><span class="n">controllers</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSArray</span> <span class="nl">arrayWithObjects:</span><span class="n">tabFirstVC</span><span class="p">,</span> <span class="n">tabSecondVC</span><span class="p">,</span> <span class="n">tabThirdVC</span><span class="p">,</span> <span class="n">tabFourthVC</span><span class="p">,</span> <span class="n">tabFifthVC</span><span class="p">,</span> <span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[(</span><span class="n">UITabBarController</span> <span class="o">*</span><span class="p">)</span><span class="n">tabBarController_</span> <span class="nl">setViewControllers:</span><span class="n">controllers</span> <span class="nl">animated:</span><span class="n">NO</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//windowに Controllerのビュー追加</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">_window</span> <span class="nl">addSubview:</span><span class="n">tabBarController_</span><span class="p">.</span><span class="n">view</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">_window</span> <span class="n">makeKeyAndVisible</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//タブ切り替え</span>
+</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">switchTabBarController:</span><span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nv">selectedViewIndex</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">UITabBarController</span> <span class="o">*</span><span class="n">controller</span> <span class="o">=</span> <span class="p">(</span><span class="n">UITabBarController</span> <span class="o">*</span><span class="p">)</span><span class="n">tabBarController_</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">controller</span><span class="p">.</span><span class="n">selectedViewController</span> <span class="o">=</span> <span class="p">[</span><span class="n">controller</span><span class="p">.</span><span class="n">viewControllers</span> <span class="nl">objectAtIndex:</span><span class="n">selectedViewIndex</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>お薦めの参考書</h2>
+
+<p><strong><a href="https://www.amazon.co.jp/gp/product/4797384514/ref=as_li_qf_sp_asin_tl?ie=UTF8&camp=247&creative=1211&creativeASIN=4797384514&linkCode=as2&tag=pinocchio-22">本気ではじめるiPhoneアプリ作り Xcode 7.x+Swift 2.x対応</a></strong><img src="https://ir-jp.amazon-adsystem.com/e/ir?t=pinocchio-22&l=as2&o=9&a=4797384514" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" /><br />
+iOSアプリ開発をこれから始める方に最もお薦めな一冊です。解り辛い点は図解入りで解説されており、プログラミングの動作の仕組みから詳しく知ることができます。基本から通信処理まで押さえられており、アプリ公開の手順についても解説されています。</p>
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-09-06T15:17:00+09:00" pubdate data-updated="true">Sep 6<span>th</span>, 2013</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/objective-c/'>Objective-C</a>, <a class='category' href='/blog/categories/uikit/'>UIKit</a>, <a class='category' href='/blog/categories/uitabbar/'>UITabBar</a>
+
+
+</div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -793,963 +1097,6 @@ iOSアプリ開発をこれから始める方に最もお薦めな一冊です�
 </div>
 </article>
 
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2013/09/04/download-xcode-objc-alarm/">
-		
-			Objective-Cで目覚ましを作成しました</a>
-	</h2>
-	<div class="entry-content">
-		<p><img src="/images/article/alarm.png" alt="" /></p>
-
-<p>Objective-Cで動作する iOS用の目覚ましを作成しました。</p>
-
-<p>アラームが開始されると自動スリープが無効になります。また、UserDefaultsで起床時間を保持します。</p>
-
-<p>下記よりソースコードのダウンロードが行えます。</p>
-
-<h2>ダウンロード</h2>
-
-<ul>
-<li><a href="https://github.com/masakihirokawa/objc-xcode-alarm">https://github.com/masakihirokawa/objc-xcode-alarm</a></li>
-</ul>
-
-
-<h2>編集ファイル</h2>
-
-<ol>
-<li>AppDelegate.h+m</li>
-<li>AlarmViewController.h+m</li>
-<li>Alarm-Info.plist (バックグラウンド再生のため、Required background modesの項目を追加)</li>
-<li>Alarm-Prefix.pch</li>
-</ol>
-
-
-<h2>ソースコード</h2>
-
-<h3>Alarm-Prefix.pch</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;AppDelegate.h&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#define APP_DELEGATE            (AppDelegate*)[[UIApplication sharedApplication] delegate]</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">NSUserDefaults</span> <span class="o">*</span><span class="n">userDefaults</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#define UD_WAKE_UP_TIME_KEY     @&quot;UD_WAKE_UP_TIME_KEY&quot;</span>
-</span><span class='line'><span class="cp">#define DEFAULT_WAKE_UP_TIME    @&quot;08:00&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">NSString</span>   <span class="o">*</span><span class="n">wakeUpTime</span><span class="p">;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>AppDelegate.h</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#pragma mark property prototype</span>
-</span><span class='line'><span class="k">@property</span> <span class="p">(</span><span class="n">strong</span><span class="p">,</span> <span class="n">nonatomic</span><span class="p">)</span> <span class="n">UIWindow</span> <span class="o">*</span><span class="n">window</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#pragma mark method prototype</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setIdleTimer:</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nv">isDisabled</span><span class="p">;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>AppDelegate.m</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">application:</span><span class="p">(</span><span class="n">UIApplication</span> <span class="o">*</span><span class="p">)</span><span class="nv">application</span> <span class="nf">didFinishLaunchingWithOptions:</span><span class="p">(</span><span class="n">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nv">launchOptions</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="c1">//ユーザーデフォルト初期化</span>
-</span><span class='line'>    <span class="n">userDefaults</span>  <span class="o">=</span> <span class="p">[</span><span class="n">NSUserDefaults</span> <span class="n">standardUserDefaults</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//設定適用</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="n">initSettings</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//ユーザーデフォルトの初回読み込みフラグ立てる</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="n">setLoadedOnceUserDefaults</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">return</span> <span class="n">YES</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//ロック&amp;スリープ禁止の切り替え</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setIdleTimer:</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nv">isDisabled</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="p">[[</span><span class="n">UIApplication</span> <span class="n">sharedApplication</span><span class="p">]</span> <span class="nl">setIdleTimerDisabled:</span><span class="n">isDisabled</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//設定適用</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">initSettings</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">wakeUpTime</span>     <span class="o">=</span> <span class="o">!</span><span class="p">[</span><span class="n">self</span> <span class="n">isLoadedOnceUserDefaults</span><span class="p">]</span> <span class="o">?</span> <span class="n">DEFAULT_WAKE_UP_TIME</span> <span class="o">:</span> <span class="p">[</span><span class="n">userDefaults</span> <span class="nl">stringForKey:</span><span class="s">@&quot;UD_WAKE_UP_TIME_KEY&quot;</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">userDefaults</span> <span class="nl">setObject:</span><span class="n">wakeUpTime</span> <span class="nl">forKey:</span><span class="s">@&quot;UD_WAKE_UP_TIME_KEY&quot;</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="p">[</span><span class="n">userDefaults</span> <span class="n">synchronize</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//ユーザーデフォルトの初回読み込みフラグ立てる</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setLoadedOnceUserDefaults</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">userDefaults</span> <span class="nl">setBool:</span><span class="n">YES</span> <span class="nl">forKey:</span><span class="s">@&quot;UD_LOADED_ONCE&quot;</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">userDefaults</span> <span class="n">synchronize</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//ユーザーデフォルトが初期状態であるか</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">isLoadedOnceUserDefaults</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="p">[</span><span class="n">userDefaults</span> <span class="nl">boolForKey:</span><span class="s">@&quot;UD_LOADED_ONCE&quot;</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>AlarmViewController.h</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &lt;UIKit/UIKit.h&gt;</span>
-</span><span class='line'><span class="cp">#import &quot;DCAudioPlayer.h&quot;</span>
-</span><span class='line'><span class="cp">#import &quot;DCLabel.h&quot;</span>
-</span><span class='line'><span class="cp">#import &quot;DCButton.h&quot;</span>
-</span><span class='line'><span class="cp">#import &quot;DCUtil.h&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#define ALARM_NAME                   @&quot;alarm&quot;</span>
-</span><span class='line'><span class="cp">#define ALARM_FILE_EXT               @&quot;mp3&quot;</span>
-</span><span class='line'><span class="cp">#define ALARM_PICKER_WIDTH           320</span>
-</span><span class='line'><span class="cp">#define ALARM_PICKER_HEIGHT          192</span>
-</span><span class='line'><span class="cp">#define ALARM_PICKER_MINUTE_INTERVAL 5</span>
-</span><span class='line'><span class="cp">#define ALARM_PLAY_INFINITE          -1</span>
-</span><span class='line'><span class="cp">#define ALARM_TIME_DATE_FORMAT       @&quot;HH:mm&quot;</span>
-</span><span class='line'><span class="cp">#define ALARM_TIMER_INTERVAL         1</span>
-</span><span class='line'><span class="cp">#define ALARM_START_MESSAGE          @&quot;アラームを開始しました。アプリを終了したりスリープさせないでください。&quot;</span>
-</span><span class='line'><span class="cp">#define ALARM_ERROR_MESSAGE          @&quot;指定時刻と現在時刻が同じです&quot;</span>
-</span><span class='line'><span class="cp">#define ALARM_CTR_BTN_WIDTH          100</span>
-</span><span class='line'><span class="cp">#define ALARM_CTR_BTN_HEIGHT         48</span>
-</span><span class='line'><span class="cp">#define ALARM_CTR_BTN_Y              142</span>
-</span><span class='line'><span class="cp">#define WAKE_UP_TIME_RECT            CGRectMake(0, 0, 320, 48)</span>
-</span><span class='line'><span class="cp">#define WAKE_UP_TIME_LABEL_FONT      [UIFont fontWithName:@&quot;Futura&quot; size:16]</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@interface</span> <span class="nc">AlarmViewController</span> : <span class="nc">UIViewController</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>AlarmViewController.m</h3>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-<span class='line-number'>65</span>
-<span class='line-number'>66</span>
-<span class='line-number'>67</span>
-<span class='line-number'>68</span>
-<span class='line-number'>69</span>
-<span class='line-number'>70</span>
-<span class='line-number'>71</span>
-<span class='line-number'>72</span>
-<span class='line-number'>73</span>
-<span class='line-number'>74</span>
-<span class='line-number'>75</span>
-<span class='line-number'>76</span>
-<span class='line-number'>77</span>
-<span class='line-number'>78</span>
-<span class='line-number'>79</span>
-<span class='line-number'>80</span>
-<span class='line-number'>81</span>
-<span class='line-number'>82</span>
-<span class='line-number'>83</span>
-<span class='line-number'>84</span>
-<span class='line-number'>85</span>
-<span class='line-number'>86</span>
-<span class='line-number'>87</span>
-<span class='line-number'>88</span>
-<span class='line-number'>89</span>
-<span class='line-number'>90</span>
-<span class='line-number'>91</span>
-<span class='line-number'>92</span>
-<span class='line-number'>93</span>
-<span class='line-number'>94</span>
-<span class='line-number'>95</span>
-<span class='line-number'>96</span>
-<span class='line-number'>97</span>
-<span class='line-number'>98</span>
-<span class='line-number'>99</span>
-<span class='line-number'>100</span>
-<span class='line-number'>101</span>
-<span class='line-number'>102</span>
-<span class='line-number'>103</span>
-<span class='line-number'>104</span>
-<span class='line-number'>105</span>
-<span class='line-number'>106</span>
-<span class='line-number'>107</span>
-<span class='line-number'>108</span>
-<span class='line-number'>109</span>
-<span class='line-number'>110</span>
-<span class='line-number'>111</span>
-<span class='line-number'>112</span>
-<span class='line-number'>113</span>
-<span class='line-number'>114</span>
-<span class='line-number'>115</span>
-<span class='line-number'>116</span>
-<span class='line-number'>117</span>
-<span class='line-number'>118</span>
-<span class='line-number'>119</span>
-<span class='line-number'>120</span>
-<span class='line-number'>121</span>
-<span class='line-number'>122</span>
-<span class='line-number'>123</span>
-<span class='line-number'>124</span>
-<span class='line-number'>125</span>
-<span class='line-number'>126</span>
-<span class='line-number'>127</span>
-<span class='line-number'>128</span>
-<span class='line-number'>129</span>
-<span class='line-number'>130</span>
-<span class='line-number'>131</span>
-<span class='line-number'>132</span>
-<span class='line-number'>133</span>
-<span class='line-number'>134</span>
-<span class='line-number'>135</span>
-<span class='line-number'>136</span>
-<span class='line-number'>137</span>
-<span class='line-number'>138</span>
-<span class='line-number'>139</span>
-<span class='line-number'>140</span>
-<span class='line-number'>141</span>
-<span class='line-number'>142</span>
-<span class='line-number'>143</span>
-<span class='line-number'>144</span>
-<span class='line-number'>145</span>
-<span class='line-number'>146</span>
-<span class='line-number'>147</span>
-<span class='line-number'>148</span>
-<span class='line-number'>149</span>
-<span class='line-number'>150</span>
-<span class='line-number'>151</span>
-<span class='line-number'>152</span>
-<span class='line-number'>153</span>
-<span class='line-number'>154</span>
-<span class='line-number'>155</span>
-<span class='line-number'>156</span>
-<span class='line-number'>157</span>
-<span class='line-number'>158</span>
-<span class='line-number'>159</span>
-<span class='line-number'>160</span>
-<span class='line-number'>161</span>
-<span class='line-number'>162</span>
-<span class='line-number'>163</span>
-<span class='line-number'>164</span>
-<span class='line-number'>165</span>
-<span class='line-number'>166</span>
-<span class='line-number'>167</span>
-<span class='line-number'>168</span>
-<span class='line-number'>169</span>
-<span class='line-number'>170</span>
-<span class='line-number'>171</span>
-<span class='line-number'>172</span>
-<span class='line-number'>173</span>
-<span class='line-number'>174</span>
-<span class='line-number'>175</span>
-<span class='line-number'>176</span>
-<span class='line-number'>177</span>
-<span class='line-number'>178</span>
-<span class='line-number'>179</span>
-<span class='line-number'>180</span>
-<span class='line-number'>181</span>
-<span class='line-number'>182</span>
-<span class='line-number'>183</span>
-<span class='line-number'>184</span>
-<span class='line-number'>185</span>
-<span class='line-number'>186</span>
-<span class='line-number'>187</span>
-<span class='line-number'>188</span>
-<span class='line-number'>189</span>
-<span class='line-number'>190</span>
-<span class='line-number'>191</span>
-<span class='line-number'>192</span>
-<span class='line-number'>193</span>
-<span class='line-number'>194</span>
-<span class='line-number'>195</span>
-<span class='line-number'>196</span>
-<span class='line-number'>197</span>
-<span class='line-number'>198</span>
-<span class='line-number'>199</span>
-<span class='line-number'>200</span>
-<span class='line-number'>201</span>
-<span class='line-number'>202</span>
-<span class='line-number'>203</span>
-<span class='line-number'>204</span>
-<span class='line-number'>205</span>
-<span class='line-number'>206</span>
-<span class='line-number'>207</span>
-<span class='line-number'>208</span>
-<span class='line-number'>209</span>
-<span class='line-number'>210</span>
-<span class='line-number'>211</span>
-<span class='line-number'>212</span>
-<span class='line-number'>213</span>
-<span class='line-number'>214</span>
-<span class='line-number'>215</span>
-<span class='line-number'>216</span>
-<span class='line-number'>217</span>
-<span class='line-number'>218</span>
-<span class='line-number'>219</span>
-<span class='line-number'>220</span>
-<span class='line-number'>221</span>
-<span class='line-number'>222</span>
-<span class='line-number'>223</span>
-<span class='line-number'>224</span>
-<span class='line-number'>225</span>
-<span class='line-number'>226</span>
-<span class='line-number'>227</span>
-<span class='line-number'>228</span>
-<span class='line-number'>229</span>
-<span class='line-number'>230</span>
-<span class='line-number'>231</span>
-<span class='line-number'>232</span>
-<span class='line-number'>233</span>
-<span class='line-number'>234</span>
-<span class='line-number'>235</span>
-<span class='line-number'>236</span>
-<span class='line-number'>237</span>
-<span class='line-number'>238</span>
-<span class='line-number'>239</span>
-<span class='line-number'>240</span>
-<span class='line-number'>241</span>
-<span class='line-number'>242</span>
-<span class='line-number'>243</span>
-<span class='line-number'>244</span>
-<span class='line-number'>245</span>
-<span class='line-number'>246</span>
-<span class='line-number'>247</span>
-<span class='line-number'>248</span>
-<span class='line-number'>249</span>
-<span class='line-number'>250</span>
-<span class='line-number'>251</span>
-<span class='line-number'>252</span>
-<span class='line-number'>253</span>
-<span class='line-number'>254</span>
-<span class='line-number'>255</span>
-<span class='line-number'>256</span>
-<span class='line-number'>257</span>
-<span class='line-number'>258</span>
-<span class='line-number'>259</span>
-<span class='line-number'>260</span>
-<span class='line-number'>261</span>
-<span class='line-number'>262</span>
-<span class='line-number'>263</span>
-<span class='line-number'>264</span>
-<span class='line-number'>265</span>
-<span class='line-number'>266</span>
-<span class='line-number'>267</span>
-<span class='line-number'>268</span>
-<span class='line-number'>269</span>
-<span class='line-number'>270</span>
-<span class='line-number'>271</span>
-<span class='line-number'>272</span>
-<span class='line-number'>273</span>
-<span class='line-number'>274</span>
-<span class='line-number'>275</span>
-<span class='line-number'>276</span>
-<span class='line-number'>277</span>
-<span class='line-number'>278</span>
-<span class='line-number'>279</span>
-<span class='line-number'>280</span>
-<span class='line-number'>281</span>
-<span class='line-number'>282</span>
-<span class='line-number'>283</span>
-<span class='line-number'>284</span>
-<span class='line-number'>285</span>
-<span class='line-number'>286</span>
-<span class='line-number'>287</span>
-<span class='line-number'>288</span>
-<span class='line-number'>289</span>
-<span class='line-number'>290</span>
-<span class='line-number'>291</span>
-<span class='line-number'>292</span>
-<span class='line-number'>293</span>
-<span class='line-number'>294</span>
-<span class='line-number'>295</span>
-<span class='line-number'>296</span>
-<span class='line-number'>297</span>
-<span class='line-number'>298</span>
-<span class='line-number'>299</span>
-<span class='line-number'>300</span>
-<span class='line-number'>301</span>
-<span class='line-number'>302</span>
-<span class='line-number'>303</span>
-<span class='line-number'>304</span>
-<span class='line-number'>305</span>
-<span class='line-number'>306</span>
-<span class='line-number'>307</span>
-<span class='line-number'>308</span>
-<span class='line-number'>309</span>
-<span class='line-number'>310</span>
-<span class='line-number'>311</span>
-<span class='line-number'>312</span>
-<span class='line-number'>313</span>
-<span class='line-number'>314</span>
-<span class='line-number'>315</span>
-<span class='line-number'>316</span>
-<span class='line-number'>317</span>
-<span class='line-number'>318</span>
-<span class='line-number'>319</span>
-<span class='line-number'>320</span>
-<span class='line-number'>321</span>
-<span class='line-number'>322</span>
-<span class='line-number'>323</span>
-<span class='line-number'>324</span>
-<span class='line-number'>325</span>
-<span class='line-number'>326</span>
-<span class='line-number'>327</span>
-<span class='line-number'>328</span>
-<span class='line-number'>329</span>
-<span class='line-number'>330</span>
-<span class='line-number'>331</span>
-<span class='line-number'>332</span>
-<span class='line-number'>333</span>
-<span class='line-number'>334</span>
-<span class='line-number'>335</span>
-<span class='line-number'>336</span>
-<span class='line-number'>337</span>
-<span class='line-number'>338</span>
-<span class='line-number'>339</span>
-<span class='line-number'>340</span>
-<span class='line-number'>341</span>
-<span class='line-number'>342</span>
-<span class='line-number'>343</span>
-<span class='line-number'>344</span>
-<span class='line-number'>345</span>
-<span class='line-number'>346</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#import &quot;AlarmViewController.h&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@interface</span> <span class="nc">AlarmViewController</span> <span class="p">()</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@property</span> <span class="n">UIButton</span>      <span class="o">*</span><span class="n">startAlarmButton</span><span class="p">;</span> <span class="c1">//アラーム停止ボタン</span>
-</span><span class='line'><span class="k">@property</span> <span class="n">UIButton</span>      <span class="o">*</span><span class="n">stopAlarmButton</span><span class="p">;</span>  <span class="c1">//アラーム停止ボタン</span>
-</span><span class='line'><span class="k">@property</span> <span class="n">UILabel</span>       <span class="o">*</span><span class="n">wakeUpTimeLabel</span><span class="p">;</span>  <span class="c1">//起床時間の表示ラベル</span>
-</span><span class='line'><span class="k">@property</span> <span class="n">AVAudioPlayer</span> <span class="o">*</span><span class="n">alarmPlayer</span><span class="p">;</span>      <span class="c1">//アラームプレイヤー</span>
-</span><span class='line'><span class="k">@property</span> <span class="n">UIDatePicker</span>  <span class="o">*</span><span class="n">alarmPicker</span><span class="p">;</span>      <span class="c1">//起床時間の選択ピッカー</span>
-</span><span class='line'><span class="k">@property</span> <span class="n">NSTimer</span>       <span class="o">*</span><span class="n">alarmTimer</span><span class="p">;</span>       <span class="c1">//アラームタイマー</span>
-</span><span class='line'><span class="k">@property</span> <span class="kt">BOOL</span>          <span class="n">isStartedAlarm</span><span class="p">;</span>    <span class="c1">//アラーム開始フラグ</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@implementation</span> <span class="nc">AlarmViewController</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">typedef</span> <span class="k">enum</span> <span class="n">alarmEventType</span> <span class="o">:</span> <span class="n">NSUInteger</span> <span class="p">{</span>
-</span><span class='line'>    <span class="n">ALARM_START</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-</span><span class='line'>    <span class="n">ALARM_STOP</span>  <span class="o">=</span> <span class="mi">2</span>
-</span><span class='line'><span class="p">}</span> <span class="n">alarmEventType</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">viewDidLoad</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
-</span><span class='line'>  
-</span><span class='line'>    <span class="c1">//背景指定</span>
-</span><span class='line'>    <span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIColor</span> <span class="n">underPageBackgroundColor</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//アラームプレイヤー初期化</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="n">initAlarmPlayer</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//起床時間の表示ビュー配置</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="n">setWakeUpTimeView</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//アラーム開始ボタン配置</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="nl">setAlarmControlButton:</span><span class="n">ALARM_START</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//起床時間の選択ピッカー配置</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="n">setWakeUpTimePicker</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#pragma mark alarm player</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//アラームプレイヤー初期化</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">initAlarmPlayer</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">_alarmPlayer</span> <span class="o">=</span> <span class="p">[[</span><span class="n">DCAudioPlayer</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithAudio:</span><span class="n">ALARM_NAME</span> <span class="nl">ext:</span><span class="n">ALARM_FILE_EXT</span> <span class="nl">isUseDelegate:</span><span class="n">NO</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#pragma mark wake up time label</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//起床時間の表示ビュー配置</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setWakeUpTimeView</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">UIView</span> <span class="o">*</span><span class="n">wakeUpTimeView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame:</span><span class="n">WAKE_UP_TIME_RECT</span><span class="p">];</span>
-</span><span class='line'>    <span class="n">wakeUpTimeView</span><span class="p">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="p">[</span><span class="n">UIColor</span> <span class="nl">colorWithRed:</span><span class="mf">0.0f</span> <span class="nl">green:</span><span class="mf">0.0f</span> <span class="nl">blue:</span><span class="mf">0.0f</span> <span class="nl">alpha:</span><span class="mf">0.5f</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//起床時間のラベル配置</span>
-</span><span class='line'>    <span class="n">_wakeUpTimeLabel</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCLabel</span> <span class="nl">planeLabel:</span><span class="n">WAKE_UP_TIME_RECT</span>
-</span><span class='line'>                                      <span class="nl">text:</span><span class="n">wakeUpTime</span> <span class="nl">font:</span><span class="n">WAKE_UP_TIME_LABEL_FONT</span>
-</span><span class='line'>                                 <span class="nl">textColor:</span><span class="p">[</span><span class="n">UIColor</span> <span class="n">whiteColor</span><span class="p">]</span> <span class="nl">textAlignment:</span><span class="n">NSTextAlignmentCenter</span>
-</span><span class='line'>                           <span class="nl">backgroundColor:</span><span class="p">[</span><span class="n">UIColor</span> <span class="n">clearColor</span><span class="p">]];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">wakeUpTimeView</span> <span class="nl">addSubview:</span><span class="n">_wakeUpTimeLabel</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">wakeUpTimeView</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//起床時間のラベル更新</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">updateWakeUpTimeLabel:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">timeText</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">_wakeUpTimeLabel</span><span class="p">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">timeText</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//userDefaults更新</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">userDefaults</span> <span class="nl">setObject:</span><span class="n">_wakeUpTimeLabel</span><span class="p">.</span><span class="n">text</span> <span class="nl">forKey:</span><span class="n">UD_WAKE_UP_TIME_KEY</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">userDefaults</span> <span class="n">synchronize</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#pragma mark alarm control button</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//アラームコントロールボタン配置</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setAlarmControlButton:</span><span class="p">(</span><span class="n">NSUInteger</span><span class="p">)</span><span class="nv">tag</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="c1">//ボタン生成</span>
-</span><span class='line'>    <span class="n">UIButton</span> <span class="o">*</span><span class="n">alarmControlButton</span> <span class="o">=</span> <span class="p">[</span><span class="n">DCButton</span> <span class="nl">planeButton:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">center</span><span class="p">.</span><span class="n">x</span> <span class="o">-</span> <span class="p">(</span><span class="n">ALARM_CTR_BTN_WIDTH</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span> <span class="n">ALARM_CTR_BTN_Y</span><span class="p">,</span> <span class="n">ALARM_CTR_BTN_WIDTH</span><span class="p">,</span> <span class="n">ALARM_CTR_BTN_HEIGHT</span><span class="p">)</span>
-</span><span class='line'>                                                    <span class="nl">text:</span><span class="n">_isStartedAlarm</span> <span class="o">?</span> <span class="s">@&quot;停止&quot;</span> <span class="o">:</span> <span class="s">@&quot;開始&quot;</span>
-</span><span class='line'>                                                <span class="nl">delegate:</span><span class="n">self</span> <span class="nl">action:</span><span class="k">@selector</span><span class="p">(</span><span class="nl">alarmControlButtonTapEvent:</span><span class="p">)</span>
-</span><span class='line'>                                                     <span class="nl">tag:</span><span class="n">_isStartedAlarm</span> <span class="o">?</span> <span class="n">ALARM_STOP</span> <span class="o">:</span> <span class="n">ALARM_START</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//ボタンを保持しビューに追加</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">tag</span> <span class="o">==</span> <span class="n">ALARM_START</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="n">_startAlarmButton</span> <span class="o">=</span> <span class="n">alarmControlButton</span><span class="p">;</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">_startAlarmButton</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">tag</span> <span class="o">==</span> <span class="n">ALARM_STOP</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="n">_stopAlarmButton</span> <span class="o">=</span> <span class="n">alarmControlButton</span><span class="p">;</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">_stopAlarmButton</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//アラームコントロールボタンのタップイベント</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">alarmControlButtonTapEvent:</span><span class="p">(</span><span class="n">UIButton</span> <span class="o">*</span><span class="p">)</span><span class="nv">button</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">NSUInteger</span> <span class="n">tag</span> <span class="o">=</span> <span class="n">button</span><span class="p">.</span><span class="n">tag</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">tag</span> <span class="o">==</span> <span class="n">ALARM_START</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="c1">//現在時刻と設定時刻が同じならアラートを表示し処理しない</span>
-</span><span class='line'>        <span class="k">if</span> <span class="p">([</span><span class="n">self</span> <span class="n">isCurrentTime</span><span class="p">])</span> <span class="p">{</span>
-</span><span class='line'>            <span class="p">[</span><span class="n">DCUtil</span> <span class="nl">showAlert:</span><span class="nb">nil</span> <span class="nl">message:</span><span class="n">ALARM_ERROR_MESSAGE</span>
-</span><span class='line'>            <span class="nl">cancelButtonTitle:</span><span class="nb">nil</span> <span class="nl">otherButtonTitles:</span><span class="s">@&quot;OK&quot;</span><span class="p">];</span>
-</span><span class='line'>            <span class="k">return</span><span class="p">;</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="c1">//アラームタイマー開始</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">self</span> <span class="n">startAlarmTimer</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">tag</span> <span class="o">==</span> <span class="n">ALARM_STOP</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="c1">//アラームタイマー停止</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">self</span> <span class="n">clearAlarmTimer</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="c1">//アラーム停止</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">self</span> <span class="n">stopAlarm</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>    <span class="n">_isStartedAlarm</span> <span class="o">=</span> <span class="n">tag</span> <span class="o">==</span> <span class="n">ALARM_START</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//アラームコントロールボタン再配置</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="n">resetAlarmControlButton</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//アラームコントロールボタン削除</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">removeAlarmControlButton:</span><span class="p">(</span><span class="n">NSUInteger</span><span class="p">)</span><span class="nv">tag</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">tag</span> <span class="o">==</span> <span class="n">ALARM_START</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">_startAlarmButton</span> <span class="n">removeFromSuperview</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">tag</span> <span class="o">==</span> <span class="n">ALARM_STOP</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">_stopAlarmButton</span> <span class="n">removeFromSuperview</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//アラームコントロールボタン再配置</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">resetAlarmControlButton</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="nl">removeAlarmControlButton:</span><span class="n">_isStartedAlarm</span> <span class="o">?</span> <span class="n">ALARM_STOP</span> <span class="o">:</span> <span class="n">ALARM_START</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="nl">setAlarmControlButton:</span><span class="n">_isStartedAlarm</span> <span class="o">?</span> <span class="n">ALARM_STOP</span> <span class="o">:</span> <span class="n">ALARM_START</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#pragma mark alarm timer</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//アラームタイマー開始</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">startAlarmTimer</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">_isStartedAlarm</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="k">return</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//スリープ禁止</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">APP_DELEGATE</span> <span class="nl">setIdleTimer:</span><span class="n">YES</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//アラート表示</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">DCUtil</span> <span class="nl">showAlert:</span><span class="nb">nil</span> <span class="nl">message:</span><span class="n">ALARM_START_MESSAGE</span>
-</span><span class='line'>    <span class="nl">cancelButtonTitle:</span><span class="nb">nil</span> <span class="nl">otherButtonTitles:</span><span class="s">@&quot;OK&quot;</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//タイマー停止</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="n">clearAlarmTimer</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//タイマー開始</span>
-</span><span class='line'>    <span class="n">_alarmTimer</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSTimer</span> <span class="nl">scheduledTimerWithTimeInterval:</span><span class="n">ALARM_TIMER_INTERVAL</span> <span class="nl">target:</span><span class="n">self</span>
-</span><span class='line'>                                                 <span class="nl">selector:</span><span class="k">@selector</span><span class="p">(</span><span class="nl">alarmTimerEvent:</span><span class="p">)</span> <span class="nl">userInfo:</span><span class="nb">nil</span>
-</span><span class='line'>                                                  <span class="nl">repeats:</span><span class="n">YES</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//アラームタイマーイベント</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">alarmTimerEvent:</span><span class="p">(</span><span class="n">NSTimer</span> <span class="o">*</span><span class="p">)</span><span class="nv">timer</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="c1">//現在時刻が設定時刻であればアラームを鳴らす</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">([</span><span class="n">self</span> <span class="n">isCurrentTime</span><span class="p">])</span> <span class="p">{</span>
-</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">_isStartedAlarm</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>            <span class="c1">//タイマー停止</span>
-</span><span class='line'>            <span class="p">[</span><span class="n">self</span> <span class="n">clearAlarmTimer</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>            <span class="c1">//アラーム再生</span>
-</span><span class='line'>            <span class="p">[</span><span class="n">self</span> <span class="n">playAlarm</span><span class="p">];</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//アラームタイマー停止</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">clearAlarmTimer</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">_isStartedAlarm</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="k">return</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//スリープ許可</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">APP_DELEGATE</span> <span class="nl">setIdleTimer:</span><span class="n">NO</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//タイマー停止</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">_alarmTimer</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">_alarmTimer</span> <span class="n">invalidate</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#pragma mark play/stop alarm</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//指定したアラームの再生</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">playAlarm</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">_alarmPlayer</span> <span class="nl">setNumberOfLoops:</span><span class="n">ALARM_PLAY_INFINITE</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">_alarmPlayer</span> <span class="n">play</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//指定したアラームの停止</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">stopAlarm</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">([</span><span class="n">_alarmPlayer</span> <span class="n">isPlaying</span><span class="p">])</span> <span class="p">[</span><span class="n">_alarmPlayer</span> <span class="n">stop</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#pragma mark date picker</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//起床時間の選択ピッカー配置</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">setWakeUpTimePicker</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="c1">//起床時間の選択ピッカーを入れるビュー追加</span>
-</span><span class='line'>    <span class="n">UIView</span> <span class="o">*</span><span class="n">wakeUpTimePickerView</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">frame</span><span class="p">.</span><span class="n">size</span><span class="p">.</span><span class="n">height</span><span class="o">-</span> <span class="n">ALARM_PICKER_HEIGHT</span><span class="p">,</span> <span class="n">ALARM_PICKER_WIDTH</span><span class="p">,</span> <span class="n">ALARM_PICKER_HEIGHT</span><span class="p">)];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> <span class="nl">addSubview:</span><span class="n">wakeUpTimePickerView</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//起床時間の選択ピッカー初期化</span>
-</span><span class='line'>    <span class="n">_alarmPicker</span> <span class="o">=</span> <span class="p">[[</span><span class="n">UIDatePicker</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame:</span><span class="n">CGRectMake</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">ALARM_PICKER_WIDTH</span><span class="p">,</span> <span class="n">ALARM_PICKER_HEIGHT</span><span class="p">)];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//日付の表示モードを変更する(時分を表示)</span>
-</span><span class='line'>    <span class="n">_alarmPicker</span><span class="p">.</span><span class="n">datePickerMode</span> <span class="o">=</span> <span class="n">UIDatePickerModeTime</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//何分刻みにするか</span>
-</span><span class='line'>    <span class="n">_alarmPicker</span><span class="p">.</span><span class="n">minuteInterval</span> <span class="o">=</span> <span class="n">ALARM_PICKER_MINUTE_INTERVAL</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//初期時刻設定</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">_alarmPicker</span> <span class="nl">setDate:</span><span class="p">[</span><span class="n">self</span> <span class="n">wakeUpDate</span><span class="p">]];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//起床時間の選択ピッカーの値が変更されたときに呼ばれるメソッドを設定</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">_alarmPicker</span> <span class="nl">addTarget:</span><span class="n">self</span>
-</span><span class='line'>                     <span class="nl">action:</span><span class="k">@selector</span><span class="p">(</span><span class="nl">alarmPickerChanged:</span><span class="p">)</span>
-</span><span class='line'>           <span class="nl">forControlEvents:</span><span class="n">UIControlEventValueChanged</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//UIDatePickerのインスタンスをビューに追加</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">wakeUpTimePickerView</span> <span class="nl">addSubview:</span><span class="n">_alarmPicker</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//起床時間の選択ピッカー変更時のイベント</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">alarmPickerChanged:</span><span class="p">(</span><span class="n">UIDatePicker</span> <span class="o">*</span><span class="p">)</span><span class="nv">datePicker</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="c1">//アラーム開始フラグを下ろす</span>
-</span><span class='line'>    <span class="n">_isStartedAlarm</span> <span class="o">=</span> <span class="n">NO</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//起床時間更新</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="nl">updateWakeUpTimeLabel:</span><span class="p">[</span><span class="n">self</span> <span class="n">wakeUpTimeText</span><span class="p">]];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//アラームが鳴っていたらアラーム停止</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="n">stopAlarm</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//タイマー停止</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="n">clearAlarmTimer</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//停止ボタンを開始ボタンへ変更</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">self</span> <span class="n">resetAlarmControlButton</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#pragma mark getter method</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//起床時間のテキスト取得</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nf">wakeUpTimeText</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">NSDateFormatter</span> <span class="o">*</span><span class="n">dateFormatter</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSDateFormatter</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'>    <span class="n">dateFormatter</span><span class="p">.</span><span class="n">dateFormat</span> <span class="o">=</span> <span class="n">ALARM_TIME_DATE_FORMAT</span><span class="p">;</span>
-</span><span class='line'>    <span class="k">return</span> <span class="p">[</span><span class="n">dateFormatter</span> <span class="nl">stringFromDate:</span><span class="n">_alarmPicker</span><span class="p">.</span><span class="n">date</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//起床時間取得</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSDate</span> <span class="o">*</span><span class="p">)</span><span class="nf">wakeUpDate</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">NSString</span> <span class="o">*</span><span class="n">wakeUpDateString</span> <span class="o">=</span> <span class="n">wakeUpTime</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">NSDateFormatter</span> <span class="o">*</span><span class="n">dateFormater</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSDateFormatter</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">dateFormater</span> <span class="nl">setDateFormat:</span><span class="n">ALARM_TIME_DATE_FORMAT</span><span class="p">];</span>
-</span><span class='line'>    <span class="n">NSDate</span> <span class="o">*</span><span class="n">wakeUpDate</span> <span class="o">=</span> <span class="p">[</span><span class="n">dateFormater</span> <span class="nl">dateFromString:</span><span class="n">wakeUpDateString</span><span class="p">];</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">wakeUpDate</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//UIDatePickerで指定されている時刻(時)取得</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nf">wakeUpDatePickerHour</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">NSDateFormatter</span> <span class="o">*</span><span class="n">hourFormatter</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSDateFormatter</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">hourFormatter</span> <span class="nl">setLocale:</span><span class="p">[</span><span class="n">NSLocale</span> <span class="n">currentLocale</span><span class="p">]];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">hourFormatter</span> <span class="nl">setDateFormat:</span><span class="s">@&quot;HH&quot;</span><span class="p">];</span>
-</span><span class='line'>    <span class="n">NSString</span> <span class="o">*</span><span class="n">datePickerHour</span> <span class="o">=</span> <span class="p">[</span><span class="n">hourFormatter</span> <span class="nl">stringFromDate:</span><span class="n">_alarmPicker</span><span class="p">.</span><span class="n">date</span><span class="p">];</span>
-</span><span class='line'>    <span class="k">return</span> <span class="p">[</span><span class="n">datePickerHour</span> <span class="n">intValue</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//UIDatePickerで指定されている時刻(分)取得</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nf">wakeUpDatePickerMinute</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">NSDateFormatter</span> <span class="o">*</span><span class="n">minuteFormatter</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSDateFormatter</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">minuteFormatter</span> <span class="nl">setLocale:</span><span class="p">[</span><span class="n">NSLocale</span> <span class="n">currentLocale</span><span class="p">]];</span>
-</span><span class='line'>    <span class="p">[</span><span class="n">minuteFormatter</span> <span class="nl">setDateFormat:</span><span class="s">@&quot;mm&quot;</span><span class="p">];</span>
-</span><span class='line'>    <span class="n">NSString</span> <span class="o">*</span><span class="n">datePickerMinute</span> <span class="o">=</span> <span class="p">[</span><span class="n">minuteFormatter</span> <span class="nl">stringFromDate:</span><span class="n">_alarmPicker</span><span class="p">.</span><span class="n">date</span><span class="p">];</span>
-</span><span class='line'>    <span class="k">return</span> <span class="p">[</span><span class="n">datePickerMinute</span> <span class="n">intValue</span><span class="p">];</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//現在時刻であるか</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">isCurrentTime</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="p">([</span><span class="n">self</span> <span class="n">currentHour</span><span class="p">]</span> <span class="o">==</span> <span class="p">[</span><span class="n">self</span> <span class="n">wakeUpDatePickerHour</span><span class="p">]</span> <span class="o">&amp;&amp;</span>
-</span><span class='line'>            <span class="p">[</span><span class="n">self</span> <span class="n">currentMinute</span><span class="p">]</span> <span class="o">==</span> <span class="p">[</span><span class="n">self</span> <span class="n">wakeUpDatePickerMinute</span><span class="p">]);</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="c1">//現在の日付を取得</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nf">currentDay</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">NSDateComponents</span> <span class="o">*</span><span class="n">currentTimeComponents</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="n">currentDateComponents</span><span class="p">];</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">currentTimeComponents</span><span class="p">.</span><span class="n">day</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//現在の時間を取得</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nf">currentHour</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">NSDateComponents</span> <span class="o">*</span><span class="n">currentTimeComponents</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="n">currentDateComponents</span><span class="p">];</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">currentTimeComponents</span><span class="p">.</span><span class="n">hour</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//現在の分数を取得</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSInteger</span><span class="p">)</span><span class="nf">currentMinute</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">NSDateComponents</span> <span class="o">*</span><span class="n">currentTimeComponents</span> <span class="o">=</span> <span class="p">[</span><span class="n">self</span> <span class="n">currentDateComponents</span><span class="p">];</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">currentTimeComponents</span><span class="p">.</span><span class="n">minute</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">//現在時刻のコンポーネント取得</span>
-</span><span class='line'><span class="k">-</span> <span class="p">(</span><span class="n">NSDateComponents</span> <span class="o">*</span><span class="p">)</span><span class="nf">currentDateComponents</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="c1">//現在の時刻を取得</span>
-</span><span class='line'>    <span class="n">NSDate</span> <span class="o">*</span><span class="n">nowDate</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSDate</span> <span class="n">date</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">//現在時刻のコンポーネント定義</span>
-</span><span class='line'>    <span class="n">NSDateComponents</span> <span class="o">*</span><span class="n">nowComponents</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">nowComponents</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSCalendar</span> <span class="n">currentCalendar</span><span class="p">]</span> <span class="nl">components:</span><span class="p">(</span><span class="n">NSHourCalendarUnit</span> <span class="o">|</span>
-</span><span class='line'>                                                              <span class="n">NSMinuteCalendarUnit</span> <span class="o">|</span>
-</span><span class='line'>                                                              <span class="n">NSSecondCalendarUnit</span><span class="p">)</span>
-</span><span class='line'>                                                    <span class="nl">fromDate:</span><span class="n">nowDate</span><span class="p">];</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">nowComponents</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">@end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>関連記事</h2>
-
-<ul>
-<li><strong><a href="/blog/2013/09/10/objc-classes-dc-date/" title="日付時刻の情報や UIDatePickerを取得する「DCDate」クラス">日付時刻の情報や UIDatePickerを取得する「DCDate」クラス</a></strong></li>
-</ul>
-
-
-<h2>お薦めの参考書</h2>
-
-<p><strong><a href="https://www.amazon.co.jp/gp/product/4839957037/ref=as_li_qf_sp_asin_tl?ie=UTF8&camp=247&creative=1211&creativeASIN=4839957037&linkCode=as2&tag=pinocchio-22">Swiftではじめる iPhoneアプリ開発の教科書 Swift 2 &amp; Xcode 7対応</a></strong><img src="https://ir-jp.amazon-adsystem.com/e/ir?t=pinocchio-22&l=as2&o=9&a=4839957037" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" /><br />
-この参考書の通りに実践サンプルを作成することで、確実に力を養うことができます。サンプルコードもサイトからダウンロード出来るようになっており、特に広告の貼り方などが参考になりました。Swiftで何が出来るかを知ることができ、入門用にお薦めの1冊です。</p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-09-04T18:30:00+09:00" pubdate data-updated="true">Sep 4<span>th</span>, 2013</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/avaudioplayer/'>AVAudioPlayer</a>, <a class='category' href='/blog/categories/download/'>Download</a>, <a class='category' href='/blog/categories/nsdate/'>NSDate</a>, <a class='category' href='/blog/categories/objective-c/'>Objective-C</a>, <a class='category' href='/blog/categories/sample/'>Sample</a>, <a class='category' href='/blog/categories/uidatepicker/'>UIDatePicker</a>, <a class='category' href='/blog/categories/xcode/'>Xcode</a>
-
-
-</div>
-	
-</div>
-</article>
-
 <nav id="pagenavi">
     
         <a href="/blog/page/27/" class="prev">Prev</a>
@@ -1820,7 +1167,7 @@ iOSアプリ開発をこれから始める方に最もお薦めな一冊です�
   <div class="information-box-wide">
 <section id="tag-cloud-container">
   <h1 id="tag-cloud-title">Tag Cloud</h1>
-  <p id="tag-cloud"><a href='/blog/categories/actionscript' style='font-size: 102.36842105263158%'>ActionScript(9)</a> <a href='/blog/categories/actionscript3' style='font-size: 101.84210526315789%'>ActionScript3(7)</a> <a href='/blog/categories/ad' style='font-size: 101.3157894736842%'>Ad(5)</a> <a href='/blog/categories/adfurikun' style='font-size: 100.52631578947368%'>Adfurikun(2)</a> <a href='/blog/categories/admob' style='font-size: 103.15789473684211%'>AdMob(12)</a> <a href='/blog/categories/android' style='font-size: 102.89473684210526%'>Android(11)</a> <a href='/blog/categories/animation' style='font-size: 104.47368421052632%'>Animation(17)</a> <a href='/blog/categories/appdelegate' style='font-size: 100.78947368421052%'>AppDelegate(3)</a> <a href='/blog/categories/arc' style='font-size: 100.26315789473684%'>ARC(1)</a> <a href='/blog/categories/arraylist' style='font-size: 100.26315789473684%'>ArrayList(1)</a> <a href='/blog/categories/avaudioplayer' style='font-size: 101.05263157894737%'>AVAudioPlayer(4)</a> <a href='/blog/categories/avaudiosession' style='font-size: 100.26315789473684%'>AVAudioSession(1)</a> <a href='/blog/categories/avfoundation' style='font-size: 100.78947368421052%'>AVFoundation(3)</a> <a href='/blog/categories/banner' style='font-size: 100.52631578947368%'>Banner(2)</a> <a href='/blog/categories/bitmap' style='font-size: 100.26315789473684%'>Bitmap(1)</a> <a href='/blog/categories/camera' style='font-size: 101.05263157894737%'>Camera(4)</a> <a href='/blog/categories/cgaffinetransform' style='font-size: 101.05263157894737%'>CGAffineTransform(4)</a> <a href='/blog/categories/cgblendmode' style='font-size: 100.52631578947368%'>CGBlendMode(2)</a> <a href='/blog/categories/cgcontextref' style='font-size: 100.26315789473684%'>CGContextRef(1)</a> <a href='/blog/categories/cgimageref' style='font-size: 100.26315789473684%'>CGImageRef(1)</a> <a href='/blog/categories/classes' style='font-size: 112.89473684210526%'>Classes(49)</a> <a href='/blog/categories/cllocationmanager' style='font-size: 100.26315789473684%'>CLLocationManager(1)</a> <a href='/blog/categories/connectivitymanager' style='font-size: 100.26315789473684%'>ConnectivityManager(1)</a> <a href='/blog/categories/contentresolver' style='font-size: 100.26315789473684%'>ContentResolver(1)</a> <a href='/blog/categories/corelocation' style='font-size: 100.52631578947368%'>CoreLocation(2)</a> <a href='/blog/categories/delegate' style='font-size: 100.78947368421052%'>Delegate(3)</a> <a href='/blog/categories/device' style='font-size: 101.84210526315789%'>Device(7)</a> <a href='/blog/categories/display' style='font-size: 100.26315789473684%'>Display(1)</a> <a href='/blog/categories/displaymetrics' style='font-size: 100.26315789473684%'>DisplayMetrics(1)</a> <a href='/blog/categories/download' style='font-size: 128.42105263157896%'>Download(108)</a> <a href='/blog/categories/facebook' style='font-size: 101.57894736842105%'>Facebook(6)</a> <a href='/blog/categories/foundation' style='font-size: 118.94736842105263%'>Foundation(72)</a> <a href='/blog/categories/framework' style='font-size: 100.52631578947368%'>Framework(2)</a> <a href='/blog/categories/google-analytics' style='font-size: 100.26315789473684%'>Google Analytics(1)</a> <a href='/blog/categories/handler' style='font-size: 100.26315789473684%'>Handler(1)</a> <a href='/blog/categories/iad' style='font-size: 101.57894736842105%'>iAd(6)</a> <a href='/blog/categories/imageview' style='font-size: 100.26315789473684%'>ImageView(1)</a> <a href='/blog/categories/in-apppurchase' style='font-size: 100.26315789473684%'>In-AppPurchase(1)</a> <a href='/blog/categories/ios' style='font-size: 103.15789473684211%'>iOS(12)</a> <a href='/blog/categories/ios-7' style='font-size: 103.94736842105263%'>iOS 7(15)</a> <a href='/blog/categories/ios-7-dot-1' style='font-size: 100.78947368421052%'>iOS 7.1(3)</a> <a href='/blog/categories/ios-8' style='font-size: 100.26315789473684%'>iOS 8(1)</a> <a href='/blog/categories/ipad' style='font-size: 101.84210526315789%'>iPad(7)</a> <a href='/blog/categories/iphone' style='font-size: 106.3157894736842%'>iPhone(24)</a> <a href='/blog/categories/iphone-6' style='font-size: 101.05263157894737%'>iPhone 6(4)</a> <a href='/blog/categories/java' style='font-size: 101.84210526315789%'>Java(7)</a> <a href='/blog/categories/javascript' style='font-size: 100.52631578947368%'>JavaScript(2)</a> <a href='/blog/categories/line' style='font-size: 101.05263157894737%'>LINE(4)</a> <a href='/blog/categories/localize' style='font-size: 100.26315789473684%'>Localize(1)</a> <a href='/blog/categories/magazine' style='font-size: 100.78947368421052%'>Magazine(3)</a> <a href='/blog/categories/mediastore' style='font-size: 100.26315789473684%'>MediaStore(1)</a> <a href='/blog/categories/mfcomposeviewcontroller' style='font-size: 100.26315789473684%'>MFComposeViewController(1)</a> <a href='/blog/categories/nend' style='font-size: 100.26315789473684%'>Nend(1)</a> <a href='/blog/categories/networkinfo' style='font-size: 100.26315789473684%'>NetworkInfo(1)</a> <a href='/blog/categories/nsarray' style='font-size: 106.05263157894737%'>NSArray(23)</a> <a href='/blog/categories/nscalendar' style='font-size: 100.78947368421052%'>NSCalendar(3)</a> <a href='/blog/categories/nsdata' style='font-size: 100.52631578947368%'>NSData(2)</a> <a href='/blog/categories/nsdate' style='font-size: 101.84210526315789%'>NSDate(7)</a> <a href='/blog/categories/nsdatecomponents' style='font-size: 100.52631578947368%'>NSDateComponents(2)</a> <a href='/blog/categories/nsdateformatter' style='font-size: 100.52631578947368%'>NSDateFormatter(2)</a> <a href='/blog/categories/nsdictionary' style='font-size: 103.15789473684211%'>NSDictionary(12)</a> <a href='/blog/categories/nsenumerator' style='font-size: 100.26315789473684%'>NSEnumerator(1)</a> <a href='/blog/categories/nsindexset' style='font-size: 100.26315789473684%'>NSIndexSet(1)</a> <a href='/blog/categories/nsinteger' style='font-size: 101.57894736842105%'>NSInteger(6)</a> <a href='/blog/categories/nsmutablearray' style='font-size: 104.47368421052632%'>NSMutableArray(17)</a> <a href='/blog/categories/nsmutabledictionary' style='font-size: 101.3157894736842%'>NSMutableDictionary(5)</a> <a href='/blog/categories/nsmutableorderedset' style='font-size: 101.84210526315789%'>NSMutableOrderedSet(7)</a> <a href='/blog/categories/nsmutablestring' style='font-size: 101.05263157894737%'>NSMutableString(4)</a> <a href='/blog/categories/nsmutableurlrequest' style='font-size: 100.26315789473684%'>NSMutableURLRequest(1)</a> <a href='/blog/categories/nsnotificationcenter' style='font-size: 100.26315789473684%'>NSNotificationCenter(1)</a> <a href='/blog/categories/nsnumber' style='font-size: 100.26315789473684%'>NSNumber(1)</a> <a href='/blog/categories/nsobject' style='font-size: 100.26315789473684%'>NSObject(1)</a> <a href='/blog/categories/nsorderedset' style='font-size: 101.84210526315789%'>NSOrderedSet(7)</a> <a href='/blog/categories/nsrange' style='font-size: 100.52631578947368%'>NSRange(2)</a> <a href='/blog/categories/nsselectorfromstring' style='font-size: 100.26315789473684%'>NSSelectorFromString(1)</a> <a href='/blog/categories/nsset' style='font-size: 101.57894736842105%'>NSSet(6)</a> <a href='/blog/categories/nsstring' style='font-size: 105.0%'>NSString(19)</a> <a href='/blog/categories/nstimer' style='font-size: 101.05263157894737%'>NSTimer(4)</a> <a href='/blog/categories/nstimezone' style='font-size: 100.26315789473684%'>NSTimeZone(1)</a> <a href='/blog/categories/nsurl' style='font-size: 101.84210526315789%'>NSURL(7)</a> <a href='/blog/categories/nsurlconnection' style='font-size: 100.26315789473684%'>NSURLConnection(1)</a> <a href='/blog/categories/nsurlrequest' style='font-size: 100.52631578947368%'>NSURLRequest(2)</a> <a href='/blog/categories/nsuserdefaults' style='font-size: 101.84210526315789%'>NSUserDefaults(7)</a> <a href='/blog/categories/nsxmlparser' style='font-size: 100.52631578947368%'>NSXMLParser(2)</a> <a href='/blog/categories/objective-c' style='font-size: 160.0%'>Objective-C(228)</a> <a href='/blog/categories/php' style='font-size: 100.26315789473684%'>PHP(1)</a> <a href='/blog/categories/products' style='font-size: 104.47368421052632%'>Products(17)</a> <a href='/blog/categories/quartzcore' style='font-size: 100.78947368421052%'>QuartzCore(3)</a> <a href='/blog/categories/rss' style='font-size: 100.52631578947368%'>RSS(2)</a> <a href='/blog/categories/runnable' style='font-size: 100.26315789473684%'>Runnable(1)</a> <a href='/blog/categories/sample' style='font-size: 113.42105263157895%'>Sample(51)</a> <a href='/blog/categories/screensaver' style='font-size: 102.36842105263158%'>Screensaver(9)</a> <a href='/blog/categories/sdk' style='font-size: 100.52631578947368%'>SDK(2)</a> <a href='/blog/categories/sharecompat' style='font-size: 100.26315789473684%'>ShareCompat(1)</a> <a href='/blog/categories/social' style='font-size: 102.63157894736842%'>Social(10)</a> <a href='/blog/categories/storekit' style='font-size: 100.26315789473684%'>StoreKit(1)</a> <a href='/blog/categories/twitter' style='font-size: 101.57894736842105%'>Twitter(6)</a> <a href='/blog/categories/uiaccelerometer' style='font-size: 100.78947368421052%'>UIAccelerometer(3)</a> <a href='/blog/categories/uiactionsheet' style='font-size: 100.26315789473684%'>UIActionSheet(1)</a> <a href='/blog/categories/uiactivityindicator' style='font-size: 100.26315789473684%'>UIActivityIndicator(1)</a> <a href='/blog/categories/uiactivityindicatorview' style='font-size: 100.78947368421052%'>UIActivityIndicatorView(3)</a> <a href='/blog/categories/uiactivityviewcontroller' style='font-size: 100.26315789473684%'>UIActivityViewController(1)</a> <a href='/blog/categories/uialertview' style='font-size: 101.3157894736842%'>UIAlertView(5)</a> <a href='/blog/categories/uiapplication' style='font-size: 101.84210526315789%'>UIApplication(7)</a> <a href='/blog/categories/uibutton' style='font-size: 101.05263157894737%'>UIButton(4)</a> <a href='/blog/categories/uicolor' style='font-size: 100.78947368421052%'>UIColor(3)</a> <a href='/blog/categories/uidatepicker' style='font-size: 101.3157894736842%'>UIDatePicker(5)</a> <a href='/blog/categories/uidevice' style='font-size: 101.57894736842105%'>UIDevice(6)</a> <a href='/blog/categories/uideviceorientation' style='font-size: 100.26315789473684%'>UIDeviceOrientation(1)</a> <a href='/blog/categories/uievent' style='font-size: 101.57894736842105%'>UIEvent(6)</a> <a href='/blog/categories/uiimage' style='font-size: 103.94736842105263%'>UIImage(15)</a> <a href='/blog/categories/uiimagepickercontroller' style='font-size: 101.05263157894737%'>UIImagePickerController(4)</a> <a href='/blog/categories/uiimageview' style='font-size: 103.15789473684211%'>UIImageView(12)</a> <a href='/blog/categories/uikit' style='font-size: 115.26315789473685%'>UIKit(58)</a> <a href='/blog/categories/uilabel' style='font-size: 101.84210526315789%'>UILabel(7)</a> <a href='/blog/categories/uinavigationbar' style='font-size: 101.05263157894737%'>UINavigationBar(4)</a> <a href='/blog/categories/uinavigationitem' style='font-size: 100.26315789473684%'>UINavigationItem(1)</a> <a href='/blog/categories/uipasteboard' style='font-size: 101.05263157894737%'>UIPasteboard(4)</a> <a href='/blog/categories/uiscreen' style='font-size: 100.26315789473684%'>UIScreen(1)</a> <a href='/blog/categories/uiscrollbar' style='font-size: 100.26315789473684%'>UIScrollBar(1)</a> <a href='/blog/categories/uiscrollview' style='font-size: 100.26315789473684%'>UIScrollView(1)</a> <a href='/blog/categories/uislider' style='font-size: 100.78947368421052%'>UISlider(3)</a> <a href='/blog/categories/uistoryboardsegue' style='font-size: 100.78947368421052%'>UIStoryboardSegue(3)</a> <a href='/blog/categories/uiswitch' style='font-size: 100.26315789473684%'>UISwitch(1)</a> <a href='/blog/categories/uitabbar' style='font-size: 100.78947368421052%'>UITabBar(3)</a> <a href='/blog/categories/uitableview' style='font-size: 101.05263157894737%'>UITableView(4)</a> <a href='/blog/categories/uitextfield' style='font-size: 100.52631578947368%'>UITextField(2)</a> <a href='/blog/categories/uiview' style='font-size: 102.89473684210526%'>UIView(11)</a> <a href='/blog/categories/uiviewanimationtransition' style='font-size: 100.26315789473684%'>UIViewAnimationTransition(1)</a> <a href='/blog/categories/uiviewcontroller' style='font-size: 101.05263157894737%'>UIViewController(4)</a> <a href='/blog/categories/uiwebview' style='font-size: 101.3157894736842%'>UIWebView(5)</a> <a href='/blog/categories/uncategorized' style='font-size: 100.26315789473684%'>Uncategorized(1)</a> <a href='/blog/categories/windowmanager' style='font-size: 100.26315789473684%'>WindowManager(1)</a> <a href='/blog/categories/xcode' style='font-size: 112.63157894736842%'>Xcode(48)</a> <a href='/blog/categories/xcode-5' style='font-size: 102.10526315789474%'>Xcode 5(8)</a> <a href='/blog/categories/xcode-5-dot-1' style='font-size: 100.52631578947368%'>Xcode 5.1(2)</a> </p>
+  <p id="tag-cloud"><a href='/blog/categories/actionscript' style='font-size: 102.35807860262008%'>ActionScript(9)</a> <a href='/blog/categories/actionscript3' style='font-size: 101.83406113537117%'>ActionScript3(7)</a> <a href='/blog/categories/ad' style='font-size: 101.31004366812228%'>Ad(5)</a> <a href='/blog/categories/adfurikun' style='font-size: 100.52401746724891%'>Adfurikun(2)</a> <a href='/blog/categories/admob' style='font-size: 103.14410480349345%'>AdMob(12)</a> <a href='/blog/categories/android' style='font-size: 102.882096069869%'>Android(11)</a> <a href='/blog/categories/animation' style='font-size: 104.45414847161572%'>Animation(17)</a> <a href='/blog/categories/appdelegate' style='font-size: 100.78602620087337%'>AppDelegate(3)</a> <a href='/blog/categories/arc' style='font-size: 100.26200873362446%'>ARC(1)</a> <a href='/blog/categories/arraylist' style='font-size: 100.26200873362446%'>ArrayList(1)</a> <a href='/blog/categories/avaudioplayer' style='font-size: 101.04803493449782%'>AVAudioPlayer(4)</a> <a href='/blog/categories/avaudiosession' style='font-size: 100.26200873362446%'>AVAudioSession(1)</a> <a href='/blog/categories/avfoundation' style='font-size: 100.78602620087337%'>AVFoundation(3)</a> <a href='/blog/categories/banner' style='font-size: 100.52401746724891%'>Banner(2)</a> <a href='/blog/categories/bitmap' style='font-size: 100.26200873362446%'>Bitmap(1)</a> <a href='/blog/categories/camera' style='font-size: 101.04803493449782%'>Camera(4)</a> <a href='/blog/categories/cgaffinetransform' style='font-size: 101.04803493449782%'>CGAffineTransform(4)</a> <a href='/blog/categories/cgblendmode' style='font-size: 100.52401746724891%'>CGBlendMode(2)</a> <a href='/blog/categories/cgcontextref' style='font-size: 100.26200873362446%'>CGContextRef(1)</a> <a href='/blog/categories/cgimageref' style='font-size: 100.26200873362446%'>CGImageRef(1)</a> <a href='/blog/categories/classes' style='font-size: 112.83842794759825%'>Classes(49)</a> <a href='/blog/categories/cllocationmanager' style='font-size: 100.26200873362446%'>CLLocationManager(1)</a> <a href='/blog/categories/connectivitymanager' style='font-size: 100.26200873362446%'>ConnectivityManager(1)</a> <a href='/blog/categories/contentresolver' style='font-size: 100.26200873362446%'>ContentResolver(1)</a> <a href='/blog/categories/corelocation' style='font-size: 100.52401746724891%'>CoreLocation(2)</a> <a href='/blog/categories/delegate' style='font-size: 100.78602620087337%'>Delegate(3)</a> <a href='/blog/categories/device' style='font-size: 101.83406113537117%'>Device(7)</a> <a href='/blog/categories/display' style='font-size: 100.26200873362446%'>Display(1)</a> <a href='/blog/categories/displaymetrics' style='font-size: 100.26200873362446%'>DisplayMetrics(1)</a> <a href='/blog/categories/download' style='font-size: 128.5589519650655%'>Download(109)</a> <a href='/blog/categories/facebook' style='font-size: 101.57205240174673%'>Facebook(6)</a> <a href='/blog/categories/foundation' style='font-size: 118.8646288209607%'>Foundation(72)</a> <a href='/blog/categories/framework' style='font-size: 100.52401746724891%'>Framework(2)</a> <a href='/blog/categories/google-analytics' style='font-size: 100.26200873362446%'>Google Analytics(1)</a> <a href='/blog/categories/handler' style='font-size: 100.26200873362446%'>Handler(1)</a> <a href='/blog/categories/iad' style='font-size: 101.57205240174673%'>iAd(6)</a> <a href='/blog/categories/imageview' style='font-size: 100.26200873362446%'>ImageView(1)</a> <a href='/blog/categories/in-apppurchase' style='font-size: 100.26200873362446%'>In-AppPurchase(1)</a> <a href='/blog/categories/ios' style='font-size: 103.14410480349345%'>iOS(12)</a> <a href='/blog/categories/ios-7' style='font-size: 103.93013100436681%'>iOS 7(15)</a> <a href='/blog/categories/ios-7-dot-1' style='font-size: 100.78602620087337%'>iOS 7.1(3)</a> <a href='/blog/categories/ios-8' style='font-size: 100.26200873362446%'>iOS 8(1)</a> <a href='/blog/categories/ipad' style='font-size: 101.83406113537117%'>iPad(7)</a> <a href='/blog/categories/iphone' style='font-size: 106.2882096069869%'>iPhone(24)</a> <a href='/blog/categories/iphone-6' style='font-size: 101.04803493449782%'>iPhone 6(4)</a> <a href='/blog/categories/java' style='font-size: 101.83406113537117%'>Java(7)</a> <a href='/blog/categories/javascript' style='font-size: 100.52401746724891%'>JavaScript(2)</a> <a href='/blog/categories/line' style='font-size: 101.04803493449782%'>LINE(4)</a> <a href='/blog/categories/localize' style='font-size: 100.26200873362446%'>Localize(1)</a> <a href='/blog/categories/magazine' style='font-size: 100.78602620087337%'>Magazine(3)</a> <a href='/blog/categories/mediastore' style='font-size: 100.26200873362446%'>MediaStore(1)</a> <a href='/blog/categories/mfcomposeviewcontroller' style='font-size: 100.26200873362446%'>MFComposeViewController(1)</a> <a href='/blog/categories/nend' style='font-size: 100.26200873362446%'>Nend(1)</a> <a href='/blog/categories/networkinfo' style='font-size: 100.26200873362446%'>NetworkInfo(1)</a> <a href='/blog/categories/nsarray' style='font-size: 106.02620087336244%'>NSArray(23)</a> <a href='/blog/categories/nscalendar' style='font-size: 100.78602620087337%'>NSCalendar(3)</a> <a href='/blog/categories/nsdata' style='font-size: 100.52401746724891%'>NSData(2)</a> <a href='/blog/categories/nsdate' style='font-size: 101.83406113537117%'>NSDate(7)</a> <a href='/blog/categories/nsdatecomponents' style='font-size: 100.52401746724891%'>NSDateComponents(2)</a> <a href='/blog/categories/nsdateformatter' style='font-size: 100.52401746724891%'>NSDateFormatter(2)</a> <a href='/blog/categories/nsdictionary' style='font-size: 103.14410480349345%'>NSDictionary(12)</a> <a href='/blog/categories/nsenumerator' style='font-size: 100.26200873362446%'>NSEnumerator(1)</a> <a href='/blog/categories/nsindexset' style='font-size: 100.26200873362446%'>NSIndexSet(1)</a> <a href='/blog/categories/nsinteger' style='font-size: 101.57205240174673%'>NSInteger(6)</a> <a href='/blog/categories/nsmutablearray' style='font-size: 104.45414847161572%'>NSMutableArray(17)</a> <a href='/blog/categories/nsmutabledictionary' style='font-size: 101.31004366812228%'>NSMutableDictionary(5)</a> <a href='/blog/categories/nsmutableorderedset' style='font-size: 101.83406113537117%'>NSMutableOrderedSet(7)</a> <a href='/blog/categories/nsmutablestring' style='font-size: 101.04803493449782%'>NSMutableString(4)</a> <a href='/blog/categories/nsmutableurlrequest' style='font-size: 100.26200873362446%'>NSMutableURLRequest(1)</a> <a href='/blog/categories/nsnotificationcenter' style='font-size: 100.26200873362446%'>NSNotificationCenter(1)</a> <a href='/blog/categories/nsnumber' style='font-size: 100.26200873362446%'>NSNumber(1)</a> <a href='/blog/categories/nsobject' style='font-size: 100.26200873362446%'>NSObject(1)</a> <a href='/blog/categories/nsorderedset' style='font-size: 101.83406113537117%'>NSOrderedSet(7)</a> <a href='/blog/categories/nsrange' style='font-size: 100.52401746724891%'>NSRange(2)</a> <a href='/blog/categories/nsselectorfromstring' style='font-size: 100.26200873362446%'>NSSelectorFromString(1)</a> <a href='/blog/categories/nsset' style='font-size: 101.57205240174673%'>NSSet(6)</a> <a href='/blog/categories/nsstring' style='font-size: 104.97816593886463%'>NSString(19)</a> <a href='/blog/categories/nstimer' style='font-size: 101.04803493449782%'>NSTimer(4)</a> <a href='/blog/categories/nstimezone' style='font-size: 100.26200873362446%'>NSTimeZone(1)</a> <a href='/blog/categories/nsurl' style='font-size: 101.83406113537117%'>NSURL(7)</a> <a href='/blog/categories/nsurlconnection' style='font-size: 100.26200873362446%'>NSURLConnection(1)</a> <a href='/blog/categories/nsurlrequest' style='font-size: 100.52401746724891%'>NSURLRequest(2)</a> <a href='/blog/categories/nsuserdefaults' style='font-size: 101.83406113537117%'>NSUserDefaults(7)</a> <a href='/blog/categories/nsxmlparser' style='font-size: 100.52401746724891%'>NSXMLParser(2)</a> <a href='/blog/categories/objective-c' style='font-size: 160.0%'>Objective-C(229)</a> <a href='/blog/categories/php' style='font-size: 100.26200873362446%'>PHP(1)</a> <a href='/blog/categories/products' style='font-size: 104.45414847161572%'>Products(17)</a> <a href='/blog/categories/quartzcore' style='font-size: 100.78602620087337%'>QuartzCore(3)</a> <a href='/blog/categories/rss' style='font-size: 100.52401746724891%'>RSS(2)</a> <a href='/blog/categories/runnable' style='font-size: 100.26200873362446%'>Runnable(1)</a> <a href='/blog/categories/sample' style='font-size: 113.36244541484716%'>Sample(51)</a> <a href='/blog/categories/screensaver' style='font-size: 102.35807860262008%'>Screensaver(9)</a> <a href='/blog/categories/sdk' style='font-size: 100.52401746724891%'>SDK(2)</a> <a href='/blog/categories/sharecompat' style='font-size: 100.26200873362446%'>ShareCompat(1)</a> <a href='/blog/categories/social' style='font-size: 102.62008733624454%'>Social(10)</a> <a href='/blog/categories/storekit' style='font-size: 100.26200873362446%'>StoreKit(1)</a> <a href='/blog/categories/twitter' style='font-size: 101.57205240174673%'>Twitter(6)</a> <a href='/blog/categories/uiaccelerometer' style='font-size: 100.78602620087337%'>UIAccelerometer(3)</a> <a href='/blog/categories/uiactionsheet' style='font-size: 100.26200873362446%'>UIActionSheet(1)</a> <a href='/blog/categories/uiactivityindicator' style='font-size: 100.26200873362446%'>UIActivityIndicator(1)</a> <a href='/blog/categories/uiactivityindicatorview' style='font-size: 100.78602620087337%'>UIActivityIndicatorView(3)</a> <a href='/blog/categories/uiactivityviewcontroller' style='font-size: 100.26200873362446%'>UIActivityViewController(1)</a> <a href='/blog/categories/uialertview' style='font-size: 101.31004366812228%'>UIAlertView(5)</a> <a href='/blog/categories/uiapplication' style='font-size: 101.83406113537117%'>UIApplication(7)</a> <a href='/blog/categories/uibutton' style='font-size: 101.04803493449782%'>UIButton(4)</a> <a href='/blog/categories/uicolor' style='font-size: 100.78602620087337%'>UIColor(3)</a> <a href='/blog/categories/uidatepicker' style='font-size: 101.31004366812228%'>UIDatePicker(5)</a> <a href='/blog/categories/uidevice' style='font-size: 101.57205240174673%'>UIDevice(6)</a> <a href='/blog/categories/uideviceorientation' style='font-size: 100.26200873362446%'>UIDeviceOrientation(1)</a> <a href='/blog/categories/uievent' style='font-size: 101.57205240174673%'>UIEvent(6)</a> <a href='/blog/categories/uiimage' style='font-size: 103.93013100436681%'>UIImage(15)</a> <a href='/blog/categories/uiimagepickercontroller' style='font-size: 101.04803493449782%'>UIImagePickerController(4)</a> <a href='/blog/categories/uiimageview' style='font-size: 103.14410480349345%'>UIImageView(12)</a> <a href='/blog/categories/uikit' style='font-size: 115.19650655021834%'>UIKit(58)</a> <a href='/blog/categories/uilabel' style='font-size: 101.83406113537117%'>UILabel(7)</a> <a href='/blog/categories/uinavigationbar' style='font-size: 101.04803493449782%'>UINavigationBar(4)</a> <a href='/blog/categories/uinavigationitem' style='font-size: 100.26200873362446%'>UINavigationItem(1)</a> <a href='/blog/categories/uipasteboard' style='font-size: 101.04803493449782%'>UIPasteboard(4)</a> <a href='/blog/categories/uiscreen' style='font-size: 100.26200873362446%'>UIScreen(1)</a> <a href='/blog/categories/uiscrollbar' style='font-size: 100.26200873362446%'>UIScrollBar(1)</a> <a href='/blog/categories/uiscrollview' style='font-size: 100.26200873362446%'>UIScrollView(1)</a> <a href='/blog/categories/uislider' style='font-size: 100.78602620087337%'>UISlider(3)</a> <a href='/blog/categories/uistoryboardsegue' style='font-size: 100.78602620087337%'>UIStoryboardSegue(3)</a> <a href='/blog/categories/uiswitch' style='font-size: 100.26200873362446%'>UISwitch(1)</a> <a href='/blog/categories/uitabbar' style='font-size: 100.78602620087337%'>UITabBar(3)</a> <a href='/blog/categories/uitableview' style='font-size: 101.04803493449782%'>UITableView(4)</a> <a href='/blog/categories/uitextfield' style='font-size: 100.52401746724891%'>UITextField(2)</a> <a href='/blog/categories/uiview' style='font-size: 102.882096069869%'>UIView(11)</a> <a href='/blog/categories/uiviewanimationtransition' style='font-size: 100.26200873362446%'>UIViewAnimationTransition(1)</a> <a href='/blog/categories/uiviewcontroller' style='font-size: 101.04803493449782%'>UIViewController(4)</a> <a href='/blog/categories/uiwebview' style='font-size: 101.31004366812228%'>UIWebView(5)</a> <a href='/blog/categories/uncategorized' style='font-size: 100.26200873362446%'>Uncategorized(1)</a> <a href='/blog/categories/usernotifications' style='font-size: 100.26200873362446%'>UserNotifications(1)</a> <a href='/blog/categories/windowmanager' style='font-size: 100.26200873362446%'>WindowManager(1)</a> <a href='/blog/categories/xcode' style='font-size: 112.5764192139738%'>Xcode(48)</a> <a href='/blog/categories/xcode-5' style='font-size: 102.09606986899563%'>Xcode 5(8)</a> <a href='/blog/categories/xcode-5-dot-1' style='font-size: 100.52401746724891%'>Xcode 5.1(2)</a> </p>
 </section>
 
   </div>
@@ -1828,6 +1175,10 @@ iOSアプリ開発をこれから始める方に最もお薦めな一冊です�
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2020/07/10/objc-local-notification/">iOSアプリでローカルプッシュ通知を使用する</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2020/07/09/objc-admob-rewarded-video-ads/">AdMob動画リワード広告の導入手順</a>
@@ -1883,10 +1234,6 @@ iOSアプリ開発をこれから始める方に最もお薦めな一冊です�
     
       <li class="post">
         <a href="/blog/2016/09/04/objc-classes-dc-admob-native-ads/">iOSアプリに AdMobネイティブ広告を表示するクラスを作成しました</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2016/01/22/ios-gijutsu-hyohron-autonomic-nerves/">技術評論社「自律神経を整えるスマホアプリ100選」に掲載いただきました</a>
       </li>
     
   </ul>

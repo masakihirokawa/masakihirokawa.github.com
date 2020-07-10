@@ -6,12 +6,12 @@
 	<title>廣川政樹の開発ブログ - Dolice Lab</title>
 
 
-	<meta name="description" content="Androidアプリでネットワーク接続の有無を判定するサンプルを作成しました。 下記よりサンプルをダウンロードできます。 サンプルダウンロード https://github.com/masakihirokawa/android-network-manager 導入手順 1. パーミッションの追加 &hellip;" />
+	<meta name="description" content="Androidアプリでビットマップ画像を SDカードに保存するサンプルを作成しました。 下記よりサンプルをダウンロードできます。 サンプルダウンロード https://github.com/masakihirokawa/android-save-image 導入手順 1. パーミッションの追加 &hellip;" />
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
     <meta property="og:locale" content="ja_JP" />
     <meta property="og:title" content="廣川政樹の開発ブログ - Dolice Lab" />
-    <meta property="og:description" content="Androidアプリでネットワーク接続の有無を判定するサンプルを作成しました。 下記よりサンプルをダウンロードできます。 サンプルダウンロード https://github.com/masakihirokawa/android-network-manager 導入手順 1. パーミッションの追加 &hellip;" />
+    <meta property="og:description" content="Androidアプリでビットマップ画像を SDカードに保存するサンプルを作成しました。 下記よりサンプルをダウンロードできます。 サンプルダウンロード https://github.com/masakihirokawa/android-save-image 導入手順 1. パーミッションの追加 &hellip;" />
     <meta property="og:url" content="https://lab.dolice.net/blog/page/9/" />
     <meta property="og:image" content="https://lab.dolice.net/images/ogp-icon.png" />
     <meta property="og:author" content="Masaki Hirokawa" />
@@ -99,6 +99,592 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2015/05/04/android-save-image/">
+		
+			画像を SDカードに保存する</a>
+	</h2>
+	<div class="entry-content">
+		<p>Androidアプリでビットマップ画像を SDカードに保存するサンプルを作成しました。</p>
+
+<p>下記よりサンプルをダウンロードできます。</p>
+
+<h2>サンプルダウンロード</h2>
+
+<ul>
+<li><a href="https://github.com/masakihirokawa/android-save-image">https://github.com/masakihirokawa/android-save-image</a></li>
+</ul>
+
+
+<h2>導入手順</h2>
+
+<h3>1. パーミッションの追加</h3>
+
+<p><em>AndroidManifest.xml</em> にメディアストレージへのアクセスを許可する権限を追加します。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;uses-permission</span> <span class="na">android:name=</span><span class="s">&quot;android.permission.WRITE_EXTERNAL_STORAGE&quot;</span> <span class="nt">/&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>2. ImageManager クラスの組み込み</h3>
+
+<p>画像の保存などを行うクラス <em>ImageManager.java</em> を「<em>/app/src/main/java/net/dolice/image/</em>」ディレクトリに配置します。</p>
+
+<h3>3. 保存対象のビットマップ画像を取得</h3>
+
+<p>保存したい画像をビットマップ形式で取得します。下記の例では、イメージビューからビットマップを取得しています。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="c1">// イメージビューからビットマップを取得</span>
+</span><span class='line'><span class="n">ImageView</span> <span class="n">sampleImageView</span> <span class="o">=</span> <span class="o">(</span><span class="n">ImageView</span><span class="o">)</span><span class="n">findViewById</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">image</span><span class="o">);</span>
+</span><span class='line'><span class="n">Bitmap</span> <span class="n">sampleImage</span> <span class="o">=</span> <span class="o">((</span><span class="n">BitmapDrawable</span><span class="o">)</span><span class="n">sampleImageView</span><span class="o">.</span><span class="na">getDrawable</span><span class="o">()).</span><span class="na">getBitmap</span><span class="o">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>4. 画像の保存を実行</h3>
+
+<p>ボタンのタップイベント等から <em>ImageManager</em> クラスを呼び出し、画像の保存を実行します。</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="c1">// ビットマップを SDカードに保存</span>
+</span><span class='line'><span class="n">ImageManager</span> <span class="n">imageManager</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ImageManager</span><span class="o">(</span><span class="k">this</span><span class="o">);</span>
+</span><span class='line'><span class="k">try</span> <span class="o">{</span>
+</span><span class='line'>    <span class="n">String</span> <span class="n">albumName</span> <span class="o">=</span> <span class="s">&quot;Save image sample&quot;</span><span class="o">;</span>
+</span><span class='line'>    <span class="n">imageManager</span><span class="o">.</span><span class="na">save</span><span class="o">(</span><span class="n">sampleImage</span><span class="o">,</span> <span class="n">albumName</span><span class="o">);</span>
+</span><span class='line'><span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Error</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>    <span class="n">Log</span><span class="o">.</span><span class="na">e</span><span class="o">(</span><span class="s">&quot;MainActivity&quot;</span><span class="o">,</span> <span class="s">&quot;onCreate: &quot;</span> <span class="o">+</span> <span class="n">e</span><span class="o">);</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>下記に実装サンプルを記載します。</p>
+
+<p>サンプルでは、画像の上に敷いてある透明なボタンをタップで、フォトアルバムを作成し画像を保存しています。</p>
+
+<p>SDカードが必要であるのと、フォトアルバムへの反映のため <em>ContentResolver</em> を介してギャラリーに追加する必要がある点にご注意ください。</p>
+
+<h2>サンプルソースコード</h2>
+
+<h3>activity_main.xml</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;RelativeLayout</span> <span class="na">xmlns:android=</span><span class="s">&quot;http://schemas.android.com/apk/res/android&quot;</span>
+</span><span class='line'>    <span class="na">xmlns:tools=</span><span class="s">&quot;http://schemas.android.com/tools&quot;</span>
+</span><span class='line'>    <span class="na">android:layout_width=</span><span class="s">&quot;match_parent&quot;</span>
+</span><span class='line'>    <span class="na">android:layout_height=</span><span class="s">&quot;match_parent&quot;</span>
+</span><span class='line'>    <span class="na">tools:context=</span><span class="s">&quot;.MainActivity&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nt">&lt;ImageView</span>
+</span><span class='line'>        <span class="na">android:id=</span><span class="s">&quot;@+id/image&quot;</span>
+</span><span class='line'>        <span class="na">android:layout_width=</span><span class="s">&quot;wrap_content&quot;</span>
+</span><span class='line'>        <span class="na">android:layout_height=</span><span class="s">&quot;wrap_content&quot;</span>
+</span><span class='line'>        <span class="na">android:src=</span><span class="s">&quot;@drawable/sample_image&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nt">&lt;Button</span>
+</span><span class='line'>        <span class="na">android:id=</span><span class="s">&quot;@+id/button&quot;</span>
+</span><span class='line'>        <span class="na">android:layout_width=</span><span class="s">&quot;fill_parent&quot;</span>
+</span><span class='line'>        <span class="na">android:layout_height=</span><span class="s">&quot;fill_parent&quot;</span>
+</span><span class='line'>        <span class="na">android:background=</span><span class="s">&quot;@null&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;/RelativeLayout&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>MainActivity.java</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kn">package</span> <span class="n">net</span><span class="o">.</span><span class="na">dolice</span><span class="o">.</span><span class="na">saveimageex</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kn">import</span> <span class="nn">android.app.Activity</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">android.graphics.Bitmap</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">android.graphics.drawable.BitmapDrawable</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">android.os.Bundle</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">android.util.Log</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">android.view.View</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">android.widget.Button</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">android.widget.ImageView</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">android.widget.Toast</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kn">import</span> <span class="nn">net.dolice.image.ImageManager</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MainActivity</span> <span class="kd">extends</span> <span class="n">Activity</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nd">@Override</span>
+</span><span class='line'>    <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">onCreate</span><span class="o">(</span><span class="n">Bundle</span> <span class="n">savedInstanceState</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="kd">super</span><span class="o">.</span><span class="na">onCreate</span><span class="o">(</span><span class="n">savedInstanceState</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">setContentView</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">layout</span><span class="o">.</span><span class="na">activity_main</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// 画像保存ボタン定義</span>
+</span><span class='line'>        <span class="n">Button</span> <span class="n">sampleButton</span> <span class="o">=</span> <span class="o">(</span><span class="n">Button</span><span class="o">)</span><span class="n">findViewById</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">button</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">sampleButton</span><span class="o">.</span><span class="na">setOnClickListener</span><span class="o">(</span><span class="k">new</span> <span class="n">View</span><span class="o">.</span><span class="na">OnClickListener</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>            <span class="nd">@Override</span>
+</span><span class='line'>            <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onClick</span><span class="o">(</span><span class="n">View</span> <span class="n">v</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>                <span class="c1">// 画像保存</span>
+</span><span class='line'>                <span class="n">saveImage</span><span class="o">();</span>
+</span><span class='line'>            <span class="o">}</span>
+</span><span class='line'>        <span class="o">});</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 画像保存</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="kt">void</span> <span class="nf">saveImage</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="c1">// イメージビューからビットマップ保持</span>
+</span><span class='line'>        <span class="n">ImageView</span> <span class="n">sampleImageView</span> <span class="o">=</span> <span class="o">(</span><span class="n">ImageView</span><span class="o">)</span><span class="n">findViewById</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">image</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">Bitmap</span> <span class="n">sampleImage</span> <span class="o">=</span> <span class="o">((</span><span class="n">BitmapDrawable</span><span class="o">)</span><span class="n">sampleImageView</span><span class="o">.</span><span class="na">getDrawable</span><span class="o">()).</span><span class="na">getBitmap</span><span class="o">();</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// ビットマップを SDカードに保存</span>
+</span><span class='line'>        <span class="n">ImageManager</span> <span class="n">imageManager</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ImageManager</span><span class="o">(</span><span class="k">this</span><span class="o">);</span>
+</span><span class='line'>        <span class="k">try</span> <span class="o">{</span>
+</span><span class='line'>            <span class="c1">// 画像の保存実行</span>
+</span><span class='line'>            <span class="n">String</span> <span class="n">albumName</span> <span class="o">=</span> <span class="s">&quot;Save image sample&quot;</span><span class="o">;</span>
+</span><span class='line'>            <span class="n">imageManager</span><span class="o">.</span><span class="na">save</span><span class="o">(</span><span class="n">sampleImage</span><span class="o">,</span> <span class="n">albumName</span><span class="o">);</span>
+</span><span class='line'>        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Error</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>            <span class="n">Log</span><span class="o">.</span><span class="na">e</span><span class="o">(</span><span class="s">&quot;MainActivity&quot;</span><span class="o">,</span> <span class="s">&quot;onCreate: &quot;</span> <span class="o">+</span> <span class="n">e</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="c1">// 画像の保存失敗メッセージ表示</span>
+</span><span class='line'>            <span class="n">Toast</span><span class="o">.</span><span class="na">makeText</span><span class="o">(</span><span class="n">MainActivity</span><span class="o">.</span><span class="na">this</span><span class="o">,</span> <span class="s">&quot;SDカードに保存できませんでした&quot;</span><span class="o">,</span> <span class="n">Toast</span><span class="o">.</span><span class="na">LENGTH_SHORT</span><span class="o">).</span><span class="na">show</span><span class="o">();</span>
+</span><span class='line'>        <span class="o">}</span> <span class="k">finally</span> <span class="o">{</span>
+</span><span class='line'>            <span class="c1">// 画像の保存完了メッセージ表示</span>
+</span><span class='line'>            <span class="n">Toast</span><span class="o">.</span><span class="na">makeText</span><span class="o">(</span><span class="n">MainActivity</span><span class="o">.</span><span class="na">this</span><span class="o">,</span> <span class="s">&quot;SDカードに保存しました&quot;</span><span class="o">,</span> <span class="n">Toast</span><span class="o">.</span><span class="na">LENGTH_SHORT</span><span class="o">).</span><span class="na">show</span><span class="o">();</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>ImageManager.java</h3>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+<span class='line-number'>102</span>
+<span class='line-number'>103</span>
+<span class='line-number'>104</span>
+<span class='line-number'>105</span>
+<span class='line-number'>106</span>
+<span class='line-number'>107</span>
+<span class='line-number'>108</span>
+<span class='line-number'>109</span>
+<span class='line-number'>110</span>
+<span class='line-number'>111</span>
+<span class='line-number'>112</span>
+<span class='line-number'>113</span>
+<span class='line-number'>114</span>
+<span class='line-number'>115</span>
+<span class='line-number'>116</span>
+<span class='line-number'>117</span>
+<span class='line-number'>118</span>
+<span class='line-number'>119</span>
+<span class='line-number'>120</span>
+<span class='line-number'>121</span>
+<span class='line-number'>122</span>
+<span class='line-number'>123</span>
+<span class='line-number'>124</span>
+<span class='line-number'>125</span>
+<span class='line-number'>126</span>
+<span class='line-number'>127</span>
+<span class='line-number'>128</span>
+<span class='line-number'>129</span>
+<span class='line-number'>130</span>
+<span class='line-number'>131</span>
+<span class='line-number'>132</span>
+<span class='line-number'>133</span>
+<span class='line-number'>134</span>
+<span class='line-number'>135</span>
+<span class='line-number'>136</span>
+<span class='line-number'>137</span>
+<span class='line-number'>138</span>
+<span class='line-number'>139</span>
+<span class='line-number'>140</span>
+<span class='line-number'>141</span>
+<span class='line-number'>142</span>
+<span class='line-number'>143</span>
+<span class='line-number'>144</span>
+<span class='line-number'>145</span>
+<span class='line-number'>146</span>
+<span class='line-number'>147</span>
+<span class='line-number'>148</span>
+<span class='line-number'>149</span>
+<span class='line-number'>150</span>
+<span class='line-number'>151</span>
+<span class='line-number'>152</span>
+<span class='line-number'>153</span>
+<span class='line-number'>154</span>
+<span class='line-number'>155</span>
+<span class='line-number'>156</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kn">package</span> <span class="n">net</span><span class="o">.</span><span class="na">dolice</span><span class="o">.</span><span class="na">image</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kn">import</span> <span class="nn">android.content.ContentResolver</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">android.content.ContentValues</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">android.content.Context</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">android.graphics.Bitmap</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">android.os.Environment</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">android.provider.MediaStore</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">android.util.Log</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kn">import</span> <span class="nn">java.io.File</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">java.io.FileOutputStream</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">java.text.SimpleDateFormat</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">java.util.Date</span><span class="o">;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">java.util.Locale</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">/**</span>
+</span><span class='line'><span class="cm"> * Created by Dolice on 15/02/28.</span>
+</span><span class='line'><span class="cm"> */</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">ImageManager</span> <span class="o">{</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="n">Context</span> <span class="n">mContext</span><span class="o">;</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="n">String</span> <span class="n">fileFullPath</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">public</span> <span class="nf">ImageManager</span><span class="o">(</span><span class="n">Context</span> <span class="n">context</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">mContext</span> <span class="o">=</span> <span class="n">context</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="cm">/**</span>
+</span><span class='line'><span class="cm">     * 画像の保存</span>
+</span><span class='line'><span class="cm">     * @param bitmap</span>
+</span><span class='line'><span class="cm">     * @param albumName</span>
+</span><span class='line'><span class="cm">     */</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">save</span><span class="o">(</span><span class="n">Bitmap</span> <span class="n">bitmap</span><span class="o">,</span> <span class="n">String</span> <span class="n">albumName</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">if</span> <span class="o">(!</span><span class="n">canUseSd</span><span class="o">())</span> <span class="o">{</span>
+</span><span class='line'>            <span class="n">Log</span><span class="o">.</span><span class="na">e</span><span class="o">(</span><span class="s">&quot;Error&quot;</span><span class="o">,</span> <span class="s">&quot;Can&#39;t use SD Card&quot;</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="k">return</span><span class="o">;</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">saveToSd</span><span class="o">(</span><span class="n">getSdStorageDir</span><span class="o">(</span><span class="n">albumName</span><span class="o">),</span> <span class="n">bitmap</span><span class="o">);</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="cm">/**</span>
+</span><span class='line'><span class="cm">     * SDカードに画像保存</span>
+</span><span class='line'><span class="cm">     * @param dir</span>
+</span><span class='line'><span class="cm">     * @param bitmap</span>
+</span><span class='line'><span class="cm">     */</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="kt">void</span> <span class="nf">saveToSd</span><span class="o">(</span><span class="n">File</span> <span class="n">dir</span><span class="o">,</span> <span class="n">Bitmap</span> <span class="n">bitmap</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">String</span> <span class="n">fileName</span> <span class="o">=</span> <span class="n">getFileName</span><span class="o">();</span>
+</span><span class='line'>        <span class="n">fileFullPath</span> <span class="o">=</span> <span class="n">dir</span><span class="o">.</span><span class="na">getAbsolutePath</span><span class="o">()</span> <span class="o">+</span> <span class="s">&quot;/&quot;</span> <span class="o">+</span> <span class="n">fileName</span><span class="o">;</span>
+</span><span class='line'>        <span class="k">try</span> <span class="o">{</span>
+</span><span class='line'>            <span class="c1">// 保存処理</span>
+</span><span class='line'>            <span class="n">FileOutputStream</span> <span class="n">fos</span> <span class="o">=</span> <span class="k">new</span> <span class="n">FileOutputStream</span><span class="o">(</span><span class="n">fileFullPath</span><span class="o">);</span>
+</span><span class='line'>            <span class="n">bitmap</span><span class="o">.</span><span class="na">compress</span><span class="o">(</span><span class="n">Bitmap</span><span class="o">.</span><span class="na">CompressFormat</span><span class="o">.</span><span class="na">JPEG</span><span class="o">,</span> <span class="mi">100</span><span class="o">,</span> <span class="n">fos</span><span class="o">);</span>
+</span><span class='line'>            <span class="n">fos</span><span class="o">.</span><span class="na">flush</span><span class="o">();</span>
+</span><span class='line'>            <span class="n">fos</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+</span><span class='line'>        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>            <span class="n">Log</span><span class="o">.</span><span class="na">e</span><span class="o">(</span><span class="s">&quot;Error&quot;</span><span class="o">,</span> <span class="s">&quot;&quot;</span> <span class="o">+</span> <span class="n">e</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span>
+</span><span class='line'>        <span class="o">}</span> <span class="k">finally</span> <span class="o">{</span>
+</span><span class='line'>            <span class="c1">// アルバムに反映</span>
+</span><span class='line'>            <span class="n">addGallery</span><span class="o">(</span><span class="n">fileName</span><span class="o">);</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="cm">/**</span>
+</span><span class='line'><span class="cm">     * 保存した画像をギャラリーに追加</span>
+</span><span class='line'><span class="cm">     * @param fileName</span>
+</span><span class='line'><span class="cm">     */</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="kt">void</span> <span class="nf">addGallery</span><span class="o">(</span><span class="n">String</span> <span class="n">fileName</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">try</span> <span class="o">{</span>
+</span><span class='line'>            <span class="n">ContentValues</span> <span class="n">values</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ContentValues</span><span class="o">();</span>
+</span><span class='line'>            <span class="n">ContentResolver</span> <span class="n">contentResolver</span> <span class="o">=</span> <span class="n">mContext</span><span class="o">.</span><span class="na">getContentResolver</span><span class="o">();</span>
+</span><span class='line'>            <span class="n">values</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">MediaStore</span><span class="o">.</span><span class="na">Images</span><span class="o">.</span><span class="na">Media</span><span class="o">.</span><span class="na">MIME_TYPE</span><span class="o">,</span> <span class="s">&quot;image/jpeg&quot;</span><span class="o">);</span>
+</span><span class='line'>            <span class="n">values</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">MediaStore</span><span class="o">.</span><span class="na">Images</span><span class="o">.</span><span class="na">Media</span><span class="o">.</span><span class="na">TITLE</span><span class="o">,</span> <span class="n">fileName</span><span class="o">);</span>
+</span><span class='line'>            <span class="n">values</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">&quot;_data&quot;</span><span class="o">,</span> <span class="n">fileFullPath</span><span class="o">);</span>
+</span><span class='line'>            <span class="n">contentResolver</span><span class="o">.</span><span class="na">insert</span><span class="o">(</span><span class="n">MediaStore</span><span class="o">.</span><span class="na">Images</span><span class="o">.</span><span class="na">Media</span><span class="o">.</span><span class="na">EXTERNAL_CONTENT_URI</span><span class="o">,</span> <span class="n">values</span><span class="o">);</span>
+</span><span class='line'>        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>            <span class="n">Log</span><span class="o">.</span><span class="na">e</span><span class="o">(</span><span class="s">&quot;Error&quot;</span><span class="o">,</span> <span class="s">&quot;&quot;</span> <span class="o">+</span> <span class="n">e</span><span class="o">);</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="cm">/**</span>
+</span><span class='line'><span class="cm">     * 画像のファイル名を日付から生成し取得</span>
+</span><span class='line'><span class="cm">     * @return</span>
+</span><span class='line'><span class="cm">     */</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="n">String</span> <span class="nf">getFileName</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">Date</span> <span class="n">mDate</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Date</span><span class="o">();</span>
+</span><span class='line'>        <span class="n">SimpleDateFormat</span> <span class="n">fileNameFormat</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SimpleDateFormat</span><span class="o">(</span><span class="s">&quot;yyyyMMdd_HHmmss&quot;</span><span class="o">,</span> <span class="n">Locale</span><span class="o">.</span><span class="na">ENGLISH</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">String</span> <span class="n">fileName</span> <span class="o">=</span> <span class="n">fileNameFormat</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="n">mDate</span><span class="o">)</span> <span class="o">+</span> <span class="s">&quot;.jpg&quot;</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">return</span> <span class="n">fileName</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="cm">/**</span>
+</span><span class='line'><span class="cm">     * SDカードのストレージパス取得</span>
+</span><span class='line'><span class="cm">     * @param albumName</span>
+</span><span class='line'><span class="cm">     * @return</span>
+</span><span class='line'><span class="cm">     */</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="n">File</span> <span class="nf">getSdStorageDir</span><span class="o">(</span><span class="n">String</span> <span class="n">albumName</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">File</span> <span class="n">dir</span> <span class="o">=</span> <span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="n">Environment</span><span class="o">.</span><span class="na">getExternalStoragePublicDirectory</span><span class="o">(</span>
+</span><span class='line'>                <span class="n">Environment</span><span class="o">.</span><span class="na">DIRECTORY_PICTURES</span><span class="o">),</span> <span class="n">albumName</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">if</span> <span class="o">(!</span><span class="n">dir</span><span class="o">.</span><span class="na">exists</span><span class="o">())</span> <span class="o">{</span>
+</span><span class='line'>            <span class="k">if</span> <span class="o">(!</span><span class="n">dir</span><span class="o">.</span><span class="na">mkdirs</span><span class="o">())</span> <span class="o">{</span>
+</span><span class='line'>                <span class="n">Log</span><span class="o">.</span><span class="na">e</span><span class="o">(</span><span class="s">&quot;Error&quot;</span><span class="o">,</span> <span class="s">&quot;Directory not created&quot;</span><span class="o">);</span>
+</span><span class='line'>            <span class="o">}</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">return</span> <span class="n">dir</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="cm">/**</span>
+</span><span class='line'><span class="cm">     * SDカードが読み込み可能か</span>
+</span><span class='line'><span class="cm">     * @return</span>
+</span><span class='line'><span class="cm">     */</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">canReadSd</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">String</span> <span class="n">status</span> <span class="o">=</span> <span class="n">Environment</span><span class="o">.</span><span class="na">getExternalStorageState</span><span class="o">();</span>
+</span><span class='line'>        <span class="k">if</span> <span class="o">(!</span><span class="n">status</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">Environment</span><span class="o">.</span><span class="na">MEDIA_MOUNTED</span><span class="o">))</span> <span class="o">{</span>
+</span><span class='line'>            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">File</span> <span class="n">file</span> <span class="o">=</span> <span class="n">Environment</span><span class="o">.</span><span class="na">getExternalStorageDirectory</span><span class="o">();</span>
+</span><span class='line'>        <span class="k">if</span> <span class="o">(</span><span class="n">file</span><span class="o">.</span><span class="na">canRead</span><span class="o">()){</span>
+</span><span class='line'>            <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="cm">/**</span>
+</span><span class='line'><span class="cm">     * SDカードに書き込み可能か</span>
+</span><span class='line'><span class="cm">     * @return</span>
+</span><span class='line'><span class="cm">     */</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">canWriteSd</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">String</span> <span class="n">status</span> <span class="o">=</span> <span class="n">Environment</span><span class="o">.</span><span class="na">getExternalStorageState</span><span class="o">();</span>
+</span><span class='line'>        <span class="k">if</span> <span class="o">(!</span><span class="n">status</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">Environment</span><span class="o">.</span><span class="na">MEDIA_MOUNTED</span><span class="o">))</span> <span class="o">{</span>
+</span><span class='line'>            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">File</span> <span class="n">file</span> <span class="o">=</span> <span class="n">Environment</span><span class="o">.</span><span class="na">getExternalStorageDirectory</span><span class="o">();</span>
+</span><span class='line'>        <span class="k">if</span> <span class="o">(</span><span class="n">file</span><span class="o">.</span><span class="na">canWrite</span><span class="o">()){</span>
+</span><span class='line'>            <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="cm">/**</span>
+</span><span class='line'><span class="cm">     * SDカードが使用可能か</span>
+</span><span class='line'><span class="cm">     * @return</span>
+</span><span class='line'><span class="cm">     */</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">canUseSd</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="nf">canReadSd</span><span class="o">()</span> <span class="o">&amp;&amp;</span> <span class="n">canWriteSd</span><span class="o">();</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-05-04T09:30:00+09:00" pubdate data-updated="true">May 4<span>th</span>, 2015</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/android/'>Android</a>, <a class='category' href='/blog/categories/bitmap/'>Bitmap</a>, <a class='category' href='/blog/categories/contentresolver/'>ContentResolver</a>, <a class='category' href='/blog/categories/imageview/'>ImageView</a>, <a class='category' href='/blog/categories/java/'>Java</a>, <a class='category' href='/blog/categories/mediastore/'>MediaStore</a>
+
+
+</div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -428,188 +1014,6 @@
 </div>
 </article>
 
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2015/05/03/android-beautiful-wallpapers-ja/">
-		
-			綺麗な高画質壁紙 - 美しい背景画像 - Androidアプリ</a>
-	</h2>
-	<div class="entry-content">
-		<div class="app_screenshot_container"><img src="https://dolice.net/mb/android/marketing/images/beautiful_wallpapers/screenshot_pc/ja/screenshot1.jpg" class="app_screenshot" /></div>
-
-
-<p>Androidアプリ「<a href="https://play.google.com/store/apps/details?id=net.dolice.beautifulwallpapers" title="綺麗な高画質壁紙 - 美しい背景画像">綺麗な高画質壁紙 - 美しい背景画像</a>」は、40,000枚以上の綺麗な壁紙をダウンロードできる無料アプリです。</p>
-
-<p>高品質な画像を一枚ずつ厳選しておりますので、ギャラリーアプリとしてもお楽しみいただけます。</p>
-
-<h2>特長</h2>
-
-<p>このアプリの特長は、壁紙の品質を重視しながら手作業で更新している点です。</p>
-
-<p>画像ギャラリーとしてお楽しみいただけるのはもちろん、使いたくなる壁紙がより多く見つかるよう努めています。</p>
-
-<p>クールな壁紙だけでなく、女性向けのかわいい壁紙も多くセレクトしています。</p>
-
-<h2>Google Play からダウンロード</h2>
-
-<ul>
-<li><strong><a href="https://play.google.com/store/apps/details?id=net.dolice.beautifulwallpapers" title="綺麗な高画質壁紙 - 美しい背景画像">綺麗な高画質壁紙 - 美しい背景画像</a></strong></li>
-</ul>
-
-
-<h2>シンプルかつ豊富な機能</h2>
-
-<p>簡単操作でお気に入りの壁紙を保存したり、アプリから直接ホーム画面とロック画面のテーマに設定できます。</p>
-
-<p>最新の壁紙や人気の壁紙も一覧でき、「シンプル」「カラフル」「モノクロ」「自然」「イラスト」等のカテゴリも 22種類ご用意しています。</p>
-
-<div class="app_screenshot_container mt12"><img src="https://dolice.net/mb/android/marketing/images/beautiful_wallpapers/screenshot_pc/ja/screenshot2.jpg" class="app_screenshot" /></div>
-
-
-<h2>見易いサムネイル機能</h2>
-
-<p>壁紙のサムネイル一覧表示やフルスクリーン表示などのギャラリー機能も充実しています。</p>
-
-<div class="app_screenshot_container mt12"><img src="https://dolice.net/mb/android/marketing/images/beautiful_wallpapers/screenshot_pc/ja/screenshot3.jpg" class="app_screenshot" /></div>
-
-
-<h2>お気に入り機能</h2>
-
-<p>壁紙をお気に入りに追加することで、いつでも好きな壁紙を一覧できます。</p>
-
-<div class="app_screenshot_container mt12"><img src="https://dolice.net/mb/android/marketing/images/beautiful_wallpapers/screenshot_pc/ja/screenshot4.jpg" class="app_screenshot" /></div>
-
-
-<h2>壁紙の共有機能</h2>
-
-<p>Facebook／Twitter／LINE／Instagram／Pinterest／メール等での共有機能も搭載しています。</p>
-
-<div class="app_screenshot_container mt12"><img src="https://dolice.net/mb/android/marketing/images/beautiful_wallpapers/screenshot_pc/ja/screenshot5.jpg" class="app_screenshot" /></div>
-
-
-<h2>いつもの画面を彩りましょう</h2>
-
-<p>Android用の壁紙や LINEのトーク背景をお探しの方は、是非このアプリをお試しください。</p>
-
-<p>綺麗で高級感のある壁紙を厳選しておりますので、お気に入りがきっと見つかります。</p>
-
-<p>このアプリでいつもの画面を彩りましょう！</p>
-
-<h2>壁紙のカテゴリ一覧</h2>
-
-<ul>
-<li>抽象的</li>
-<li>シンプル</li>
-<li>カラフル</li>
-<li>モノクロ</li>
-<li>自然</li>
-<li>宇宙</li>
-<li>花</li>
-<li>植物</li>
-<li>建築</li>
-<li>車</li>
-<li>人物</li>
-<li>動物</li>
-<li>生物</li>
-<li>アート</li>
-<li>イラスト</li>
-<li>可愛い</li>
-<li>愛</li>
-<li>ホリデー</li>
-<li>食べ物・飲み物</li>
-<li>タイポグラフィ</li>
-<li>3D</li>
-<li>ユーモア</li>
-</ul>
-
-
-<h2>主な機能</h2>
-
-<ol>
-<li>簡単操作で壁紙を保存</li>
-<li>アプリから直接テーマに設定</li>
-<li>壁紙は随時追加・更新</li>
-<li>最新や人気の壁紙の一覧機能</li>
-<li>22種類以上のカテゴリ表示機能</li>
-<li>壁紙のお気に入り機能</li>
-<li>壁紙のサムネイル一覧表示機能</li>
-<li>壁紙のフルスクリーン表示機能</li>
-<li>Facebook／Twitter／LINE／Instagram／メール等での共有機能</li>
-<li>壁紙の更新をプッシュ通知でお知らせ</li>
-</ol>
-
-
-<h2>壁紙のサイズ</h2>
-
-<ul>
-<li>1440 × 2560ピクセル（<em>WQHD</em>）</li>
-<li>1080 × 1920ピクセル（<em>FHD</em>）</li>
-<li>720 × 1280ピクセル（<em>HD</em>）</li>
-<li>480 × 800ピクセル（<em>WVGA</em>）</li>
-<li>2560 × 1600ピクセル (<em>WQXGA</em>)</li>
-<li>1200 × 1920ピクセル (<em>WUXGA</em>)</li>
-</ul>
-
-
-<h2>価格</h2>
-
-<ul>
-<li>無料</li>
-</ul>
-
-
-<h2>対応言語</h2>
-
-<ul>
-<li>日本語</li>
-<li>英語</li>
-<li>ロシア語</li>
-<li>フランス語</li>
-<li>イタリア語</li>
-<li>タイ語</li>
-<li>繁体中国語</li>
-</ul>
-
-
-<h2>Google Play からダウンロード</h2>
-
-<ul>
-<li><strong><a href="https://play.google.com/store/apps/details?id=net.dolice.beautifulwallpapers" title="綺麗な高画質壁紙 - 美しい背景画像">綺麗な高画質壁紙 - 美しい背景画像</a></strong></li>
-</ul>
-
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2015-05-03T12:00:00+09:00" pubdate data-updated="true">May 3<span>rd</span>, 2015</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/android/'>Android</a>, <a class='category' href='/blog/categories/download/'>Download</a>, <a class='category' href='/blog/categories/products/'>Products</a>
-
-
-</div>
-	
-</div>
-</article>
-
 <nav id="pagenavi">
     
         <a href="/blog/page/8/" class="prev">Prev</a>
@@ -680,7 +1084,7 @@
   <div class="information-box-wide">
 <section id="tag-cloud-container">
   <h1 id="tag-cloud-title">Tag Cloud</h1>
-  <p id="tag-cloud"><a href='/blog/categories/actionscript' style='font-size: 102.36842105263158%'>ActionScript(9)</a> <a href='/blog/categories/actionscript3' style='font-size: 101.84210526315789%'>ActionScript3(7)</a> <a href='/blog/categories/ad' style='font-size: 101.3157894736842%'>Ad(5)</a> <a href='/blog/categories/adfurikun' style='font-size: 100.52631578947368%'>Adfurikun(2)</a> <a href='/blog/categories/admob' style='font-size: 103.15789473684211%'>AdMob(12)</a> <a href='/blog/categories/android' style='font-size: 102.89473684210526%'>Android(11)</a> <a href='/blog/categories/animation' style='font-size: 104.47368421052632%'>Animation(17)</a> <a href='/blog/categories/appdelegate' style='font-size: 100.78947368421052%'>AppDelegate(3)</a> <a href='/blog/categories/arc' style='font-size: 100.26315789473684%'>ARC(1)</a> <a href='/blog/categories/arraylist' style='font-size: 100.26315789473684%'>ArrayList(1)</a> <a href='/blog/categories/avaudioplayer' style='font-size: 101.05263157894737%'>AVAudioPlayer(4)</a> <a href='/blog/categories/avaudiosession' style='font-size: 100.26315789473684%'>AVAudioSession(1)</a> <a href='/blog/categories/avfoundation' style='font-size: 100.78947368421052%'>AVFoundation(3)</a> <a href='/blog/categories/banner' style='font-size: 100.52631578947368%'>Banner(2)</a> <a href='/blog/categories/bitmap' style='font-size: 100.26315789473684%'>Bitmap(1)</a> <a href='/blog/categories/camera' style='font-size: 101.05263157894737%'>Camera(4)</a> <a href='/blog/categories/cgaffinetransform' style='font-size: 101.05263157894737%'>CGAffineTransform(4)</a> <a href='/blog/categories/cgblendmode' style='font-size: 100.52631578947368%'>CGBlendMode(2)</a> <a href='/blog/categories/cgcontextref' style='font-size: 100.26315789473684%'>CGContextRef(1)</a> <a href='/blog/categories/cgimageref' style='font-size: 100.26315789473684%'>CGImageRef(1)</a> <a href='/blog/categories/classes' style='font-size: 112.89473684210526%'>Classes(49)</a> <a href='/blog/categories/cllocationmanager' style='font-size: 100.26315789473684%'>CLLocationManager(1)</a> <a href='/blog/categories/connectivitymanager' style='font-size: 100.26315789473684%'>ConnectivityManager(1)</a> <a href='/blog/categories/contentresolver' style='font-size: 100.26315789473684%'>ContentResolver(1)</a> <a href='/blog/categories/corelocation' style='font-size: 100.52631578947368%'>CoreLocation(2)</a> <a href='/blog/categories/delegate' style='font-size: 100.78947368421052%'>Delegate(3)</a> <a href='/blog/categories/device' style='font-size: 101.84210526315789%'>Device(7)</a> <a href='/blog/categories/display' style='font-size: 100.26315789473684%'>Display(1)</a> <a href='/blog/categories/displaymetrics' style='font-size: 100.26315789473684%'>DisplayMetrics(1)</a> <a href='/blog/categories/download' style='font-size: 128.42105263157896%'>Download(108)</a> <a href='/blog/categories/facebook' style='font-size: 101.57894736842105%'>Facebook(6)</a> <a href='/blog/categories/foundation' style='font-size: 118.94736842105263%'>Foundation(72)</a> <a href='/blog/categories/framework' style='font-size: 100.52631578947368%'>Framework(2)</a> <a href='/blog/categories/google-analytics' style='font-size: 100.26315789473684%'>Google Analytics(1)</a> <a href='/blog/categories/handler' style='font-size: 100.26315789473684%'>Handler(1)</a> <a href='/blog/categories/iad' style='font-size: 101.57894736842105%'>iAd(6)</a> <a href='/blog/categories/imageview' style='font-size: 100.26315789473684%'>ImageView(1)</a> <a href='/blog/categories/in-apppurchase' style='font-size: 100.26315789473684%'>In-AppPurchase(1)</a> <a href='/blog/categories/ios' style='font-size: 103.15789473684211%'>iOS(12)</a> <a href='/blog/categories/ios-7' style='font-size: 103.94736842105263%'>iOS 7(15)</a> <a href='/blog/categories/ios-7-dot-1' style='font-size: 100.78947368421052%'>iOS 7.1(3)</a> <a href='/blog/categories/ios-8' style='font-size: 100.26315789473684%'>iOS 8(1)</a> <a href='/blog/categories/ipad' style='font-size: 101.84210526315789%'>iPad(7)</a> <a href='/blog/categories/iphone' style='font-size: 106.3157894736842%'>iPhone(24)</a> <a href='/blog/categories/iphone-6' style='font-size: 101.05263157894737%'>iPhone 6(4)</a> <a href='/blog/categories/java' style='font-size: 101.84210526315789%'>Java(7)</a> <a href='/blog/categories/javascript' style='font-size: 100.52631578947368%'>JavaScript(2)</a> <a href='/blog/categories/line' style='font-size: 101.05263157894737%'>LINE(4)</a> <a href='/blog/categories/localize' style='font-size: 100.26315789473684%'>Localize(1)</a> <a href='/blog/categories/magazine' style='font-size: 100.78947368421052%'>Magazine(3)</a> <a href='/blog/categories/mediastore' style='font-size: 100.26315789473684%'>MediaStore(1)</a> <a href='/blog/categories/mfcomposeviewcontroller' style='font-size: 100.26315789473684%'>MFComposeViewController(1)</a> <a href='/blog/categories/nend' style='font-size: 100.26315789473684%'>Nend(1)</a> <a href='/blog/categories/networkinfo' style='font-size: 100.26315789473684%'>NetworkInfo(1)</a> <a href='/blog/categories/nsarray' style='font-size: 106.05263157894737%'>NSArray(23)</a> <a href='/blog/categories/nscalendar' style='font-size: 100.78947368421052%'>NSCalendar(3)</a> <a href='/blog/categories/nsdata' style='font-size: 100.52631578947368%'>NSData(2)</a> <a href='/blog/categories/nsdate' style='font-size: 101.84210526315789%'>NSDate(7)</a> <a href='/blog/categories/nsdatecomponents' style='font-size: 100.52631578947368%'>NSDateComponents(2)</a> <a href='/blog/categories/nsdateformatter' style='font-size: 100.52631578947368%'>NSDateFormatter(2)</a> <a href='/blog/categories/nsdictionary' style='font-size: 103.15789473684211%'>NSDictionary(12)</a> <a href='/blog/categories/nsenumerator' style='font-size: 100.26315789473684%'>NSEnumerator(1)</a> <a href='/blog/categories/nsindexset' style='font-size: 100.26315789473684%'>NSIndexSet(1)</a> <a href='/blog/categories/nsinteger' style='font-size: 101.57894736842105%'>NSInteger(6)</a> <a href='/blog/categories/nsmutablearray' style='font-size: 104.47368421052632%'>NSMutableArray(17)</a> <a href='/blog/categories/nsmutabledictionary' style='font-size: 101.3157894736842%'>NSMutableDictionary(5)</a> <a href='/blog/categories/nsmutableorderedset' style='font-size: 101.84210526315789%'>NSMutableOrderedSet(7)</a> <a href='/blog/categories/nsmutablestring' style='font-size: 101.05263157894737%'>NSMutableString(4)</a> <a href='/blog/categories/nsmutableurlrequest' style='font-size: 100.26315789473684%'>NSMutableURLRequest(1)</a> <a href='/blog/categories/nsnotificationcenter' style='font-size: 100.26315789473684%'>NSNotificationCenter(1)</a> <a href='/blog/categories/nsnumber' style='font-size: 100.26315789473684%'>NSNumber(1)</a> <a href='/blog/categories/nsobject' style='font-size: 100.26315789473684%'>NSObject(1)</a> <a href='/blog/categories/nsorderedset' style='font-size: 101.84210526315789%'>NSOrderedSet(7)</a> <a href='/blog/categories/nsrange' style='font-size: 100.52631578947368%'>NSRange(2)</a> <a href='/blog/categories/nsselectorfromstring' style='font-size: 100.26315789473684%'>NSSelectorFromString(1)</a> <a href='/blog/categories/nsset' style='font-size: 101.57894736842105%'>NSSet(6)</a> <a href='/blog/categories/nsstring' style='font-size: 105.0%'>NSString(19)</a> <a href='/blog/categories/nstimer' style='font-size: 101.05263157894737%'>NSTimer(4)</a> <a href='/blog/categories/nstimezone' style='font-size: 100.26315789473684%'>NSTimeZone(1)</a> <a href='/blog/categories/nsurl' style='font-size: 101.84210526315789%'>NSURL(7)</a> <a href='/blog/categories/nsurlconnection' style='font-size: 100.26315789473684%'>NSURLConnection(1)</a> <a href='/blog/categories/nsurlrequest' style='font-size: 100.52631578947368%'>NSURLRequest(2)</a> <a href='/blog/categories/nsuserdefaults' style='font-size: 101.84210526315789%'>NSUserDefaults(7)</a> <a href='/blog/categories/nsxmlparser' style='font-size: 100.52631578947368%'>NSXMLParser(2)</a> <a href='/blog/categories/objective-c' style='font-size: 160.0%'>Objective-C(228)</a> <a href='/blog/categories/php' style='font-size: 100.26315789473684%'>PHP(1)</a> <a href='/blog/categories/products' style='font-size: 104.47368421052632%'>Products(17)</a> <a href='/blog/categories/quartzcore' style='font-size: 100.78947368421052%'>QuartzCore(3)</a> <a href='/blog/categories/rss' style='font-size: 100.52631578947368%'>RSS(2)</a> <a href='/blog/categories/runnable' style='font-size: 100.26315789473684%'>Runnable(1)</a> <a href='/blog/categories/sample' style='font-size: 113.42105263157895%'>Sample(51)</a> <a href='/blog/categories/screensaver' style='font-size: 102.36842105263158%'>Screensaver(9)</a> <a href='/blog/categories/sdk' style='font-size: 100.52631578947368%'>SDK(2)</a> <a href='/blog/categories/sharecompat' style='font-size: 100.26315789473684%'>ShareCompat(1)</a> <a href='/blog/categories/social' style='font-size: 102.63157894736842%'>Social(10)</a> <a href='/blog/categories/storekit' style='font-size: 100.26315789473684%'>StoreKit(1)</a> <a href='/blog/categories/twitter' style='font-size: 101.57894736842105%'>Twitter(6)</a> <a href='/blog/categories/uiaccelerometer' style='font-size: 100.78947368421052%'>UIAccelerometer(3)</a> <a href='/blog/categories/uiactionsheet' style='font-size: 100.26315789473684%'>UIActionSheet(1)</a> <a href='/blog/categories/uiactivityindicator' style='font-size: 100.26315789473684%'>UIActivityIndicator(1)</a> <a href='/blog/categories/uiactivityindicatorview' style='font-size: 100.78947368421052%'>UIActivityIndicatorView(3)</a> <a href='/blog/categories/uiactivityviewcontroller' style='font-size: 100.26315789473684%'>UIActivityViewController(1)</a> <a href='/blog/categories/uialertview' style='font-size: 101.3157894736842%'>UIAlertView(5)</a> <a href='/blog/categories/uiapplication' style='font-size: 101.84210526315789%'>UIApplication(7)</a> <a href='/blog/categories/uibutton' style='font-size: 101.05263157894737%'>UIButton(4)</a> <a href='/blog/categories/uicolor' style='font-size: 100.78947368421052%'>UIColor(3)</a> <a href='/blog/categories/uidatepicker' style='font-size: 101.3157894736842%'>UIDatePicker(5)</a> <a href='/blog/categories/uidevice' style='font-size: 101.57894736842105%'>UIDevice(6)</a> <a href='/blog/categories/uideviceorientation' style='font-size: 100.26315789473684%'>UIDeviceOrientation(1)</a> <a href='/blog/categories/uievent' style='font-size: 101.57894736842105%'>UIEvent(6)</a> <a href='/blog/categories/uiimage' style='font-size: 103.94736842105263%'>UIImage(15)</a> <a href='/blog/categories/uiimagepickercontroller' style='font-size: 101.05263157894737%'>UIImagePickerController(4)</a> <a href='/blog/categories/uiimageview' style='font-size: 103.15789473684211%'>UIImageView(12)</a> <a href='/blog/categories/uikit' style='font-size: 115.26315789473685%'>UIKit(58)</a> <a href='/blog/categories/uilabel' style='font-size: 101.84210526315789%'>UILabel(7)</a> <a href='/blog/categories/uinavigationbar' style='font-size: 101.05263157894737%'>UINavigationBar(4)</a> <a href='/blog/categories/uinavigationitem' style='font-size: 100.26315789473684%'>UINavigationItem(1)</a> <a href='/blog/categories/uipasteboard' style='font-size: 101.05263157894737%'>UIPasteboard(4)</a> <a href='/blog/categories/uiscreen' style='font-size: 100.26315789473684%'>UIScreen(1)</a> <a href='/blog/categories/uiscrollbar' style='font-size: 100.26315789473684%'>UIScrollBar(1)</a> <a href='/blog/categories/uiscrollview' style='font-size: 100.26315789473684%'>UIScrollView(1)</a> <a href='/blog/categories/uislider' style='font-size: 100.78947368421052%'>UISlider(3)</a> <a href='/blog/categories/uistoryboardsegue' style='font-size: 100.78947368421052%'>UIStoryboardSegue(3)</a> <a href='/blog/categories/uiswitch' style='font-size: 100.26315789473684%'>UISwitch(1)</a> <a href='/blog/categories/uitabbar' style='font-size: 100.78947368421052%'>UITabBar(3)</a> <a href='/blog/categories/uitableview' style='font-size: 101.05263157894737%'>UITableView(4)</a> <a href='/blog/categories/uitextfield' style='font-size: 100.52631578947368%'>UITextField(2)</a> <a href='/blog/categories/uiview' style='font-size: 102.89473684210526%'>UIView(11)</a> <a href='/blog/categories/uiviewanimationtransition' style='font-size: 100.26315789473684%'>UIViewAnimationTransition(1)</a> <a href='/blog/categories/uiviewcontroller' style='font-size: 101.05263157894737%'>UIViewController(4)</a> <a href='/blog/categories/uiwebview' style='font-size: 101.3157894736842%'>UIWebView(5)</a> <a href='/blog/categories/uncategorized' style='font-size: 100.26315789473684%'>Uncategorized(1)</a> <a href='/blog/categories/windowmanager' style='font-size: 100.26315789473684%'>WindowManager(1)</a> <a href='/blog/categories/xcode' style='font-size: 112.63157894736842%'>Xcode(48)</a> <a href='/blog/categories/xcode-5' style='font-size: 102.10526315789474%'>Xcode 5(8)</a> <a href='/blog/categories/xcode-5-dot-1' style='font-size: 100.52631578947368%'>Xcode 5.1(2)</a> </p>
+  <p id="tag-cloud"><a href='/blog/categories/actionscript' style='font-size: 102.35807860262008%'>ActionScript(9)</a> <a href='/blog/categories/actionscript3' style='font-size: 101.83406113537117%'>ActionScript3(7)</a> <a href='/blog/categories/ad' style='font-size: 101.31004366812228%'>Ad(5)</a> <a href='/blog/categories/adfurikun' style='font-size: 100.52401746724891%'>Adfurikun(2)</a> <a href='/blog/categories/admob' style='font-size: 103.14410480349345%'>AdMob(12)</a> <a href='/blog/categories/android' style='font-size: 102.882096069869%'>Android(11)</a> <a href='/blog/categories/animation' style='font-size: 104.45414847161572%'>Animation(17)</a> <a href='/blog/categories/appdelegate' style='font-size: 100.78602620087337%'>AppDelegate(3)</a> <a href='/blog/categories/arc' style='font-size: 100.26200873362446%'>ARC(1)</a> <a href='/blog/categories/arraylist' style='font-size: 100.26200873362446%'>ArrayList(1)</a> <a href='/blog/categories/avaudioplayer' style='font-size: 101.04803493449782%'>AVAudioPlayer(4)</a> <a href='/blog/categories/avaudiosession' style='font-size: 100.26200873362446%'>AVAudioSession(1)</a> <a href='/blog/categories/avfoundation' style='font-size: 100.78602620087337%'>AVFoundation(3)</a> <a href='/blog/categories/banner' style='font-size: 100.52401746724891%'>Banner(2)</a> <a href='/blog/categories/bitmap' style='font-size: 100.26200873362446%'>Bitmap(1)</a> <a href='/blog/categories/camera' style='font-size: 101.04803493449782%'>Camera(4)</a> <a href='/blog/categories/cgaffinetransform' style='font-size: 101.04803493449782%'>CGAffineTransform(4)</a> <a href='/blog/categories/cgblendmode' style='font-size: 100.52401746724891%'>CGBlendMode(2)</a> <a href='/blog/categories/cgcontextref' style='font-size: 100.26200873362446%'>CGContextRef(1)</a> <a href='/blog/categories/cgimageref' style='font-size: 100.26200873362446%'>CGImageRef(1)</a> <a href='/blog/categories/classes' style='font-size: 112.83842794759825%'>Classes(49)</a> <a href='/blog/categories/cllocationmanager' style='font-size: 100.26200873362446%'>CLLocationManager(1)</a> <a href='/blog/categories/connectivitymanager' style='font-size: 100.26200873362446%'>ConnectivityManager(1)</a> <a href='/blog/categories/contentresolver' style='font-size: 100.26200873362446%'>ContentResolver(1)</a> <a href='/blog/categories/corelocation' style='font-size: 100.52401746724891%'>CoreLocation(2)</a> <a href='/blog/categories/delegate' style='font-size: 100.78602620087337%'>Delegate(3)</a> <a href='/blog/categories/device' style='font-size: 101.83406113537117%'>Device(7)</a> <a href='/blog/categories/display' style='font-size: 100.26200873362446%'>Display(1)</a> <a href='/blog/categories/displaymetrics' style='font-size: 100.26200873362446%'>DisplayMetrics(1)</a> <a href='/blog/categories/download' style='font-size: 128.5589519650655%'>Download(109)</a> <a href='/blog/categories/facebook' style='font-size: 101.57205240174673%'>Facebook(6)</a> <a href='/blog/categories/foundation' style='font-size: 118.8646288209607%'>Foundation(72)</a> <a href='/blog/categories/framework' style='font-size: 100.52401746724891%'>Framework(2)</a> <a href='/blog/categories/google-analytics' style='font-size: 100.26200873362446%'>Google Analytics(1)</a> <a href='/blog/categories/handler' style='font-size: 100.26200873362446%'>Handler(1)</a> <a href='/blog/categories/iad' style='font-size: 101.57205240174673%'>iAd(6)</a> <a href='/blog/categories/imageview' style='font-size: 100.26200873362446%'>ImageView(1)</a> <a href='/blog/categories/in-apppurchase' style='font-size: 100.26200873362446%'>In-AppPurchase(1)</a> <a href='/blog/categories/ios' style='font-size: 103.14410480349345%'>iOS(12)</a> <a href='/blog/categories/ios-7' style='font-size: 103.93013100436681%'>iOS 7(15)</a> <a href='/blog/categories/ios-7-dot-1' style='font-size: 100.78602620087337%'>iOS 7.1(3)</a> <a href='/blog/categories/ios-8' style='font-size: 100.26200873362446%'>iOS 8(1)</a> <a href='/blog/categories/ipad' style='font-size: 101.83406113537117%'>iPad(7)</a> <a href='/blog/categories/iphone' style='font-size: 106.2882096069869%'>iPhone(24)</a> <a href='/blog/categories/iphone-6' style='font-size: 101.04803493449782%'>iPhone 6(4)</a> <a href='/blog/categories/java' style='font-size: 101.83406113537117%'>Java(7)</a> <a href='/blog/categories/javascript' style='font-size: 100.52401746724891%'>JavaScript(2)</a> <a href='/blog/categories/line' style='font-size: 101.04803493449782%'>LINE(4)</a> <a href='/blog/categories/localize' style='font-size: 100.26200873362446%'>Localize(1)</a> <a href='/blog/categories/magazine' style='font-size: 100.78602620087337%'>Magazine(3)</a> <a href='/blog/categories/mediastore' style='font-size: 100.26200873362446%'>MediaStore(1)</a> <a href='/blog/categories/mfcomposeviewcontroller' style='font-size: 100.26200873362446%'>MFComposeViewController(1)</a> <a href='/blog/categories/nend' style='font-size: 100.26200873362446%'>Nend(1)</a> <a href='/blog/categories/networkinfo' style='font-size: 100.26200873362446%'>NetworkInfo(1)</a> <a href='/blog/categories/nsarray' style='font-size: 106.02620087336244%'>NSArray(23)</a> <a href='/blog/categories/nscalendar' style='font-size: 100.78602620087337%'>NSCalendar(3)</a> <a href='/blog/categories/nsdata' style='font-size: 100.52401746724891%'>NSData(2)</a> <a href='/blog/categories/nsdate' style='font-size: 101.83406113537117%'>NSDate(7)</a> <a href='/blog/categories/nsdatecomponents' style='font-size: 100.52401746724891%'>NSDateComponents(2)</a> <a href='/blog/categories/nsdateformatter' style='font-size: 100.52401746724891%'>NSDateFormatter(2)</a> <a href='/blog/categories/nsdictionary' style='font-size: 103.14410480349345%'>NSDictionary(12)</a> <a href='/blog/categories/nsenumerator' style='font-size: 100.26200873362446%'>NSEnumerator(1)</a> <a href='/blog/categories/nsindexset' style='font-size: 100.26200873362446%'>NSIndexSet(1)</a> <a href='/blog/categories/nsinteger' style='font-size: 101.57205240174673%'>NSInteger(6)</a> <a href='/blog/categories/nsmutablearray' style='font-size: 104.45414847161572%'>NSMutableArray(17)</a> <a href='/blog/categories/nsmutabledictionary' style='font-size: 101.31004366812228%'>NSMutableDictionary(5)</a> <a href='/blog/categories/nsmutableorderedset' style='font-size: 101.83406113537117%'>NSMutableOrderedSet(7)</a> <a href='/blog/categories/nsmutablestring' style='font-size: 101.04803493449782%'>NSMutableString(4)</a> <a href='/blog/categories/nsmutableurlrequest' style='font-size: 100.26200873362446%'>NSMutableURLRequest(1)</a> <a href='/blog/categories/nsnotificationcenter' style='font-size: 100.26200873362446%'>NSNotificationCenter(1)</a> <a href='/blog/categories/nsnumber' style='font-size: 100.26200873362446%'>NSNumber(1)</a> <a href='/blog/categories/nsobject' style='font-size: 100.26200873362446%'>NSObject(1)</a> <a href='/blog/categories/nsorderedset' style='font-size: 101.83406113537117%'>NSOrderedSet(7)</a> <a href='/blog/categories/nsrange' style='font-size: 100.52401746724891%'>NSRange(2)</a> <a href='/blog/categories/nsselectorfromstring' style='font-size: 100.26200873362446%'>NSSelectorFromString(1)</a> <a href='/blog/categories/nsset' style='font-size: 101.57205240174673%'>NSSet(6)</a> <a href='/blog/categories/nsstring' style='font-size: 104.97816593886463%'>NSString(19)</a> <a href='/blog/categories/nstimer' style='font-size: 101.04803493449782%'>NSTimer(4)</a> <a href='/blog/categories/nstimezone' style='font-size: 100.26200873362446%'>NSTimeZone(1)</a> <a href='/blog/categories/nsurl' style='font-size: 101.83406113537117%'>NSURL(7)</a> <a href='/blog/categories/nsurlconnection' style='font-size: 100.26200873362446%'>NSURLConnection(1)</a> <a href='/blog/categories/nsurlrequest' style='font-size: 100.52401746724891%'>NSURLRequest(2)</a> <a href='/blog/categories/nsuserdefaults' style='font-size: 101.83406113537117%'>NSUserDefaults(7)</a> <a href='/blog/categories/nsxmlparser' style='font-size: 100.52401746724891%'>NSXMLParser(2)</a> <a href='/blog/categories/objective-c' style='font-size: 160.0%'>Objective-C(229)</a> <a href='/blog/categories/php' style='font-size: 100.26200873362446%'>PHP(1)</a> <a href='/blog/categories/products' style='font-size: 104.45414847161572%'>Products(17)</a> <a href='/blog/categories/quartzcore' style='font-size: 100.78602620087337%'>QuartzCore(3)</a> <a href='/blog/categories/rss' style='font-size: 100.52401746724891%'>RSS(2)</a> <a href='/blog/categories/runnable' style='font-size: 100.26200873362446%'>Runnable(1)</a> <a href='/blog/categories/sample' style='font-size: 113.36244541484716%'>Sample(51)</a> <a href='/blog/categories/screensaver' style='font-size: 102.35807860262008%'>Screensaver(9)</a> <a href='/blog/categories/sdk' style='font-size: 100.52401746724891%'>SDK(2)</a> <a href='/blog/categories/sharecompat' style='font-size: 100.26200873362446%'>ShareCompat(1)</a> <a href='/blog/categories/social' style='font-size: 102.62008733624454%'>Social(10)</a> <a href='/blog/categories/storekit' style='font-size: 100.26200873362446%'>StoreKit(1)</a> <a href='/blog/categories/twitter' style='font-size: 101.57205240174673%'>Twitter(6)</a> <a href='/blog/categories/uiaccelerometer' style='font-size: 100.78602620087337%'>UIAccelerometer(3)</a> <a href='/blog/categories/uiactionsheet' style='font-size: 100.26200873362446%'>UIActionSheet(1)</a> <a href='/blog/categories/uiactivityindicator' style='font-size: 100.26200873362446%'>UIActivityIndicator(1)</a> <a href='/blog/categories/uiactivityindicatorview' style='font-size: 100.78602620087337%'>UIActivityIndicatorView(3)</a> <a href='/blog/categories/uiactivityviewcontroller' style='font-size: 100.26200873362446%'>UIActivityViewController(1)</a> <a href='/blog/categories/uialertview' style='font-size: 101.31004366812228%'>UIAlertView(5)</a> <a href='/blog/categories/uiapplication' style='font-size: 101.83406113537117%'>UIApplication(7)</a> <a href='/blog/categories/uibutton' style='font-size: 101.04803493449782%'>UIButton(4)</a> <a href='/blog/categories/uicolor' style='font-size: 100.78602620087337%'>UIColor(3)</a> <a href='/blog/categories/uidatepicker' style='font-size: 101.31004366812228%'>UIDatePicker(5)</a> <a href='/blog/categories/uidevice' style='font-size: 101.57205240174673%'>UIDevice(6)</a> <a href='/blog/categories/uideviceorientation' style='font-size: 100.26200873362446%'>UIDeviceOrientation(1)</a> <a href='/blog/categories/uievent' style='font-size: 101.57205240174673%'>UIEvent(6)</a> <a href='/blog/categories/uiimage' style='font-size: 103.93013100436681%'>UIImage(15)</a> <a href='/blog/categories/uiimagepickercontroller' style='font-size: 101.04803493449782%'>UIImagePickerController(4)</a> <a href='/blog/categories/uiimageview' style='font-size: 103.14410480349345%'>UIImageView(12)</a> <a href='/blog/categories/uikit' style='font-size: 115.19650655021834%'>UIKit(58)</a> <a href='/blog/categories/uilabel' style='font-size: 101.83406113537117%'>UILabel(7)</a> <a href='/blog/categories/uinavigationbar' style='font-size: 101.04803493449782%'>UINavigationBar(4)</a> <a href='/blog/categories/uinavigationitem' style='font-size: 100.26200873362446%'>UINavigationItem(1)</a> <a href='/blog/categories/uipasteboard' style='font-size: 101.04803493449782%'>UIPasteboard(4)</a> <a href='/blog/categories/uiscreen' style='font-size: 100.26200873362446%'>UIScreen(1)</a> <a href='/blog/categories/uiscrollbar' style='font-size: 100.26200873362446%'>UIScrollBar(1)</a> <a href='/blog/categories/uiscrollview' style='font-size: 100.26200873362446%'>UIScrollView(1)</a> <a href='/blog/categories/uislider' style='font-size: 100.78602620087337%'>UISlider(3)</a> <a href='/blog/categories/uistoryboardsegue' style='font-size: 100.78602620087337%'>UIStoryboardSegue(3)</a> <a href='/blog/categories/uiswitch' style='font-size: 100.26200873362446%'>UISwitch(1)</a> <a href='/blog/categories/uitabbar' style='font-size: 100.78602620087337%'>UITabBar(3)</a> <a href='/blog/categories/uitableview' style='font-size: 101.04803493449782%'>UITableView(4)</a> <a href='/blog/categories/uitextfield' style='font-size: 100.52401746724891%'>UITextField(2)</a> <a href='/blog/categories/uiview' style='font-size: 102.882096069869%'>UIView(11)</a> <a href='/blog/categories/uiviewanimationtransition' style='font-size: 100.26200873362446%'>UIViewAnimationTransition(1)</a> <a href='/blog/categories/uiviewcontroller' style='font-size: 101.04803493449782%'>UIViewController(4)</a> <a href='/blog/categories/uiwebview' style='font-size: 101.31004366812228%'>UIWebView(5)</a> <a href='/blog/categories/uncategorized' style='font-size: 100.26200873362446%'>Uncategorized(1)</a> <a href='/blog/categories/usernotifications' style='font-size: 100.26200873362446%'>UserNotifications(1)</a> <a href='/blog/categories/windowmanager' style='font-size: 100.26200873362446%'>WindowManager(1)</a> <a href='/blog/categories/xcode' style='font-size: 112.5764192139738%'>Xcode(48)</a> <a href='/blog/categories/xcode-5' style='font-size: 102.09606986899563%'>Xcode 5(8)</a> <a href='/blog/categories/xcode-5-dot-1' style='font-size: 100.52401746724891%'>Xcode 5.1(2)</a> </p>
 </section>
 
   </div>
@@ -688,6 +1092,10 @@
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2020/07/10/objc-local-notification/">iOSアプリでローカルプッシュ通知を使用する</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2020/07/09/objc-admob-rewarded-video-ads/">AdMob動画リワード広告の導入手順</a>
@@ -743,10 +1151,6 @@
     
       <li class="post">
         <a href="/blog/2016/09/04/objc-classes-dc-admob-native-ads/">iOSアプリに AdMobネイティブ広告を表示するクラスを作成しました</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2016/01/22/ios-gijutsu-hyohron-autonomic-nerves/">技術評論社「自律神経を整えるスマホアプリ100選」に掲載いただきました</a>
       </li>
     
   </ul>
